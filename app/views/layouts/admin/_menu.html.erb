@@ -1,0 +1,19 @@
+﻿<aside class="main-sidebar sidebar_fixed">
+  <section class="sidebar">
+    <ul class="sidebar-menu" data-widget="tree">
+
+      <%= content_tag :li, class: controller_name == 'users' ? 'active' : '' do %>
+        <%= link_to admin_users_users_path do %>
+          <i class="fa fa-users"></i><span><%= t('titles.users') %></span>
+        <% end %>
+      <% end %>
+
+      <%= content_tag :li, class: controller_name == 'administrators' ? 'active' : '' do %>
+        <%= link_to admin_users_administrators_path do %>
+          <i class="fa fa-user"></i><span><%= t('titles.admins') %></span>
+        <% end %>
+      <% end %>
+
+    </ul>
+  </section>
+</aside>

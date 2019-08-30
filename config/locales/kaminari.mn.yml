@@ -1,0 +1,17 @@
+mn:
+  views:
+    pagination:
+      first: "&laquo; Эхний"
+      last: "Сүүлийн &raquo;"
+      previous: "&lsaquo; өмнөх"
+      next: "дараах &rsaquo;"
+      truncate: "&hellip;"
+  helpers:
+    page_entries_info:
+      one_page:
+        display_entries:
+          zero: "%{entry_name} байхгүй байна"
+          one: "<b>нэг</b>%{entry_name} харуулсан"
+          other: "<b>%{count}</b> {entry_name} харуулсан"
+      more_pages:
+        display_entries: "<b>%{first}&nbsp;-&nbsp;%{last}</b> Бүгд<b>%{total}</b> %{entry_name} харуулсан байна"

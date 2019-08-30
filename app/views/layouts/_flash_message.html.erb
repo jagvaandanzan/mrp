@@ -1,0 +1,11 @@
+<% display_class = flash[:success].present? ? '' : 'none' %>
+<%= content_tag :div, class: "alert alert-success alert-dismissible #{display_class}" do %>
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  <i class="icon fa fa-check"></i><p class="message-container inline"><%= flash[:success] %></p>
+<% end %>
+
+<% display_class = flash[:alert].present? ? '' : 'none' %>
+<%= content_tag :div, class: "alert alert-danger alert-dismissible #{display_class}" do %>
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  <i class="icon fa fa-check"></i><p class="message-container inline"><%= flash[:alert] %></p>
+<% end %>

@@ -1,0 +1,2 @@
+class AdminPermission < ApplicationRecord
+end

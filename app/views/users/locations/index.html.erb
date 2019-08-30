@@ -1,0 +1,50 @@
+<div class="content-wrapper index">
+  <%= render 'layouts/breadcrumbs', data: [
+      [users_loc_districts_path, t('titles.loc_districts')],
+      [users_loc_khoroos_path(id: @loc_khoroo.loc_district_id), @loc_khoroo.loc_district.name],
+      [users_locations_path(id: @loc_khoroo.id), @loc_khoroo.name], t('titles.locations')] %>
+
+  <section class="content-header align-left with-breadcrumbs">
+    <h4> (<%= t('titles.total') %>：<%= @locations.total_count %>)</h4>
+  </section>
+
+  <div class="action-buttons index">
+    <%= form_with url: users_locations_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+      <%= hidden_field_tag :id, @loc_khoroo.id %>
+      <%= text_field_tag :location_name, @search_name, {class: 'form-control search'} %>
+      <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn' %>
+      <%= link_to t('controls.button.create'), new_users_location_path(id: @loc_khoroo.id), class: 'btn btn-warning' %>
+    <% end %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <div class="box-body table-responsive no-padding">
+
+            <%= render 'layouts/flash_message' %>
+
+            <table class="table table-hover">
+              <tr>
+                <th class="text-center"><%= t('activerecord.attributes.location.name') %></th>
+                <th class="text-center"><%= t('activerecord.attributes.location.name_la') %></th>
+                <th class="text-center"><%= t('activerecord.attributes.location.latitude') %></th>
+                <th class="text-center"><%= t('activerecord.attributes.location.longitude') %></th>
+              </tr>
+              <% @locations.each do |l| %>
+                <tr>
+                  <td class="text-center va-mid"><%= link_to l.name, users_location_path(l) %></td>
+                  <td class="text-center va-mid"><%= link_to l.name_la, users_location_path(l) %></td>
+                  <td class="text-center va-mid"><%= l.latitude %></td>
+                  <td class="text-center va-mid"><%= l.longitude %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+        <%= paginate @locations %>
+      </div>
+    </div>
+  </section>
+</div>

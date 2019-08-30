@@ -1,0 +1,32 @@
+﻿<aside class="main-sidebar sidebar_fixed">
+  <section class="sidebar">
+    <ul class="sidebar-menu" data-widget="tree">
+      <%= content_tag :li, class: controller_name == 'locations' ? 'active none' : 'none' do %>
+        <%= link_to users_locations_path do %>
+          <i class="fa fa-map-marker"></i><span><%= t('titles.locations') %></span>
+        <% end %>
+      <% end %>
+
+      <%= content_tag :li, class: controller_name == 'loc_districts' || controller_name == 'loc_khoroos' ||
+          controller_name == 'locations' || controller_name == 'costs' || controller_name == 'plan_employments' ||
+          controller_name == 'trainings' || controller_name == 'productivities' ||
+          controller_name == 'training_surveys' ? 'treeview active' : 'treeview' do %>
+        <%= link_to "#" do %>
+          <i class="fa fa-cogs"></i><span><%= t('titles.settings') %></span>
+          <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        <% end %>
+
+        <%= content_tag :ul, class: 'treeview-menu' do %>
+
+          <%= content_tag :li, class: (controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations') ? 'active' : '' do %>
+            <%= link_to users_loc_districts_path do %>
+              <i class="fa fa-map-marker"></i><span><%= t('titles.loc_districts') %></span>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </ul>
+  </section>
+</aside>

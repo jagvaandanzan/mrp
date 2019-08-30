@@ -1,0 +1,112 @@
+mn:
+  activerecord:
+    errors:
+      messages:
+        record_invalid: "Баталгаажуулалт буруу: %{errors}"
+        restrict_dependent_destroy:
+          has_one: "%{record} нь устгагдсан тул устгах боломжгүй"
+          has_many: "%{record} нь устгагдсан тул устгах боломжгүй"
+  controls:
+    input:
+      please_enter: Оруулна уу!
+    button:
+      change: Өөрчлөх
+      login: Нэвтрэх
+      send: Илгээх
+      create: Шинээр нэмэх
+      show: Харах
+      edit: Засах
+      delete: Устгах
+      search: Хайлт
+      searching: Хайх
+      delete_for_checked: Сонгоснуудыг устгах
+      save: Хадгалах
+    select:
+      none: Сонгох
+    link:
+      forget_password: Нууц үгээ мартсан
+  titles:
+    resetting_a_password: Нууц үг шинэчлэлт
+    reset_password: Нууц үг сэргээх
+    login: Нэвтрэх цонх
+    search_by_user: Нэр, имэйл, утасны дугаараар хайх
+    settings: Тохиргоо
+    admins: Админууд
+    users: Хэрэглэгчид
+    user: Хэрэглэгч
+    user_show: Хэрэглэгчийн мэдээлэл
+    back_to_list: Жагсаалтруу буцах
+    total: Нийт
+    user_sign_in: Нэвтрэх
+    locations: Байршилууд
+    add: " нэмэх"
+    edit: " засах"
+    loc_districts: Дүүргүүд
+    loc_khoroos: Хороод
+  models:
+    user:
+      age: Нас
+  app_name: “Агуулахын систем”
+  app_short_name: АС
+  alert:
+    saved_successfully: Амжилттай хадгаллаа
+    deleted_successfully: Амжилттай устгагдсан
+    info_updated: Мэдээлэл шинэчлэгдсэн
+  are_you_sure: "Та устгахдаа итгэлтэй байна уу ?"
+  are_you_update: "Хадгалах уу ?"
+  are_sure_change: "Өөрчлөх үү ?"
+  currency: ₮
+  currency_name: Төгрөг
+  errors:
+    format: "%{attribute}%{message}"
+    messages:
+      accepted: を受諾してください
+      blank: " хоосон байна!"
+      present: は入力しないでください
+      confirmation: と%{attribute}の入力が一致しません
+      empty: " хоосон байна!"
+      equal_to: は%{count}にしてください
+      even: は偶数にしてください
+      exclusion: は予約されています
+      greater_than: は%{count}より大きい値にしてください
+      greater_than_or_equal_to: は%{count}以上の値にしてください
+      inclusion: は一覧にありません
+      invalid: буруу байна
+      less_than: は%{count}より小さい値にしてください
+      less_than_or_equal_to: は%{count}以下の値にしてください
+      model_invalid: "Баталгаажуулалт буруу: %{errors}"
+      not_a_number: は数値で入力してください
+      not_an_integer: は整数で入力してください
+      odd: は奇数にしてください
+      required: " шаардлагтай!"
+      taken: " давхардаж байна!"
+      too_long: бол %{count}-с дээр тэмдэгт байх ёстой
+      too_short: бол %{count}-с дээр тэмдэгт байх ёстой
+      wrong_length: は%{count}文字で入力してください
+      other_than: は%{count}以外の値にしてください
+    template:
+      body: 次の項目を確認してください
+      header:
+        one: "%{model}にエラーが発生しました"
+        other: "%{model}に%{count}個のエラーが発生しました"
+  mail:
+    questionnaire:
+      status_instructions:
+        subject: '[Market.mn] Мэдээлэл'
+  dates:
+    month1: 1 сар
+    month2: 2 сар
+    month3: 3 сар
+    month4: 4 сар
+    month5: 5 сар
+    month6: 6 сар
+    month7: 7 сар
+    month8: 8 сар
+    month9: 9 сар
+    month10: 10 сар
+    month11: 11 сар
+    month12: 12 сар
+    quarter1: 1 дүгээр улирал
+    quarter2: 2 дугаар улирал
+    quarter3: 3 дугаар улирал
+    quarter4: 4 дүгээр улирал

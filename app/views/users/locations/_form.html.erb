@@ -1,0 +1,105 @@
+<% provide :head_tags do %>
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_KEY'] %>"></script>
+<% end %>
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1><%= t('activerecord.models.location') + t(@location.persisted? ? 'titles.edit' : 'titles.add') %></h1>
+  </section>
+
+  <section class="content">
+    <div class="box box-info">
+      <%= form_with model: @location, url: @location.persisted? ? users_location_path : users_locations_path, method: @location.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <%= f.hidden_field :loc_khoroo_id %>
+          <div class="form-group">
+            <%= f.label :name, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@location, :name) %>">
+              <%= field_errors(@location, :name) %>
+              <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.location.name') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :name_la, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@location, :name_la) %>">
+              <%= field_errors(@location, :name_la) %>
+              <%= f.text_field :name_la, class: 'form-control', placeholder: t('activerecord.attributes.location.name_la') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :latitude, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@location, :latitude) %>">
+              <%= field_errors(@location, :latitude) %>
+              <%= f.text_field :latitude, id: 'latitude', class: 'form-control', readonly: true, placeholder: t('activerecord.attributes.location.latitude') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :longitude, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@location, :longitude) %>">
+              <%= field_errors(@location, :longitude) %>
+              <%= f.text_field :longitude, id: 'longitude', class: 'form-control', readonly: true, placeholder: t('activerecord.attributes.location.longitude') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12">
+              <div id="map"></div>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>
+<script>
+    function initMap() {
+        let lat = document.getElementById('latitude').value;
+        let lng = document.getElementById('longitude').value;
+
+        let myCoords = new google.maps.LatLng(lat, lng);
+        let mapOptions = {
+            center: myCoords,
+            zoom: 15,
+            mapTypeId: 'satellite'
+        };
+        let map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        let marker = new google.maps.Marker({
+            position: myCoords,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            draggable: true
+        });
+
+        // refresh marker position and recenter map on marker
+        function refreshMarker() {
+            let lat = document.getElementById('latitude').value;
+            let lng = document.getElementById('longitude').value;
+            let myCoords = new google.maps.LatLng(lat, lng);
+            marker.setPosition(myCoords);
+            map.setCenter(marker.getPosition());
+        }
+
+        // when input values change call refreshMarker
+        document.getElementById('latitude').onchange = refreshMarker;
+        document.getElementById('longitude').onchange = refreshMarker;
+        // when marker is dragged update input values
+        marker.addListener('drag', function () {
+            latlng = marker.getPosition();
+            newlat = (Math.round(latlng.lat() * 1000000)) / 1000000;
+            newlng = (Math.round(latlng.lng() * 1000000)) / 1000000;
+            document.getElementById('latitude').value = newlat;
+            document.getElementById('longitude').value = newlng;
+        });
+        // When drag ends, center (pan) the map on the marker position
+        marker.addListener('dragend', function () {
+            map.panTo(marker.getPosition());
+        });
+    }
+
+    $(function () {
+        initMap();
+    });
+
+</script>

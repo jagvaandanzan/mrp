@@ -1,0 +1,67 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1><%= t('activerecord.models.user') + t(@user.persisted? ? 'titles.edit' : 'titles.add') %></h1>
+  </section>
+  <section class="content">
+    <div class="box box-info">
+      <%= form_for :user, url: @user.persisted? ? admin_users_user_path : admin_users_users_path, method: @user.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <div class="form-group">
+            <%= f.label :surname, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@user, :surname) %>">
+              <%= field_errors(@user, :surname) %>
+              <%= f.text_field :surname, class: 'form-control', placeholder: t('activerecord.attributes.user.surname') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :name, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@user, :name) %>">
+              <%= field_errors(@user, :name) %>
+              <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.user.name') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :gender, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@user, :gender) %>">
+              <%= field_errors(@user, :gender) %>
+              <%= f.collection_radio_buttons :gender, User.genders_i18n, :first, :second do |b| %>
+                <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
+              <% end %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :email, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@user, :email) %>">
+              <%= get_user_field_errors(@user, :email) %>
+              <%= f.email_field :email, class: 'form-control', placeholder: t('activerecord.attributes.user.email'), disabled: @user.persisted? %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :phone, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@user, :phone) %>">
+              <%= field_errors(@user, :phone) %>
+              <%= f.text_field :phone, class: 'form-control', placeholder: t('activerecord.attributes.user.phone') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :user_position, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@user, :user_position_id) %>">
+              <%= field_errors(@user, :user_position_id) %>
+              <%= f.collection_select :user_position_id, UserPosition.order_by_name, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control', id: 'position-select'} %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :user_permission, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@user, :user_permission_id) %>">
+              <%= field_errors(@user, :user_permission_id) %>
+              <%= f.collection_select :user_permission_id, UserPermission.all, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control', id: 'permission-select'} %>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>

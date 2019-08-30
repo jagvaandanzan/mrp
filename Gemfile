@@ -48,6 +48,7 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'faker'
 end
 
 group :test do
@@ -57,6 +58,20 @@ group :test do
   # Easy installation and use of chromedriver to run system tests with Chrome
   gem 'chromedriver-helper'
 end
+
+gem 'devise'
+gem 'hashie'
+gem 'figaro' # application.yml
+gem 'enum_help' #i18n
+gem "paranoia" # delete_at
+gem "paperclip" # file upload
+gem "font-awesome-rails"
+gem 'cocoon' #nested_form
+gem 'cancancan'
+gem 'kaminari' # page
+gem 'grape'
+gem 'grape-jbuilder'
+gem 'grape-entity'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

@@ -1,0 +1,63 @@
+<% provide :head_tags do %>
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_KEY'] %>"></script>
+<% end %>
+
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('activerecord.models.location') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <%= link_to t('controls.button.edit'), edit_users_location_path(@location), class: 'btn btn-info' %>
+    <%= link_to t('controls.button.delete'), users_location_path(@location), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <%= link_to t('titles.back_to_list'), users_locations_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body table-responsive no-padding">
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.location.name') %> :</div>
+          <div class="col-data"><%= @location.name %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.location.name_la') %> :</div>
+          <div class="col-data"><%= @location.name_la %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.location.latitude') %> :</div>
+          <div class="col-data"><%= @location.latitude %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.location.longitude') %> :</div>
+          <div class="col-data"><%= @location.longitude %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.location.locations') %> :</div>
+          <div id="map">
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+<script type="text/javascript" charset="utf-8">
+    $(function () {
+        initMap();
+    });
+
+    function initMap() {
+        let myCoords = new google.maps.LatLng(<%= @location.latitude %>, <%= @location.longitude %>);
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 15,
+            center: myCoords,
+            mapTypeId: 'satellite'
+        });
+        new google.maps.Marker({
+            position: myCoords,
+            map: map,
+        });
+
+    }
+</script>

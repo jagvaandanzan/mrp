@@ -1,0 +1,78 @@
+mn:
+  enums:
+    user:
+      gender:
+        male: Эрэгтэй
+        female: Эмэгтэй
+    admin_user:
+      list: Администраторууд
+      add: Администратор нэмэх
+      edit: Администраторийн мэдээлэл засах
+  activerecord:
+    models:
+      admin_user: Админ
+      user: Хэрэглэгч
+      location: Байршил
+      loc_district: Дүүрэг
+      loc_khoroo: Хороо
+    attributes:
+      admin_user:
+        email: Имэйл
+        password: Нууц үг
+        new_password: Шинэ нууц үг
+        confirm_new_password: Шинэ нууц үг（Баталгаажуулах）
+        current_password: Одоо байгаа нууц үг
+        password_confirmation: ''
+        reset_password_token: ''
+        admin_permission: Хандах эрх
+        admin_permission_id: Хандах эрх
+      user:
+        email: Имэйл
+        password: Нууц үг
+        name: Нэр
+        surname: Овог
+        gender: Хүйс
+        user_position: Албан тушаал
+        user_position_id: Албан тушаал
+        user_permission: Хандах эрх
+        user_permission_id: Хандах эрх
+        phone: Утас
+      location:
+        name: Хаяг
+        name_la: Хаяг латинаар
+        latitude: Өргөрөг
+        longitude: Уртраг
+        locations: Байршил
+      loc_district:
+        name: Нэр
+      loc_khoroo:
+        loc_district: Дүүрэг
+        loc_district_id: Дүүрэг
+        name: Нэр
+    errors:
+      messages:
+        blank: " хоосон байна!"
+        too_long: " бол %{count}-с бага тэмдэгт байх ёстой"
+        too_short: " бол %{count}-с дээш тэмдэгт байх ёстой"
+      models:
+        user:
+          blank: " оруулна уу!"
+          attributes:
+            blank: " оруулна уу!"
+            email:
+              invalid: " буруу байна"
+              taken: " давхцаж байна"
+              blank: " оруулна уу!"
+            password_confirmation:
+              confirmation: " нууц үг баталгаажуулалт таарахгүй байна"
+        admin_user:
+          attributes:
+            password_confirmation:
+              confirmation: " нууц үг баталгаажуулалт таарахгүй байна"
+            email:
+              taken: " энэ имэйлийг ашиглаж байна"
+              invalid: " буруу байна"
+        organisational_culture:
+          attributes:
+            attachment_content_type:
+              content_type: " зөвхөн PDF байна!"

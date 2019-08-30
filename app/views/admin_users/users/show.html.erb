@@ -1,0 +1,48 @@
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('titles.user_show') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <%= link_to t('titles.user_sign_in'), user_sign_in_admin_users_user_path(@user), target: '_blank', class: 'btn btn-primary' %>
+    <%= link_to t('controls.button.edit'), edit_admin_users_user_path(@user), class: 'btn btn-info' %>
+    <%= link_to t('controls.button.delete'), admin_users_user_path(@user), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <%= link_to t('titles.back_to_list'), admin_users_users_path(page: cookies[:user_page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body table-responsive no-padding">
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.user.surname') %> :</div>
+          <div class="col-data"><%= @user.surname %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.user.name') %> :</div>
+          <div class="col-data"><%= @user.name %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.user.gender') %> :</div>
+          <div class="col-data"><%= @user.gender_i18n %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.user.email') %> :</div>
+          <div class="col-data"><%= @user.email %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.user.phone') %> :</div>
+          <div class="col-data"><%= @user.phone.presence || :'---' %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.user.user_permission') %> :</div>
+          <div class="col-data"><%= @user.user_permission.name %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.user.user_position') %> :</div>
+          <div class="col-data"><%= @user.user_position.name %></div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

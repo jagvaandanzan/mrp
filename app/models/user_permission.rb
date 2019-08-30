@@ -1,0 +1,2 @@
+class UserPermission < ApplicationRecord
+end

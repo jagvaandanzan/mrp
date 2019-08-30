@@ -1,0 +1,15 @@
+  <div class="row breadcrumb-container">
+    <div class="col-xs-12 col-sm-12 col-md-12">
+      <div class="box box-solid">
+        <ol class="breadcrumb">
+          <% data.each_with_index do |item, index| %>
+            <% if item == data.last %>
+              <li class="active"><%= item %></li>
+            <% else %>
+              <li><%= link_to item[1], item[0] %></li>
+            <% end %>
+          <% end %>
+        </ol>
+      </div>
+    </div>
+  </div>
