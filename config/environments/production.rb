@@ -27,7 +27,7 @@ Rails.application.configure do
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
-  config.assets.compile = false
+  config.assets.compile = true
 
   # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb
 
@@ -63,8 +63,19 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "Warehouse_#{Rails.env}"
 
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_caching = false
-
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+      user_name: 'info@market.mn',
+      password: 'news@123',
+      port:587,
+      domain: 'market.mn',
+      address: 'smtp.market.mn',
+      authentication: :plain,
+      openssl_verify_mode: "none"
+  }
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
