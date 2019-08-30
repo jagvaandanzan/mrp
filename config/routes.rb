@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root 'users/locations#index'
+  root 'users/loc_districts#index'
 
   devise_for :admin_users, path: :admin, controllers: {
       sessions: 'admin_users/sessions',
@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   end
 
   namespace :users, path: :user do
-    root "locations#index"
+    root "loc_districts#index"
 
     resources :locations, only: [:index, :create, :new, :show, :edit, :update, :destroy]
     resources :loc_districts, only: [:index, :create, :new, :edit, :update, :destroy]
