@@ -8,4 +8,8 @@ class Location < ApplicationRecord
     items.order(:name)
   }
 
+  scope :last_location, -> {
+    last
+  }
+
 end
