@@ -34,8 +34,8 @@
               </tr>
               <% @locations.each do |l| %>
                 <tr>
-                  <td class="text-center va-mid"><%= link_to l.name, users_location_path(l) %></td>
-                  <td class="text-center va-mid"><%= link_to l.name_la, users_location_path(l) %></td>
+                  <td class="va-mid"><%= link_to l.name, users_location_path(l) %></td>
+                  <td class="va-mid"><%= link_to l.name_la, users_location_path(l) %></td>
                   <td class="text-center va-mid"><%= l.latitude %></td>
                   <td class="text-center va-mid"><%= l.longitude %></td>
                 </tr>
