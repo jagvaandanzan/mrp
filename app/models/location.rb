@@ -12,4 +12,7 @@ class Location < ApplicationRecord
     last
   }
 
+  def full_name
+    loc_khoroo.loc_district.name + ", " + loc_khoroo.name + ", " + name
+  end
 end

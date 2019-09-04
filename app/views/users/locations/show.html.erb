@@ -12,14 +12,14 @@
   <div class="action-buttons">
     <%= link_to t('controls.button.edit'), edit_users_location_path(@location), class: 'btn btn-info' %>
     <%= link_to t('controls.button.delete'), users_location_path(@location), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
-    <%= link_to t('titles.back_to_list'), users_locations_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
+    <%= link_to t('titles.back_to_list'), users_locations_path(id: @location.loc_khoroo_id, page: cookies[:page_number]), {class: "btn blck-btn"} %>
   </div>
   <%= show_body do %>
     <div class="box">
       <div class="box-body table-responsive no-padding">
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.location.name') %> :</div>
-          <div class="col-data"><%= @location.name %></div>
+          <div class="col-data"><%= @location.full_name %></div>
         </div>
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.location.name_la') %> :</div>
@@ -52,7 +52,7 @@
         var map = new google.maps.Map(document.getElementById('map'), {
             zoom: 15,
             center: myCoords,
-            mapTypeId: 'satellite'
+            mapTypeId: 'hybrid'
         });
         new google.maps.Marker({
             position: myCoords,

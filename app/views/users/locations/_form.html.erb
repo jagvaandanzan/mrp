@@ -1,11 +1,12 @@
 <% provide :head_tags do %>
   <script type="text/javascript"
-          src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_KEY'] %>"></script>
+          src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_KEY'] %>&libraries=places"></script>
 <% end %>
 <div class="content-wrapper">
-  <section class="content-header">
-    <h1><%= t('activerecord.models.location') + t(@location.persisted? ? 'titles.edit' : 'titles.add') %></h1>
-  </section>
+  <%= render 'layouts/breadcrumbs', data: [
+      [users_loc_districts_path, t('titles.loc_districts')],
+      [users_loc_khoroos_path(id: @location.loc_khoroo.loc_district_id), @location.loc_khoroo.loc_district.name],
+      [users_locations_path(id: @location.loc_khoroo.id), @location.loc_khoroo.name], t('activerecord.models.location') +t(@location.persisted? ? 'titles.edit' : 'titles.add')] %>
 
   <section class="content">
     <div class="box box-info">
@@ -62,7 +63,8 @@
         let mapOptions = {
             center: myCoords,
             zoom: 15,
-            mapTypeId: 'satellite'
+            mapTypeId: 'hybrid',
+            output: 'embed'
         };
         let map = new google.maps.Map(document.getElementById('map'), mapOptions);
         let marker = new google.maps.Marker({
