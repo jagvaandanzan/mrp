@@ -10,6 +10,10 @@
       <%= content_tag :li, class: controller_name == 'loc_districts' || controller_name == 'loc_khoroos' ||
           controller_name == 'locations' || controller_name == 'costs' || controller_name == 'plan_employments' ||
           controller_name == 'trainings' || controller_name == 'productivities' ||
+          controller_name == 'product_categorys' || controller_name == 'product_suppliers' ||
+          controller_name == 'product_features' || controller_name == 'product_feature_options' ||
+          controller_name == 'products' || controller_name == 'product_feature_option_rels' ||
+          controller_name == 'product_supply_orders' ||
           controller_name == 'training_surveys' ? 'treeview active' : 'treeview' do %>
         <%= link_to "#" do %>
           <i class="fa fa-cogs"></i><span><%= t('titles.settings') %></span>
@@ -23,6 +27,31 @@
           <%= content_tag :li, class: (controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations') ? 'active' : '' do %>
             <%= link_to users_loc_districts_path do %>
               <i class="fa fa-map-marker"></i><span><%= t('titles.loc_districts') %></span>
+            <% end %>
+          <% end %>
+          <%= content_tag :li, class: (controller_name == 'product_categorys') ? 'active' : '' do %>
+            <%= link_to users_product_categorys_path do %>
+              <i class="fa fa-map-marker"></i><span><%= t('titles.product_categorys') %></span>
+            <% end %>
+          <% end %>
+          <%= content_tag :li, class: (controller_name == 'product_suppliers') ? 'active' : '' do %>
+            <%= link_to users_product_suppliers_path do %>
+              <i class="fa fa-map-marker"></i><span><%= t('titles.product_suppliers') %></span>
+            <% end %>
+          <% end %>
+          <%= content_tag :li, class: (controller_name == 'product_features' || controller_name == 'product_feature_options') ? 'active' : '' do %>
+            <%= link_to users_product_features_path do %>
+              <i class="fa fa-map-marker"></i><span><%= t('titles.product_features') %></span>
+            <% end %>
+          <% end %>
+          <%= content_tag :li, class: (controller_name == 'products'  || controller_name == 'product_feature_option_rels') ? 'active' : '' do %>
+            <%= link_to users_products_path do %>
+              <i class="fa fa-map-marker"></i><span><%= t('titles.products') %></span>
+            <% end %>
+          <% end %>
+          <%= content_tag :li, class: (controller_name == 'product_supply_orders') ? 'active' : '' do %>
+            <%= link_to center_users_product_supply_orders_path do %>
+              <i class="fa fa-map-marker"></i><span><%= t('titles.product_supply_orders') %></span>
             <% end %>
           <% end %>
         <% end %>

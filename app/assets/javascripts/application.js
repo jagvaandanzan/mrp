@@ -19,3 +19,4 @@
 //= require bootstrap-daterangepicker/daterangepicker.js
 //= require bootstrap-datepicker/dist/js/bootstrap-datepicker.js
 //= require cocoon
+
