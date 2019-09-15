@@ -10,7 +10,7 @@ class Users::LocationsController < Users::BaseController
   def new
     @location = Location.new
     @location.loc_khoroo = LocKhoroo.find_by!(id: params[:id])
-    location_last = Location.last_location
+    location_last = Location.last_location(current_user)
 
     if location_last.present?
       @location.latitude = location_last.latitude
@@ -66,5 +66,6 @@ class Users::LocationsController < Users::BaseController
   def location_params
     params.require(:location)
         .permit(:loc_khoroo_id, :name, :name_la, :latitude, :longitude)
+        .merge(:user => current_user)
   end
 end

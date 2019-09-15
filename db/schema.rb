@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_30_094951) do
+ActiveRecord::Schema.define(version: 2019_09_15_041904) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -55,14 +55,16 @@ ActiveRecord::Schema.define(version: 2019_08_30_094951) do
   end
 
   create_table "locations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "loc_khoroo_id"
     t.text "name"
     t.text "name_la"
     t.decimal "latitude", precision: 15, scale: 10, default: "0.0"
     t.decimal "longitude", precision: 15, scale: 10, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "loc_khoroo_id"
     t.index ["loc_khoroo_id"], name: "index_locations_on_loc_khoroo_id"
+    t.index ["user_id"], name: "index_locations_on_user_id"
   end
 
   create_table "user_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -108,6 +110,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_094951) do
   add_foreign_key "admin_users", "admin_permissions"
   add_foreign_key "loc_khoroos", "loc_districts"
   add_foreign_key "locations", "loc_khoroos"
+  add_foreign_key "locations", "users"
   add_foreign_key "users", "user_permissions"
   add_foreign_key "users", "user_positions"
 end

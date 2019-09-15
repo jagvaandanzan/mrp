@@ -1,4 +1,5 @@
 class Location < ApplicationRecord
+  belongs_to :user
   belongs_to :loc_khoroo
   validates :name, presence: true
 
@@ -8,8 +9,8 @@ class Location < ApplicationRecord
     items.order(:name)
   }
 
-  scope :last_location, -> {
-    last
+  scope :last_location, -> (user) {
+    where(user: user).last
   }
 
   def full_name
