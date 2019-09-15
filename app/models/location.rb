@@ -9,10 +9,6 @@ class Location < ApplicationRecord
     items.order(:name)
   }
 
-  scope :last_location, -> (user) {
-    where(user: user).last
-  }
-
   def full_name
     loc_khoroo.loc_district.name + ", " + loc_khoroo.name + ", " + name
   end

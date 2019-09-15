@@ -10,9 +10,11 @@ class Users::LocationsController < Users::BaseController
   def new
     @location = Location.new
     @location.loc_khoroo = LocKhoroo.find_by!(id: params[:id])
-    location_last = Location.last_location(current_user)
 
-    if location_last.present?
+    loo = Location.where(user: current_user)
+
+    if loo.present?
+      location_last = loo.last
       @location.latitude = location_last.latitude
       @location.longitude = location_last.longitude
     else
