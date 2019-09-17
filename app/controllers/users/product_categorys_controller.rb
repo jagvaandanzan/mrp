@@ -6,20 +6,20 @@ class Users::ProductCategorysController < Users::BaseController
     @categories = nil
     # = ProductCategory.find_by!(id: params[:parent_id])
     puts(params)
-    if !params[:parent_id].nil?
+    if params[:parent_id].nil?
+      @categories = ProductCategory.top_level().page(params[:page])
+    else
       @parent = ProductCategory.find_by!(id: params[:parent_id])
       @categories = ProductCategory.search(@parent.id).page(params[:page])
-    else
-      @categories = ProductCategory.top_level().page(params[:page])
     end
   end
 
   def new
     @category = ProductCategory.new
-    if !params[:parent_id].nil?
-      @category.parent = ProductCategory.find_by!(id: params[:parent_id])
-    else
+    if params[:parent_id].nil?
       @category.parent = nil
+    else
+      @category.parent = ProductCategory.find_by!(id: params[:parent_id])
     end
   end
 
@@ -28,8 +28,7 @@ class Users::ProductCategorysController < Users::BaseController
 
     if @category.save
       flash[:success] = t('alert.saved_successfully')
-
-      redirect_to action: :index, parent_id: !@category.parent.nil? ? @category.parent.id : nil
+      redirect_to action: :index, parent_id: @category.parent_id
     else
       # Rails.logger.info(@category.errors.inspect)
       render 'new'
@@ -40,7 +39,7 @@ class Users::ProductCategorysController < Users::BaseController
   end
 
   def update
-    @parent_id = !@category.parent.nil? ? @category.parent.id : nil
+    @parent_id = @category.parent_id
     @category.attributes = category_params
     if @category.save
       flash[:success] = t('alert.info_updated')
@@ -52,7 +51,7 @@ class Users::ProductCategorysController < Users::BaseController
   end
 
   def destroy
-    @parent_id = !@category.parent.nil? ? @category.parent.id : nil
+    @parent_id = @category.parent_id
     @category.destroy!
 
     flash[:success] = t('alert.deleted_successfully')

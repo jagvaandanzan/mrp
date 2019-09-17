@@ -41,12 +41,12 @@ def get_search_recursive(obj, type)
     main_ol = content_tag :ol, class: 'breadcrumb' do
       concat header_li
 
-      if obj.presence && !obj.nil?
+      if obj.presence
         @headers = []
         get_recursive_header(obj)
 
         @headers.reverse().each do |item|
-          if !item.nil?
+          unless item.nil?
             li = content_tag :li, class: item == @headers.first ? "active" : "" do
               link_to(item.name, type=="category" ? users_product_categorys_path(parent_id: item.id) : "")
             end
@@ -67,12 +67,12 @@ end
 
 def get_name_recursive(obj)
   content_tag :p, class: '' do
-    if obj.presence && !obj.nil?
+    if obj.presence
       @headers = []
       get_recursive_header(obj)
 
       @headers.reverse().each do |item|
-        if !item.nil?
+        unless item.nil?
           i = content_tag :i do
             concat link_to(item.name,
                     users_product_categorys_path(parent_id: item.id))
@@ -84,4 +84,19 @@ def get_name_recursive(obj)
     end # obj presence check
   end # main div end
 end
+
+# def get_supply_order_sum_price (obj)
+#   @items = ProductSupplyOrderItem.search(obj.id)
+#
+#   value = 0
+#   if @items.presence && @items.size > 0
+#     @items.each do |item|
+#       value += (item.quantity * item.price)*obj.exchange_value
+#     end
+#   end
+#
+#   content_tag :p, class: '' do
+#     value
+#   end
+# end
 

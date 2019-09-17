@@ -8,8 +8,8 @@
 
   <div class="action-buttons index">
     <%= form_with url: users_product_categorys_path, method: "get", class: 'form-horizontal', local: true do |f| %>
-      <%= hidden_field_tag :parent_id, !@parent.nil? ? @parent.id : nil %>
-      <%= link_to t('controls.button.create'), new_users_product_category_path(parent_id: !@parent.nil? ? @parent.id : nil ), class: 'btn btn-warning' %>
+      <%= hidden_field_tag :parent_id, @parent.nil? ? nil : @parent.id %>
+      <%= link_to t('controls.button.create'), new_users_product_category_path(parent_id: @parent.nil? ? nil : @parent.id), class: 'btn btn-warning' %>
     <% end %>
   </div>
 

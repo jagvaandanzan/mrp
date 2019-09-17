@@ -65,7 +65,7 @@
           <div class="form-group" >
             <%= f.label :category_id, class: 'col-sm-3 control-label' %>
             <%= f.hidden_field :category_id %>
-            <% if !@product.persisted? || (@product.persisted? && (@product.category.nil? || !@product.category.presence)) %>
+            <% if @product.persisted? == false || (@product.persisted? && @product.category.nil?) %>
               <div class="col-sm-6" id="div_product_category">
                 <%= f.collection_select :main_category_id, ProductCategory.top_level(), :id, :name,
                                         {:prompt => t('controls.select.none')},

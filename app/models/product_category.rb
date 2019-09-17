@@ -18,7 +18,7 @@ class ProductCategory < ApplicationRecord
 
 
   scope :get_children, ->(p_id) {
-    if p_id.presence && !p_id.nil?
+    if p_id.presence
       items = where(parent_id: p_id)
     else
       items = where(parent_id: nil)
