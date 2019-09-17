@@ -15,7 +15,9 @@ class Users::ProductCategorysController < Users::BaseController
   end
 
   def new
+    lastCategory = ProductCategory.last
     @category = ProductCategory.new
+    @category.code = (100000+lastCategory.id+1).to_s
     if params[:parent_id].nil?
       @category.parent = nil
     else

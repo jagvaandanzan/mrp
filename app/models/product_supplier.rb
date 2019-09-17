@@ -1,4 +1,6 @@
 class ProductSupplier < ApplicationRecord
+  acts_as_paranoid
+
   has_many :supply_orders, :class_name => "ProductSupplyOrder", :foreign_key => "supplier_id"
 
   validates :name, presence: true

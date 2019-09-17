@@ -7,7 +7,10 @@ class Users::ProductSuppliersController < Users::BaseController
   end
 
   def new
+    lastSupp = ProductSupplier.last
     @product_supplier = ProductSupplier.new
+
+    @product_supplier.code = (100000+lastSupp.id+1).to_s
   end
 
   def create

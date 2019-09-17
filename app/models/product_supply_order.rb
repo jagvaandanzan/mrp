@@ -1,6 +1,6 @@
 class ProductSupplyOrder < ApplicationRecord
-  belongs_to :supplier, :class_name => "ProductSupplier"
-  has_many :items, :class_name => "ProductSupplyOrderItem", :foreign_key => "supply_order_id"
+  belongs_to :supplier, -> { with_deleted }, :class_name => "ProductSupplier"
+  has_many :items, :class_name => "ProductSupplyOrderItem", :foreign_key => "supply_order_id", dependent: :destroy
 
   validates :supplier_id, :code, :payment, :exchange, :exchange_value, presence: true
 
@@ -22,7 +22,7 @@ class ProductSupplyOrder < ApplicationRecord
   }
 
   def sumPrice
-    @sumPrice = ProductSupplyOrderItem.where('supply_order_id = :value', value: self.id).sum("quantity*price")
+    @sumPrice = ProductSupplyOrderItem.search(self.id, "").sum("quantity*price")
     @sumPrice = @sumPrice*self.exchange_value
     @sumPrice
   end

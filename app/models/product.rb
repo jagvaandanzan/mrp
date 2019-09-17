@@ -1,6 +1,8 @@
 class Product < ApplicationRecord
-  belongs_to :category, :class_name => "ProductCategory", optional: true
-  has_many :product_feature_option_rels, :class_name => "ProductFeatureOptionRel", :foreign_key => "product_id"
+  acts_as_paranoid
+
+  belongs_to :category, -> { with_deleted }, :class_name => "ProductCategory", optional: true
+  has_many :product_feature_option_rels, :class_name => "ProductFeatureOptionRel", :foreign_key => "product_id", dependent: :destroy
   has_many :supply_order_items, :class_name => "ProductSupplyOrderItem", :foreign_key => "product_id"
 
   validates :name, :code, presence: true

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_12_045912) do
+ActiveRecord::Schema.define(version: 2019_09_17_070907) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -71,6 +71,8 @@ ActiveRecord::Schema.define(version: 2019_09_12_045912) do
     t.bigint "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_product_categories_on_deleted_at"
     t.index ["parent_id"], name: "index_product_categories_on_parent_id"
   end
 
@@ -105,6 +107,8 @@ ActiveRecord::Schema.define(version: 2019_09_12_045912) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_product_suppliers_on_deleted_at"
   end
 
   create_table "product_supply_order_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -146,7 +150,9 @@ ActiveRecord::Schema.define(version: 2019_09_12_045912) do
     t.datetime "updated_at", null: false
     t.integer "ptype"
     t.string "main_code"
+    t.datetime "deleted_at"
     t.index ["category_id"], name: "index_products_on_category_id"
+    t.index ["deleted_at"], name: "index_products_on_deleted_at"
   end
 
   create_table "user_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

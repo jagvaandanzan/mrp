@@ -1,6 +1,6 @@
 class ProductSupplyOrderItem < ApplicationRecord
   belongs_to :supply_order, :class_name => "ProductSupplyOrder"
-  belongs_to :product, :class_name => "Product"
+  belongs_to :product, -> { with_deleted }, :class_name => "Product"
 
   validates :supply_order_id, :product_id, :quantity, :price, presence: true
 
