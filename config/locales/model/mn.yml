@@ -43,6 +43,7 @@ mn:
       loc_district: Дүүрэг
       loc_khoroo: Хороо
       product_category: Ангилал
+      product_location: Байршил
       product_supplier: Нийлүүлэгч
       product_feature: Шинж чанар
       product_feature_option: Шинж чанарын утга
@@ -89,6 +90,12 @@ mn:
         parent_id: Эцэг ангилал
         parent: Эцэг ангилал
         children: Дэд ангилал
+      product_location:
+        name: Нэр
+        code: Код
+        parent_id: Эцэг байршил
+        parent: Эцэг байршил
+        children: Дэд байршил
       product_supplier:
         name: Нэр
         code: Код
@@ -124,7 +131,7 @@ mn:
         exchange_value: Ханш
         closed_date: Хаагдсан огноо
         is_closed: Хаагдсан
-        sumPrice: Нийт дүн
+        sumPrice: Нийт дүн (₮)
       product_supply_order_item:
         supply_order_id: Худалдан авалт
         product_id: Бараа
@@ -132,6 +139,12 @@ mn:
         price: Нэгж үнэ
         link: Линк
         shuudan: Шуудан
+        note: Тайлбар
+        sumPrice: Нийт дүн (₮)
+      product_income:
+        code: Код
+        income_date: Огноо
+        supplier_id: Нийлүүлэгч
         note: Тайлбар
         sumPrice: Нийт дүн (₮)
     errors:

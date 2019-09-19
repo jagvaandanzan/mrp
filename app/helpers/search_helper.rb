@@ -20,6 +20,16 @@ module SearchHelper
 
     @headers
   end
+
+  def get_code(obj)
+    code = ""
+    if obj.present?
+      code = (100000+obj.id+1).to_s
+    else
+      code = (100001).to_s
+    end
+    code
+  end
 end
 def get_index(index)
   (index + 1).to_s + ". "
@@ -35,7 +45,8 @@ end
 def get_search_recursive(obj, type)
 
     header_li = content_tag :li do # first header
-      link_to( type=="category" ? "Ангилалууд" : "Байршлууд" , users_product_categorys_path(parent_id: nil))
+      link_to( type=="category" ? "Ангилалууд" : "Байршлууд" ,
+               type=="category" ? users_product_categorys_path(parent_id: nil) : users_product_locations_path(parent_id: nil))
     end
 
     main_ol = content_tag :ol, class: 'breadcrumb' do
@@ -48,7 +59,8 @@ def get_search_recursive(obj, type)
         @headers.reverse().each do |item|
           unless item.nil?
             li = content_tag :li, class: item == @headers.first ? "active" : "" do
-              link_to(item.name, type=="category" ? users_product_categorys_path(parent_id: item.id) : "")
+              link_to(item.name, type=="category" ? users_product_categorys_path(parent_id: item.id)
+                                     : users_product_locations_path(parent_id: item.id) )
             end
             concat li
           end # item is null check

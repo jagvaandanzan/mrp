@@ -9,10 +9,9 @@ class Users::ProductSupplyOrdersController < Users::BaseController
   end
 
   def new
-    lastProduct = ProductSupplyOrder.last
     @product_supply_order = ProductSupplyOrder.new
     @product_supply_order.ordered_date = Time.current
-    @product_supply_order.code = (100000+lastProduct.id+1).to_s
+    @product_supply_order.code = ApplicationController.helpers.get_code(ProductSupplyOrder.last)
   end
 
   def create

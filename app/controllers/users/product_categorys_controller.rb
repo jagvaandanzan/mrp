@@ -15,14 +15,9 @@ class Users::ProductCategorysController < Users::BaseController
   end
 
   def new
-    lastCategory = ProductCategory.last
     @category = ProductCategory.new
-    @category.code = (100000+lastCategory.id+1).to_s
-    if params[:parent_id].nil?
-      @category.parent = nil
-    else
-      @category.parent = ProductCategory.find_by!(id: params[:parent_id])
-    end
+    @category.code = ApplicationController.helpers.get_code(ProductCategory.last)
+    @category.parent = params[:parent_id].present? ? ProductCategory.find_by!(id: params[:parent_id]) : nil
   end
 
   def create
@@ -41,13 +36,11 @@ class Users::ProductCategorysController < Users::BaseController
   end
 
   def update
-    @parent_id = @category.parent_id
     @category.attributes = category_params
     if @category.save
       flash[:success] = t('alert.info_updated')
-      redirect_to action: :index, parent_id: @parent_id
+      redirect_to action: :index, parent_id: @category.parent_id
     else
-      # Rails.logger.info(@category.errors.inspect)
       render 'edit'
     end
   end

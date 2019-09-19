@@ -9,9 +9,8 @@ class Users::ProductsController < Users::BaseController
   end
 
   def new
-    lastProduct = Product.last
     @product = Product.new
-    @product.main_code = (100000+lastProduct.id+1).to_s
+    @product.main_code = ApplicationController.helpers.get_code(Product.last)
   end
 
   def create
