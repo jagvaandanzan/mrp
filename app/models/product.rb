@@ -7,6 +7,8 @@ class Product < ApplicationRecord
 
   validates :name, :code, presence: true
 
+  validates :code, uniqueness: true
+
   enum measure: {sh: 0, kg: 1}
   enum ptype: {zahialga: 0, deej: 1, damjuulah: 2}
 

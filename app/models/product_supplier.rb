@@ -3,7 +3,8 @@ class ProductSupplier < ApplicationRecord
 
   has_many :supply_orders, :class_name => "ProductSupplyOrder", :foreign_key => "supplier_id"
 
-  validates :name, presence: true
+  validates :name, :code, presence: true
+  validates :code, uniqueness: true
 
   scope :order_by_name, -> {
     order(:name)

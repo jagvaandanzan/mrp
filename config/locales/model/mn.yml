@@ -35,6 +35,10 @@ mn:
         jpy: Иен
         gbr: Английн фунт
         mnt: Төгрөг
+    product_income_item:
+      urgent_type:
+        engiin: Энгийн
+        yaaraltai: Яаралтай
   activerecord:
     models:
       admin_user: Админ
@@ -50,6 +54,8 @@ mn:
       product_feature_option_rel: Барааны шинж чанар
       product: Бараа
       product_supply_order: Худалдан авалтын захиалга
+      product_income: Орлого
+      product_income_item: Орлогын бараа
     attributes:
       admin_user:
         email: Имэйл
@@ -147,6 +153,22 @@ mn:
         supplier_id: Нийлүүлэгч
         note: Тайлбар
         sumPrice: Нийт дүн (₮)
+      product_income_item:
+        income_id: Орлого
+        income_code: Орлогын код
+        supply_order_item_id: Захиалгын бараа
+        supply_order_item_code: Захиалгын код
+        exchange: Захиалгын валют
+        quantity: Тоо хэмжээ
+        price: Нэгж үнэ
+        shuudan: Шуудан
+        note: Тайлбар
+        urgent_type: Төрөл
+        location_id: Байршил
+        sumPrice: Нийт дүн (₮)
+        income_feature_rels: Барааны шинж чанар
+      product_income_feature_rel:
+        feature_option_id: Шинж чанар, утга
     errors:
       messages:
         blank: " хоосон байна!"

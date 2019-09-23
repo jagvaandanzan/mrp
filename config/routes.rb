@@ -59,7 +59,12 @@ Rails.application.routes.draw do
     resources :product_supply_order_items, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_locations, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_incomes, only: [:index, :create, :new, :edit, :update, :destroy]
-    # resources :product_income_items, only: [:index, :create, :new, :edit, :update, :destroy]
+    resources :product_income_items, only: [:index, :create, :new, :edit, :update, :destroy] do
+      collection do
+        patch 'get_location_children'
+        patch 'get_supply_order_info'
+      end
+    end
 
     match "*any", to: "base#routing_error", via: :all
   end

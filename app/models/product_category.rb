@@ -6,7 +6,8 @@ class ProductCategory < ApplicationRecord
 
   has_many :products, :class_name => "Product", :foreign_key => "category_id"
 
-  validates :name, presence: true
+  validates :name, :code, presence: true
+  validates :code, uniqueness: true
 
   scope :search, ->(p_id) {
     items = where(parent_id: p_id)

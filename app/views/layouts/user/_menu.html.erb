@@ -14,7 +14,7 @@
           controller_name == 'product_features' || controller_name == 'product_feature_options' ||
           controller_name == 'products' || controller_name == 'product_feature_option_rels' ||
           controller_name == 'product_supply_orders' || controller_name == 'product_supply_order_items' ||
-          controller_name == 'product_locations' || controller_name == 'product_incomes' ||
+          controller_name == 'product_locations' || controller_name == 'product_incomes' || controller_name == 'product_income_items' ||
           controller_name == 'training_surveys' ? 'treeview active' : 'treeview' do %>
         <%= link_to "#" do %>
           <i class="fa fa-cogs"></i><span><%= t('titles.settings') %></span>
@@ -60,7 +60,7 @@
               <i class="fa fa-map-marker"></i><span><%= t('titles.product_supply_orders') %></span>
             <% end %>
           <% end %>
-          <%= content_tag :li, class: (controller_name == 'product_incomes') ? 'active' : '' do %>
+          <%= content_tag :li, class: (controller_name == 'product_incomes' || controller_name == 'product_income_items') ? 'active' : '' do %>
             <%= link_to users_product_incomes_path do %>
               <i class="fa fa-map-marker"></i><span><%= t('titles.product_incomes') %></span>
             <% end %>

@@ -66,10 +66,10 @@
               </tr>
               <% @incomes.each do |p| %>
                 <tr>
-                  <td class="va-mid"><%= p.code  %></td>
-                  <td class="va-mid"><%= p.income_date.strftime('%F %R') %></td>
+                  <td class="va-mid"><%= link_to p.code, users_product_income_items_path(income_id: p.id)  %></td>
+                  <td class="va-mid"><%= link_to p.income_date.strftime('%F %R'), users_product_income_items_path(income_id: p.id) %></td>
                   <td class="va-mid"><%= p.supplier.name %></td>
-                  <td class="va-mid"><%= 0 %></td>
+                  <td class="va-mid"><%= p.sumPrice() %></td>
                   <td class="va-mid"><%= p.note %></td>
                   <td>
                     <div class="btn-group">
