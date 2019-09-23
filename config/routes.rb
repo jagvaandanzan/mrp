@@ -38,6 +38,10 @@ Rails.application.routes.draw do
   namespace :users, path: :user do
     root "loc_districts#index"
 
+    namespace :calc do
+      get 'vrptw'
+    end
+
     resources :locations, only: [:index, :create, :new, :show, :edit, :update, :destroy]
     resources :loc_districts, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :loc_khoroos, only: [:index, :create, :new, :edit, :update, :destroy]
