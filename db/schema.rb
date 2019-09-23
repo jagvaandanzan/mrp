@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_20_030907) do
+ActiveRecord::Schema.define(version: 2019_09_15_041904) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(version: 2019_09_20_030907) do
   end
 
   create_table "locations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "user_id"
     t.bigint "loc_khoroo_id"
     t.text "name"
     t.text "name_la"
@@ -63,142 +64,7 @@ ActiveRecord::Schema.define(version: 2019_09_20_030907) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["loc_khoroo_id"], name: "index_locations_on_loc_khoroo_id"
-  end
-
-  create_table "product_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name"
-    t.string "code"
-    t.bigint "parent_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
-    t.index ["deleted_at"], name: "index_product_categories_on_deleted_at"
-    t.index ["parent_id"], name: "index_product_categories_on_parent_id"
-  end
-
-  create_table "product_feature_option_rels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "product_id"
-    t.bigint "feature_option_id"
-    t.integer "feature_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["feature_option_id"], name: "index_product_feature_option_rels_on_feature_option_id"
-    t.index ["product_id"], name: "index_product_feature_option_rels_on_product_id"
-  end
-
-  create_table "product_feature_options", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name"
-    t.bigint "product_feature_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["product_feature_id"], name: "index_product_feature_options_on_product_feature_id"
-  end
-
-  create_table "product_features", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name"
-    t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "product_income_feature_rels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "income_item_id"
-    t.bigint "feature_option_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["feature_option_id"], name: "index_product_income_feature_rels_on_feature_option_id"
-    t.index ["income_item_id"], name: "index_product_income_feature_rels_on_income_item_id"
-  end
-
-  create_table "product_income_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "income_id"
-    t.bigint "supply_order_item_id"
-    t.float "quantity"
-    t.float "price", limit: 53
-    t.float "shuudan"
-    t.integer "urgent_type"
-    t.string "note", limit: 1000
-    t.bigint "location_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["income_id"], name: "index_product_income_items_on_income_id"
-    t.index ["location_id"], name: "index_product_income_items_on_location_id"
-    t.index ["supply_order_item_id"], name: "index_product_income_items_on_supply_order_item_id"
-  end
-
-  create_table "product_incomes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "code"
-    t.datetime "income_date"
-    t.string "note"
-    t.bigint "supplier_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["supplier_id"], name: "index_product_incomes_on_supplier_id"
-  end
-
-  create_table "product_locations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name"
-    t.string "code"
-    t.bigint "parent_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
-    t.index ["deleted_at"], name: "index_product_locations_on_deleted_at"
-    t.index ["parent_id"], name: "index_product_locations_on_parent_id"
-  end
-
-  create_table "product_suppliers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "code"
-    t.string "name"
-    t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
-    t.index ["deleted_at"], name: "index_product_suppliers_on_deleted_at"
-  end
-
-  create_table "product_supply_order_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "supply_order_id"
-    t.bigint "product_id"
-    t.float "quantity"
-    t.float "price", limit: 53
-    t.string "link", limit: 500
-    t.float "shuudan"
-    t.string "note", limit: 1000
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["product_id"], name: "index_product_supply_order_items_on_product_id"
-    t.index ["supply_order_id"], name: "index_product_supply_order_items_on_supply_order_id"
-  end
-
-  create_table "product_supply_orders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "code"
-    t.datetime "ordered_date"
-    t.bigint "supplier_id"
-    t.integer "payment"
-    t.integer "exchange"
-    t.float "exchange_value"
-    t.datetime "closed_date"
-    t.boolean "is_closed"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["supplier_id"], name: "index_product_supply_orders_on_supplier_id"
-  end
-
-  create_table "products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name"
-    t.string "code"
-    t.string "barcode"
-    t.string "detail"
-    t.integer "measure"
-    t.bigint "category_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "ptype"
-    t.string "main_code"
-    t.datetime "deleted_at"
-    t.index ["category_id"], name: "index_products_on_category_id"
-    t.index ["deleted_at"], name: "index_products_on_deleted_at"
+    t.index ["user_id"], name: "index_locations_on_user_id"
   end
 
   create_table "user_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -244,7 +110,7 @@ ActiveRecord::Schema.define(version: 2019_09_20_030907) do
   add_foreign_key "admin_users", "admin_permissions"
   add_foreign_key "loc_khoroos", "loc_districts"
   add_foreign_key "locations", "loc_khoroos"
-  add_foreign_key "product_feature_options", "product_features"
+  add_foreign_key "locations", "users"
   add_foreign_key "users", "user_permissions"
   add_foreign_key "users", "user_positions"
 end
