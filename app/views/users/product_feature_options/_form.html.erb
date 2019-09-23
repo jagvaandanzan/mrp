@@ -1,0 +1,29 @@
+<div class="content-wrapper">
+
+  <%= render 'layouts/breadcrumbs', data: [
+      [users_product_features_path, t('titles.product_features')],
+      [users_product_feature_options_path(product_feature_id: @option.product_feature.id), @option.product_feature.name],
+      t('activerecord.models.product_feature_option') +t(@option.persisted? ? 'titles.edit' : 'titles.add')] %>
+
+
+  <section class="content">
+    <div class="box box-info">
+      <%= form_with model: @option, url: @option.persisted? ? users_product_feature_option_path : users_product_feature_options_path,
+                    method: @option.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <%= f.hidden_field :product_feature_id %>
+          <div class="form-group">
+            <%= f.label :name, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@option, :name) %>">
+              <%= field_errors(@option, :name) %>
+              <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.product_feature_option.name') %>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>

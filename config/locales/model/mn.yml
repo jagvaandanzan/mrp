@@ -1,4 +1,11 @@
 mn:
+  filters:
+    product_supply_order:
+      by_date: Огноо сонгох
+      by_code: Захиалгын кодоор
+      by_product: Барааны [нэр/код]-р
+      by_payment: Төлбөрийн хэлбэрээр
+      by_close: Хаагдсан
   enums:
     user:
       gender:
@@ -8,6 +15,30 @@ mn:
       list: Администраторууд
       add: Администратор нэмэх
       edit: Администраторийн мэдээлэл засах
+    product:
+      measure:
+        sh: ш
+        kg: кг
+      ptype:
+       zahialga: Захиалгын
+       deej: Дээж бараа
+       damjuulah: Дамжуулан борлуулах
+    product_supply_order:
+      payment:
+        belneer: Бэлнээр
+        zeeleer: Зээлээр
+      exchange:
+        cny: Юань
+        usd: АНУ-ын доллар
+        eur: Евро
+        rub: Рубль
+        jpy: Иен
+        gbr: Английн фунт
+        mnt: Төгрөг
+    product_income_item:
+      urgent_type:
+        engiin: Энгийн
+        yaaraltai: Яаралтай
   activerecord:
     models:
       admin_user: Админ
@@ -15,6 +46,16 @@ mn:
       location: Байршил
       loc_district: Дүүрэг
       loc_khoroo: Хороо
+      product_category: Ангилал
+      product_location: Байршил
+      product_supplier: Нийлүүлэгч
+      product_feature: Шинж чанар
+      product_feature_option: Шинж чанарын утга
+      product_feature_option_rel: Барааны шинж чанар
+      product: Бараа
+      product_supply_order: Худалдан авалтын захиалга
+      product_income: Орлого
+      product_income_item: Орлогын бараа
     attributes:
       admin_user:
         email: Имэйл
@@ -49,6 +90,85 @@ mn:
         loc_district: Дүүрэг
         loc_district_id: Дүүрэг
         name: Нэр
+      product_category:
+        name: Нэр
+        code: Код
+        parent_id: Эцэг ангилал
+        parent: Эцэг ангилал
+        children: Дэд ангилал
+      product_location:
+        name: Нэр
+        code: Код
+        parent_id: Эцэг байршил
+        parent: Эцэг байршил
+        children: Дэд байршил
+      product_supplier:
+        name: Нэр
+        code: Код
+        description: Дэлгэрэнгүй
+      product:
+        name: Нэр
+        code: Гадаад код
+        main_code: Дотоод код
+        barcode: Бар код
+        measure: Хэмжих нэгж
+        ptype: Төрөл
+        detail: Дэлгэрэнгүй
+        category: Ангилал
+        category_id: Ангилал
+        product_feature_option_rels: Барааны шинж чанарууд
+      product_feature_option_rel:
+        product_id: Бараа
+        feature_id: Шинж чанар
+        feature_option_id: Утга
+      product_feature:
+        name: Нэр
+        description: Дэлгэрэнгүй
+      product_feature_option:
+        name: Утга
+        product_feature_id: Шинж чанар
+        product_feature: Шинж чанар
+      product_supply_order:
+        code: Код
+        ordered_date: Огноо
+        supplier_id: Нийлүүлэгч
+        payment: Төл.хэлбэр
+        exchange: Валют
+        exchange_value: Ханш
+        closed_date: Хаагдсан огноо
+        is_closed: Хаагдсан
+        sumPrice: Нийт дүн (₮)
+      product_supply_order_item:
+        supply_order_id: Худалдан авалт
+        product_id: Бараа
+        quantity: Тоо хэмжээ
+        price: Нэгж үнэ
+        link: Линк
+        shuudan: Шуудан
+        note: Тайлбар
+        sumPrice: Нийт дүн (₮)
+      product_income:
+        code: Код
+        income_date: Огноо
+        supplier_id: Нийлүүлэгч
+        note: Тайлбар
+        sumPrice: Нийт дүн (₮)
+      product_income_item:
+        income_id: Орлого
+        income_code: Орлогын код
+        supply_order_item_id: Захиалгын бараа
+        supply_order_item_code: Захиалгын код
+        exchange: Захиалгын валют
+        quantity: Тоо хэмжээ
+        price: Нэгж үнэ
+        shuudan: Шуудан
+        note: Тайлбар
+        urgent_type: Төрөл
+        location_id: Байршил
+        sumPrice: Нийт дүн (₮)
+        income_feature_rels: Барааны шинж чанар
+      product_income_feature_rel:
+        feature_option_id: Шинж чанар, утга
     errors:
       messages:
         blank: " хоосон байна!"

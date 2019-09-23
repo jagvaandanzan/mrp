@@ -1,0 +1,52 @@
+<div class="content-wrapper index">
+  <section class="content-header align-left padding-15 m-b-5">
+    <h1> <%= t('titles.product_features') %> </h1>
+  </section>
+
+  <div class="action-buttons index">
+    <%= form_with url: users_product_features_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+      <%= text_field_tag :feature_name, @search_name, {class: 'form-control search'} %>
+      <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn' %>
+      <%= link_to t('controls.button.create'), new_users_product_feature_path, class: 'btn btn-warning' %>
+    <% end %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <div class="box-body table-responsive no-padding">
+
+            <%= render 'layouts/flash_message' %>
+
+            <table class="table table-hover">
+              <tr>
+                <th class="th-email"><%= t('activerecord.attributes.product_feature.name') %></th>
+                <th class="th-email"><%= t('activerecord.attributes.product_feature.description') %></th>
+                <th class="th-email"></th>
+              </tr>
+              <% @product_features.each do |f| %>
+                <tr>
+                  <td class="va-mid"><%= link_to f.name, users_product_feature_options_path(product_feature_id: f.id) %></td>
+                  <td class="va-mid"><%= link_to f.description, users_product_feature_options_path(product_feature_id: f.id) %></td>
+                  <td>
+                    <div class="btn-group">
+                      <%= link_to edit_users_product_feature_path(f), class: 'no-underline' do %>
+                        <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
+                      <% end %>
+
+                      <%= link_to users_product_feature_path(f), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
+                        <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+        <%= paginate @product_features %>
+      </div>
+    </div>
+  </section>
+</div>

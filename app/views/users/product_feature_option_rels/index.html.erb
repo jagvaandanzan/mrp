@@ -1,0 +1,58 @@
+<div class="content-wrapper index">
+  <%= render 'layouts/breadcrumbs', data: [
+      [users_products_path, t('titles.products')],
+      [users_product_feature_option_rels_path(product_id: @product.id), @product.name], t('titles.product_feature_option_rels')] %>
+  <section class="content-header align-left with-breadcrumbs">
+    <h4> (<%= t('titles.total') %>：<%= @option_rels.total_count %>)</h4>
+  </section>
+
+  <div class="action-buttons col-md-12">
+    <%= form_with url: users_product_feature_option_rels_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+      <%= hidden_field_tag :product_id, @product.id %>
+
+      <div class="col-md-3">
+      <%= f.collection_select :product_feature_id, ProductFeature.search(""), :id, :name,
+                              {:prompt => t('controls.select.none'), :selected => @feature_id},
+                              {class: 'form-control pull-left'} %>
+      </div>
+      <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
+      <%= link_to t('controls.button.create'), new_users_product_feature_option_rel_path(product_id: @product.id), class: 'btn btn-warning pull-right' %>
+    <% end %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <%= render 'layouts/flash_message' %>
+
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-hover">
+              <tr>
+                <th  class="th-email"><%= t('activerecord.attributes.product_feature_option_rel.product_id') %></th>
+                <th  class="th-email"><%= t('activerecord.attributes.product_feature_option_rel.feature_id') %></th>
+                <th  class="th-email"><%= t('activerecord.attributes.product_feature_option_rel.feature_option_id') %></th>
+                <th  class="th-email"></th>
+              </tr>
+              <% @option_rels.each_with_index do |o| %>
+                <tr>
+                  <td class="va-mid underline"><%= o.product.name %></td>
+                  <td class="va-mid underline"><%= o.feature_option.product_feature.name %></td>
+                  <td class="va-mid underline"><%= o.feature_option.name %></td>
+                  <td>
+                    <div class="btn-loc_khoroo">
+                      <%= link_to users_product_feature_option_rel_path(o), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
+                        <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+        <%= paginate @option_rels %>
+      </div>
+    </div>
+  </section>
+</div>

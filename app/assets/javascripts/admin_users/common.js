@@ -11,6 +11,17 @@ $.fn.bootstrapDP.dates['mn'] = {
 };
 $.fn.bootstrapDP.defaults.language = "mn";
 
+// // using date time picker
+// $.fn.datetimepicker.dates['mn'] = {
+//     days: ["Ням", "Даваа", "Мягмар", "Лхагва", "Пүрэв", "Баасан", "Бямба", "Ням"],
+//     daysShort: ["Ням", "Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям", "Ням"],
+//     daysMin: ["Ня", "Да", "Мя", "Лх", "Пү", "Ба", "Бя", "Ня"],
+//     months: ["1-р сар", "2-р сар", "3-р сар", "4-р сар", "5-р сар", "6-р сар", "7-р сар", "8-р сар", "9-р сар", "10-р сар", "11-р сар", "12-р сар"],
+//     monthsShort: ["1сар", "2сар", "3сар", "4сар", "5сар", "6сар", "7сар", "8сар", "9сар", "10сар", "11сар", "12сар"],
+//     today: "Өнөөдөр"
+// };
+// $.fn.datetimepicker.defaults.language = "mn";
+
 function getDecimalPay(numval) {
     numval = numval + "";
     var cde = 1, vv = "";

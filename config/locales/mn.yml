@@ -21,6 +21,7 @@ mn:
       searching: Хайх
       delete_for_checked: Сонгоснуудыг устгах
       save: Хадгалах
+      back: Буцах
     select:
       none: Сонгох
     link:
@@ -43,6 +44,17 @@ mn:
     edit: " засах"
     loc_districts: Дүүргүүд
     loc_khoroos: Хороод
+    product_categorys: Ангилалууд
+    product_locations: Байршлууд
+    product_suppliers: Нийлүүлэгчид
+    product_features: Шинж чанар
+    product_feature_options: Шинж чанарын утгууд
+    products: Бараа
+    product_feature_option_rels: Барааны шинж чанарын утгууд
+    product_supply_orders: Худалдан авалтын захиалга
+    product_supply_order_items: Худалдан авалтын захиалгын бараанууд
+    product_incomes: Орлого
+    product_income_items: Орлогын бараанууд
   models:
     user:
       age: Нас

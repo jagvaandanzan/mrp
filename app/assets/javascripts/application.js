@@ -18,4 +18,8 @@
 //= require moment/min/moment.min.js
 //= require bootstrap-daterangepicker/daterangepicker.js
 //= require bootstrap-datepicker/dist/js/bootstrap-datepicker.js
+//= require bootstrap-datetimepicker
+//= require moment/locale/mn.js
+//= require bootstrap-select/dist/js/bootstrap-select.js
 //= require cocoon
+

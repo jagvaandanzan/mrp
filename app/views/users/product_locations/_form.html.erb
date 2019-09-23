@@ -1,0 +1,45 @@
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1><%= t('activerecord.models.product_location') + t(@location.persisted? ? 'titles.edit' : 'titles.add') %></h1>
+  </section>
+
+  <section class="content">
+    <div class="box box-info">
+      <%= form_with model: @location, url: @location.persisted? ? users_product_location_path : users_product_locations_path, method: @location.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <%= f.hidden_field :parent_id %>
+
+          <% if @location.parent.present? %>
+            <div class="form-group">
+              <%= f.label :parent, class: 'col-sm-3 control-label' %>
+              <div class="col-sm-9">
+                <%= f.text_field :parent, class: 'form-control', value: @location.parent.name, disabled: true %>
+              </div>
+            </div>
+          <% end %>
+
+          <div class="form-group">
+            <%= f.label :name, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@location, :name) %>">
+              <%= field_errors(@location, :name) %>
+              <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.product_location.name') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :code, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@location, :code) %>">
+              <%= field_errors(@location, :code) %>
+              <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product_location.code') %>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+            <%= link_to t('controls.button.back'), users_product_locations_path(parent_id: (@location.parent.present? ? @location.parent.id : nil)), {class: "btn blck-btn"} %>
+          </div>
+
+          <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>
