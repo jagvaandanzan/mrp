@@ -19,6 +19,7 @@
 /storage/*
 !/storage/.keep
 /db/schema.rb
+/db/seeds/development.rb
 
 /node_modules
 /yarn-error.log
