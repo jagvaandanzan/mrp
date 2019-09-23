@@ -18,6 +18,7 @@
 /.idea/*
 /storage/*
 !/storage/.keep
+/db/schema.rb
 
 /node_modules
 /yarn-error.log
