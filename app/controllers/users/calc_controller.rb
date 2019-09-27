@@ -10,8 +10,10 @@ class Users::CalcController < ApplicationController
     array_locations = [527, 2909, 2577, 842, 1885, 1149, 2919, 875, 2347, 31, 2749, 2034]
     location_travels = LocationTravel.search(array_locations).map {|i| [i.location_from_id.to_s + "-" + i.location_to_id.to_s, i]}.to_h
 
-    file_path = "public/routing/case_#{Time.zone.now.to_i}.txt"
-    File.open(file_path, "w")
+    folder_path = "public/routing/"
+    file_temp = "#{Time.zone.now.to_i}"
+    file_name = "#{file_temp}_case.txt"
+    File.open(folder_path + file_name, "w")
 
     array_locations.each {|r_key|
       row_text = ""
@@ -27,11 +29,19 @@ class Users::CalcController < ApplicationController
           end
         end
       }
-      File.open(file_path, "a") do |line|
+      File.open(folder_path + file_name, "a") do |line|
         line.puts row_text.slice(0, row_text.length - 2)
       end
     }
 
+    system "cd " + folder_path + " && python salesman.py " + file_name
+
+    result_path = folder_path + "#{file_temp}_result.txt"
+    until File.exists?(result_path)
+      sleep(2)
+    end
+
+    @route_result = File.read(result_path)
   end
 
   def save_travels(locations)
