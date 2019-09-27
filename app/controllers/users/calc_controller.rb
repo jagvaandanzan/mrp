@@ -34,7 +34,7 @@ class Users::CalcController < ApplicationController
       end
     }
 
-    system "cd " + folder_path + " && python salesman.py " + file_name
+    system "cd " + folder_path + " && python salesman.py " + file_temp
 
     result_path = folder_path + "#{file_temp}_result.txt"
     until File.exists?(result_path)
