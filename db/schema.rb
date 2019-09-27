@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_20_030907) do
+ActiveRecord::Schema.define(version: 2019_09_24_091808) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -52,6 +52,17 @@ ActiveRecord::Schema.define(version: 2019_09_20_030907) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["loc_district_id"], name: "index_loc_khoroos_on_loc_district_id"
+  end
+
+  create_table "location_travels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "location_from_id"
+    t.bigint "location_to_id"
+    t.integer "distance"
+    t.integer "duration"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location_from_id"], name: "index_location_travels_on_location_from_id"
+    t.index ["location_to_id"], name: "index_location_travels_on_location_to_id"
   end
 
   create_table "locations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -245,6 +256,8 @@ ActiveRecord::Schema.define(version: 2019_09_20_030907) do
 
   add_foreign_key "admin_users", "admin_permissions"
   add_foreign_key "loc_khoroos", "loc_districts"
+  add_foreign_key "location_travels", "locations", column: "location_from_id"
+  add_foreign_key "location_travels", "locations", column: "location_to_id"
   add_foreign_key "locations", "loc_khoroos"
   add_foreign_key "locations", "users"
   add_foreign_key "product_feature_options", "product_features"
