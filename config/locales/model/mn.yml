@@ -11,6 +11,10 @@ mn:
       gender:
         male: Эрэгтэй
         female: Эмэгтэй
+    operator:
+      gender:
+        male: Эрэгтэй
+        female: Эмэгтэй
     admin_user:
       list: Администраторууд
       add: Администратор нэмэх
@@ -43,6 +47,7 @@ mn:
     models:
       admin_user: Админ
       user: Хэрэглэгч
+      operator: Оператор
       location: Байршил
       loc_district: Дүүрэг
       loc_khoroo: Хороо
@@ -51,7 +56,7 @@ mn:
       product_supplier: Нийлүүлэгч
       product_feature: Шинж чанар
       product_feature_option: Шинж чанарын утга
-      product_feature_option_rel: Барааны шинж чанар
+      product_feature_rel: Барааны шинж чанар
       product: Бараа
       product_supply_order: Худалдан авалтын захиалга
       product_income: Орлого
@@ -77,6 +82,13 @@ mn:
         user_position_id: Албан тушаал
         user_permission: Хандах эрх
         user_permission_id: Хандах эрх
+        phone: Утас
+      operator:
+        email: Имэйл
+        password: Нууц үг
+        name: Нэр
+        surname: Овог
+        gender: Хүйс
         phone: Утас
       location:
         name: Хаяг
@@ -116,11 +128,20 @@ mn:
         detail: Дэлгэрэнгүй
         category: Ангилал
         category_id: Ангилал
-        product_feature_option_rels: Барааны шинж чанарууд
+        sale_price: Зарах үнэ
+        discount_price: Хямдарсан үнэ
+        product_feature_rels: Барааны шинж чанарууд
+      product_feature_rel:
+        product_id: Бараа
+        product_name: Бараа
+        sale_price: Зарах үнэ
+        discount_price:  Хямдарсан үнэ
+        barcode: Бар код
+        product_feature_option_rels: Шинж чанарын утгууд
       product_feature_option_rel:
         product_id: Бараа
         feature_id: Шинж чанар
-        feature_option_id: Утга
+        feature_option_id: Шинж чанарын утга
       product_feature:
         name: Нэр
         description: Дэлгэрэнгүй
@@ -166,7 +187,7 @@ mn:
         urgent_type: Төрөл
         location_id: Байршил
         sumPrice: Нийт дүн (₮)
-        income_feature_rels: Барааны шинж чанар
+        product_feature_rel_id: Барааны шинж чанар
       product_income_feature_rel:
         feature_option_id: Шинж чанар, утга
     errors:
@@ -176,6 +197,16 @@ mn:
         too_short: " бол %{count}-с дээш тэмдэгт байх ёстой"
       models:
         user:
+          blank: " оруулна уу!"
+          attributes:
+            blank: " оруулна уу!"
+            email:
+              invalid: " буруу байна"
+              taken: " давхцаж байна"
+              blank: " оруулна уу!"
+            password_confirmation:
+              confirmation: " нууц үг баталгаажуулалт таарахгүй байна"
+        operator:
           blank: " оруулна уу!"
           attributes:
             blank: " оруулна уу!"

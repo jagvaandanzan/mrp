@@ -12,6 +12,7 @@ class Users::ProductIncomeItemsController < Users::BaseController
   def new
     @item = ProductIncomeItem.new
     @item.income = ProductIncome.find_by!(id: params[:income_id])
+    @location_arr = ApplicationController.helpers.get_all_location()
   end
 
   def create
@@ -20,14 +21,13 @@ class Users::ProductIncomeItemsController < Users::BaseController
       flash[:success] = t('alert.saved_successfully')
       redirect_to action: :index, income_id: @item.income.id
     else
-      Rails.logger.debug(@item.errors.full_messages)
+      # Rails.logger.debug(@item.errors.full_messages)
       render 'new'
     end
   end
 
   def edit
-    @headers = ApplicationController.helpers.get_category_parents(@item.location)
-    @headers = @headers.reverse()
+    @location_arr = ApplicationController.helpers.get_all_location()
   end
 
   def update
@@ -60,14 +60,22 @@ class Users::ProductIncomeItemsController < Users::BaseController
 
   def get_supply_order_info
     @supply_order_item = nil
+    @features = nil
     if params[:order_item_id].present?
       @supply_order_item =  ProductSupplyOrderItem.find_by!(id: params[:order_item_id])
     end
 
     if @supply_order_item.present?
+      @features = ProductFeatureRel.search(@supply_order_item.product_id)
+      feature_arr = []
+      @features.each do |item|
+        feature_arr.push({id: item.id, name: item.rel_names})
+      end
+
       render json: {order_code: @supply_order_item.supply_order.code,
                     exchange: @supply_order_item.supply_order.exchange_i18n,
-                    exchange_value: @supply_order_item.supply_order.exchange_value}
+                    exchange_value: @supply_order_item.supply_order.exchange_value,
+                    features: feature_arr}
     else
       render json: {}
     end
@@ -80,7 +88,7 @@ class Users::ProductIncomeItemsController < Users::BaseController
   end
 
   def product_income_item_params
-    params.require(:product_income_item).permit(:income_id, :supply_order_item_id, :location_id, :quantity, :price, :shuudan, :note, :urgent_type,
-                                                income_feature_rels_attributes: [:id, :feature_option_id, :_destroy])
+    params.require(:product_income_item).permit(:income_id, :supply_order_item_id, :product_feature_rel_id, :quantity, :price, :shuudan, :note, :urgent_type,
+                                                income_locations_attributes: [:id, :location_id, :quantity, :_destroy])
   end
 end

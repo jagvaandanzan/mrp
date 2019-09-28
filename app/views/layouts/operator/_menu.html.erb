@@ -1,0 +1,12 @@
+﻿<aside class="main-sidebar sidebar_fixed">
+  <section class="sidebar">
+    <ul class="sidebar-menu" data-widget="tree">
+      <%= content_tag :li, class: controller_name == 'product_sales' ? 'active' : 'none' do %>
+        <%= link_to operators_product_sales_path do %>
+          <i class="fa fa-map-marker"></i><span><%= t('titles.product_sales') %></span>
+        <% end %>
+      <% end %>
+
+    </ul>
+  </section>
+</aside>

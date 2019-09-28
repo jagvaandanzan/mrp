@@ -1,0 +1,24 @@
+<tr class="nested-fields">
+  <td>
+    <%= field_errors f.object, :location_id %>
+
+    <%= f.collection_select :location_id, @location_arr, :id, :name,
+                            {:prompt => t('controls.select.none')},
+                            {class: 'form-control selectpicker', "data-live-search": "true", "data-container": ".box-info"}%>
+  </td>
+  <td>
+    <%= f.number_field :quantity, class: 'form-control field', placeholder: t('activerecord.attributes.product_income_item.quantity') %>
+  </td>
+  <td class="remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>
+
+<script>
+    $(document).ready(function() {
+        $('.selectpicker').selectpicker('refresh');
+    })
+
+</script>

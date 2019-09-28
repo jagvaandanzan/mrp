@@ -5,6 +5,9 @@
   .cocoon-nested-form .links a {
     float: left !important;
   }
+    .filter-option-inner-inner{
+      font-size: x-small;
+    }
 </style>
 <div class="content-wrapper">
   <section class="content">
@@ -56,25 +59,12 @@
           </div>
 
           <div class="form-group">
-            <div class="cocoon-nested-form">
-              <%= f.label :income_feature_rels, class: 'col-sm-3 control-label' %>
-              <div class="col-sm-6 <%= get_error_class(@item, :income_feature_rels) %>">
-                <%= field_errors(@item, :income_feature_rels) %>
-                <table class="table table-bordered" id="tb_income_feature_rels">
-                  <tr>
-                    <th ><%= t('activerecord.attributes.product_income_feature_rel.feature_option_id') %></th>
-                    <th width="50px"></th>
-                  </tr>
-                  <%= f.fields_for :income_feature_rels do |m| %>
-                    <%= render 'income_feature_rel_fields', :f => m %>
-                  <% end %>
-                </table>
-              </div>
-              <div class="links col-sm-2 pull-left">
-                <%= link_to_add_association f, :income_feature_rels, data: {association_insertion_node: '#tb_income_feature_rels', association_insertion_method: :append} do %>
-                  <%= nested_add_btn %>
-                <% end %>
-              </div>
+            <%= f.label :product_feature_rel_id, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@item, :product_feature_rel_id) %>">
+              <%= field_errors(@item, :product_feature_rel_id) %>
+              <%= f.collection_select :product_feature_rel_id,  ProductFeatureRel.search_with_nil(@item.persisted? == false ? "" : @item.supply_order_item.product.id), :id, :rel_names,
+                                      {:prompt => t('controls.select.none'), :selected => (@item.persisted? == true && @item.product_feature_rel_id.present?) ? @item.product_feature_rel_id : ""},
+                                      {class: 'form-control selectpicker', "data-live-search": "true", "data-container": ".box-info"} %>
             </div>
           </div>
 
@@ -118,37 +108,28 @@
             </div>
           </div>
 
-          <div class="form-group" >
-            <%= f.label :location_id, class: 'col-sm-3 control-label' %>
-            <%= f.hidden_field :location_id %>
-            <% if @item.persisted? == false || (@item.persisted? && @item.location.nil?) %>
-              <div class="col-sm-6" id="div_product_location">
-                <%= f.collection_select :main_location_id, ProductLocation.search(nil), :id, :name_with_code,
-                                        {:prompt => t('controls.select.none')},
-                                        {class: 'form-control', id:"mainLocId", onchange: 'callLocChildren(this)'} %>
-              </div>
-              <div class="col-sm-2">
-                <button type="button" class="btn blck-btn pull-left" title="clear_loc" onclick="clearLocation()"><i class="fa fa-times"></i></button>
-              </div>
-            <% else %>
-              <div class="col-sm-6" id="div_product_location">
-                <%= f.collection_select :main_location_id, ProductLocation.search(nil), :id, :name_with_code,
-                                        {:prompt => t('controls.select.none'), :selected => @headers.first.id},
-                                        {class: 'form-control', id:"mainLocId", onchange: 'callLocChildren(this)', disabled: "true"} %>
-                <% @headers.each do |h| %>
-                  <% if h != @headers.first %>
-                    <div class="col-sm-12 product-location" style='padding: 0; padding-top: 10px;' >
-                      <select name='sub_location_id' class='form-control' onchange='callLocChildren(this)' disabled="true">
-                        <option value="<%= h.id %>"><%= h.name_with_code %></option>
-                      </select>
-                    </div>
+          <div class="form-group">
+            <div class="cocoon-nested-form">
+              <%= f.label :income_locations, class: 'col-sm-3 control-label' %>
+              <div class="col-sm-8 <%= get_error_class(@item, :income_locations) %>">
+                <%= field_errors(@item, :income_locations) %>
+                <table class="table table-bordered" id="tb_income_locations">
+                  <tr>
+                    <th ><%= t('activerecord.attributes.product_income_item.location_id') %></th>
+                    <th ><%= t('activerecord.attributes.product_income_item.quantity') %></th>
+                    <th width="50px"></th>
+                  </tr>
+                  <%= f.fields_for :income_locations do |m| %>
+                    <%= render 'income_location_fields', :f => m %>
                   <% end %>
+                </table>
+              </div>
+              <div class="links col-sm-1 pull-left">
+                <%= link_to_add_association f, :income_locations, data: {association_insertion_node: '#tb_income_locations', association_insertion_method: :append} do %>
+                  <%= nested_add_btn %>
                 <% end %>
               </div>
-              <div class="col-sm-2">
-                <button type="button" class="btn blck-btn pull-left" title="clear_loc" onclick="clearLocation()"><i class="fa fa-times"></i></button>
-              </div>
-            <% end %>
+            </div>
           </div>
 
           <div class="action-buttons">
@@ -181,7 +162,15 @@
                         $("#product_income_item_supply_order_item_code").val(data.order_code);
                         $("#product_income_item_exchange").val(data.exchange);
                         $("#product_income_item_exchange_value").val(data.exchange_value);
-                        // product_income_item_exchange_value
+
+                        var features = data.features;
+                        var feature_select = "";
+                        for (var i = 0; i < features.length; i++) {
+                            feature_select += '<option value="' + features[i]["id"] + '">' + features[i]["name"] + '</option>';
+                        }
+                        $("#product_income_item_product_feature_rel_id").html("");
+                        $("#product_income_item_product_feature_rel_id").html("<option>Сонгох</option>" + feature_select);
+                        $("#product_income_item_product_feature_rel_id").selectpicker('refresh');
                     }
                 },
                 error: function (data) {

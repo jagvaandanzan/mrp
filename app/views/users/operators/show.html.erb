@@ -1,0 +1,40 @@
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('titles.operator_show') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <%= link_to t('titles.operator_sign_in'), operator_sign_in_users_operator_path(@operator), target: '_blank', class: 'btn btn-primary' %>
+    <%= link_to t('controls.button.edit'), edit_users_operator_path(@operator), class: 'btn btn-info' %>
+    <%= link_to t('controls.button.delete'), users_operator_path(@operator), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <%= link_to t('titles.back_to_list'), users_operators_path(page: cookies[:operator_page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body table-responsive no-padding">
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.operator.surname') %> :</div>
+          <div class="col-data"><%= @operator.surname %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.operator.name') %> :</div>
+          <div class="col-data"><%= @operator.name %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.operator.gender') %> :</div>
+          <div class="col-data"><%= @operator.gender_i18n %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.operator.email') %> :</div>
+          <div class="col-data"><%= @operator.email %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.operator.phone') %> :</div>
+          <div class="col-data"><%= @operator.phone.presence || :'---' %></div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

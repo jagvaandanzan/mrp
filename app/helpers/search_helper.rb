@@ -30,6 +30,12 @@ module SearchHelper
     end
     code
   end
+
+  def get_all_location
+    @loc_arr = []
+    get_location_children_recursive(nil, ProductLocation.search(nil))
+    @loc_arr
+  end
 end
 def get_index(index)
   (index + 1).to_s + ". "
@@ -97,6 +103,20 @@ def get_name_recursive(obj)
   end # main div end
 end
 
+def get_location_children_recursive(parent_name, locations)
+  if locations.present?
+    locations.each do |loc|
+      n = (parent_name.present? ? parent_name + " >> " : "") + loc.name_with_code
+      loc.name = n
+
+      # @loc_arr.push({id: loc.id, name: n})
+      @loc_arr.push(loc)
+      if loc.children.present?
+        get_location_children_recursive(n, loc.children)
+      end
+    end
+  end
+end
 # def get_supply_order_sum_price (obj)
 #   @items = ProductSupplyOrderItem.search(obj.id)
 #

@@ -32,10 +32,10 @@
               </tr>
               <% @products.each do |p| %>
                 <tr>
-                  <td class="va-mid"><%= link_to p.name, users_product_feature_option_rels_path(product_id: p.id) %></td>
-                  <td class="va-mid"><%= link_to p.code, users_product_feature_option_rels_path(product_id: p.id) %></td>
-                  <td class="va-mid"><%= link_to p.main_code, users_product_feature_option_rels_path(product_id: p.id) %></td>
-                  <td class="va-mid"><%= link_to p.barcode, users_product_feature_option_rels_path(product_id: p.id) %></td>
+                  <td class="va-mid"><%= link_to p.name, users_product_feature_rels_path(product_id: p.id) %></td>
+                  <td class="va-mid"><%= link_to p.code, users_product_feature_rels_path(product_id: p.id) %></td>
+                  <td class="va-mid"><%= link_to p.main_code, users_product_feature_rels_path(product_id: p.id) %></td>
+                  <td class="va-mid"><%= link_to p.barcode, users_product_feature_rels_path(product_id: p.id) %></td>
                   <td class="va-mid"><%= p.measure_i18n %></td>
                   <td class="va-mid"><%= p.ptype_i18n %></td>
                   <td class="va-mid"><%= get_name_recursive(p.category)  %></td>

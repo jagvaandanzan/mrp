@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_20_030907) do
+ActiveRecord::Schema.define(version: 2019_09_25_092126) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -65,6 +65,29 @@ ActiveRecord::Schema.define(version: 2019_09_20_030907) do
     t.index ["loc_khoroo_id"], name: "index_locations_on_loc_khoroo_id"
   end
 
+  create_table "operators", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "surname"
+    t.string "name"
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "phone"
+    t.integer "gender"
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.boolean "password_is_reset"
+    t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_operators_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_operators_on_reset_password_token", unique: true
+  end
+
   create_table "product_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.string "code"
@@ -77,13 +100,13 @@ ActiveRecord::Schema.define(version: 2019_09_20_030907) do
   end
 
   create_table "product_feature_option_rels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "product_id"
     t.bigint "feature_option_id"
     t.integer "feature_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "product_feature_rel_id"
     t.index ["feature_option_id"], name: "index_product_feature_option_rels_on_feature_option_id"
-    t.index ["product_id"], name: "index_product_feature_option_rels_on_product_id"
+    t.index ["product_feature_rel_id"], name: "index_product_feature_option_rels_on_product_feature_rel_id"
   end
 
   create_table "product_feature_options", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -92,6 +115,16 @@ ActiveRecord::Schema.define(version: 2019_09_20_030907) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["product_feature_id"], name: "index_product_feature_options_on_product_feature_id"
+  end
+
+  create_table "product_feature_rels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "product_id"
+    t.float "sale_price"
+    t.float "discount_price", limit: 53
+    t.string "barcode", limit: 53
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_product_feature_rels_on_product_id"
   end
 
   create_table "product_features", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -103,11 +136,11 @@ ActiveRecord::Schema.define(version: 2019_09_20_030907) do
 
   create_table "product_income_feature_rels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "income_item_id"
-    t.bigint "feature_option_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["feature_option_id"], name: "index_product_income_feature_rels_on_feature_option_id"
+    t.bigint "product_feature_rel_id"
     t.index ["income_item_id"], name: "index_product_income_feature_rels_on_income_item_id"
+    t.index ["product_feature_rel_id"], name: "index_product_income_feature_rels_on_product_feature_rel_id"
   end
 
   create_table "product_income_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -118,12 +151,22 @@ ActiveRecord::Schema.define(version: 2019_09_20_030907) do
     t.float "shuudan"
     t.integer "urgent_type"
     t.string "note", limit: 1000
-    t.bigint "location_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "product_feature_rel_id"
     t.index ["income_id"], name: "index_product_income_items_on_income_id"
-    t.index ["location_id"], name: "index_product_income_items_on_location_id"
+    t.index ["product_feature_rel_id"], name: "index_product_income_items_on_product_feature_rel_id"
     t.index ["supply_order_item_id"], name: "index_product_income_items_on_supply_order_item_id"
+  end
+
+  create_table "product_income_locations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "income_item_id"
+    t.bigint "location_id"
+    t.float "quantity", limit: 53
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["income_item_id"], name: "index_product_income_locations_on_income_item_id"
+    t.index ["location_id"], name: "index_product_income_locations_on_location_id"
   end
 
   create_table "product_incomes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -197,6 +240,8 @@ ActiveRecord::Schema.define(version: 2019_09_20_030907) do
     t.integer "ptype"
     t.string "main_code"
     t.datetime "deleted_at"
+    t.float "sale_price", limit: 53
+    t.float "discount_price", limit: 53
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["deleted_at"], name: "index_products_on_deleted_at"
   end

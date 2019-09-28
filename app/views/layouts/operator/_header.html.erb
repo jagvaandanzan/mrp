@@ -1,0 +1,24 @@
+﻿<header class="main-header header_fixed">
+  <a href="/operator" class="logo">
+    <span class="logo-mini"><%= t('app_short_name')%></span>
+    <span class="logo-lg"><%= t('app_name')%></span>
+  </a>
+
+  <nav class="navbar navbar-static-top" role="navigation">
+    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+      <span class="sr-only">Toggle navigation</span>
+    </a>
+    <div class="navbar-custom-menu">
+      <ul class="nav navbar-nav">
+        <li class="dropdown user user-menu">
+          <%= link_to '#', class: 'admin-email-link' do %>
+            <span class="hidden-xs"><%= t('activerecord.models.operator') %>： <%= current_operator.name %></span>
+          <% end %>
+          <%= link_to destroy_operator_session_path, method: :delete, class: 'sign-out-link' do %>
+            <i class="fa fa-sign-out"></i>
+          <% end %>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>

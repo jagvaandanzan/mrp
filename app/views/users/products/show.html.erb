@@ -30,6 +30,14 @@
           <div class="col-data"><%= @product.barcode %></div>
         </div>
         <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.product.sale_price') %> :</div>
+          <div class="col-data"><%= @product.sale_price %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.product.discount_price') %> :</div>
+          <div class="col-data"><%= @product.discount_price %></div>
+        </div>
+        <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.product.measure') %> :</div>
           <div class="col-data"><%= @product.measure_i18n %></div>
         </div>

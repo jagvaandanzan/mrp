@@ -12,9 +12,10 @@
           controller_name == 'trainings' || controller_name == 'productivities' ||
           controller_name == 'product_categorys' || controller_name == 'product_suppliers' ||
           controller_name == 'product_features' || controller_name == 'product_feature_options' ||
-          controller_name == 'products' || controller_name == 'product_feature_option_rels' ||
+          controller_name == 'products' || controller_name == 'product_feature_rels' ||
           controller_name == 'product_supply_orders' || controller_name == 'product_supply_order_items' ||
           controller_name == 'product_locations' || controller_name == 'product_incomes' || controller_name == 'product_income_items' ||
+          controller_name == 'operators' ||
           controller_name == 'training_surveys' ? 'treeview active' : 'treeview' do %>
         <%= link_to "#" do %>
           <i class="fa fa-cogs"></i><span><%= t('titles.settings') %></span>
@@ -24,6 +25,12 @@
         <% end %>
 
         <%= content_tag :ul, class: 'treeview-menu' do %>
+
+          <%= content_tag :li, class: (controller_name == 'operators') ? 'active' : '' do %>
+            <%= link_to users_operators_path do %>
+              <i class="fa fa-map-marker"></i><span><%= t('titles.operators') %></span>
+            <% end %>
+          <% end %>
 
           <%= content_tag :li, class: (controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations') ? 'active' : '' do %>
             <%= link_to users_loc_districts_path do %>
@@ -50,7 +57,7 @@
               <i class="fa fa-map-marker"></i><span><%= t('titles.product_features') %></span>
             <% end %>
           <% end %>
-          <%= content_tag :li, class: (controller_name == 'products'  || controller_name == 'product_feature_option_rels') ? 'active' : '' do %>
+          <%= content_tag :li, class: (controller_name == 'products'  || controller_name == 'product_feature_rels') ? 'active' : '' do %>
             <%= link_to users_products_path do %>
               <i class="fa fa-map-marker"></i><span><%= t('titles.products') %></span>
             <% end %>
