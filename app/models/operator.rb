@@ -9,6 +9,11 @@ class Operator < ApplicationRecord
   before_validation :generate_password, on: :create
   after_validation :remove_unnecessary_error_messages
 
+  has_many :created_product_sales, :class_name => "ProductSale", :foreign_key => "created_operator_id"
+  has_many :approved_product_sales, :class_name => "ProductSale", :foreign_key => "approved_operator_id"
+  has_many :product_sale_status_logs, :class_name => "ProductSaleStatusLog", :foreign_key => "operator_id"
+
+
   enum gender: {male: 0, female: 1}
 
   validates :surname, :name, :phone, presence: true, length: {maximum: 255}

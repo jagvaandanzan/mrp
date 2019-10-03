@@ -86,7 +86,12 @@ Rails.application.routes.draw do
   namespace :operators, path: :operator do
     root 'product_sales#index'
 
-    resources :product_sales, only: [:index, :create, :new, :edit, :update]
+    resources :product_sales, only: [:index, :create, :new, :show, :edit, :update] do
+      collection do
+        patch 'get_sub_status'
+        patch 'get_product_features'
+      end
+    end
 
     match "*any", to: "base#routing_error", via: :all
   end

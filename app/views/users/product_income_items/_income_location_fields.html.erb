@@ -2,7 +2,7 @@
   <td>
     <%= field_errors f.object, :location_id %>
 
-    <%= f.collection_select :location_id, @location_arr, :id, :name,
+    <%= f.collection_select :location_id, get_all_location(), :id, :name,
                             {:prompt => t('controls.select.none')},
                             {class: 'form-control selectpicker', "data-live-search": "true", "data-container": ".box-info"}%>
   </td>

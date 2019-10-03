@@ -1,0 +1,200 @@
+<style>
+  .group_div{
+    background: #f5f5f5;
+    border: 1px solid lightgray;
+    padding: 10px;
+  }
+
+  .field_div{
+    padding: 5px;
+  }
+
+  .control-label{
+    font-size: small;
+  }
+
+  table{
+    background: white;
+    font-size: small;
+  }
+
+  table td{
+    padding:5px;
+    font-size: smaller;
+  }
+
+  table th{
+    padding: 7px;
+  }
+</style>
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('activerecord.models.product') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <%= link_to t('controls.button.edit'), edit_operators_product_sale_path(@product_sale), class: 'btn btn-info' %>
+    <%#= link_to t('controls.button.delete'), users_product_path(@product_sale), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <%= link_to t('titles.back_to_list'), operators_product_sales_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+<!--      <div class="box-body table-responsive no-padding">-->
+      <div class="box-body">
+
+        <div class="col-md-12 group_div">
+          <div class="col-md-12 field_div">
+            <b>Ерөнхий мэдээлэл</b>
+          </div>
+
+          <div style="clear: both"></div>
+          <div class="col-md-4 field_div">
+            <div class="div_input">
+              <b><%= t('activerecord.attributes.product_sale.code')%>:</b> <%= @product_sale.code %>
+            </div>
+          </div>
+          <div class="col-md-4 field_div">
+            <div class="div_input">
+              <b><%= t('activerecord.attributes.product_sale.sale_date')%>:</b> <%= @product_sale.sale_date.strftime('%F %R') %>
+            </div>
+          </div>
+          <div class="col-md-4 field_div">
+            <div class="div_input">
+              <b><%= t('activerecord.attributes.product_sale.phone')%>:</b> <%= @product_sale.phone %>
+            </div>
+          </div>
+          <div style="clear: both"></div>
+          <div class="col-md-4 field_div">
+            <div class="div_input">
+              <b><%= t('activerecord.attributes.product_sale.location_id')%>:</b> <%= @product_sale.location_id %>
+            </div>
+          </div>
+          <div class="col-md-4 field_div">
+            <div class="div_input">
+              <b><%= t('activerecord.attributes.product_sale.loc_note')%>:</b> <%= @product_sale.loc_note %>
+            </div>
+          </div>
+          <div class="col-md-4 field_div">
+            <div class="div_input">
+              <b><%= t('activerecord.attributes.product_sale.building_code')%>:</b> <%= @product_sale.building_code %>
+            </div>
+          </div>
+          <div style="clear: both"></div>
+          <div class="col-md-4 field_div">
+            <div class="div_input">
+              <b><%= t('activerecord.attributes.product_sale.created_operator_id')%>:</b> <%= @product_sale.created_operator.operator_name %>
+            </div>
+          </div>
+          <% if @product_sale.approved_operator.present? %>
+          <div class="col-md-4 field_div">
+            <div class="div_input">
+              <b><%= t('activerecord.attributes.product_sale.approved_operator_id')%>:</b> <%= @product_sale.approved_operator.operator_name  %>
+            </div>
+          </div>
+          <div class="col-md-4 field_div">
+            <div class="div_input">
+              <b><%= t('activerecord.attributes.product_sale.approved_date')%>:</b> <%= @product_sale.approved_date.strftime('%F %R') %>
+            </div>
+          </div>
+          <% end %>
+          <div style="clear: both"></div>
+          <div class="col-md-4 field_div">
+            <div class="div_input">
+              <b><%= t('activerecord.attributes.product_sale.status_id')%>:</b> <%= @product_sale.status.present? ? @product_sale.status.name_with_parent: ""  %>
+            </div>
+          </div>
+          <div class="col-md-4 field_div">
+            <div class="div_input">
+              <b><%= t('activerecord.attributes.product_sale.status_note')%>:</b> <%= @product_sale.status_note %>
+            </div>
+          </div>
+        </div>
+
+        <% if @product_sale.product_sale_items.present? && @product_sale.product_sale_items.size()>0 %>
+          <div class="col-md-12 group_div m-t-20">
+            <div class="col-md-12 field_div">
+              <b><%= t('activerecord.attributes.product_sale.product_sale_items') %>></b>
+            </div>
+
+            <div style="clear: both"></div>
+            <div class="col-md-4 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_sale.sumPrice')%>:</b> <%= @product_sale.sumPrice %>
+              </div>
+            </div>
+            <div class="col-md-4 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_sale.payment_account')%>:</b> <%= @product_sale.payment_account %>
+              </div>
+            </div>
+            <div class="col-md-4 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_sale.payment_delivery')%>:</b> <%= @product_sale.payment_delivery %>
+              </div>
+            </div>
+
+            <div style="clear: both"></div>
+            <div class="col-md-12 field_div">
+              <table style="background: white;" class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th ><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
+                    <th ><%= t('activerecord.attributes.product_sale_item.product_feature_rel_id') %></th>
+                    <th ><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
+                    <th ><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                    <th ><%= t('activerecord.attributes.product_sale_item.sumPrice') %></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @product_sale.product_sale_items.each do |p| %>
+                    <tr>
+                      <td class="va-mid"><%= p.product.name_with_code  %></td>
+                      <td class="va-mid"><%= p.product_feature_rel.rel_names  %></td>
+                      <td class="va-mid"><%= p.quantity %></td>
+                      <td class="va-mid"><%= p.price %></td>
+                      <td class="va-mid"><%= p.sumPrice %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        <% end %>
+
+
+        <% if @product_sale.product_sale_status_logs.present? && @product_sale.product_sale_status_logs.size()>0 %>
+          <div class="col-md-12 group_div m-t-20">
+            <div class="col-md-12 field_div">
+              <b><%= t('activerecord.attributes.product_sale.product_sale_status_logs') %>></b>
+            </div>
+            <div style="clear: both"></div>
+            <div class="col-md-12 field_div">
+              <table class="table table-bordered" style="background: white;">
+                <thead>
+                  <tr>
+                    <th ><%= t('activerecord.attributes.product_sale_status_log.created_at') %></th>
+                    <th ><%= t('activerecord.attributes.product_sale_status_log.operator_id') %></th>
+                    <th ><%= t('activerecord.attributes.product_sale_status_log.status_id') %></th>
+                    <th ><%= t('activerecord.attributes.product_sale_status_log.note') %></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @product_sale.product_sale_status_logs.each do |p| %>
+                    <tr>
+                      <td class="va-mid"><%= p.created_at.strftime('%F %R')  %></td>
+                      <td class="va-mid"><%= p.operator.operator_name  %></td>
+                      <td class="va-mid"><%= p.status.present? ? p.status.name_with_parent : "Сонгоогүй" %></td>
+                      <td class="va-mid"><%= p.note %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        <% end %>
+
+      </div>
+    </div>
+  <% end %>
+</div>

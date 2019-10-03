@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_25_092126) do
+ActiveRecord::Schema.define(version: 2019_09_30_073706) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -188,6 +188,76 @@ ActiveRecord::Schema.define(version: 2019_09_25_092126) do
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_product_locations_on_deleted_at"
     t.index ["parent_id"], name: "index_product_locations_on_parent_id"
+  end
+
+  create_table "product_sale_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "product_sale_id"
+    t.bigint "product_id"
+    t.bigint "product_feature_rel_id"
+    t.float "quantity"
+    t.float "price"
+    t.float "bonus"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_feature_rel_id"], name: "index_product_sale_items_on_product_feature_rel_id"
+    t.index ["product_id"], name: "index_product_sale_items_on_product_id"
+    t.index ["product_sale_id"], name: "index_product_sale_items_on_product_sale_id"
+  end
+
+  create_table "product_sale_status_logs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "product_sale_id"
+    t.bigint "operator_id"
+    t.bigint "status_id"
+    t.string "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["operator_id"], name: "index_product_sale_status_logs_on_operator_id"
+    t.index ["product_sale_id"], name: "index_product_sale_status_logs_on_product_sale_id"
+    t.index ["status_id"], name: "index_product_sale_status_logs_on_status_id"
+  end
+
+  create_table "product_sale_status_pers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "user_type"
+    t.bigint "status_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status_id"], name: "index_product_sale_status_pers_on_status_id"
+  end
+
+  create_table "product_sale_statuses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.string "alias"
+    t.bigint "parent_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.string "note"
+    t.integer "queue"
+    t.index ["deleted_at"], name: "index_product_sale_statuses_on_deleted_at"
+    t.index ["parent_id"], name: "index_product_sale_statuses_on_parent_id"
+  end
+
+  create_table "product_sales", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "code"
+    t.datetime "sale_date"
+    t.integer "phone"
+    t.bigint "location_id"
+    t.string "building_code"
+    t.string "loc_note"
+    t.datetime "delivery_date"
+    t.float "payment_delivery", limit: 53
+    t.float "payment_account", limit: 53
+    t.bigint "status_id"
+    t.string "status_note"
+    t.bigint "created_operator_id"
+    t.bigint "approved_operator_id"
+    t.datetime "approved_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["approved_operator_id"], name: "index_product_sales_on_approved_operator_id"
+    t.index ["created_operator_id"], name: "index_product_sales_on_created_operator_id"
+    t.index ["location_id"], name: "index_product_sales_on_location_id"
+    t.index ["status_id"], name: "index_product_sales_on_status_id"
   end
 
   create_table "product_suppliers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -21,7 +21,7 @@ class Users::ProductIncomeItemsController < Users::BaseController
       flash[:success] = t('alert.saved_successfully')
       redirect_to action: :index, income_id: @item.income.id
     else
-      # Rails.logger.debug(@item.errors.full_messages)
+      Rails.logger.debug(@item.errors.full_messages)
       render 'new'
     end
   end
