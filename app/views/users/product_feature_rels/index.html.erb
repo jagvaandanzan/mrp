@@ -1,0 +1,56 @@
+<div class="content-wrapper index">
+  <%= render 'layouts/breadcrumbs', data: [
+      [users_products_path, t('titles.products')],
+      [users_product_feature_rels_path(product_id: @product.id), @product.name], t('titles.product_feature_rels')] %>
+  <section class="content-header align-left with-breadcrumbs">
+    <h4> (<%= t('titles.total') %>：<%= @product_feature_rels.total_count %>)</h4>
+  </section>
+
+  <div class="action-buttons index">
+      <%= link_to t('controls.button.create'), new_users_product_feature_rel_path(product_id: @product.id), class: 'btn btn-warning pull-right' %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <%= render 'layouts/flash_message' %>
+
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-hover">
+              <tr>
+                <th ><%= t('activerecord.attributes.product_feature_rel.product_id') %></th>
+                <th ><%= t('activerecord.attributes.product_feature_rel.barcode') %></th>
+                <th ><%= t('activerecord.attributes.product_feature_rel.sale_price') %></th>
+                <th ><%= t('activerecord.attributes.product_feature_rel.discount_price') %></th>
+                <th ><%= t('activerecord.attributes.product_feature_rel.product_feature_option_rels') %></th>
+                <th ></th>
+              </tr>
+              <% @product_feature_rels.each_with_index do |o| %>
+                <tr>
+                  <td class="va-mid underline"><%= o.product.name %></td>
+                  <td class="va-mid underline"><%= o.barcode %></td>
+                  <td class="va-mid underline"><%= o.sale_price %></td>
+                  <td class="va-mid underline"><%= o.discount_price %></td>
+                  <td class="va-mid underline"><%= o.rel_names %></td>
+                  <td>
+                    <div class="btn-loc_khoroo">
+                      <%= link_to edit_users_product_feature_rel_path(o), class: 'no-underline' do %>
+                        <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info m-r-10" %>
+                      <% end %>
+
+                      <%= link_to users_product_feature_rel_path(o), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
+                        <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+        <%= paginate @product_feature_rels %>
+      </div>
+    </div>
+  </section>
+</div>

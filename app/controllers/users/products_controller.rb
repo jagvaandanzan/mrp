@@ -67,6 +67,6 @@ class Users::ProductsController < Users::BaseController
 
   def product_params
     # params.require(:product_supplier).permit(:code, :name, :description)
-    params.require(:product).permit(:name, :code, :main_code, :barcode, :detail, :measure, :ptype, :category_id)
+    params.require(:product).permit(:name, :code, :main_code, :barcode, :sale_price, :discount_price, :detail, :measure, :ptype, :category_id)
   end
 end

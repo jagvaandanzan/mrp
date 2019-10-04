@@ -1,12 +1,12 @@
 class ProductIncomeItem < ApplicationRecord
   belongs_to :income, :class_name => "ProductIncome"
   belongs_to :supply_order_item, :class_name => "ProductSupplyOrderItem"
-  belongs_to :location, -> { with_deleted }, :class_name => "ProductLocation", optional: true
-  has_many :income_feature_rels, :class_name => "ProductIncomeFeatureRel", :foreign_key => "income_item_id", dependent: :destroy
+  belongs_to :product_feature_rel, :class_name => "ProductFeatureRel", optional: true
+  has_many :income_locations, :class_name => "ProductIncomeLocation", :foreign_key => "income_item_id", dependent: :destroy
 
   validates :income_id, :supply_order_item_id, :urgent_type, :quantity, :price, presence: true
 
-  accepts_nested_attributes_for :income_feature_rels, allow_destroy: true
+  accepts_nested_attributes_for :income_locations, allow_destroy: true
 
   enum urgent_type: {engiin: 0, yaaraltai: 1}
 

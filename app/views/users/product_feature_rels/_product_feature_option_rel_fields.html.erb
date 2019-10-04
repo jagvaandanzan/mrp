@@ -7,8 +7,6 @@
                                     :id, :name,
                                     {:prompt => t('controls.select.none')},
                                     {class: 'form-control selectpicker', "data-live-search": "true", "data-container": ".box-info" } %>
-
-    <%#= f.number_field :feature_option_id, class: 'field', placeholder: t('activerecord.attributes.product_income_feature_rel.feature_option_id') %>
   </td>
   <td class="remove">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>

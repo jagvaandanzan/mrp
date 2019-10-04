@@ -12,7 +12,8 @@
   <body class="hold-transition login-page">
     <div class="login-box">
       <div class="login-logo">
-        <%= t('app_name')%> <%= controller_path =~ /^admin/ ? t('activerecord.models.admin_user') : t('activerecord.models.user') %>
+        <%= t('app_name')%> <%= controller_path =~ /^admin/ ? t('activerecord.models.admin_user') :
+                                    (controller_path =~ /^operator/ ? t('activerecord.models.operator') : t('activerecord.models.user')) %>
       </div>
       <%= yield %>
     </div>

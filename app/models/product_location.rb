@@ -4,6 +4,7 @@ class ProductLocation < ApplicationRecord
   has_many :children, :class_name => "ProductLocation", :foreign_key => "parent_id"
   belongs_to :parent, -> { with_deleted }, :class_name => "ProductLocation", optional: true
   has_many :income_items, :class_name => "ProductIncomeItem", :foreign_key => "location_id"
+  has_many :income_locations, :class_name => "ProductIncomeLocation", :foreign_key => "location_id"
 
   validates :name, :code, presence: true
   validates :code, uniqueness: true
@@ -19,7 +20,18 @@ class ProductLocation < ApplicationRecord
     items.order(:name)
   }
 
+
+  scope :search_all, ->() {
+    # items = where(parent_id: p_id)
+    items.order(:name)
+  }
+
   def name_with_code
     "#{self.code} - #{self.name}"
   end
+
+
+  # def name_with_parent
+  #   ""
+  # end
 end

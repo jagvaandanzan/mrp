@@ -1,0 +1,88 @@
+<style>
+  /*.links a{*/
+  /*  float:left;*/
+  /*}*/
+  .cocoon-nested-form .links a {
+    float: left !important;
+  }
+</style>
+<div class="content-wrapper">
+  <%= render 'layouts/breadcrumbs', data: [
+      [users_products_path, t('titles.products')],
+      [users_product_feature_rels_path(product_id: @product_feature_rel.product.id), @product_feature_rel.product.name],
+      t('activerecord.models.product_feature_rel') + t(@product_feature_rel.persisted? ? 'titles.edit' : 'titles.add')
+  ] %>
+
+  <section class="content">
+    <div class="box box-info">
+      <%= form_with model: @product_feature_rel, url: @product_feature_rel.persisted? ? users_product_feature_rel_path : users_product_feature_rels_path,
+                    method: @product_feature_rel.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <%= f.hidden_field :product_id, value: @product_feature_rel.product.id %>
+
+          <div class="form-group">
+            <%= f.label :product_name, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6">
+              <%= f.text_field :product_name, class: 'form-control', value: @product_feature_rel.product.name, disabled: true %>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :barcode, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@product_feature_rel, :barcode) %>">
+              <%= field_errors(@product_feature_rel, :barcode) %>
+              <%= f.text_field :barcode, class: 'form-control', placeholder: t('activerecord.attributes.product_feature_rel.barcode') %>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :sale_price, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@product_feature_rel, :sale_price) %>">
+              <%= field_errors(@product_feature_rel, :sale_price) %>
+              <%= f.number_field :sale_price, class: 'form-control', min:0, step: 0.01, placeholder: t('activerecord.attributes.product_feature_rel.sale_price')  %>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :discount_price, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@product_feature_rel, :discount_price) %>">
+              <%= field_errors(@product_feature_rel, :discount_price) %>
+              <%= f.number_field :discount_price, class: 'form-control', min:0, step: 0.01, placeholder: t('activerecord.attributes.product_feature_rel.discount_price')  %>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="cocoon-nested-form">
+              <%= f.label :product_feature_option_rels, class: 'col-sm-3 control-label' %>
+              <div class="col-sm-6 <%= get_error_class(@product_feature_rel, :product_feature_option_rels) %>">
+                <%= field_errors(@product_feature_rel, :product_feature_option_rels) %>
+                <table class="table table-bordered" id="tb_product_feature_option_rels">
+                  <tr>
+                    <th ><%= t('activerecord.attributes.product_feature_rel.product_feature_option_rels') %></th>
+                    <th width="50px"></th>
+                  </tr>
+                  <%= f.fields_for :product_feature_option_rels do |m| %>
+                    <%= render 'product_feature_option_rel_fields', :f => m %>
+                  <% end %>
+                </table>
+              </div>
+              <div class="links col-sm-2 pull-left">
+                <%= link_to_add_association f, :product_feature_option_rels, data: {association_insertion_node: '#tb_product_feature_option_rels', association_insertion_method: :append} do %>
+                  <%= nested_add_btn %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>
+
+<script>
+</script>

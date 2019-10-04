@@ -1,0 +1,29 @@
+<div class="login-box-body">
+  <p class="login-box-msg"><%= t('titles.reset_password') %></p>
+
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+    <%= devise_error_messages! %>
+    <%= f.hidden_field :reset_password_token %>
+
+    <div class="form-group has-feedback">
+      <%= f.label :password, t("activerecord.attributes.admin_user.new_password" ) %><br />
+      <%= f.password_field :password, class: 'form-control', autofocus: true, autocomplete: "off", :placeholder => t('controls.input.please_enter') %>
+      <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+    </div>
+
+    <div class="form-group has-feedback">
+      <%= f.label :password_confirmation, t("activerecord.attributes.admin_user.confirm_new_password") %><br />
+      <%= f.password_field :password_confirmation, class: 'form-control', autocomplete: "off", :placeholder => t('controls.input.please_enter') %>
+      <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-8">
+        <%= link_to t('controls.button.login'), new_operator_session_path %>
+      </div>
+      <div class="col-xs-4">
+        <%= f.submit t('controls.button.change'), class: 'btn btn-primary btn-block btn-flat' %>
+      </div>
+    </div>
+  <% end %>
+</div>

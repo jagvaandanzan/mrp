@@ -1,0 +1,182 @@
+<style>
+  div.search{
+    padding-left: 0!important;
+    padding-right: 5px!important;
+  }
+  div.search input, div.search select, div.search a, div.search .dropdown-toggle{
+    font-size: smaller !important;
+    height: 30px!important;
+    padding-top: 6px;
+  }
+  /*div.search input, div.search select, div.search a{*/
+  /*  font-size: smaller !important;*/
+  /*  height: 30px!important;*/
+  /*  padding-top: 6px;*/
+  /*}*/
+  #searchDate{
+    font-size: smaller !important;
+    height: 30px!important;
+    padding-top: 6px;
+    padding-left: 5px !important;
+  }
+
+  .table {
+    font-size: smaller;
+  }
+
+  /*input#by_close{*/
+  /*  height: 15px !important;*/
+  /*  width: 15px;*/
+  /*  margin-top: 5px;*/
+  /*}*/
+</style>
+
+<div class="content-wrapper">
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('titles.product_sales') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <%= link_to t('controls.button.create'), new_operators_product_sale_path, class: 'btn btn-warning' %>
+  </div>
+
+  <div class="col-md-12 m-t-10 m-b-10">
+    <%= form_with url: operators_product_sales_path, method: "get", class: "", local: true do |f| %>
+      <div class="col-md-2 search">
+        <div id="searchDate" class="form-control search">
+          <i class="fa fa-calendar fa-lg p-r-0"></i>
+          <span><%= t("filters.product_supply_order.by_date") %>...</span>
+          <%= f.hidden_field :start, value: @start %>
+          <%= f.hidden_field :finish,  value: @finish %>
+        </div>
+      </div>
+      <div class="col-md-2 search">
+        <%= text_field_tag :code, @code, {class: 'form-control', placeholder: t('activerecord.attributes.product_sale.code')} %>
+      </div>
+
+      <div class="col-md-2 search">
+        <%= text_field_tag :phone, @phone, {class: 'form-control', placeholder: t('activerecord.attributes.product_sale.phone')} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= f.collection_select :status_id, ProductSaleStatus.search(nil, nil), :id, :name,
+                              {:selected => @status_id, :include_blank => t('controls.select.none')},
+                              {class: 'form-control selectpicker', "data-live-search": "true", "data-container": ".box-info"}%>
+
+      </div>
+      <div class="col-md-2 search">
+        <%= f.collection_select :location_id,  Location.searchAll(), :id, :full_name,
+                                {:selected => @location_id, :include_blank => t('controls.select.none')},
+                                {class: 'form-control selectpicker',  "data-live-search": "true", "data-container": ".box-info" } %>
+      </div>
+
+      <div class="col-md-2 search">
+        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
+      </div>
+    <% end %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box" id="div_list">
+          <div class="box-body table-responsive no-padding">
+            <%= render 'layouts/flash_message' %>
+            <table class="table table-hover">
+              <tr>
+                <th ><%= t('activerecord.attributes.product_sale.code') %></th>
+                <th ><%= t('activerecord.attributes.product_sale.sale_date') %></th>
+                <th ><%= t('activerecord.attributes.product_sale.phone') %></th>
+                <th ><%= t('activerecord.attributes.product_sale.location_id') %></th>
+                <th ><%= t('activerecord.attributes.product_sale.loc_note') %></th>
+                <th ><%= t('activerecord.attributes.product_sale.sumPrice') %></th>
+                <th ><%= t('activerecord.attributes.product_sale.status_id') %></th>
+                <th ><%= t('activerecord.attributes.product_sale.created_operator_id') %></th>
+                <th ><%= t('activerecord.attributes.product_sale.approved_operator_id') %></th>
+                <th ><%= t('activerecord.attributes.product_sale.approved_date') %></th>
+                <th ></th>
+              </tr>
+              <% @product_sales.each do |p| %>
+                <tr>
+                  <td class="va-mid"><%= link_to p.code, operators_product_sale_path(p)  %></td>
+                  <td class="va-mid"><%= link_to p.sale_date.strftime('%F %R'), operators_product_sale_path(p)  %></td>
+                  <td class="va-mid"><%= p.phone %></td>
+                  <td class="va-mid"><%= p.location.nil? ? "" : p.location.full_name %></td>
+                  <td class="va-mid"><%= p.loc_note %></td>
+                  <td class="va-mid"><%= p.sumPrice %></td>
+                  <td class="va-mid"><%= p.status.present? ? p.status.name_with_parent : "Сонгоогүй" %></td>
+                  <td class="va-mid"><%= p.created_operator.present? ? p.created_operator.name : ""  %></td>
+                  <td class="va-mid"><%= p.approved_operator.present? ? p.approved_operator.name : ""  %></td>
+                  <td class="va-mid"><%= p.approved_date.present? ? p.approved_date.strftime('%F %R') : ""  %></td>
+                  <td>
+                    <div class="btn-group">
+                      <%= link_to edit_operators_product_sale_path(p), class: 'no-underline' do %>
+                        <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info m-r-10" %>
+                      <% end %>
+                      <%#= link_to users_product_income_path(p), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
+                        <%#= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
+                      <%# end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+
+        <%= paginate @product_sales %>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+
+    $(document).ready(function() {
+        var startDate = $('input#start');
+        var endDate = $('input#finish');
+
+        $('#searchDate span').html(startDate.val() + '-' + endDate.val());
+
+
+        $('#searchDate').daterangepicker({
+                ranges: {
+                    'Өнөөдөр': [moment(), moment()],
+                    'Өчигдөр': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                    'Сүүлийн 7 хоног': [moment().subtract('days', 6), moment()],
+                    'Сүүлийн 30 хоног': [moment().subtract('days', 29), moment()],
+                    'Энэ сар': [moment().startOf('month'), moment().endOf('month')],
+                    'Өнгөрсөн сар': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                },
+                startDate: moment(),
+                endDate: moment(),
+                format: 'YYYY/MM/DD',
+                locale: {
+                    applyLabel: 'Болсон',
+                    cancelLabel: 'Болих',
+                    fromLabel: 'Аас',
+                    toLabel: 'Хүртэл',
+                    customRangeLabel: 'Өөрөөр сонгох',
+                    dayNames: ["Даваа", "Мягмар", "Лхагва", "Пүрэв", "Баасан", "Бямба", "Ням"],
+                    daysOfWeek: ["Ня", "Да", "Мя", "Лх", "Пү", "Ба", "Бя"],
+                    monthNames: ["Нэгдүгээр сар", "Хоёрдугаар cар", "Гуравдугаар сар", "Дөрөвдүгээр сар", "Тавдугаар сар", "Зургаадугаар сар", "Долоодугаар сар", "Наймдугаар сар", "Есдүгээр сар", "Аравдугаар сар", "Арваннэгдүгээр сар", "Арванхоёрдугаар сар"],
+                    firstDay: 1
+                }
+            },
+            function (start, end) {
+                $('#searchDate span').html(start.format('YYYY/MM/DD') + '-' + end.format('YYYY/MM/DD'));
+                startDate.val(start.format('YYYY/MM/DD'));
+                endDate.val(end.format('YYYY/MM/DD'));
+            }
+        );
+        $('#searchDate').on('apply.daterangepicker', function (ev, picker) {
+            startDate.val(picker.startDate.format('YYYY/MM/DD'));
+            endDate.val(picker.endDate.format('YYYY/MM/DD'));
+        });
+        $('#searchDate').on('cancel.daterangepicker', function (ev, picker) {
+            console.log("cancel event fired");
+            $('#searchDate span').html("<%= t("filters.product_supply_order.by_date") %>...");
+            startDate.val("");
+            endDate.val("");
+        });
+    });
+</script>

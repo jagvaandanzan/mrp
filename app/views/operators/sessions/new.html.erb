@@ -1,0 +1,28 @@
+<div class="login-box-body">
+  <p class="login-box-msg"><%= t("titles.login")%></p>
+
+  <%= render 'layouts/flash_message' %>
+
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+    <div class="form-group has-feedback">
+      <%= f.label :email %><br/>
+      <%= f.email_field :email, autofocus: true, class: 'form-control' %>
+      <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+    </div>
+
+    <div class="form-group has-feedback">
+      <%= f.label :password %><br />
+      <%= f.password_field :password, autocomplete: "off", class: 'form-control' %>
+      <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-8">
+        <%= link_to t('controls.link.forget_password'), new_operator_password_path %>
+      </div>
+      <div class="col-xs-4">
+        <%= f.submit t('controls.button.login'), class: 'btn btn-primary btn-block btn-flat' %>
+      </div>
+    </div>
+  <% end %>
+</div>

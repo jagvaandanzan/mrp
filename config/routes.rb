@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  # devise_for :operators
   root 'users/loc_districts#index'
 
   devise_for :admin_users, path: :admin, controllers: {
@@ -22,6 +23,18 @@ Rails.application.routes.draw do
     get 'user/passwords/edit_password', to: 'users/registrations#edit_password'
     patch 'user/passwords', to: 'users/registrations#update_password'
   end
+
+  devise_for :operators, path: :operator, controllers: {
+      registrations: 'operators/registrations',
+      sessions: 'operators/sessions',
+      passwords: 'operators/passwords',
+  }
+
+  devise_scope :operator do
+    get 'operator/passwords/edit_password', to: 'operators/registrations#edit_password'
+    patch 'operator/passwords', to: 'operators/registrations#update_password'
+  end
+
 
   namespace :admin_users, path: :admin do
     root 'users#index'
@@ -54,11 +67,7 @@ Rails.application.routes.draw do
         patch 'get_product_category_children'
       end
     end
-    resources :product_feature_option_rels, only: [:index, :create, :new, :destroy] do
-      collection do
-        patch 'get_feature_options'
-      end
-    end
+    resources :product_feature_rels, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_supply_orders, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_supply_order_items, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_locations, only: [:index, :create, :new, :edit, :update, :destroy]
@@ -67,6 +76,24 @@ Rails.application.routes.draw do
       collection do
         patch 'get_location_children'
         patch 'get_supply_order_info'
+      end
+    end
+    resources :operators, only: [:index, :create, :new, :show, :edit, :update, :destroy] do
+      member do
+        get 'operator_sign_in'
+      end
+    end
+
+    match "*any", to: "base#routing_error", via: :all
+  end
+
+  namespace :operators, path: :operator do
+    root 'product_sales#index'
+
+    resources :product_sales, only: [:index, :create, :new, :show, :edit, :update] do
+      collection do
+        patch 'get_sub_status'
+        patch 'get_product_features'
       end
     end
 
