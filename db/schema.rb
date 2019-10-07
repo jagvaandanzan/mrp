@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_30_073706) do
+ActiveRecord::Schema.define(version: 2019_10_07_093829) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -293,6 +293,7 @@ ActiveRecord::Schema.define(version: 2019_09_30_073706) do
     t.string "note", limit: 1000
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "remainder"
     t.index ["product_id"], name: "index_product_supply_order_items_on_product_id"
     t.index ["supply_order_id"], name: "index_product_supply_order_items_on_supply_order_id"
   end

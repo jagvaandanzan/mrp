@@ -21,5 +21,4 @@ class ProductIncomeItem < ApplicationRecord
 
     items.order("product_supply_orders.code")
   }
-
 end
