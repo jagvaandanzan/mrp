@@ -11,6 +11,9 @@ class ProductSale < ApplicationRecord
 
   validates :code, uniqueness: true
 
+  # Утасны дугаар 8 оронтой байхаар шалгадаг, буруу байвал хадгалдаггүй
+  validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true}
+
   accepts_nested_attributes_for :product_sale_items, allow_destroy: true
 
   scope :created_at_desc, -> {

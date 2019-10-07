@@ -15,6 +15,8 @@ class Operators::ProductSalesController < Operators::BaseController
   def new
     @product_sale = ProductSale.new
     @product_sale.code = ApplicationController.helpers.get_code(ProductSale.last)
+    # Шинэ захиалга үүсгэх үед + товч дарагдсан гарч ирэх
+    @product_sale.product_sale_items.push(ProductSaleItem.new)
     @product_sale.sale_date = Time.current
   end
 

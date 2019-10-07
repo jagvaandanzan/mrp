@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  product: one
+  sale_price: 1.5
+  discount_price: 1.5
+  barcode: MyString
+
+two:
+  product: two
+  sale_price: 1.5
+  discount_price: 1.5
+  barcode: MyString

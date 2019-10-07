@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  income_item: one
+  location: one
+  quantity: 1.5
+
+two:
+  income_item: two
+  location: two
+  quantity: 1.5

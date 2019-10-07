@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  supply_order: one
+  product: one
+  quantity: 1.5
+  price: 
+  link: MyString
+  shuudan: 1.5
+  note: MyString
+
+two:
+  supply_order: two
+  product: two
+  quantity: 1.5
+  price: 
+  link: MyString
+  shuudan: 1.5
+  note: MyString

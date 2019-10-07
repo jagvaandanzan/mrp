@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  product: one
+  feature_option: one
+  feature_id: 1
+
+two:
+  product: two
+  feature_option: two
+  feature_id: 1
