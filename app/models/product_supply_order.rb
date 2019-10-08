@@ -6,8 +6,7 @@ class ProductSupplyOrder < ApplicationRecord
   validates :code, uniqueness: true
 
   enum payment: {belneer: 0, zeeleer: 1}
-  enum exchange: {cny: 0, usd: 1, eur: 2, rub:3, jpy:4, gbr: 5, mnt:6 }
-
+  enum exchange: {cny: 0, usd: 1, eur: 2, rub: 3, jpy: 4, gbr: 5, mnt: 6}
 
   scope :created_at_desc, -> {
     order(created_at: :desc)
@@ -29,13 +28,11 @@ class ProductSupplyOrder < ApplicationRecord
     items
   }
 
-
   def sumPrice
     @sumPrice = ProductSupplyOrderItem.search(self.id, "").sum("quantity*price")
-    @sumPrice = @sumPrice*self.exchange_value
+    @sumPrice = @sumPrice * self.exchange_value
     @sumPrice
   end
-
 
   def code_with_info
     "Захиалга - #{self.code}"
