@@ -1,1 +1,46 @@
-<%= @route_result %>
+<% provide :head_tags do %>
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_KEY'] %>"></script>
+<% end %>
+
+<div class="content-wrapper">
+  <%= show_body do %>
+    <div><%= @distance %></div>
+    <div id="map" style="height: 700px"></div>
+  <% end %>
+</div>
+<script type="text/javascript" charset="utf-8">
+    $(function () {
+        initMap();
+    });
+
+    function initMap() {
+        let center = new google.maps.LatLng(<%= @locations[0].latitude %>, <%= @locations[0].longitude %>);
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 15,
+            center: center,
+            mapTypeId: 'hybrid'
+        });
+
+
+        var infowindow = new google.maps.InfoWindow({});
+        var marker;
+        <% @locations.each_with_index do |location, index| %>
+        <% if index != @locations.length - 1 %>
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(<%= location.latitude %>, <%= location.longitude %>),
+            map: map,
+            title: "<%= index+1 %>, <%= location.name %>"
+        });
+
+        google.maps.event.addListener(marker, 'click', (function (marker, count) {
+            return function () {
+                infowindow.setContent("<%= index+1 %>, <%= location.name %>");
+                infowindow.open(map, marker);
+            }
+        })(marker, "<%= index+1 %>"));
+
+        <% end  %>
+        <% end  %>
+    }
+</script>

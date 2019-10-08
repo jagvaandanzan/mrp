@@ -1,4 +1,4 @@
-class Users::CalcController < ApplicationController
+class Users::CalcController < Users::BaseController
   require "net/https"
   require "uri"
 
@@ -7,7 +7,23 @@ class Users::CalcController < ApplicationController
   end
 
   def vrptw
-    logger.debug("vrptw vrptw vrptw vrptw")
+    array_locations = [527, 2909, 2577, 842, 1885, 1149, 2919, 875, 2347, 31, 2749, 2034]
+    routing = [138, 0, 7, 4, 3, 1, 6, 10, 2, 9, 8, 5, 11, 0]
+    locations = []
+
+    routing.each_with_index do |r, index|
+      if index > 0
+        loc = Location.find(array_locations[r])
+        locations.push(loc)
+      end
+
+    end
+    @distance = routing[0]
+    @locations = locations
+
+  end
+
+  def vrptw1
     array_locations = [527, 2909, 2577, 842, 1885, 1149, 2919, 875, 2347, 31, 2749, 2034]
     location_travels = LocationTravel.search(array_locations).map {|i| [i.location_from_id.to_s + "-" + i.location_to_id.to_s, i]}.to_h
 
@@ -90,8 +106,9 @@ class Users::CalcController < ApplicationController
       end
     end
 
-    @route_result = routing
     FileUtils.rm [folder_path + file_name, result_path]
+
+    routing
   end
 
   def extra_result(type, max_travel, result)
