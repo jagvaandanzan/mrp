@@ -34,14 +34,97 @@ class Users::CalcController < ApplicationController
       end
     }
 
-    system "cd " + folder_path + " && python salesman.py " + file_temp
+    system "cd " + folder_path + " && python tsp.py " + file_temp
 
     result_path = folder_path + "#{file_temp}_result.txt"
-    until File.exists?(result_path)
-      sleep(2)
+
+    second = 0
+    until File.exists?(result_path) || second == 6
+      sleep(1)
+      second += 1
     end
 
-    @route_result = File.read(result_path)
+    travel_config = TravelConfig.get_last
+    max_travel = travel_config.max_travel
+
+    result_data = if second == 6
+                    "error"
+                  else
+                    File.read(result_path)
+                  end
+
+    if result_data == "error"
+      routing = result_data
+    else
+      # salesman р үзээд батгахгүй бол 2 машинаас эхлэж явуулж үзнэ
+      routing = extra_result("tsp", max_travel, result_data)
+
+      if routing.length == 0 # багтаагүй байна
+        vehicle = 2
+        while routing != "error" && routing.length == 0
+          FileUtils.rm(result_path)
+          system "cd " + folder_path + " && python vrp.py " + max_travel + " " + file_temp + " " + vehicle
+
+          second = 0
+          until File.exists?(result_path) || second == 6
+            sleep(1)
+            second += 1
+          end
+
+          result_data = if second == 6
+                          "error"
+                        else
+                          File.read(result_path)
+                        end
+
+          if result_data == "error"
+            routing = result_data
+          else
+            routing = extra_result("vrp", max_travel, result_data)
+          end
+
+          vehicle += 1 # машины тоог нэмж үзнэ
+        end
+
+      end
+    end
+
+    @route_result = routing
+    #   FileUtils.rm %w( junk.txt dust.txt )
+  end
+
+  def extra_result(type, max_travel, result)
+    if type == "tsp"
+      array = result.split(',').map(&:to_i)
+      if max_travel >= array[0]
+        return array.slice(1, array.length - 1)
+      end
+
+    else # vrp
+
+      lines = result.split(/\n+/)
+      min_max = lines[lines.length - 1].split(',').map(&:to_i)
+      if max_travel >= min_max[0]
+        max_routing = 0
+        max_at_index = 0
+        # олон хүргэлттэйг нь авна
+        lines.each_with_index do |line, index|
+          if index != lines.length - 1 # хамгийн сүүлийн мах мин учир тооцохгүй
+            array = line.split(',').map(&:to_i)
+            if max_travel >= array[1] && max_routing < array.length
+              max_at_index = index
+              max_routing = array.length
+            end
+          end
+        end
+        # олон хүргэлттэйг г олсон
+        array = lines[max_at_index].split(',').map(&:to_i)
+        return array.slice(2, array.length - 1)
+      end
+
+    end
+
+    []
   end
 
   def save_travels(locations)
