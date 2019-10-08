@@ -99,7 +99,7 @@ class Users::CalcController < ApplicationController
     if type == "tsp"
       array = result.split(',').map(&:to_i)
       if max_travel >= array[0]
-        return array.slice(1, array.length - 1)
+        return array
       end
 
     else # vrp
@@ -121,7 +121,7 @@ class Users::CalcController < ApplicationController
         end
         # олон хүргэлттэйг г олсон
         array = lines[max_at_index].split(',').map(&:to_i)
-        return array.slice(2, array.length - 1)
+        return array.slice(1, array.length - 1)
       end
 
     end
