@@ -8,7 +8,11 @@ class ProductIncomeItem < ApplicationRecord
 
   validates :income_id, :supply_order_item_id, :urgent_type, :quantity, :price, presence: true
 
+  validates :quantity, :price, numericality: {greater_than: 0}
+
   validate :total_must_be_less_than_remainder
+
+  validate :income_locations_count_check
 
   accepts_nested_attributes_for :income_locations, allow_destroy: true
 
@@ -31,6 +35,7 @@ class ProductIncomeItem < ApplicationRecord
   }
 
   private
+
   def total_must_be_less_than_remainder
     remainder = ProductSupplyOrderItem.get_remainder(supply_order_item_id) + self.quantity_was
     current_total = ProductIncomeItem.total_ordered_supply_item supply_order_item_id - self.quantity_was
@@ -42,5 +47,20 @@ class ProductIncomeItem < ApplicationRecord
   def update_supply_order_item_remainder
     remainder = ProductSupplyOrderItem.get_remainder(supply_order_item_id) + self.quantity_was - self.quantity
     ProductSupplyOrderItem.find(supply_order_item.id).update_column(:remainder, remainder)
+  end
+
+  def income_locations_count_check
+    s = 0
+    self.income_locations.each do |location|
+      lq = location.quantity
+      if lq < 0
+        errors.add(:income_locations, "0 ees ih estoi")
+        return
+      end
+      s += location.quantity
+    end
+    if quantity < s
+      errors.add(:income_locations, "davsan bn!")
+    end
   end
 end
