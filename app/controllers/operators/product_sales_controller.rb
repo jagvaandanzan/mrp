@@ -18,6 +18,7 @@ class Operators::ProductSalesController < Operators::BaseController
     # Шинэ захиалга үүсгэх үед + товч дарагдсан гарч ирэх
     @product_sale.product_sale_items.push(ProductSaleItem.new)
     @product_sale.sale_date = Time.current
+    @product_sale.sale_date_end = @product_sale.sale_date
   end
 
   def create
@@ -116,7 +117,7 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def product_sale_params
     params.require(:product_sale)
-        .permit(:code, :sale_date, :phone, :location_id, :building_code, :loc_note,
+        .permit(:code, :sale_date, :sale_date_end, :phone, :location_id, :building_code, :loc_note,
                 # :delivery_date,
                 :payment_delivery, :payment_account,
                 :status_id, :status_note,

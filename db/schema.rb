@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_07_093829) do
+ActiveRecord::Schema.define(version: 2019_10_08_080233) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -267,6 +267,7 @@ ActiveRecord::Schema.define(version: 2019_10_07_093829) do
     t.datetime "approved_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "sale_date_end"
     t.index ["approved_operator_id"], name: "index_product_sales_on_approved_operator_id"
     t.index ["created_operator_id"], name: "index_product_sales_on_created_operator_id"
     t.index ["location_id"], name: "index_product_sales_on_location_id"
