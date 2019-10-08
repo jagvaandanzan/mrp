@@ -7,6 +7,8 @@ class Users::CalcController < ApplicationController
   end
 
   def vrptw
+    logger.debug("vrptw vrptw vrptw vrptw")
+    puts("vrptw vrptw vrptw vrptw puts")
     array_locations = [527, 2909, 2577, 842, 1885, 1149, 2919, 875, 2347, 31, 2749, 2034]
     location_travels = LocationTravel.search(array_locations).map {|i| [i.location_from_id.to_s + "-" + i.location_to_id.to_s, i]}.to_h
 
