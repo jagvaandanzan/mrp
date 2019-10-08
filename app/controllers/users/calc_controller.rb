@@ -91,7 +91,7 @@ class Users::CalcController < ApplicationController
     end
 
     @route_result = routing
-    #   FileUtils.rm %w( junk.txt dust.txt )
+    FileUtils.rm [folder_path + file_name, result_path]
   end
 
   def extra_result(type, max_travel, result)
