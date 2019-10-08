@@ -112,7 +112,6 @@ class Users::CalcController < Users::BaseController
   end
 
   def extra_result(type, max_travel, result)
-    logger.debug(result.to_s)
     if type == "tsp"
       array = result.split(',').map(&:to_i)
       if max_travel >= array[0]
