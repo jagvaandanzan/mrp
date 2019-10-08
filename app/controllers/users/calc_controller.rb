@@ -36,7 +36,7 @@ class Users::CalcController < ApplicationController
     }
 
     system "cd " + folder_path + " && python tsp.py " + file_temp
-    logger.debug("cd " + folder_path.to_s + " && python tsp.py " + file_temp.to_s)
+
     result_path = folder_path + "#{file_temp}_result.txt"
 
     second = 0
@@ -53,7 +53,6 @@ class Users::CalcController < ApplicationController
                   else
                     File.read(result_path)
                   end
-    logger.debug("result_data==" + result_data.to_s)
 
     if result_data == "error"
       routing = result_data
@@ -65,7 +64,7 @@ class Users::CalcController < ApplicationController
         vehicle = 2
         while routing != "error" && routing.length == 0
           FileUtils.rm(result_path)
-          system "cd " + folder_path + " && python vrp.py " + max_travel + " " + file_temp + " " + vehicle
+          system "cd " + folder_path + " && python vrp.py " + max_travel.to_s + " " + file_temp + " " + vehicle.to_s
 
           second = 0
           until File.exists?(result_path) || second == 6
