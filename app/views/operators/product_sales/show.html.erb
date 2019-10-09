@@ -120,7 +120,7 @@
             <div style="clear: both"></div>
             <div class="col-md-4 field_div">
               <div class="div_input">
-                <b><%= t('activerecord.attributes.product_sale.sumPrice')%>:</b> <%= @product_sale.sumPrice %>
+                <b><%= t('activerecord.attributes.product_sale.sum_price')%>:</b> <%= @product_sale.sum_price %>
               </div>
             </div>
             <div class="col-md-4 field_div">
@@ -143,7 +143,7 @@
                     <th ><%= t('activerecord.attributes.product_sale_item.product_feature_rel_id') %></th>
                     <th ><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
                     <th ><%= t('activerecord.attributes.product_sale_item.price') %></th>
-                    <th ><%= t('activerecord.attributes.product_sale_item.sumPrice') %></th>
+                    <th ><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -153,7 +153,7 @@
                       <td class="va-mid"><%= p.product_feature_rel.rel_names  %></td>
                       <td class="va-mid"><%= p.quantity %></td>
                       <td class="va-mid"><%= p.price %></td>
-                      <td class="va-mid"><%= p.sumPrice %></td>
+                      <td class="va-mid"><%= p.sum_price %></td>
                     </tr>
                   <% end %>
                 </tbody>

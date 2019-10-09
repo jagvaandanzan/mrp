@@ -18,7 +18,7 @@ class ProductIncome < ApplicationRecord
     items
   }
 
-  def sumPrice
+  def sum_price
     @sum = 0
     self.income_items.each do |item|
       @sum += item.supply_order_item.supply_order.exchange_value * (item.quantity * item.price)

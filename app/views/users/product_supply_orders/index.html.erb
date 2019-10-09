@@ -63,7 +63,7 @@
                 <th><%= t('activerecord.attributes.product_supply_order.payment') %></th>
                 <th ><%= t('activerecord.attributes.product_supply_order.exchange') %></th>
                 <th ><%= t('activerecord.attributes.product_supply_order.exchange_value') %></th>
-                <th ><%= t('activerecord.attributes.product_supply_order.sumPrice') %></th>
+                <th ><%= t('activerecord.attributes.product_supply_order.sum_price') %></th>
                 <th ><%= t('activerecord.attributes.product_supply_order.is_closed') %></th>
                 <th ></th>
               </tr>
@@ -75,7 +75,7 @@
                   <td class="va-mid"><%= p.payment_i18n %></td>
                   <td class="va-mid"><%= p.exchange_i18n %></td>
                   <td class="va-mid"><%= p.exchange_value %></td>
-                  <td class="va-mid"><%= p.sumPrice()  %></td>
+                  <td class="va-mid"><%= p.sum_price()  %></td>
                   <td class="va-mid"><%= p.is_closed ? ( p.closed_date.nil? ? "Хаагдсан" : p.closed_date.strftime('%F')) : "" %></td>
                   <td>
                     <div class="btn-group">

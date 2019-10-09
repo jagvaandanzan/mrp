@@ -12,7 +12,7 @@ class ProductSale < ApplicationRecord
   validates :code, uniqueness: true
 
   # Утасны дугаар 8 оронтой байхаар шалгадаг, буруу байвал хадгалдаггүй
-  validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true}
+  validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
 
   validates_associated :product_sale_items
 
@@ -39,7 +39,7 @@ class ProductSale < ApplicationRecord
     items
   }
 
-  def sumPrice
+  def sum_price
     @s = 0
 
     if self.product_sale_items.present?

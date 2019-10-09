@@ -84,24 +84,25 @@ mn:
       confirmation: と%{attribute}の入力が一致しません
       empty: " хоосон байна!"
       equal_to: は%{count}にしてください
-      even: は偶数にしてください
+      even: " тэгш тоо байх ёстой"
       exclusion: は予約されています
-      greater_than: は%{count}より大きい値にしてください
-      greater_than_or_equal_to: は%{count}以上の値にしてください
+      greater_than: " %{count}-с их байх ёстой"
+      greater_than_or_equal_to: " %{count} той тэнцүү буюу их байх ёстой"
       inclusion: は一覧にありません
-      invalid: буруу байна
+      invalid: " буруу байна"
       less_than: は%{count}より小さい値にしてください
       less_than_or_equal_to: は%{count}以下の値にしてください
       model_invalid: "Баталгаажуулалт буруу: %{errors}"
-      not_a_number: は数値で入力してください
+      not_a_number: " бүхэл тоо байх ёстой"
       not_an_integer: は整数で入力してください
-      odd: は奇数にしてください
+      odd: " сондгой байх ёстой"
       required: " шаардлагтай!"
       taken: " давхардаж байна!"
       too_long: бол %{count}-с дээр тэмдэгт байх ёстой
       too_short: бол %{count}-с дээр тэмдэгт байх ёстой
       wrong_length: は%{count}文字で入力してください
       other_than: は%{count}以外の値にしてください
+      over: " давсан байна"
     template:
       body: 次の項目を確認してください
       header:

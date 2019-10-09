@@ -62,11 +62,11 @@
 
           <div class="form-group">
             <%= f.label :is_closed, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 ">
-              <%= f.radio_button :is_closed, 'true' %>
-              <%= f.label :is_closed, 'Тийм', :value => 'true' %>
-              <%= f.radio_button :is_closed, 'false' %>
-              <%= f.label :is_closed, 'Үгүй', :value => 'false' %>
+            <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product_supply_order, :is_closed) %>">
+              <%= field_errors(@product_supply_order, :is_closed) %>
+              <%= f.collection_radio_buttons :is_closed, ProductSupplyOrder.is_closeds_i18n, :first, :second do |b| %>
+                <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
+              <% end %>
             </div>
           </div>
 

@@ -1,31 +1,31 @@
 <tr class="nested-fields">
   <td>
-    <%#= f.object.product_id %>
     <%= field_errors f.object, :product_id %>
 
     <%= f.collection_select :product_id, Product.search(""), :id, :name_with_code,
                             {:prompt => t('controls.select.none')},
-                            {class: 'form-control selectpicker', onchange: 'func_call_feature_rel(this)',  "data-live-search": "true", "data-container": ".box-info"}%>
+                            {class: 'form-control selectpicker', onchange: 'func_call_feature_rel(this)', "data-live-search": "true", "data-container": ".box-info"} %>
   </td>
   <td>
     <%= field_errors f.object, :product_feature_rel_id %>
 
-    <%= f.select :product_feature_rel_id, ProductFeatureRel.search_with_nil(f.object.product_id.present? ? f.object.product_id : nil).collect {|p| [ p.rel_names, p.id, { 'price' => p.sale_price} ] },
-                            {:prompt => t('controls.select.none')},
-                            {class: 'form-control selectpicker feature_rel', onchange: 'func_change_price(this)', "data-live-search": "true", "data-container": ".box-info"}%>
+    <%= f.select :product_feature_rel_id, ProductFeatureRel.search_with_nil(f.object.product_id.present? ? f.object.product_id : nil).collect {|p| [p.rel_names, p.id, {'price' => p.sale_price}]},
+                 {:prompt => t('controls.select.none')},
+                 {class: 'form-control selectpicker feature_rel', onchange: 'func_change_price(this)', "data-live-search": "true", "data-container": ".box-info"} %>
   </td>
   <td>
+    <%= field_errors f.object, :quantity %>
     <%= f.number_field :quantity, class: 'form-control field item_quantity', oninput: "func_input_change(this, 'quantity')", placeholder: t('activerecord.attributes.product_sale_item.quantity') %>
   </td>
   <td>
     <%= f.number_field :price, class: 'form-control field item_price', oninput: "func_input_change(this, 'price')", placeholder: t('activerecord.attributes.product_sale_item.price') %>
   </td>
   <td>
-    <%= f.number_field :sumPrice, class: 'form-control field item_sum', placeholder: t('activerecord.attributes.product_sale_item.sumPrice') %>
+    <%= f.number_field :sum_price, class: 'form-control field item_sum', placeholder: t('activerecord.attributes.product_sale_item.sum_price') %>
   </td>
-<!--  <td>-->
-<!--    <button type="button" class="btn btn-default">Үлдэгдэл</button>-->
-<!--  </td>-->
+  <!--  <td>-->
+  <!--    <button type="button" class="btn btn-default">Үлдэгдэл</button>-->
+  <!--  </td>-->
   <td class="remove">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
       <%= nested_remove_btn %>
@@ -34,7 +34,7 @@
 </tr>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.selectpicker').selectpicker('refresh');
     })
 

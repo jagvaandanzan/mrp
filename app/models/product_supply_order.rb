@@ -1,11 +1,12 @@
 class ProductSupplyOrder < ApplicationRecord
-  belongs_to :supplier, -> { with_deleted }, :class_name => "ProductSupplier"
+  belongs_to :supplier, -> {with_deleted}, :class_name => "ProductSupplier"
   has_many :items, :class_name => "ProductSupplyOrderItem", :foreign_key => "supply_order_id", dependent: :destroy
 
   validates :supplier_id, :code, :payment, :exchange, :exchange_value, presence: true
   validates :code, uniqueness: true
 
   enum payment: {belneer: 0, zeeleer: 1}
+  enum is_closed: {_no: 0, _yes: 1}
   enum exchange: {cny: 0, usd: 1, eur: 2, rub: 3, jpy: 4, gbr: 5, mnt: 6}
 
   scope :created_at_desc, -> {
@@ -28,10 +29,9 @@ class ProductSupplyOrder < ApplicationRecord
     items
   }
 
-  def sumPrice
-    @sumPrice = ProductSupplyOrderItem.search(self.id, "").sum("quantity*price")
-    @sumPrice = @sumPrice * self.exchange_value
-    @sumPrice
+  def sum_price
+    sum_price = items.sum("quantity*price")
+    sum_price * self.exchange_value
   end
 
   def code_with_info

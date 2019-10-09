@@ -37,15 +37,17 @@ class ProductIncomeItem < ApplicationRecord
   private
 
   def total_must_be_less_than_remainder
-    remainder = ProductSupplyOrderItem.get_remainder(supply_order_item_id) + self.quantity_was
-    current_total = ProductIncomeItem.total_ordered_supply_item supply_order_item_id - self.quantity_was
+    quantity_prev = self.quantity_was || 0
+    remainder = ProductSupplyOrderItem.get_remainder(supply_order_item_id) + quantity_prev
+    current_total = ProductIncomeItem.total_ordered_supply_item(supply_order_item_id) - quantity_prev
     if remainder < current_total + self.quantity
-      errors.add(:quantity, "は #{remainder} 以上以下の値にしてください")
+      errors.add(:quantity, :greater_than_or_equal_to, count: remainder)
     end
   end
 
   def update_supply_order_item_remainder
-    remainder = ProductSupplyOrderItem.get_remainder(supply_order_item_id) + self.quantity_was - self.quantity
+    quantity_prev = self.quantity_was || 0
+    remainder = ProductSupplyOrderItem.get_remainder(supply_order_item_id) + quantity_prev - (self.quantity || 0)
     ProductSupplyOrderItem.find(supply_order_item.id).update_column(:remainder, remainder)
   end
 
@@ -54,13 +56,13 @@ class ProductIncomeItem < ApplicationRecord
     self.income_locations.each do |location|
       lq = location.quantity
       if lq < 0
-        errors.add(:income_locations, "0 ees ih estoi")
+        errors.add(:income_locations, :greater_than, count: 0)
         return
       end
       s += location.quantity
     end
     if quantity < s
-      errors.add(:income_locations, "davsan bn!")
+      errors.add(:income_locations, :over)
     end
   end
 end

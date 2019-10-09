@@ -60,7 +60,7 @@
             <div style="clear: both"></div>
 
             <div class="col-md-4 field_div">
-              <%= f.label :phone, class: 'control-label' %> <span class="asterisk">*</span>
+              <%= f.label :phone, class: 'control-label' %>
               <div class="<%= get_error_class(@product_sale, :phone) %>">
                 <%= field_errors(@product_sale, :phone) %>
                 <%= f.number_field :phone, class: 'form-control', placeholder: t('activerecord.attributes.product_sale.phone') %>
@@ -105,7 +105,7 @@
                       <th><%= t('activerecord.attributes.product_sale_item.product_feature_rel_id') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.price') %></th>
-                      <th><%= t('activerecord.attributes.product_sale_item.sumPrice') %></th>
+                      <th><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
                       <!--                      <th ><%#= t('activerecord.attributes.product_sale_item.uld') %></th>-->
                       <!--                      <th ><%#= t('activerecord.attributes.product_sale_item.bonus') %></th>-->
                       <th width="50px"></th>
@@ -124,10 +124,10 @@
             </div>
             <div style="clear: both"></div>
             <div class="col-md-4 field_div">
-              <%= f.label :sumPrice, class: 'control-label' %>
+              <%= f.label :sum_price, class: 'control-label' %>
               <div class="">
-                <%= f.number_field :sumPrice, value: @product_sale.persisted? ? @product_sale.sumPrice : 0,
-                                   class: 'form-control', disabled: "true", placeholder: t('activerecord.attributes.product_sale.sumPrice') %>
+                <%= f.number_field :sum_price, value: @product_sale.persisted? ? @product_sale.sum_price : 0,
+                                   class: 'form-control', disabled: "true", placeholder: t('activerecord.attributes.product_sale.sum_price') %>
               </div>
             </div>
             <div class="col-md-4 field_div">
@@ -342,6 +342,6 @@
         delivery = $("#product_sale_payment_delivery").val();
         if (!isNaN(parseFloat(delivery))) sum += parseFloat(delivery);
 
-        $("#product_sale_sumPrice").val(sum);
+        $("#product_sale_sum_price").val(sum);
     }
 </script>

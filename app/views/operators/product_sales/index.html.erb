@@ -88,7 +88,7 @@
                 <th ><%= t('activerecord.attributes.product_sale.phone') %></th>
                 <th ><%= t('activerecord.attributes.product_sale.location_id') %></th>
                 <th ><%= t('activerecord.attributes.product_sale.loc_note') %></th>
-                <th ><%= t('activerecord.attributes.product_sale.sumPrice') %></th>
+                <th ><%= t('activerecord.attributes.product_sale.sum_price') %></th>
                 <th ><%= t('activerecord.attributes.product_sale.status_id') %></th>
                 <th ><%= t('activerecord.attributes.product_sale.created_operator_id') %></th>
                 <th ><%= t('activerecord.attributes.product_sale.approved_operator_id') %></th>
@@ -102,7 +102,7 @@
                   <td class="va-mid"><%= p.phone %></td>
                   <td class="va-mid"><%= p.location.nil? ? "" : p.location.full_name %></td>
                   <td class="va-mid"><%= p.loc_note %></td>
-                  <td class="va-mid"><%= p.sumPrice %></td>
+                  <td class="va-mid"><%= p.sum_price %></td>
                   <td class="va-mid"><%= p.status.present? ? p.status.name_with_parent : "Сонгоогүй" %></td>
                   <td class="va-mid"><%= p.created_operator.present? ? p.created_operator.name : ""  %></td>
                   <td class="va-mid"><%= p.approved_operator.present? ? p.approved_operator.name : ""  %></td>

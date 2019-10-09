@@ -25,13 +25,6 @@ class ProductSupplyOrderItem < ApplicationRecord
     where(id: order_id).sum("remainder")
   }
 
-
-  # scope :search, ->() {
-  #   items = items.joins(:product)
-  #   items = items.where('products.name LIKE :value', value: "%#{sname}%") if sname.present?
-  #   items.order("products.name")
-  # }
-  #
   def product_name_with_code
     "#{self.product.code} - #{self.product.name}"
   end

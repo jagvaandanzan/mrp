@@ -31,6 +31,9 @@ mn:
       payment:
         belneer: Бэлнээр
         zeeleer: Зээлээр
+      is_closed:
+        _no: Үгүй
+        _yes: Тийм
       exchange:
         cny: Юань
         usd: АНУ-ын доллар
@@ -159,7 +162,7 @@ mn:
         exchange_value: Ханш
         closed_date: Хаагдсан огноо
         is_closed: Хаагдсан
-        sumPrice: Нийт дүн (₮)
+        sum_price: Нийт дүн (₮)
       product_supply_order_item:
         supply_order_id: Худалдан авалт
         product_id: Бараа
@@ -168,13 +171,13 @@ mn:
         link: Линк
         shuudan: Шуудан
         note: Тайлбар
-        sumPrice: Нийт дүн (₮)
+        sum_price: Нийт дүн (₮)
       product_income:
         code: Код
         income_date: Огноо
         supplier_id: Нийлүүлэгч
         note: Тайлбар
-        sumPrice: Нийт дүн (₮)
+        sum_price: Нийт дүн (₮)
       product_income_item:
         income_id: Орлого
         income_code: Орлогын код
@@ -187,8 +190,9 @@ mn:
         note: Тайлбар
         urgent_type: Төрөл
         location_id: Байршил
-        sumPrice: Нийт дүн (₮)
+        sum_price: Нийт дүн (₮)
         product_feature_rel_id: Барааны шинж чанар
+        income_locations: Агуулахын байршил
       product_income_feature_rel:
         feature_option_id: Шинж чанар, утга
       product_sale:
@@ -208,13 +212,13 @@ mn:
         created_operator_id: Бүртгэсэн
         approved_operator_id: Батласан
         approved_date: Бат.Огноо
-        sumPrice: Нийт дүн
+        sum_price: Нийт дүн
       product_sale_item:
-        product_id: Бараа
+        product_id: Бараа]
         product_feature_rel_id: Шинж чанар
         quantity: Тоо хэмжээ
         price: Үнэ
-        sumPrice: Нийт
+        sum_price: Нийт
         uld: Үлдэгдэл
         bonus: Ашигласан бонус
       product_sale_status_log:
