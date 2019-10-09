@@ -149,11 +149,11 @@ ActiveRecord::Schema.define(version: 2019_10_08_080233) do
 
   create_table "product_income_feature_rels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "income_item_id"
+    t.bigint "feature_option_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "product_feature_rel_id"
+    t.index ["feature_option_id"], name: "index_product_income_feature_rels_on_feature_option_id"
     t.index ["income_item_id"], name: "index_product_income_feature_rels_on_income_item_id"
-    t.index ["product_feature_rel_id"], name: "index_product_income_feature_rels_on_product_feature_rel_id"
   end
 
   create_table "product_income_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -316,19 +316,29 @@ ActiveRecord::Schema.define(version: 2019_10_08_080233) do
   create_table "products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.string "code"
+    t.string "main_code"
     t.string "barcode"
     t.string "detail"
     t.integer "measure"
+    t.integer "ptype"
     t.bigint "category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "ptype"
-    t.string "main_code"
     t.datetime "deleted_at"
     t.float "sale_price", limit: 53
     t.float "discount_price", limit: 53
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["deleted_at"], name: "index_products_on_deleted_at"
+  end
+
+  create_table "travel_configs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "user_id"
+    t.integer "max_travel"
+    t.integer "waiting_time"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_travel_configs_on_user_id"
   end
 
   create_table "user_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -378,6 +388,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_080233) do
   add_foreign_key "locations", "loc_khoroos"
   add_foreign_key "locations", "users"
   add_foreign_key "product_feature_options", "product_features"
+  add_foreign_key "travel_configs", "users"
   add_foreign_key "users", "user_permissions"
   add_foreign_key "users", "user_positions"
 end
