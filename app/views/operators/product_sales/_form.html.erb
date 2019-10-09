@@ -14,10 +14,6 @@
     padding: 10px;
   }
 
-  .field_div {
-    padding: 10px;
-  }
-
   .field_div input, .field_div textarea {
     font-size: small;
   }
@@ -66,12 +62,12 @@
                 <%= f.number_field :phone, class: 'form-control', placeholder: t('activerecord.attributes.product_sale.phone') %>
               </div>
             </div>
-            <div class="col-md-4 field_div">
+            <div class="col-md-8 field_div">
               <%= f.label :location_id, class: 'control-label' %>
               <div class="<%= get_error_class(@product_sale, :location_id) %>">
                 <%= field_errors(@product_sale, :location_id) %>
-                <%= f.collection_select :location_id, Location.searchAll(), :id, :full_name,
-                                        {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true", "data-container": ".box-info"} %>
+                <%= f.select(:location_id, options_for_select([]),
+                             {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"}) %>
               </div>
             </div>
             <div style="clear: both"></div>
@@ -188,7 +184,7 @@
     </div>
   </section>
 </div>
-
+<%= render 'shared/suggestion_search', id: 'product_sale_location_id', url: search_locations_operators_product_sales_path %>
 <script>
     $(function () {
         var startDate = $('input#product_sale_sale_date');

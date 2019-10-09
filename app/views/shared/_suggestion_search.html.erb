@@ -1,0 +1,37 @@
+<script>
+    let sel_id = "<%= id %>";
+    $(window).on('load', function () {
+        $('select#' + sel_id).parent().find('.bs-searchbox').find('input').keydown(function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                live_search($(this).val());
+            }
+        }).keyup(function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+            } else if (65 <= e.which && e.which <= 90) { // a-z
+                // live_search($(this).val());
+            } else if (48 <= e.which && e.which <= 75) { // 0-9
+                // live_search($(this).val());
+            } else if (e.which === 32 || e.which === 188 || e.which === 189 || e.which === 190
+                || e.which === 191 || e.which === 219 || e.which === 221
+                || e.which === 186 || e.which === 222) {  // space ь е в ю ъ к д п
+                // live_search($(this).val());
+            }
+            // String.fromCharCode(e.keyCode)
+        });
+    });
+
+    function live_search(txt) {
+        Rails.ajax({
+            url: "<%= url %>",
+            type: "POST",
+            data: "text=" + txt + "&id=" + sel_id,
+            success: function (data) {
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+</script>

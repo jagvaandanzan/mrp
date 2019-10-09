@@ -14,6 +14,10 @@ class Location < ApplicationRecord
     items.order(:name)
   }
 
+  scope :search_by_name, ->(name) {
+    where('name LIKE :value OR name_la LIKE :value', value: "%#{name}%")
+        .order(:name)
+  }
   scope :searchAll, ->() {
     items = where("")
     # items = items.where('name LIKE :value OR name_la LIKE :value', value: "%#{sname}%") if sname.present?

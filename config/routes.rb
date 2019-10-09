@@ -94,6 +94,7 @@ Rails.application.routes.draw do
       collection do
         patch 'get_sub_status'
         patch 'get_product_features'
+        post 'search_locations'
       end
     end
 

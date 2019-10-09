@@ -21,11 +21,20 @@ class Operators::ProductSalesController < Operators::BaseController
     @product_sale.sale_date_end = @product_sale.sale_date
   end
 
+  def search_locations
+    @list = Location.search_by_name(params[:text])
+    @select_id = params[:id]
+
+    respond_to do |format|
+      format.js {render 'shared/search_results'}
+    end
+  end
+
   def create
     @product_sale = ProductSale.new(product_sale_params)
     @product_sale.created_operator = current_operator
 
-    if @product_sale.status.present? && @product_sale.status.alias=="approved"
+    if @product_sale.status.present? && @product_sale.status.alias == "approved"
       @product_sale.approved_operator = current_operator
       @product_sale.approved_date = Time.current
     end
@@ -55,7 +64,7 @@ class Operators::ProductSalesController < Operators::BaseController
   def update
     @product_sale.attributes = product_sale_params
 
-    if @product_sale.status.present? && @product_sale.status.alias=="approved"
+    if @product_sale.status.present? && @product_sale.status.alias == "approved"
       @product_sale.approved_operator = current_operator
       @product_sale.approved_date = Time.current
     end
@@ -85,7 +94,7 @@ class Operators::ProductSalesController < Operators::BaseController
   def get_sub_status
     @subs = nil
     if params[:parent_id].present?
-      @subs =  ProductSaleStatus.search(params[:parent_id], "operator")
+      @subs = ProductSaleStatus.search(params[:parent_id], "operator")
     end
 
     render json: {childrens: @subs}
@@ -98,7 +107,7 @@ class Operators::ProductSalesController < Operators::BaseController
       product = Product.find(params[:product_id])
       @price = product.sale_price if product.present? && product.sale_price.present?
 
-      @featureRels =  ProductFeatureRel.search(params[:product_id])
+      @featureRels = ProductFeatureRel.search(params[:product_id])
 
       @featureRels.each do |rel|
         @features.push({id: rel.id, name: rel.rel_names, price: rel.sale_price})
