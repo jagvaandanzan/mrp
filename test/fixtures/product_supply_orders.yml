@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  code: MyString
+  ordered_date: 2019-09-12 12:53:39
+  supplier: one
+  payment: 1
+  exchange: 1
+  exchange_value: 1.5
+  closed_date: 2019-09-12 12:53:39
+  is_closed: false
+
+two:
+  code: MyString
+  ordered_date: 2019-09-12 12:53:39
+  supplier: two
+  payment: 1
+  exchange: 1
+  exchange_value: 1.5
+  closed_date: 2019-09-12 12:53:39
+  is_closed: false

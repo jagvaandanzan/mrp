@@ -1,0 +1,33 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  code: MyString
+  sale_date: 2019-09-28 16:14:48
+  phone: 1
+  location: one
+  building_code: MyString
+  loc_note: MyString
+  delivery_date: 2019-09-28 16:14:48
+  payment_delivery: MyString
+  payment_account: MyString
+  status: one
+  status_note: MyString
+  created_operator: one
+  approved_operator: one
+  approved_date: 2019-09-28 16:14:48
+
+two:
+  code: MyString
+  sale_date: 2019-09-28 16:14:48
+  phone: 1
+  location: two
+  building_code: MyString
+  loc_note: MyString
+  delivery_date: 2019-09-28 16:14:48
+  payment_delivery: MyString
+  payment_account: MyString
+  status: two
+  status_note: MyString
+  created_operator: two
+  approved_operator: two
+  approved_date: 2019-09-28 16:14:48

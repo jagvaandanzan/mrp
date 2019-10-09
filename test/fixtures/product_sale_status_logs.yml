@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  product_sale: one
+  operator: one
+  status: one
+  note: MyString
+
+two:
+  product_sale: two
+  operator: two
+  status: two
+  note: MyString

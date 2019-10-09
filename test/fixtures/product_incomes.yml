@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  code: MyString
+  income_date: 2019-09-18 13:58:58
+  note: MyString
+  supplier: one
+
+two:
+  code: MyString
+  income_date: 2019-09-18 13:58:58
+  note: MyString
+  supplier: two
