@@ -22,4 +22,5 @@
 //= require moment/locale/mn.js
 //= require bootstrap-select/dist/js/bootstrap-select.js
 //= require cocoon
+//= require consts/bootstrap-select-i18
 

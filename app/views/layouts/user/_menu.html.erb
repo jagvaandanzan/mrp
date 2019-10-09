@@ -21,6 +21,7 @@
       <%= content_tag :li, class: controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations' ||
           controller_name == 'product_categorys' || controller_name == 'product_suppliers' ||
           controller_name == 'product_features' || controller_name == 'product_feature_options' ||
+          controller_name == 'product_locations' ||
           controller_name == 'operators' ? 'treeview active' : 'treeview' do %>
         <%= link_to "#" do %>
           <i class="fa fa-cogs"></i><span><%= t('titles.settings') %></span>
