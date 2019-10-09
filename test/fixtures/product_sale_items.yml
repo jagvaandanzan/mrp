@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  product_sale: one
+  product: one
+  quantity: 1.5
+  price: 1.5
+  bonus: 1.5
+
+two:
+  product_sale: two
+  product: two
+  quantity: 1.5
+  price: 1.5
+  bonus: 1.5

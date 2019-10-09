@@ -3,23 +3,26 @@
     color: #337ab7;
     text-decoration: none;
   }
+
   .cocoon-nested-form .links a {
     float: left !important;
   }
 
-  .group_div{
+  .group_div {
     background: #f5f5f5;
     border: 1px solid lightgray;
     padding: 10px;
   }
 
-  .field_div{
+  .field_div {
     padding: 10px;
   }
-  .field_div input, .field_div textarea{
+
+  .field_div input, .field_div textarea {
     font-size: small;
   }
-  .field_div input, .field_div .dropdown-toggle{
+
+  .field_div input, .field_div .dropdown-toggle {
     font-size: small;
     height: 30px;
   }
@@ -46,7 +49,9 @@
               <%= f.label :sale_date, class: 'control-label' %> <span class="asterisk">*</span>
               <div class="input-append date input-group <%= get_error_class(@product_sale, :sale_date) %>" id="datetimepicker1" style="padding: 0 !important;">
                 <%= field_errors(@product_sale, :sale_date) %>
-                <%= f.text_field :sale_date, value:@product_sale.sale_date.strftime('%F %R'), class: 'form-control', placeholder: t('activerecord.attributes.product_sale.sale_date') %>
+                <span class="form-control"><%= t("activerecord.attributes.product_sale.sale_date") %>...</span>
+                <%= f.hidden_field :sale_date, value: @product_sale.sale_date.strftime('%F %H:%M') %>
+                <%= f.hidden_field :sale_date_end, value: @product_sale.sale_date_end.strftime('%F %H:%M') %>
                 <div class="input-group-addon add-on">
                   <i class="fa fa-calendar"></i>
                 </div>
@@ -65,8 +70,8 @@
               <%= f.label :location_id, class: 'control-label' %>
               <div class="<%= get_error_class(@product_sale, :location_id) %>">
                 <%= field_errors(@product_sale, :location_id) %>
-                <%= f.collection_select :location_id,  Location.searchAll(), :id, :full_name,
-                                        {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker',  "data-live-search": "true", "data-container": ".box-info" } %>
+                <%= f.collection_select :location_id, Location.searchAll(), :id, :full_name,
+                                        {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true", "data-container": ".box-info"} %>
               </div>
             </div>
             <div style="clear: both"></div>
@@ -96,13 +101,13 @@
                   <%= field_errors(@product_sale, :product_sale_items) %>
                   <table class="table table-bordered" id="tb_product_sale_items">
                     <tr>
-                      <th ><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
-                      <th ><%= t('activerecord.attributes.product_sale_item.product_feature_rel_id') %></th>
-                      <th ><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
-                      <th ><%= t('activerecord.attributes.product_sale_item.price') %></th>
-                      <th ><%= t('activerecord.attributes.product_sale_item.sumPrice') %></th>
-<!--                      <th ><%#= t('activerecord.attributes.product_sale_item.uld') %></th>-->
-<!--                      <th ><%#= t('activerecord.attributes.product_sale_item.bonus') %></th>-->
+                      <th><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
+                      <th><%= t('activerecord.attributes.product_sale_item.product_feature_rel_id') %></th>
+                      <th><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
+                      <th><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                      <th><%= t('activerecord.attributes.product_sale_item.sumPrice') %></th>
+                      <!--                      <th ><%#= t('activerecord.attributes.product_sale_item.uld') %></th>-->
+                      <!--                      <th ><%#= t('activerecord.attributes.product_sale_item.bonus') %></th>-->
                       <th width="50px"></th>
                     </tr>
                     <%= f.fields_for :product_sale_items do |m| %>
@@ -150,7 +155,7 @@
                 <%= f.collection_select :main_status_id, ProductSaleStatus.search(nil, "operator"), :id, :name,
                                         {:prompt => t('controls.select.none'),
                                          :selected => (@product_sale.persisted? && @product_sale.status.present?) ? (@product_sale.status.parent.present? ? @product_sale.status.parent_id : @product_sale.status.id) : ''},
-                                        {class: 'form-control selectpicker', onchange: 'callChildren(this)', "data-live-search": "true", "data-container": ".box-info"}%>
+                                        {class: 'form-control selectpicker', onchange: 'callChildren(this)', "data-live-search": "true", "data-container": ".box-info"} %>
               </div>
             </div>
             <div class="col-md-4 field_div">
@@ -160,7 +165,7 @@
                   <%= f.collection_select :sub_status_id, ProductSaleStatus.search(@product_sale.status.parent_id, "operator"), :id, :name,
                                           {:prompt => t('controls.select.none'),
                                            :selected => @product_sale.status.id},
-                                          {class: 'form-control selectpicker', id: 'sub_status_id', onchange: 'set_status(this)', "data-container": ".box-info"}%>
+                                          {class: 'form-control selectpicker', id: 'sub_status_id', onchange: 'set_status(this)', "data-container": ".box-info"} %>
                 <% end %>
               </div>
             </div>
@@ -173,8 +178,6 @@
                 <%= f.text_area :status_note, class: 'form-control', placeholder: t('activerecord.attributes.product_sale.status_note') %>
               </div>
             </div>
-
-
           </div>
 
           <div class="action-buttons">
@@ -188,16 +191,32 @@
 
 <script>
     $(function () {
+        var startDate = $('input#product_sale_sale_date');
+        var endDate = $('input#product_sale_sale_date_end');
+
+        $('#datetimepicker1 span').html(startDate.val() + ' - ' + endDate.val().split(' ')[1]);
+
         $('.selectpicker').selectpicker('refresh');
 
-        $('#datetimepicker1').datetimepicker({
+        $('#datetimepicker1').daterangepicker({
+            dateLimit: {
+                'months': 0,
+                'days': 1
+            },
+            timePicker24Hour: true,
+            startDate: moment(startDate.val(), "YYYY-MM-DD HH:mm"),
+            endDate: moment(endDate.val(), "YYYY-MM-DD HH:mm"),
+            timePicker: true,
             locale: 'mn',
-            format: 'YYYY-MM-DD HH:mm',
-            sideBySide: true
+            format: "YYYY-MM-DD HH:mm"
+        }, function (start, end, label) {
+            $('#datetimepicker1 span').html(start.format('YYYY-MM-DD HH:mm') + ' - ' + end.format('HH:mm'));
+            startDate.val(start.format('YYYY-MM-DD HH:mm'));
+            endDate.val(end.format('YYYY-MM-DD HH:mm'));
         });
     });
 
-    function func_change_price(select){
+    function func_change_price(select) {
         // var selectedOption = select
         // var element = $(select).find('option:selected');
         var price = $(select).find('option:selected').attr("price");
@@ -206,12 +225,12 @@
         parentTr.find("input.item_price").val(price);
     }
 
-    function func_call_feature_rel(select){
+    function func_call_feature_rel(select) {
         var product_id = $(select).val();
         var parentTr = $(select).parent().parent().parent();
         // feature_select = parentTr.find("select.feature-rel");
 
-        if(product_id!=undefined && product_id!=null && product_id!="") {
+        if (product_id != undefined && product_id != null && product_id != "") {
             parentTr.find("select.feature_rel").html("");
             // alert(product_id);
 
@@ -221,11 +240,11 @@
                 data: "product_id=" + product_id,
                 success: function (data) {
                     var childrens = data.childrens;
-                    if (childrens!=undefined && childrens.length > 0) {
+                    if (childrens != undefined && childrens.length > 0) {
                         var divSelect = "<option value=''>Сонгох</option>";
 
                         for (var i = 0; i < childrens.length; i++) {
-                            divSelect += '<option value="' + childrens[i]["id"] + '" price = "'+childrens[i]["price"]+'" >' + childrens[i]["name"] + '</option>';
+                            divSelect += '<option value="' + childrens[i]["id"] + '" price = "' + childrens[i]["price"] + '" >' + childrens[i]["name"] + '</option>';
                         }
 
                         parentTr.find("select.feature_rel").html(divSelect);
@@ -241,17 +260,17 @@
         }
     }
 
-    function set_status(select){
+    function set_status(select) {
         value = $(select).val();
-        if(value!=undefined && value != null && value !="")
-          $("input#product_sale_status_id").val(value);
+        if (value != undefined && value != null && value != "")
+            $("input#product_sale_status_id").val(value);
     }
 
-    function callChildren(select){
+    function callChildren(select) {
         var val = null;
-        if(select != undefined && select != null) {
+        if (select != undefined && select != null) {
             val = $(select).val();
-            if(val!="" && val!=undefined && val!=null) {
+            if (val != "" && val != undefined && val != null) {
 
                 $("input#product_sale_status_id").val(val);
 
@@ -261,7 +280,7 @@
                     data: "parent_id=" + val,
                     success: function (data) {
                         var childrens = data.childrens;
-                        if (childrens!=undefined && childrens.length > 0) {
+                        if (childrens != undefined && childrens.length > 0) {
                             // $(select).prop("disabled", true);
 
                             var divSelect =
@@ -276,8 +295,7 @@
                             $("#substatus").html(divSelect);
 
                             $("#sub_status_id").selectpicker("refresh");
-                        }
-                        else {
+                        } else {
                             $("#substatus").html("");
                         }
 
@@ -294,16 +312,16 @@
         value0 = $(input).val();
         value1 = 0;
         parentTr = $(input).parent().parent();
-        if(!isNaN(parseFloat(value0))){
-            if(type=="quantity" || type=="price"){
-                if(type=="quantity") {
+        if (!isNaN(parseFloat(value0))) {
+            if (type == "quantity" || type == "price") {
+                if (type == "quantity") {
                     value1 = parentTr.find("input.item_price").val();
                 } else {
                     value1 = parentTr.find("input.item_quantity").val();
                 }
 
-                if(!isNaN(parseFloat(value1))){
-                    sum = parseFloat(value1)*parseFloat(value0);
+                if (!isNaN(parseFloat(value1))) {
+                    sum = parseFloat(value1) * parseFloat(value0);
                     parentTr.find("input.item_sum").val(sum);
                     func_calc_sum();
                 }
@@ -313,16 +331,16 @@
         }
     }
 
-    function func_calc_sum(){
+    function func_calc_sum() {
         var sum = 0;
 
-        $("#tb_product_sale_items tr td input.item_sum").each(function(){
+        $("#tb_product_sale_items tr td input.item_sum").each(function () {
             itemSum = $(this).val();
-            if(!isNaN(parseFloat(itemSum))) sum += parseFloat(itemSum);
+            if (!isNaN(parseFloat(itemSum))) sum += parseFloat(itemSum);
         })
 
         delivery = $("#product_sale_payment_delivery").val();
-        if(!isNaN(parseFloat(delivery))) sum += parseFloat(delivery);
+        if (!isNaN(parseFloat(delivery))) sum += parseFloat(delivery);
 
         $("#product_sale_sumPrice").val(sum);
     }

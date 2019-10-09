@@ -50,6 +50,6 @@ class Users::ProductSupplyOrderItemsController < Users::BaseController
   end
 
   def product_supply_order_item_params
-    params.require(:product_supply_order_item).permit(:supply_order_id, :product_id, :quantity, :price, :link, :shuudan, :note)
+    params.require(:product_supply_order_item).permit(:supply_order_id, :product_id, :quantity, :price, :link, :shuudan, :note, :remainder)
   end
 end

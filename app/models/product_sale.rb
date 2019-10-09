@@ -11,6 +11,14 @@ class ProductSale < ApplicationRecord
 
   validates :code, uniqueness: true
 
+  # Утасны дугаар 8 оронтой байхаар шалгадаг, буруу байвал хадгалдаггүй
+  validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true}
+
+  validates_associated :product_sale_items
+
+  # dor hayj neg baraa zarsa baih ystoi
+  validate :sale_item_count
+
   accepts_nested_attributes_for :product_sale_items, allow_destroy: true
 
   scope :created_at_desc, -> {
@@ -26,8 +34,7 @@ class ProductSale < ApplicationRecord
     items = items.where('product_sale_statuses.id = :s OR product_sale_statuses.parent_id=:s', s: status_id) if status_id.present?
     items = items.where(location_id: loc_id) if loc_id.present?
     items = items.where('DATE(sale_date) >= :s AND DATE(sale_date) <= :f', s: "#{start}", f: "#{finish}") if start.present? && finish.present?
-    # items = items.where('income_date >= :s AND income_date <= :f', s: "#{start}", f: "#{finish}") if start.present? && finish.present?
-
+    # items = items.where('income_date >= :s AND income_date <= :f', s: "#{start}",   f: "#{finish}") if start.present? && finish.present?
 
     items
   }
@@ -46,5 +53,11 @@ class ProductSale < ApplicationRecord
     @s += self.payment_delivery if self.payment_delivery.present?
 
     @s
+  end
+
+  private
+  def sale_item_count
+    p "toog toolj uziiy " + self.product_sale_items.length.to_s
+    errors.add(:product_sale_items, "baraa 0 ees ih baih ystoi") if self.product_sale_items.length <= 0
   end
 end
