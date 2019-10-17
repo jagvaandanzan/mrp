@@ -4,6 +4,7 @@ class CreateProductFeatureOptions < ActiveRecord::Migration[5.2]
       t.string :name
       t.references :product_feature, foreign_key: true
 
+      t.datetime :deleted_at
       t.timestamps
     end
   end

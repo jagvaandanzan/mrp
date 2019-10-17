@@ -70,13 +70,13 @@
               <% @supply_orders.each do |p| %>
                 <tr>
                   <td class="va-mid"><%= link_to p.code, users_product_supply_order_items_path(order_id: p.id) %></td>
-                  <td class="va-mid"><%= link_to p.ordered_date.strftime('%F'), users_product_supply_order_items_path(order_id: p.id) %></td>
-                  <td class="va-mid"><%= link_to p.supplier.name, users_product_supply_order_items_path(order_id: p.id) %></td>
+                  <td class="va-mid"><%= p.ordered_date.strftime('%F') %></td>
+                  <td class="va-mid"><%= p.supplier.name %></td>
                   <td class="va-mid"><%= p.payment_i18n %></td>
                   <td class="va-mid"><%= p.exchange_i18n %></td>
                   <td class="va-mid"><%= p.exchange_value %></td>
-                  <td class="va-mid"><%= p.sum_price()  %></td>
-                  <td class="va-mid"><%= p.is_closed ? ( p.closed_date.nil? ? "Хаагдсан" : p.closed_date.strftime('%F')) : "" %></td>
+                  <td class="va-mid"><%= p.sum_price  %></td>
+                  <td class="va-mid"><%= p.is_closed == 1 ? ( p.closed_date.nil? ? "Хаагдсан" : p.closed_date.strftime('%F')) : "" %></td>
                   <td>
                     <div class="btn-group">
                       <%= link_to edit_users_product_supply_order_path(p), class: 'no-underline' do %>

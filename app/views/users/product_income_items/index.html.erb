@@ -56,7 +56,7 @@
                 <th><%= t('activerecord.attributes.product_income_item.income_code') %></th>
                 <th><%= t('activerecord.attributes.product_income_item.supply_order_item_code') %></th>
                 <th><%= t('activerecord.attributes.product_income_item.supply_order_item_id') %></th>
-                <th><%= t('activerecord.attributes.product_income_item.product_feature_rel_id') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.feature_rel_id') %></th>
                 <th><%= t('activerecord.attributes.product_income_item.quantity') %></th>
                 <th><%= t('activerecord.attributes.product_income_item.price') %></th>
                 <th><%= t('activerecord.attributes.product_supply_order.exchange') %></th>
@@ -71,7 +71,7 @@
                   <td class="va-mid underline"><%= o.income.code %></td>
                   <td class="va-mid underline"><%= o.supply_order_item.supply_order.code %></td>
                   <td class="va-mid underline"><%= o.supply_order_item.product.name %></td>
-                  <td class="va-mid underline"><%= o.product_feature_rel.present? ? o.product_feature_rel.rel_names : "" %></td>
+                  <td class="va-mid underline"><%= o.feature_rel.present? ? o.feature_rel.rel_names : "" %></td>
                   <td class="va-mid underline"><%= o.quantity %></td>
                   <td class="va-mid underline"><%= o.price %></td>
                   <td class="va-mid underline"><%= o.supply_order_item.supply_order.exchange_i18n + " (" +  o.supply_order_item.supply_order.exchange_value.to_s + ")" %></td>

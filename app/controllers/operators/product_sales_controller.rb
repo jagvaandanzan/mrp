@@ -14,11 +14,14 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def new
     @product_sale = ProductSale.new
-    @product_sale.code = ApplicationController.helpers.get_code(ProductSale.last)
     # Шинэ захиалга үүсгэх үед + товч дарагдсан гарч ирэх
     @product_sale.product_sale_items.push(ProductSaleItem.new)
-    @product_sale.sale_date = Time.current
-    @product_sale.sale_date_end = @product_sale.sale_date
+    time = Time.current
+    @product_sale.delivery_start = time
+    @product_sale.hour_start = time.hour
+    @product_sale.hour_now = time.hour
+    @product_sale.hour_end = time.hour + 2
+    @product_sale.status_user_type = 'operator'
   end
 
   def search_locations
@@ -54,11 +57,15 @@ class Operators::ProductSalesController < Operators::BaseController
 
       redirect_to action: :index
     else
+      logger.debug(@product_sale.errors.full_messages)
       render 'new'
     end
   end
 
   def edit
+    @product_sale.status_user_type = 'operator'
+    @product_sale.hour_start = @product_sale.delivery_start.hour
+    @product_sale.hour_end = @product_sale.delivery_end.hour
   end
 
   def update
@@ -92,30 +99,31 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def get_sub_status
-    @subs = nil
+    subs = nil
+
     if params[:parent_id].present?
-      @subs = ProductSaleStatus.search(params[:parent_id], "operator")
+      subs = ProductSaleStatus.search(params[:parent_id], params[:status_user_type])
     end
 
-    render json: {childrens: @subs}
+    render json: {childrens: subs}
   end
 
   def get_product_features
-    @features = []
-    @price = 0
+    features = []
+    price = 0
     if params[:product_id].present?
       product = Product.find(params[:product_id])
-      @price = product.sale_price if product.present? && product.sale_price.present?
 
-      @featureRels = ProductFeatureRel.search(params[:product_id])
+      price = product.sale_price if product.present? && product.sale_price.present?
 
-      @featureRels.each do |rel|
-        @features.push({id: rel.id, name: rel.rel_names, price: rel.sale_price})
+      feature_rels = ProductFeatureRel.search(params[:product_id])
+
+      feature_rels.each do |rel|
+        features.push({id: rel.id, name: rel.rel_names, price: rel.sale_price})
       end
     end
 
-    render json: {price: @price,
-                  childrens: @features}
+    render json: {price: price, childrens: features}
   end
 
   private
@@ -126,10 +134,9 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def product_sale_params
     params.require(:product_sale)
-        .permit(:code, :sale_date, :sale_date_end, :phone, :location_id, :building_code, :loc_note,
-                # :delivery_date,
-                :payment_delivery, :payment_account,
-                :status_id, :status_note,
-                product_sale_items_attributes: [:id, :product_id, :product_feature_rel_id, :quantity, :price, :bonus, :_destroy])
+        .permit(:phone, :delivery_start, :hour_start, :hour_end, :location_id, :building_code, :loc_note,
+                :sum_price, :money, :bonus,
+                :main_status_id, :status_id, :status_note, :status_user_type,
+                product_sale_items_attributes: [:id, :product_id, :product_feature_rel_id, :quantity, :price, :sum_price, :_destroy])
   end
 end

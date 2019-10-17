@@ -22,7 +22,7 @@ class Users::ProductFeatureRelsController < Users::BaseController
       flash[:success] = t('alert.saved_successfully')
       redirect_to action: :index, product_id: @product_feature_rel.product.id
     else
-      Rails.logger.debug(@product_feature_rel.errors.full_messages)
+      Rails.logger.debug("error_message: "+@product_feature_rel.errors.full_messages.to_s)
       render 'new'
     end
   end

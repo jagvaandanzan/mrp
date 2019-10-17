@@ -12,5 +12,3 @@ UserPosition.destroy_all
 UserPosition.create!([{:name => 'Менежер'}, {:name => 'Нярав'}, {:name => 'Оператор'}])
 UserPermission.destroy_all
 UserPermission.create!([{:id => 1, :name => 'Админ', :description => 'Админ'}])
-
-#AdminUser.create!(:email => 'enkhamgalan.ch@icloud.com', :admin_permission_id => 1, :password => 'oi0987', :password_confirmation => 'oi0987') if Rails.env.development?

@@ -1,13 +1,7 @@
 <style>
-  /*.links a{*/
-  /*  float:left;*/
-  /*}*/
   .cocoon-nested-form .links a {
     float: left !important;
   }
-    .filter-option-inner-inner{
-      font-size: x-small;
-    }
 </style>
 <div class="content-wrapper">
   <section class="content">
@@ -28,7 +22,7 @@
             <%= f.label :supply_order_item_code, class: 'col-sm-3 control-label' %>
             <div class="col-sm-6 ">
                 <%= f.text_field :supply_order_item_code,
-                                 value: @item.persisted? == false ? "" : @item.supply_order_item.supply_order.code,
+                                 value: @item.supply_order_item.present? ?  @item.supply_order_item.supply_order.code: "",
                                class: 'form-control', disabled: true %>
             </div>
           </div>
@@ -36,11 +30,11 @@
           <div class="form-group">
             <%= f.label :exchange, class: 'col-sm-3 control-label' %>
             <div class="col-sm-3 p-r-0">
-                <%= f.text_field :exchange, value: @item.persisted? == false ? "" : @item.supply_order_item.supply_order.exchange_i18n,
+                <%= f.text_field :exchange, value: @item.supply_order_item.present? ? @item.supply_order_item.supply_order.exchange_i18n : "",
                                  class: 'form-control', disabled: true %>
             </div>
             <div class="col-sm-3 ">
-              <%= f.text_field :exchange_value, value: @item.persisted? == false ? "" : @item.supply_order_item.supply_order.exchange_value,
+              <%= f.text_field :exchange_value, value: @item.supply_order_item.present? ? @item.supply_order_item.supply_order.exchange_value : "",
                                class: 'form-control', disabled: true %>
             </div>
           </div>
@@ -59,12 +53,11 @@
           </div>
 
           <div class="form-group">
-            <%= f.label :product_feature_rel_id, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@item, :product_feature_rel_id) %>">
-              <%= field_errors(@item, :product_feature_rel_id) %>
-              <%= f.collection_select :product_feature_rel_id,  ProductFeatureRel.search_with_nil(@item.persisted? == false ? "" : @item.supply_order_item.product.id), :id, :rel_names,
-                                      {:prompt => t('controls.select.none'), :selected => (@item.persisted? == true && @item.product_feature_rel_id.present?) ? @item.product_feature_rel_id : ""},
-                                      {class: 'form-control selectpicker', "data-live-search": "true", "data-container": ".box-info"} %>
+            <%= f.label :feature_rel_id, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@item, :feature_rel_id) %>">
+              <%= field_errors(@item, :feature_rel_id) %>
+              <%= f.collection_select :feature_rel_id,  ProductFeatureRel.search(@item.supply_order_item.present? ? @item.supply_order_item.product.id: nil), :id, :rel_names,
+                                      {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
             </div>
           </div>
 
@@ -146,7 +139,7 @@
 <script>
     $(document).ready(function() {
         $('.selectpicker').selectpicker('refresh');
-    })
+    });
 
     function supply_order_item_changed(select){
         // alert($(select).val());
@@ -168,9 +161,9 @@
                         for (var i = 0; i < features.length; i++) {
                             feature_select += '<option value="' + features[i]["id"] + '">' + features[i]["name"] + '</option>';
                         }
-                        $("#product_income_item_product_feature_rel_id").html("");
-                        $("#product_income_item_product_feature_rel_id").html("<option>Сонгох</option>" + feature_select);
-                        $("#product_income_item_product_feature_rel_id").selectpicker('refresh');
+                        $("#product_income_item_feature_rel_id")
+                            .html("<option>Сонгох</option>" + feature_select)
+                            .selectpicker('refresh');
                     }
                 },
                 error: function (data) {
@@ -217,8 +210,9 @@
     }
 
     function clearLocation() {
-        $("#mainLocId").prop("disabled", false);
-        $("#mainLocId").val("");
+        $("#mainLocId")
+            .prop("disabled", false)
+            .val("");
 
         $(".product-location").each(function () {
             $(this).remove();

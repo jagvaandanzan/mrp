@@ -1,10 +1,10 @@
 class Location < ApplicationRecord
+  belongs_to :operator
   belongs_to :user
   belongs_to :loc_khoroo
   has_many :location_travels, :foreign_key => "location_from_id", dependent: :destroy
   has_many :location_travels, :foreign_key => "location_to_id", dependent: :destroy
-  has_many :product_sales, :class_name => "ProductSale", :foreign_key => "location_id"
-
+  has_many :product_sales
 
   validates :name, presence: true
 
@@ -17,6 +17,13 @@ class Location < ApplicationRecord
   scope :search_by_name, ->(name) {
     where('name LIKE :value OR name_la LIKE :value', value: "%#{name}%")
         .order(:name)
+  }
+  scope :search_by_id, ->(id) {
+    if id.present?
+      where(id: id)
+    else
+      []
+    end
   }
   scope :searchAll, ->() {
     items = where("")

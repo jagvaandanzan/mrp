@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   # devise_for :operators
   root 'users/loc_districts#index'
 
+  post 'search_product', to: 'application#search_product'
+
   devise_for :admin_users, path: :admin, controllers: {
       sessions: 'admin_users/sessions',
       registrations: 'admin_users/registrations',

@@ -12,7 +12,7 @@ class Users::ProductIncomeItemsController < Users::BaseController
   def new
     @item = ProductIncomeItem.new
     @item.income = ProductIncome.find_by!(id: params[:income_id])
-    @location_arr = ApplicationController.helpers.get_all_location()
+    @location_arr = ApplicationController.helpers.get_all_location
   end
 
   def create
@@ -21,7 +21,11 @@ class Users::ProductIncomeItemsController < Users::BaseController
       flash[:success] = t('alert.saved_successfully')
       redirect_to action: :index, income_id: @item.income.id
     else
-      Rails.logger.debug(@item.errors.full_messages)
+      if @item.supply_order_item.present?
+
+        logger.debug("supply_order_item=>"+@item.supply_order_item.id.to_s)
+      end
+
       render 'new'
     end
   end
@@ -88,7 +92,7 @@ class Users::ProductIncomeItemsController < Users::BaseController
   end
 
   def product_income_item_params
-    params.require(:product_income_item).permit(:income_id, :supply_order_item_id, :product_feature_rel_id, :quantity, :price, :shuudan, :note, :urgent_type,
+    params.require(:product_income_item).permit(:income_id, :supply_order_item_id, :feature_rel_id, :quantity, :price, :shuudan, :note, :urgent_type,
                                                 income_locations_attributes: [:id, :location_id, :quantity, :_destroy])
   end
 end

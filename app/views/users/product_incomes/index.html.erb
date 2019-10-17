@@ -67,7 +67,7 @@
               <% @incomes.each do |p| %>
                 <tr>
                   <td class="va-mid"><%= link_to p.code, users_product_income_items_path(income_id: p.id)  %></td>
-                  <td class="va-mid"><%= link_to p.income_date.strftime('%F %R'), users_product_income_items_path(income_id: p.id) %></td>
+                  <td class="va-mid"><%= p.income_date.strftime('%F %R') %></td>
                   <td class="va-mid"><%= p.supplier.name %></td>
                   <td class="va-mid"><%= p.sum_price() %></td>
                   <td class="va-mid"><%= p.note %></td>

@@ -1,18 +1,29 @@
 class ProductSaleItem < ApplicationRecord
-  belongs_to :product_sale, :class_name => "ProductSale", optional: true
-  belongs_to :product, :class_name => "Product", optional: true
-  belongs_to :product_feature_rel, :class_name => "ProductFeatureRel", optional: true
+  belongs_to :product_sale
+  belongs_to :product
+  belongs_to :product_feature_rel
 
-  # Захиалга үүсгэх үед тоо хэмжээг заавал оруулж байж хадгалдаг болгох
-  validates :quantity, presence: true
+  before_save :set_defaults
 
-  validates :quantity, numericality: {greater_than: 0}
+  validates :product_id, :product_feature_rel_id, :price, :quantity, presence: true
+  validates :quantity, :price, numericality: {greater_than: 0}
+
+  def price
+    ApplicationController.helpers.get_f(self[:price])
+  end
 
   def sum_price
-    if self.price.present? && self.quantity.present?
-      self.price * self.quantity
-    else
-      0
-    end
+    ApplicationController.helpers.get_f(self[:sum_price])
+  end
+
+
+  private
+
+  def set_defaults
+    self.sum_price = if price.present? && quantity.present?
+                       price * quantity
+                     else
+                       0
+                     end
   end
 end

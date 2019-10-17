@@ -1,0 +1,46 @@
+<script>
+    $(document).ready(function () {
+        let startDate = $('input#<%= start_id %>');
+        let endDate = $('input#<%= finish_id %>');
+
+        $('#<%= search_field_id %> span').html(startDate.val() + '-' + endDate.val());
+
+        $('#<%= search_field_id %>').daterangepicker({
+                ranges: {
+                    'Өнөөдөр': [moment(), moment()],
+                    'Өчигдөр': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                    'Сүүлийн 7 хоног': [moment().subtract('days', 6), moment()],
+                    'Сүүлийн 30 хоног': [moment().subtract('days', 29), moment()],
+                    'Энэ сар': [moment().startOf('month'), moment().endOf('month')],
+                    'Өнгөрсөн сар': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                },
+                startDate: moment(),
+                endDate: moment(),
+                format: 'YYYY/MM/DD',
+                locale: {
+                    applyLabel: 'Болсон',
+                    cancelLabel: 'Болих',
+                    fromLabel: 'Аас',
+                    toLabel: 'Хүртэл',
+                    customRangeLabel: 'Өөрөөр сонгох',
+                    dayNames: ["Даваа", "Мягмар", "Лхагва", "Пүрэв", "Баасан", "Бямба", "Ням"],
+                    daysOfWeek: ["Ня", "Да", "Мя", "Лх", "Пү", "Ба", "Бя"],
+                    monthNames: ["Нэгдүгээр сар", "Хоёрдугаар cар", "Гуравдугаар сар", "Дөрөвдүгээр сар", "Тавдугаар сар", "Зургаадугаар сар", "Долоодугаар сар", "Наймдугаар сар", "Есдүгээр сар", "Аравдугаар сар", "Арваннэгдүгээр сар", "Арванхоёрдугаар сар"],
+                    firstDay: 1
+                }
+            },
+            function (start, end) {
+                $('#search-date span').html(start.format('YYYY/MM/DD') + ' - ' + end.format('YYYY/MM/DD'));
+                startDate.val(start.format('YYYY/MM/DD'));
+                endDate.val(end.format('YYYY/MM/DD'));
+            }
+        ).on('apply.daterangepicker', function (ev, picker) {
+            startDate.val(picker.startDate.format('YYYY/MM/DD'));
+            endDate.val(picker.endDate.format('YYYY/MM/DD'));
+        }).on('cancel.daterangepicker', function (ev, picker) {
+            $('#search-date span').html("<%= t("filters.by_date") %>...");
+            startDate.val("");
+            endDate.val("");
+        });
+    });
+</script>

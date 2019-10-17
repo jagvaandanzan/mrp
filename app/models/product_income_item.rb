@@ -3,10 +3,10 @@ class ProductIncomeItem < ApplicationRecord
 
   belongs_to :income, :class_name => "ProductIncome"
   belongs_to :supply_order_item, :class_name => "ProductSupplyOrderItem"
-  belongs_to :product_feature_rel, :class_name => "ProductFeatureRel", optional: true
+  belongs_to :feature_rel, :class_name => "ProductFeatureRel"
   has_many :income_locations, :class_name => "ProductIncomeLocation", :foreign_key => "income_item_id", dependent: :destroy
 
-  validates :income_id, :supply_order_item_id, :urgent_type, :quantity, :price, presence: true
+  validates :income_id, :supply_order_item_id, :feature_rel_id, :urgent_type, :quantity, :price, presence: true
 
   validates :quantity, :price, numericality: {greater_than: 0}
 
@@ -40,7 +40,7 @@ class ProductIncomeItem < ApplicationRecord
     quantity_prev = self.quantity_was || 0
     remainder = ProductSupplyOrderItem.get_remainder(supply_order_item_id) + quantity_prev
     current_total = ProductIncomeItem.total_ordered_supply_item(supply_order_item_id) - quantity_prev
-    if remainder < current_total + self.quantity
+    if remainder < current_total + (self.quantity || 0)
       errors.add(:quantity, :greater_than_or_equal_to, count: remainder)
     end
   end
@@ -61,7 +61,7 @@ class ProductIncomeItem < ApplicationRecord
       end
       s += location.quantity
     end
-    if quantity < s
+    if (self.quantity || 0) < s
       errors.add(:income_locations, :over)
     end
   end

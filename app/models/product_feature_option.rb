@@ -1,5 +1,7 @@
 class ProductFeatureOption < ApplicationRecord
-  belongs_to :product_feature, :class_name => "ProductFeature"
+  acts_as_paranoid
+
+  belongs_to :product_feature
   has_many :product_feature_option_rels, :class_name => "ProductFeatureOptionRel", :foreign_key => "feature_option_id", dependent: :destroy
 
   validates :name, presence: true

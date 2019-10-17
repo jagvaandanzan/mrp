@@ -56,7 +56,7 @@ mn:
     products: Бараа
     product_feature_rels: Барааны шинж чанар
     product_supply_orders: Худалдан авалтын захиалга
-    product_supply_order_items: Худалдан авалтын захиалгын бараанууд
+    product_supply_order_items: Бараанууд
     product_incomes: Орлого
     product_income_items: Орлогын бараанууд
     product_sales: Борлуулалтууд
@@ -129,3 +129,6 @@ mn:
     quarter2: 2 дугаар улирал
     quarter3: 3 дугаар улирал
     quarter4: 4 дүгээр улирал
+  filters:
+    by_date: Огноо сонгох
+    status: Статус

@@ -1,8 +1,8 @@
 class ProductFeatureRel < ApplicationRecord
-  belongs_to :product, :class_name => "Product"
-  has_many :product_feature_option_rels, :class_name => "ProductFeatureOptionRel", :foreign_key => "product_feature_rel_id"
-  has_many :product_income_items, :class_name => "ProductIncomeItem", :foreign_key => "product_feature_rel_id"
-  has_many :product_sale_items, :class_name => "ProductSaleItem", :foreign_key => "product_feature_rel_id"
+  belongs_to :product
+  has_many :product_feature_option_rels, :class_name => "ProductFeatureOptionRel", :foreign_key => "feature_rel_id"
+  has_many :product_income_items, :class_name => "ProductIncomeItem", :foreign_key => "feature_rel_id"
+  has_many :product_sale_items
 
 
   validates :product_id, :barcode, :sale_price, :discount_price, presence: true
@@ -10,16 +10,11 @@ class ProductFeatureRel < ApplicationRecord
   accepts_nested_attributes_for :product_feature_option_rels, allow_destroy: true
 
   scope :search, ->(p_id) {
-    items = where(product_id: p_id)
-    items.order(:created_at)
-  }
-
-  scope :search_with_nil, ->(p_id) {
-    unless p_id.nil?
+    if p_id.nil?
+      []
+    else
       items = where(product_id: p_id)
       items.order(:created_at)
-    else
-      nil
     end
   }
 

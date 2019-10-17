@@ -2,7 +2,7 @@ class ProductSupplyOrderItem < ApplicationRecord
   before_save :set_remainder
 
   belongs_to :supply_order, :class_name => "ProductSupplyOrder"
-  belongs_to :product, -> { with_deleted }, :class_name => "Product"
+  belongs_to :product, -> { with_deleted }
   has_many :income_items, :class_name => "ProductIncomeItem", :foreign_key => "supply_order_item_id", dependent: :destroy
 
   validates :supply_order_id, :product_id, :quantity, :price, presence: true
@@ -17,7 +17,7 @@ class ProductSupplyOrderItem < ApplicationRecord
     items = where(supply_order_id: order_id)
 
     items = items.joins(:product)
-    items = items.where('products.name LIKE :value', value: "%#{sname}%") if sname.present?
+    items = items.where('products.code LIKE :value OR products.name LIKE :value', value: "%#{sname}%") if sname.present?
     items.order("products.name")
   }
 
@@ -33,7 +33,7 @@ class ProductSupplyOrderItem < ApplicationRecord
 
   def quantity_greater_than_total_ordered_supply
     t = ProductIncomeItem.total_ordered_supply_item(self.id)
-    if t.floor > self.quantity.floor
+    if self.quantity.present? && t.floor > self.quantity.floor
       errors.add(:quantity, "は #{t} 以上の値にしてください")
     end
   end

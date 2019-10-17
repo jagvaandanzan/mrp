@@ -31,7 +31,7 @@
               </tr>
               <% @categories.each do |c| %>
                 <tr>
-                  <td class="text-center va-mid"><%= link_to c.name, users_product_categorys_path(parent_id: c.id) %></td>
+                  <td class="va-mid"><%= link_to c.name, users_product_categorys_path(parent_id: c.id) %></td>
                   <td class="text-center va-mid"><%= link_to c.code, users_product_categorys_path(parent_id: c.id) %></td>
                   <td class="text-center va-mid"><%= c.parent.presence ? c.parent.name : "" %></td>
                   <td class="text-center va-mid"><%= c.children.presence ? c.children.count : "0" %></td>

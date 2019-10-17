@@ -1,30 +1,36 @@
 <script>
-    let sel_id = "<%= id %>";
     $(window).on('load', function () {
-        $('select#' + sel_id).parent().find('.bs-searchbox').find('input').keydown(function (e) {
+        select_input_press("<%= id %>", "<%= url %>", false);
+    });
+
+    function select_input_press(id, url, callEnter) {
+        $('select#' + id).parent().find('.bs-searchbox').find('input').keydown(function (e) {
             if (e.which === 13) {
-                e.preventDefault();
-                live_search($(this).val());
+                // e.preventDefault();
+                live_search($(this).val(), id, url);
             }
         }).keyup(function (e) {
             if (e.which === 13) {
-                e.preventDefault();
+                if (callEnter) {
+                    suggestion_search_enter($('select#' + id));
+                }
+                // e.preventDefault();
             } else if (65 <= e.which && e.which <= 90) { // a-z
-                // live_search($(this).val());
+                // live_search($(this).val(), id, url);
             } else if (48 <= e.which && e.which <= 75) { // 0-9
-                // live_search($(this).val());
+                // live_search($(this).val(), id, url);
             } else if (e.which === 32 || e.which === 188 || e.which === 189 || e.which === 190
                 || e.which === 191 || e.which === 219 || e.which === 221
                 || e.which === 186 || e.which === 222) {  // space ь е в ю ъ к д п
-                // live_search($(this).val());
+                // live_search($(this).val(), id, url);
             }
             // String.fromCharCode(e.keyCode)
         });
-    });
+    }
 
-    function live_search(txt) {
+    function live_search(txt, sel_id, url) {
         Rails.ajax({
-            url: "<%= url %>",
+            url: url,
             type: "POST",
             data: "text=" + txt + "&id=" + sel_id,
             success: function (data) {

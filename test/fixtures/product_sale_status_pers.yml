@@ -1,9 +1,0 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  user_type: 1
-  status: one
-
-two:
-  user_type: 1
-  status: two
