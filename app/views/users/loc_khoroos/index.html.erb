@@ -25,11 +25,13 @@
           <div class="box-body table-responsive no-padding">
             <table class="table table-hover">
               <tr>
+                <th class="th-center va-mid" style="width: 30px"><%= t('activerecord.attributes.loc_khoroo.queue') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.loc_khoroo.name') %></th>
                 <th class="th-center va-mid"></th>
               </tr>
               <% @loc_khoroos.each_with_index do |loc_khoroo, index| %>
                 <tr>
+                  <td class="va-mid underline" style="width: 30px"><%= loc_khoroo.queue %></td>
                   <td class="va-mid underline"><%= link_to loc_khoroo.name, users_locations_path(id: loc_khoroo.id) %></td>
                   <td>
                     <div class="btn-loc_khoroo">

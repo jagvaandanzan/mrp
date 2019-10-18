@@ -9,7 +9,15 @@
       <%= form_for :loc_khoroo, url: @loc_khoroo.persisted? ? users_loc_khoroo_path : users_loc_khoroos_path, method: @loc_khoroo.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
           <%= f.hidden_field :loc_district_id %>
-          <div class="form-loc_district">
+          <div class="form-group">
+            <%= f.label :queue, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@loc_khoroo, :queue) %>">
+              <%= field_errors(@loc_khoroo, :queue) %>
+              <%= f.number_field :queue, class: 'form-control', placeholder: t('activerecord.attributes.loc_khoroo.queue') %>
+            </div>
+          </div>
+
+          <div class="form-group">
             <%= f.label :name, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@loc_khoroo, :name) %>">
               <%= field_errors(@loc_khoroo, :name) %>

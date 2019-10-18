@@ -48,6 +48,6 @@ class Users::LocKhoroosController < Users::BaseController
   end
 
   def loc_khoroo_params
-    params.require(:loc_khoroo).permit(:loc_district_id, :name)
+    params.require(:loc_khoroo).permit(:loc_district_id, :queue, :name)
   end
 end

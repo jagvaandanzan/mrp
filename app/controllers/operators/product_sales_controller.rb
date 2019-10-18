@@ -126,6 +126,47 @@ class Operators::ProductSalesController < Operators::BaseController
     render json: {price: price, childrens: features}
   end
 
+  def add_location
+
+    location = Location.create(
+        operator: current_operator,
+        loc_khoroo_id: params[:khoroo_id],
+        name: params[:name],
+        name_la: params[:name_la],
+        latitude: params[:latitude],
+        longitude: params[:longitude])
+
+    if location.valid?
+      render json: {status: :ok, id: location.id}
+    else
+      render json: {status: :error, error: location.errors.full_messages}
+    end
+
+  end
+
+  def search_khoroos
+    @list = LocKhoroo.search(params[:id], nil)
+    @select_id = 'location_loc_khoroo_id'
+
+    respond_to do |format|
+      format.js {render 'shared/search_results'}
+    end
+  end
+
+  def get_last_location
+    latitude = 47.918772
+    longitude = 106.917609
+
+    locations = Location.where("loc_khoroo_id = ?", params[:khoroo_id])
+    if locations.present?
+      location_last = locations.last
+      latitude = location_last.latitude
+      longitude = location_last.longitude
+    end
+
+    render json: {latitude: latitude, longitude: longitude}
+  end
+
   private
 
   def set_product_sale

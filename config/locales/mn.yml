@@ -22,8 +22,10 @@ mn:
       delete_for_checked: Сонгоснуудыг устгах
       save: Хадгалах
       back: Буцах
+      close: Хаах
     select:
       none: Сонгох
+      alert: " сонгоно уу!"
     link:
       forget_password: Нууц үгээ мартсан
   titles:

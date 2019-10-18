@@ -56,8 +56,8 @@ mn:
       user: Хэрэглэгч
       operator: Оператор
       location: Байршил
-      loc_district: Дүүрэг
-      loc_khoroo: Хороо
+      loc_district: Дүүрэг/аймаг
+      loc_khoroo: Хороо/сум
       product_category: Ангилал
       product_location: Байршил
       product_supplier: Нийлүүлэгч
@@ -104,12 +104,14 @@ mn:
         latitude: Өргөрөг
         longitude: Уртраг
         locations: Байршил
+        loc_khoroo_id: Хороо/сум
       loc_district:
         name: Нэр
       loc_khoroo:
-        loc_district: Дүүрэг
-        loc_district_id: Дүүрэг
+        loc_district: Дүүрэг/аймаг
+        loc_district_id: Дүүрэг/аймаг
         name: Нэр
+        queue: Дараалал
       product_category:
         name: Нэр
         code: Код

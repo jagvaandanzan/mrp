@@ -4,13 +4,13 @@
 
     <%= f.collection_select :product_id, Product.search_by_id(f.object.product_id), :id, :full_name,
                             {:prompt => t('controls.select.none')},
-                            {class: 'form-control selectpicker', onchange: 'func_call_feature_rel(this)', "data-live-search": "true", "data-container": ".box-info"} %>
+                            {class: 'form-control selectpicker', onchange: 'func_call_feature_rel(this)', "data-live-search": "true"} %>
   </td>
   <td>
     <%= field_errors f.object, :product_feature_rel_id %>
     <%= f.select :product_feature_rel_id, ProductFeatureRel.search(f.object.product_id.presence || nil).collect {|p| [p.rel_names, p.id, {'price' => p.sale_price}]},
                  {:prompt => t('controls.select.none')},
-                 {class: 'form-control selectpicker feature_rel', onchange: 'func_change_price(this)', "data-live-search": "true", "data-container": ".box-info"} %>
+                 {class: 'form-control selectpicker feature_rel', onchange: 'func_change_price(this)', "data-live-search": "true"} %>
   </td>
   <td>
     <%= field_errors f.object, :quantity %>

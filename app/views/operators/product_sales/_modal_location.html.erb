@@ -1,0 +1,190 @@
+<label class="control-label" for="new_location_id">&nbsp;</label>
+<div id="new_location_id">
+  <button type="button" class="btn btn-primary btn-sm" style="height: 28px!important;" data-toggle="modal" data-target="#location-modal-lg">
+    <i class="fa fa-plus" style="color: white"></i></button>
+</div>
+
+<div class="modal fade" id="location-modal-lg">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span></button>
+        <h4 class="modal-title"><%= t('activerecord.models.location') + ' ' + t('titles.add') %></h4>
+      </div>
+      <div class="box box-info">
+        <%= form_body do %>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-6 field_div">
+                <label class="control-label" for="location_district_id"><%= t('activerecord.models.loc_district') %></label>
+                <div>
+                  <%= select_tag :location_district_id, options_from_collection_for_select(LocDistrict.search, :id, :name), :prompt => t('controls.select.none'),
+                                 class: 'form-control selectpicker', "data-live-search": "true" %>
+                </div>
+              </div>
+              <div class="col-md-6 field_div">
+                <label class="control-label" for="location_loc_khoroo_id"><%= t('activerecord.attributes.location.loc_khoroo_id') %></label>
+                <div id="khoroo_id">
+                  <%= select_tag :location_loc_khoroo_id, options_for_select([]), :prompt => t('controls.select.none'), class: 'form-control selectpicker', "data-live-search": "true" %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-6 field_div">
+                <label class="control-label" for="location_name"><%= t('activerecord.attributes.location.name') %></label>
+                <div>
+                  <%= text_field_tag :location_name, "", {class: 'form-control', placeholder: t('activerecord.attributes.location.name')} %>
+                </div>
+              </div>
+              <div class="col-md-6 field_div">
+                <label class="control-label" for="location_name_la"><%= t('activerecord.attributes.location.name_la') %></label>
+                <div>
+                  <%= text_field_tag :location_name_la, "", {class: 'form-control', placeholder: t('activerecord.attributes.location.name_la')} %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12" style="padding-top: 8px">
+              <div id="map"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><%= t('controls.button.close') %></button>
+            <%= button_tag t('controls.button.save'), type: 'button', class: 'btn btn-warning', id: "new_location_submit" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    function call_khoroo(select) {
+        let id = select.val();
+        if (id !== "" && id !== undefined && id !== null) {
+            Rails.ajax({
+                url: "<%= search_khoroos_operators_product_sales_path %>",
+                type: "POST",
+                data: "id=" + id,
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+    }
+
+    function call_location(select) {
+        let id = select.val();
+        if (id !== "" && id !== undefined && id !== null) {
+            Rails.ajax({
+                url: "<%= get_last_location_operators_product_sales_path %>",
+                type: "POST",
+                data: "khoroo_id=" + id,
+                success: function (data) {
+                    locatoion_new_refresh_marker(data.latitude, data.longitude);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+    }
+
+    var map = null, marker, latitude = 47.918772, longitude = 106.917609;
+
+    function initMap() {
+        let myCoords = new google.maps.LatLng(latitude, longitude);
+        let mapOptions = {
+            center: myCoords,
+            zoom: 17,
+            mapTypeId: 'hybrid',
+            output: 'embed',
+            mapTypeControl: false,
+        };
+        map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        marker = new google.maps.Marker({
+            position: myCoords,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            draggable: true
+        });
+
+        // when marker is dragged update input values
+        marker.addListener('drag', function () {
+            let latlng = marker.getPosition();
+            let newlat = (Math.round(latlng.lat() * 1000000)) / 1000000;
+            let newlng = (Math.round(latlng.lng() * 1000000)) / 1000000;
+            latitude = newlat;
+            longitude = newlng;
+        });
+        // When drag ends, center (pan) the map on the marker position
+        marker.addListener('dragend', function () {
+            map.panTo(marker.getPosition());
+        });
+    }
+
+    // refresh marker position and recenter map on marker
+    function locatoion_new_refresh_marker(lat, lng) {
+        let myCoords = new google.maps.LatLng(lat, lng);
+        marker.setPosition(myCoords);
+        map.setCenter(marker.getPosition());
+    }
+
+    $(document).ready(function () {
+        $('select#location_district_id').on('change', function () {
+            call_khoroo($(this));
+        });
+
+        $('select#location_loc_khoroo_id').on('change', function () {
+            call_location($(this));
+        });
+        $("#location-modal-lg").on('shown.bs.modal', function (e) {
+            if (map == null) initMap();
+        });
+
+        $('#new_location_submit').on('click', function () {
+            let khoroo_id = $('#location_loc_khoroo_id').val();
+            let loc_name = $('#location_name').val();
+            let loc_name_la = $('#location_name_la').val();
+
+            if ($('#location_district_id').val().length === 0) {
+                alert("<%= t('activerecord.models.loc_district')+t('controls.select.alert')%>");
+            } else if (khoroo_id.length === 0) {
+                alert("<%= t('activerecord.models.loc_khoroo')+t('controls.select.alert')%>");
+            } else if (loc_name.length === 0) {
+                alert("<%= t('activerecord.attributes.location.name')+t('activerecord.errors.messages.blank')%>");
+            } else if (loc_name_la.length === 0) {
+                alert("<%= t('activerecord.attributes.location.name_la')+t('activerecord.errors.messages.blank')%>");
+            } else {
+                let btn = $(this);
+                btn.attr('disabled', 'disabled');
+                Rails.ajax({
+                    url: "<%= add_location_operators_product_sales_path %>",
+                    type: "POST",
+                    data: "khoroo_id=" + khoroo_id + "&name=" + loc_name + "&name_la=" + loc_name_la + "&latitude=" + latitude + "&longitude=" + longitude,
+                    success: function (data) {
+                        btn.removeAttr('disabled');
+                        if (data.status === "ok") {
+                            $("#location-modal-lg").modal('hide');
+                            $('#location_name').val("");
+                            $('#location_name_la').val("");
+                            $('#location_district_id').val("").selectpicker("refresh");
+                            $('#location_loc_khoroo_id').html("<option value><%= t('controls.select.none') %></option>").selectpicker("refresh");
+                        } else {
+                            alert(data.error)
+                        }
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                });
+            }
+        });
+    });
+
+</script>
+<%#= button_tag "設定を保存", class: "btn btn-warning", id: 'compare-plan-form-submit', data: { disable_with: "<i class='fa fa-refresh fa-spin'></i> 設定を保存..."} %>
