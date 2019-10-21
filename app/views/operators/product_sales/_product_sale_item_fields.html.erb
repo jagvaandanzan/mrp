@@ -4,11 +4,11 @@
 
     <%= f.collection_select :product_id, Product.search_by_id(f.object.product_id), :id, :full_name,
                             {:prompt => t('controls.select.none')},
-                            {class: 'form-control selectpicker', onchange: 'func_call_feature_rel(this)', "data-live-search": "true"} %>
+                            {class: 'form-control selectpicker select_product', onchange: 'func_call_feature_rel(this)', "data-live-search": "true"} %>
   </td>
   <td>
     <%= field_errors f.object, :product_feature_rel_id %>
-    <%= f.select :product_feature_rel_id, ProductFeatureRel.search(f.object.product_id.presence || nil).collect {|p| [p.rel_names, p.id, {'price' => p.sale_price}]},
+    <%= f.select :product_feature_rel_id, ProductFeatureRel.search(f.object.product_id.presence || nil).collect {|p| [p.rel_names, p.id, {'price' => p.sale_price, product: p.product_id}]},
                  {:prompt => t('controls.select.none')},
                  {class: 'form-control selectpicker feature_rel', onchange: 'func_change_price(this)', "data-live-search": "true"} %>
   </td>
@@ -23,9 +23,9 @@
   <td>
     <%= f.text_field :sum_price, class: 'form-control field item_sum', readonly: true, placeholder: t('activerecord.attributes.product_sale_item.sum_price') %>
   </td>
-  <!--  <td>-->
-  <!--    <button type="button" class="btn btn-default">Үлдэгдэл</button>-->
-  <!--  </td>-->
+  <td>
+    <%= f.text_field :remainder, class: 'form-control field remainder', readonly: true, placeholder: t('activerecord.attributes.product_sale_item.remainder') %>
+  </td>
   <td class="remove">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
       <%= nested_remove_btn %>

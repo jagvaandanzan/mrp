@@ -4,15 +4,18 @@ class ProductIncomeItem < ApplicationRecord
   belongs_to :income, :class_name => "ProductIncome"
   belongs_to :supply_order_item, :class_name => "ProductSupplyOrderItem"
   belongs_to :feature_rel, :class_name => "ProductFeatureRel"
+  belongs_to :user
   has_many :income_locations, :class_name => "ProductIncomeLocation", :foreign_key => "income_item_id", dependent: :destroy
+
+  has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "income_item_id", dependent: :destroy
+  before_save :set_product_balance
 
   validates :income_id, :supply_order_item_id, :feature_rel_id, :urgent_type, :quantity, :price, presence: true
 
   validates :quantity, :price, numericality: {greater_than: 0}
 
-  validate :total_must_be_less_than_remainder
-
-  validate :income_locations_count_check
+  # validate :total_must_be_less_than_remainder
+  # validate :income_locations_count_check
 
   accepts_nested_attributes_for :income_locations, allow_destroy: true
 
@@ -63,6 +66,20 @@ class ProductIncomeItem < ApplicationRecord
     end
     if (self.quantity || 0) < s
       errors.add(:income_locations, :over)
+    end
+  end
+
+  def set_product_balance
+    if product_balance.present?
+      self.product_balance.update(
+          user: user,
+          quantity: quantity
+      )
+    else
+      self.product_balance = ProductBalance.create(product: supply_order_item.product,
+                                                   feature_rel: feature_rel,
+                                                   user: user,
+                                                   quantity: quantity)
     end
   end
 end

@@ -9,6 +9,7 @@ class CreateProductIncomeItems < ActiveRecord::Migration[5.2]
       t.float :shuudan
       t.integer :urgent_type
       t.string :note, limit: 1000
+      t.references :user, foreign_key: true
 
       t.timestamps
     end

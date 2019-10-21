@@ -119,7 +119,7 @@ class Operators::ProductSalesController < Operators::BaseController
       feature_rels = ProductFeatureRel.search(params[:product_id])
 
       feature_rels.each do |rel|
-        features.push({id: rel.id, name: rel.rel_names, price: rel.sale_price})
+        features.push({id: rel.id, name: rel.rel_names, price: rel.sale_price, product: params[:product_id]})
       end
     end
 
@@ -137,7 +137,7 @@ class Operators::ProductSalesController < Operators::BaseController
         longitude: params[:longitude])
 
     if location.valid?
-      render json: {status: :ok, id: location.id}
+      render json: {status: :ok, id: location.id, name: location.full_name}
     else
       render json: {status: :error, error: location.errors.full_messages}
     end
@@ -167,6 +167,18 @@ class Operators::ProductSalesController < Operators::BaseController
     render json: {latitude: latitude, longitude: longitude}
   end
 
+  def get_location
+    location = Location.find(params[:id])
+    if location.present?
+      render json: {latitude: location.latitude, longitude: location.longitude}
+    end
+  end
+
+  def get_product_balance
+    product_balance = ProductBalance.balance(params[:product_id], params[:feature_rel_id])
+    render json: {balance: product_balance}
+  end
+
   private
 
   def set_product_sale
@@ -178,6 +190,6 @@ class Operators::ProductSalesController < Operators::BaseController
         .permit(:phone, :delivery_start, :hour_start, :hour_end, :location_id, :building_code, :loc_note,
                 :sum_price, :money, :bonus,
                 :main_status_id, :status_id, :status_note, :status_user_type,
-                product_sale_items_attributes: [:id, :product_id, :product_feature_rel_id, :quantity, :price, :sum_price, :_destroy])
+                product_sale_items_attributes: [:id, :product_id, :product_feature_rel_id, :quantity, :price, :sum_price, :remainder, :_destroy])
   end
 end

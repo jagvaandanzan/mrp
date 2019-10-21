@@ -231,7 +231,7 @@ mn:
         quantity: Тоо хэмжээ
         price: Үнэ
         sum_price: Нийт
-        uld: Үлдэгдэл
+        remainder: Үлдэгдэл
       product_sale_status_log:
         operator_id: Оператор
         created_at: Огноо

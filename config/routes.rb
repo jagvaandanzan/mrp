@@ -100,6 +100,8 @@ Rails.application.routes.draw do
         post 'add_location'
         post 'search_khoroos'
         post 'get_last_location'
+        post 'get_location'
+        post 'get_product_balance'
       end
     end
 

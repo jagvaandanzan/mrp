@@ -2,6 +2,7 @@ class ProductFeatureRel < ApplicationRecord
   belongs_to :product
   has_many :product_feature_option_rels, :class_name => "ProductFeatureOptionRel", :foreign_key => "feature_rel_id"
   has_many :product_income_items, :class_name => "ProductIncomeItem", :foreign_key => "feature_rel_id"
+  has_many :product_balances, :class_name => "ProductBalance", :foreign_key => "feature_rel_id"
   has_many :product_sale_items
 
 

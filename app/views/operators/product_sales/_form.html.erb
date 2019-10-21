@@ -92,7 +92,7 @@
                   </div>
                 </div>
                 <div class="col-md-4" style="padding: 0">
-                  <div id="selected_location" style="position:absolute;right: 0;width:100%;background-color: lightgrey;height: 218px"></div>
+                  <div id="selected_map" style="position:absolute;right: 0;width:100%;background-color: lightgrey;height: 218px"></div>
                 </div>
               </div>
             </div>
@@ -110,8 +110,7 @@
                       <th><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.price') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
-                      <!--                      <th ><%#= t('activerecord.attributes.product_sale_item.uld') %></th>-->
-                      <!--                      <th ><%#= t('activerecord.attributes.product_sale_item.bonus') %></th>-->
+                      <th><%= t('activerecord.attributes.product_sale_item.remainder') %></th>
                       <th width="50px"></th>
                     </tr>
                     <%= f.fields_for :product_sale_items do |m| %>
@@ -161,7 +160,7 @@
                     <%= field_errors(@product_sale, :main_status) %>
                     <%= f.collection_select :main_status_id, ProductSaleStatus.search(nil, @product_sale.status_user_type), :id, :name,
                                             {:prompt => t('controls.select.none')},
-                                            {class: 'form-control selectpicker', onchange: 'callChildren(this)', "data-live-search": "true", "data-container": ".box-info"} %>
+                                            {class: 'form-control selectpicker', onchange: 'callChildren(this)', "data-live-search": "true"} %>
                   </div>
                 </div>
                 <div class="col-md-4 field_div">
@@ -172,7 +171,7 @@
                         (@product_sale.main_status.present? && @product_sale.main_status.get_status_childs(@product_sale.status_user_type).count > 0) %>
                       <%= f.collection_select :status_id, ProductSaleStatus.search(@product_sale.main_status_id, @product_sale.status_user_type), :id, :name,
                                               {:prompt => t('controls.select.none')},
-                                              {class: 'form-control selectpicker', id: 'status_id', "data-container": ".box-info"} %>
+                                              {class: 'form-control selectpicker', id: 'status_id'} %>
                     <% end %>
                   </div>
                 </div>
@@ -202,23 +201,57 @@
         func_call_feature_rel(select);
     }
 
-    $(function () {
+    $(document).ready(function () {
         $('.selectpicker').selectpicker('refresh');
+
+        $('#product_sale_location_id').on('change', function () {
+            let id = $(this).val();
+            if (valid_id(id)) {
+                Rails.ajax({
+                    url: "<%= get_location_operators_product_sales_path %>",
+                    type: "POST",
+                    data: "id=" + id,
+                    success: function (data) {
+                        selected_locatoion_refresh_marker(data.latitude, data.longitude);
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                });
+            }
+        });
+        initSelectedMap();
     });
+
 
     function func_change_price(select) {
         let price = $(select).find('option:selected').attr("price");
-        let parentTr = $(select).parent().parent().parent();
+        let product_id = $(select).find('option:selected').attr("product");
+        let parentTr = select_parent(select);
         parentTr.find("input.item_price").val(price);
+
+        let feature_rel = $(select).val();
+        if (valid_id(feature_rel) && valid_id(product_id)) {
+            Rails.ajax({
+                url: "<%= get_product_balance_operators_product_sales_path %>",
+                type: "POST",
+                data: "product_id=" + product_id + "&feature_rel_id=" + feature_rel,
+                success: function (data) {
+                    parentTr.find('.remainder').val(data.balance);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
     }
 
     function func_call_feature_rel(select) {
-        var product_id = $(select).val();
+        let product_id = $(select).val();
         if (product_id > 0) {
-            var parentTr = $(select).parent().parent().parent();
-            // feature_select = parentTr.find("select.feature-rel");
+            let parentTr = select_parent(select);
 
-            if (product_id != undefined && product_id != null && product_id != "") {
+            if (valid_id(product_id)) {
                 parentTr.find("select.feature_rel").html("");
                 // alert(product_id);
 
@@ -232,7 +265,7 @@
                             var divSelect = "<option value=''>Сонгох</option>";
 
                             for (var i = 0; i < childrens.length; i++) {
-                                divSelect += '<option value="' + childrens[i]["id"] + '" price = "' + childrens[i]["price"] + '" >' + childrens[i]["name"] + '</option>';
+                                divSelect += '<option value="' + childrens[i]["id"] + '" product="' + childrens[i]["product"] + '" price = "' + childrens[i]["price"] + '" >' + childrens[i]["name"] + '</option>';
                             }
 
                             parentTr.find("select.feature_rel").html(divSelect);
@@ -249,11 +282,15 @@
         }
     }
 
+    function select_parent(select) {
+        return $(select).parent().parent().hasClass('field_with_errors') ? $(select).parent().parent().parent().parent() : $(select).parent().parent().parent();
+    }
+
     function callChildren(select) {
         let val = null;
         if (select !== undefined && select !== null) {
             val = $(select).val();
-            if (val !== "" && val !== undefined && val !== null) {
+            if (valid_id(val)) {
 
                 Rails.ajax({
                     url: "<%= get_sub_status_operators_product_sales_path %>",
@@ -263,7 +300,7 @@
                         let childrens = data.childrens;
                         if (childrens !== undefined && childrens.length > 0) {
                             let divSelect =
-                                "<select name='product_sale[status_id]' id=\"status_id\" class='form-control' data-container='.box-info'>" +
+                                "<select name='product_sale[status_id]' id=\"status_id\" class='form-control'>" +
                                 "<option value=''>Сонгох</option>";
 
                             for (var i = 0; i < childrens.length; i++) {
@@ -327,4 +364,37 @@
 
         $("#product_sale_sum_price").val(sum);
     }
+
+    var selected_map = null, selected_marker;
+
+    function initSelectedMap() {
+        let lat = 47.918772;
+        let lng = 106.917609;
+        <% if @product_sale.location.present? %>
+        lat = <%= @product_sale.location.latitude %>;
+        lng = <%= @product_sale.location.longitude %>;
+        <% end %>
+        let myCoords = new google.maps.LatLng(lat, lng);
+        let mapOptions = {
+            center: myCoords,
+            zoom: 15,
+            mapTypeId: 'hybrid',
+            output: 'embed',
+            streetViewControl: false,
+            mapTypeControl: false,
+        };
+        selected_map = new google.maps.Map(document.getElementById('selected_map'), mapOptions);
+        selected_marker = new google.maps.Marker({
+            position: myCoords,
+            animation: google.maps.Animation.DROP,
+            map: selected_map
+        });
+    }
+
+    function selected_locatoion_refresh_marker(lat, lng) {
+        let myCoords = new google.maps.LatLng(lat, lng);
+        selected_marker.setPosition(myCoords);
+        selected_map.setCenter(selected_marker.getPosition());
+    }
+
 </script>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_16_042640) do
+ActiveRecord::Schema.define(version: 2019_10_21_054127) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 2019_10_16_042640) do
   create_table "loc_khoroos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "loc_district_id"
     t.string "name"
+    t.integer "queue"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["loc_district_id"], name: "index_loc_khoroos_on_loc_district_id"
@@ -101,6 +102,25 @@ ActiveRecord::Schema.define(version: 2019_10_16_042640) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_operators_on_email", unique: true
     t.index ["reset_password_token"], name: "index_operators_on_reset_password_token", unique: true
+  end
+
+  create_table "product_balances", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "product_id"
+    t.bigint "feature_rel_id"
+    t.bigint "income_item_id"
+    t.bigint "sale_item_id"
+    t.bigint "user_id"
+    t.bigint "operator_id"
+    t.integer "quantity"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["feature_rel_id"], name: "index_product_balances_on_feature_rel_id"
+    t.index ["income_item_id"], name: "index_product_balances_on_income_item_id"
+    t.index ["operator_id"], name: "index_product_balances_on_operator_id"
+    t.index ["product_id"], name: "index_product_balances_on_product_id"
+    t.index ["sale_item_id"], name: "index_product_balances_on_sale_item_id"
+    t.index ["user_id"], name: "index_product_balances_on_user_id"
   end
 
   create_table "product_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -158,11 +178,13 @@ ActiveRecord::Schema.define(version: 2019_10_16_042640) do
     t.float "shuudan"
     t.integer "urgent_type"
     t.string "note", limit: 1000
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["feature_rel_id"], name: "index_product_income_items_on_feature_rel_id"
     t.index ["income_id"], name: "index_product_income_items_on_income_id"
     t.index ["supply_order_item_id"], name: "index_product_income_items_on_supply_order_item_id"
+    t.index ["user_id"], name: "index_product_income_items_on_user_id"
   end
 
   create_table "product_income_locations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -244,7 +266,6 @@ ActiveRecord::Schema.define(version: 2019_10_16_042640) do
     t.string "building_code"
     t.string "loc_note"
     t.datetime "delivery_date"
-    t.float "payment_delivery", limit: 53
     t.integer "money"
     t.float "bonus"
     t.float "sum_price", limit: 53
@@ -377,6 +398,12 @@ ActiveRecord::Schema.define(version: 2019_10_16_042640) do
   add_foreign_key "locations", "loc_khoroos"
   add_foreign_key "locations", "operators"
   add_foreign_key "locations", "users"
+  add_foreign_key "product_balances", "operators"
+  add_foreign_key "product_balances", "product_feature_rels", column: "feature_rel_id"
+  add_foreign_key "product_balances", "product_income_items", column: "income_item_id"
+  add_foreign_key "product_balances", "product_sale_items", column: "sale_item_id"
+  add_foreign_key "product_balances", "products"
+  add_foreign_key "product_balances", "users"
   add_foreign_key "product_categories", "product_categories", column: "parent_id"
   add_foreign_key "product_feature_option_rels", "product_feature_options", column: "feature_option_id"
   add_foreign_key "product_feature_option_rels", "product_feature_rels", column: "feature_rel_id"
@@ -385,6 +412,7 @@ ActiveRecord::Schema.define(version: 2019_10_16_042640) do
   add_foreign_key "product_income_items", "product_feature_rels", column: "feature_rel_id"
   add_foreign_key "product_income_items", "product_incomes", column: "income_id"
   add_foreign_key "product_income_items", "product_supply_order_items", column: "supply_order_item_id"
+  add_foreign_key "product_income_items", "users"
   add_foreign_key "product_income_locations", "product_income_items", column: "income_item_id"
   add_foreign_key "product_income_locations", "product_locations", column: "location_id"
   add_foreign_key "product_incomes", "product_suppliers", column: "supplier_id"

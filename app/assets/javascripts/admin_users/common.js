@@ -46,3 +46,7 @@ function getDecimalPay(numval) {
     }
     return numval;
 }
+
+function valid_id(id) {
+    return id !== undefined && id !== null && id !== ""
+}

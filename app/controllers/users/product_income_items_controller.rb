@@ -94,5 +94,6 @@ class Users::ProductIncomeItemsController < Users::BaseController
   def product_income_item_params
     params.require(:product_income_item).permit(:income_id, :supply_order_item_id, :feature_rel_id, :quantity, :price, :shuudan, :note, :urgent_type,
                                                 income_locations_attributes: [:id, :location_id, :quantity, :_destroy])
+        .merge(:user => current_user)
   end
 end

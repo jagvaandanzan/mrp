@@ -12,7 +12,7 @@ class Operator < ApplicationRecord
   has_many :created_product_sales, :class_name => "ProductSale", :foreign_key => "created_operator_id"
   has_many :approved_product_sales, :class_name => "ProductSale", :foreign_key => "approved_operator_id"
   has_many :product_sale_status_logs, :class_name => "ProductSaleStatusLog", :foreign_key => "operator_id"
-
+  has_many :product_expenditures
 
   enum gender: {male: 0, female: 1}
 
