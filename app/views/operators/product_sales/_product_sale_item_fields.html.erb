@@ -24,7 +24,7 @@
     <%= f.text_field :sum_price, class: 'form-control field item_sum', readonly: true, placeholder: t('activerecord.attributes.product_sale_item.sum_price') %>
   </td>
   <td>
-    <%= f.text_field :remainder, class: 'form-control field remainder', readonly: true, placeholder: t('activerecord.attributes.product_sale_item.remainder') %>
+    <%= f.text_field :remainder, class: 'form-control field remainder', value: f.object.remainder.presence || f.object.get_balance, readonly: true, placeholder: t('activerecord.attributes.product_sale_item.remainder') %>
   </td>
   <td class="remove">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>

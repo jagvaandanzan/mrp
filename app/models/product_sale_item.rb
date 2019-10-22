@@ -22,6 +22,9 @@ class ProductSaleItem < ApplicationRecord
     ApplicationController.helpers.get_f(self[:sum_price])
   end
 
+  def get_balance
+    ProductBalance.balance(product_id, product_feature_rel_id)
+  end
 
   private
 
@@ -37,16 +40,16 @@ class ProductSaleItem < ApplicationRecord
     if product_balance.present?
       self.product_balance.update(
           operator: product_sale.created_operator,
-          quantity: quantity)
+          quantity: -quantity)
     else
       self.product_balance = ProductBalance.create(product: product,
                                                    feature_rel: product_feature_rel,
                                                    operator: product_sale.created_operator,
-                                                   quantity: quantity)
+                                                   quantity: -quantity)
     end
   end
 
   def set_remainder
-    self.remainder = ProductBalance.balance(self.product_id, self.product_feature_rel_id)
+    self.remainder = ProductBalance.balance(self.product_id, self.product_feature_rel_id) + (quantity_was.presence || 0)
   end
 end
