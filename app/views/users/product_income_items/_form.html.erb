@@ -22,7 +22,7 @@
             <%= f.label :supply_order_item_code, class: 'col-sm-3 control-label' %>
             <div class="col-sm-6 ">
                 <%= f.text_field :supply_order_item_code,
-                                 value: @item.supply_order_item.present? ?  @item.supply_order_item.supply_order.code: "",
+                                 value: @item.supply_order_item.present? ?  @item.supply_order_item.product_supply_order.code: "",
                                class: 'form-control', disabled: true %>
             </div>
           </div>
@@ -30,21 +30,21 @@
           <div class="form-group">
             <%= f.label :exchange, class: 'col-sm-3 control-label' %>
             <div class="col-sm-3 p-r-0">
-                <%= f.text_field :exchange, value: @item.supply_order_item.present? ? @item.supply_order_item.supply_order.exchange_i18n : "",
+                <%= f.text_field :exchange, value: @item.supply_order_item.present? ? @item.supply_order_item.product_supply_order.exchange_i18n : "",
                                  class: 'form-control', disabled: true %>
             </div>
             <div class="col-sm-3 ">
-              <%= f.text_field :exchange_value, value: @item.supply_order_item.present? ? @item.supply_order_item.supply_order.exchange_value : "",
+              <%= f.text_field :exchange_value, value: @item.supply_order_item.present? ? @item.supply_order_item.product_supply_order.exchange_value : "",
                                class: 'form-control', disabled: true %>
             </div>
           </div>
 
-          <div class="form-group">
-            <%= f.label :supply_order_item_id, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@item, :supply_order_item_id) %>">
-              <%= field_errors(@item, :supply_order_item_id) %>
-              <%= f.grouped_collection_select :supply_order_item_id, ProductSupplyOrder.searchNotClosed(),
-                                              :items, :code_with_info,
+          <div class="form-group">`
+            <%= f.label :product_supply_order_id, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@item, :product_supply_order_id) %>">
+              <%= field_errors(@item, :product_supply_order_id) %>
+              <%= f.grouped_collection_select :product_supply_order_id, ProductSupplyOrder.searchNotClosed(),
+                                              :product_supply_order_items, :code_with_info,
                                               :id, :product_name_with_code,
                                               {:prompt => t('controls.select.none')},
                                               {class: 'form-control selectpicker', onchange: 'supply_order_item_changed(this)',

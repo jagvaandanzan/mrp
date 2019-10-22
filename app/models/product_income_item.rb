@@ -27,7 +27,7 @@ class ProductIncomeItem < ApplicationRecord
     # items = created_at_desc
     items = where(income_id: income_id)
     items = items.joins(supply_order_item: :product).where("products.name LIKE :value", value: "%#{sname}%") if sname.present?
-    items = items.joins(supply_order_item: :supply_order)
+    items = items.joins(supply_order_item: :product_supply_order)
     items = items.where("product_supply_orders.code LIKE :value", value: "%#{scode}%") if scode.present?
     items = items.where('urgent_type = ?', ProductIncomeItem.urgent_types[stype]) if stype.present?
 

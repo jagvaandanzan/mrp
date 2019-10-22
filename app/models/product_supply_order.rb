@@ -30,7 +30,7 @@ class ProductSupplyOrder < ApplicationRecord
 
   scope :searchNotClosed, ->() {
     items = created_at_desc
-    items = items.joins(:items).distinct
+    items = items.joins(:product_supply_order_items).distinct
     items = items.where('is_closed = false')
     items
   }

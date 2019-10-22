@@ -69,13 +69,13 @@
               <% @items.each_with_index do |o| %>
                 <tr>
                   <td class="va-mid underline"><%= o.income.code %></td>
-                  <td class="va-mid underline"><%= o.supply_order_item.supply_order.code %></td>
+                  <td class="va-mid underline"><%= o.supply_order_item.product_supply_order.code %></td>
                   <td class="va-mid underline"><%= o.supply_order_item.product.name %></td>
                   <td class="va-mid underline"><%= o.feature_rel.present? ? o.feature_rel.rel_names : "" %></td>
                   <td class="va-mid underline"><%= o.quantity %></td>
                   <td class="va-mid underline"><%= o.price %></td>
-                  <td class="va-mid underline"><%= o.supply_order_item.supply_order.exchange_i18n + " (" +  o.supply_order_item.supply_order.exchange_value.to_s + ")" %></td>
-                  <td class="va-mid underline"><%= ((o.quantity*o.price)* o.supply_order_item.supply_order.exchange_value) %></td>
+                  <td class="va-mid underline"><%= o.supply_order_item.product_supply_order.exchange_i18n + " (" +  o.supply_order_item.product_supply_order.exchange_value.to_s + ")" %></td>
+                  <td class="va-mid underline"><%= ((o.quantity*o.price)* o.supply_order_item.product_supply_order.exchange_value) %></td>
                   <td class="va-mid underline"><%= o.shuudan %></td>
                   <td class="va-mid underline"><%= o.urgent_type_i18n %></td>
                   <td class="va-mid underline"><%= o.note %></td>

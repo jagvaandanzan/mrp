@@ -76,9 +76,9 @@ class Users::ProductIncomeItemsController < Users::BaseController
         feature_arr.push({id: item.id, name: item.rel_names})
       end
 
-      render json: {order_code: @supply_order_item.supply_order.code,
-                    exchange: @supply_order_item.supply_order.exchange_i18n,
-                    exchange_value: @supply_order_item.supply_order.exchange_value,
+      render json: {order_code: @supply_order_item.product_supply_order.code,
+                    exchange: @supply_order_item.product_supply_order.exchange_i18n,
+                    exchange_value: @supply_order_item.product_supply_order.exchange_value,
                     features: feature_arr}
     else
       render json: {}
