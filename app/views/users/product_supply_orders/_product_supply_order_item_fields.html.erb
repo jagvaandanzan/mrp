@@ -1,0 +1,54 @@
+<tr class="nested-fields">
+  <td>
+    <%= field_errors f.object, :product_id %>
+    <%= f.collection_select :product_id, Product.search_by_id(f.object.product_id), :id, :full_name,
+                            {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
+  </td>
+  <td>
+    <%= field_errors f.object, :quantity %>
+    <%= f.number_field :quantity, class: 'form-control field', placeholder: t('activerecord.attributes.product_supply_order_item.quantity') %>
+  </td>
+  <td>
+    <%= field_errors f.object, :price %>
+    <%= f.number_field :price, class: 'form-control field', min: 0, step: 0.01, placeholder: t('activerecord.attributes.product_supply_order_item.price') %>
+  </td>
+  <td>
+    <%= field_errors f.object, :link %>
+    <%= f.text_field :link, class: 'form-control field', placeholder: t('activerecord.attributes.product_supply_order_item.link') %>
+  </td>
+  <td>
+    <%= field_errors f.object, :shuudan %>
+    <%= f.number_field :shuudan, class: 'form-control field', min: 0, step: 0.1, placeholder: t('activerecord.attributes.product_supply_order_item.shuudan') %>
+  </td>
+  <td>
+    <%= field_errors f.object, :note %>
+    <%= f.text_field :note, class: 'form-control field', placeholder: t('activerecord.attributes.product_supply_order_item.note') %>
+  </td>
+  <td class="remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>
+
+<script>
+    $(document).ready(function () {
+
+        $('.selectpicker').selectpicker('refresh');
+        select_input_press($('tr.nested-fields:last select:first').attr('id'), "<%= search_product_path %>", false);
+
+        $('.item_append #btn-append').click(function () {
+            if ($('#tb_product_supply_order_items tbody tr').length > 0) {
+                let tr = $('#tb_product_supply_order_items tbody tr:last');
+                per_price = tr.find('td').eq(2).find('input').val();
+                setTimeout(set_per_price, 100);
+            }
+        });
+
+    });
+    function set_per_price() {
+        let tr = $('#tb_product_supply_order_items tbody tr:last');
+        tr.find('td').eq(2).find('input').val(per_price);
+    }
+
+</script>

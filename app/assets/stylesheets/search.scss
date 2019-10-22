@@ -19,3 +19,16 @@ div.search input, div.search select, div.search a, div.search .dropdown-toggle {
 .table-search {
   font-size: smaller;
 }
+
+div.search input, div.search select, div.search a {
+  font-size: smaller !important;
+  height: 30px !important;
+  padding-top: 6px;
+}
+
+#searchDate {
+  font-size: smaller !important;
+  height: 30px !important;
+  padding-top: 6px;
+  padding-left: 5px !important;
+}

@@ -1,0 +1,100 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "show" %>
+<% end %>
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('activerecord.models.product_supply_order') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <%= link_to t('controls.button.edit'), edit_users_product_supply_order_path(@product_supply_order), class: 'btn btn-info' %>
+    <%= link_to t('titles.back_to_list'), users_product_supply_orders_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
+    <%= link_to t('controls.button.delete'), users_product_supply_order_path(@product_supply_order), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-3 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_supply_order.code') %>:</b> <%= @product_supply_order.code %>
+              </div>
+            </div>
+            <div class="col-md-3 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_supply_order.ordered_date') %>:</b> <%= @product_supply_order.ordered_date.strftime('%F') %>
+              </div>
+            </div>
+            <div class="col-md-3 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_supply_order.supplier_id') %>:</b> <%= @product_supply_order.supplier.name %>
+              </div>
+            </div>
+            <div class="col-md-3 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_supply_order.payment') %>:</b> <%= @product_supply_order.payment_i18n %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-3 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_supply_order.exchange') %>:</b> <%= @product_supply_order.exchange_i18n %>
+              </div>
+            </div>
+            <div class="col-md-3 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_supply_order.exchange_value') %>:</b> <%= get_currency_mn(@product_supply_order.exchange_value) %>
+              </div>
+            </div>
+            <div class="col-md-3 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_supply_order.is_closed') %>:</b> <%= @product_supply_order.is_closed_i18n %>
+              </div>
+            </div>
+            <div class="col-md-3 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_supply_order.supplier_id') %>:</b> <%= @product_supply_order.closed_date.present? ? @product_supply_order.closed_date.strftime('%F') : ''  %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <% if @product_supply_order.product_supply_order_items.present? %>
+          <div class="col-md-12 group_div m-t-20">
+              <b><%= t('activerecord.attributes.product_supply_order.product_supply_order_items') %></b>
+              <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th><%= t('activerecord.attributes.product_supply_order_item.product_id') %></th>
+                  <th><%= t('activerecord.attributes.product_supply_order_item.quantity') %></th>
+                  <th><%= t('activerecord.attributes.product_supply_order_item.price') %></th>
+                  <th><%= t('activerecord.attributes.product_supply_order_item.link') %></th>
+                  <th><%= t('activerecord.attributes.product_supply_order_item.shuudan') %></th>
+                  <th><%= t('activerecord.attributes.product_supply_order_item.note') %></th>
+                </tr>
+                </thead>
+                <tbody>
+                <% @product_supply_order.product_supply_order_items.each do |p| %>
+                  <tr>
+                    <td class="va-mid"><%= p.product.full_name %></td>
+                    <td class="va-mid"><%= p.quantity %></td>
+                    <td class="va-mid"><%= get_currency_mn p.price %></td>
+                    <td class="va-mid"><%= p.link.presence || '' %></td>
+                    <td class="va-mid"><%= get_f p.shuudan %></td>
+                    <td class="va-mid"><%= p.note.presence || '' %></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

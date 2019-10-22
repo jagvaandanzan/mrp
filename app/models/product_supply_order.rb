@@ -2,7 +2,11 @@ class ProductSupplyOrder < ApplicationRecord
   belongs_to :supplier, -> {with_deleted}, :class_name => "ProductSupplier"
   belongs_to :user
 
-  has_many :items, :class_name => "ProductSupplyOrderItem", :foreign_key => "supply_order_id", dependent: :destroy
+  has_many :product_supply_order_items, dependent: :destroy
+
+  accepts_nested_attributes_for :product_supply_order_items, allow_destroy: true
+
+  before_save :set_sum_price
 
   validates :supplier_id, :code, :payment, :exchange, :exchange_value, presence: true
   validates :code, uniqueness: true
@@ -35,12 +39,18 @@ class ProductSupplyOrder < ApplicationRecord
     ApplicationController.helpers.get_f(self[:exchange_value])
   end
 
-  def sum_price
-    sum_price = items.sum("quantity*price")
-    ApplicationController.helpers.get_currency_mn(sum_price * self.exchange_value)
-  end
-
   def code_with_info
     "Захиалга - #{self.code}"
   end
+
+  private
+
+  def set_sum_price
+    sum = 0
+    product_supply_order_items.each do |item|
+      sum += item.quantity * item.price
+    end
+    self.sum_price = sum * self.exchange_value
+  end
+
 end

@@ -169,6 +169,7 @@ mn:
         closed_date: Хаагдсан огноо
         is_closed: Хаагдсан
         sum_price: Нийт дүн (₮)
+        product_supply_order_items: Бараанууд
       product_supply_order_item:
         supply_order_id: Худалдан авалт
         product_id: Бараа

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_22_042437) do
+ActiveRecord::Schema.define(version: 2019_10_22_072530) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -219,6 +219,7 @@ ActiveRecord::Schema.define(version: 2019_10_22_042437) do
     t.datetime "income_date"
     t.string "note"
     t.bigint "supplier_id"
+    t.float "sum_price", limit: 53
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["supplier_id"], name: "index_product_incomes_on_supplier_id"
@@ -312,6 +313,7 @@ ActiveRecord::Schema.define(version: 2019_10_22_042437) do
   end
 
   create_table "product_supply_order_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "product_supply_order_id"
     t.bigint "supply_order_id"
     t.bigint "product_id"
     t.float "quantity"
@@ -322,6 +324,7 @@ ActiveRecord::Schema.define(version: 2019_10_22_042437) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["product_id"], name: "index_product_supply_order_items_on_product_id"
+    t.index ["product_supply_order_id"], name: "index_product_supply_order_items_on_product_supply_order_id"
     t.index ["supply_order_id"], name: "index_product_supply_order_items_on_supply_order_id"
   end
 
@@ -332,6 +335,7 @@ ActiveRecord::Schema.define(version: 2019_10_22_042437) do
     t.integer "payment"
     t.integer "exchange"
     t.float "exchange_value"
+    t.float "sum_price", limit: 53
     t.datetime "closed_date"
     t.integer "is_closed", default: 0
     t.bigint "user_id"
@@ -451,6 +455,7 @@ ActiveRecord::Schema.define(version: 2019_10_22_042437) do
   add_foreign_key "product_sales", "operators", column: "created_operator_id"
   add_foreign_key "product_sales", "product_sale_statuses", column: "main_status_id"
   add_foreign_key "product_sales", "product_sale_statuses", column: "status_id"
+  add_foreign_key "product_supply_order_items", "product_supply_orders"
   add_foreign_key "product_supply_order_items", "product_supply_orders", column: "supply_order_id"
   add_foreign_key "product_supply_order_items", "products"
   add_foreign_key "product_supply_orders", "product_suppliers", column: "supplier_id"

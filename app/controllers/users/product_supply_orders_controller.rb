@@ -1,5 +1,5 @@
 class Users::ProductSupplyOrdersController < Users::BaseController
-  before_action :set_product_supply_order, only: [:edit, :update, :destroy]
+  before_action :set_product_supply_order, only: [:edit, :show, :update, :destroy]
 
   def index
     @by_code = params[:by_code]
@@ -12,19 +12,33 @@ class Users::ProductSupplyOrdersController < Users::BaseController
     @product_supply_order = ProductSupplyOrder.new
     @product_supply_order.ordered_date = Time.current
     @product_supply_order.code = ApplicationController.helpers.get_code(ProductSupplyOrder.last)
+
+    item = ProductSupplyOrderItem.new
+    items = ProductSupplyOrderItem.all
+    item.price = if items.present?
+                   items.last.price
+                 else
+                   0
+                 end
+    @product_supply_order.product_supply_order_items << item
+
   end
 
   def create
     @product_supply_order = ProductSupplyOrder.new(product_supply_order_params)
     if @product_supply_order.save
       flash[:success] = t('alert.saved_successfully')
-      redirect_to action: 'index'
+      redirect_to :action => 'show', id: @product_supply_order.id
     else
+      logger.debug(@product_supply_order.errors.full_messages)
       render 'new'
     end
   end
 
   def edit
+  end
+
+  def show
   end
 
   def update
@@ -50,6 +64,8 @@ class Users::ProductSupplyOrdersController < Users::BaseController
   end
 
   def product_supply_order_params
-    params.require(:product_supply_order).permit(:code, :ordered_date, :supplier_id, :payment, :exchange, :exchange_value, :is_closed, :closed_date)
+    params.require(:product_supply_order).permit(:code, :ordered_date, :supplier_id, :payment, :exchange, :exchange_value, :is_closed, :closed_date,
+                                                 product_supply_order_items_attributes: [:id, :product_id, :quantity, :price, :link, :shuudan, :note, :_destroy])
+        .merge(:user => current_user)
   end
 end

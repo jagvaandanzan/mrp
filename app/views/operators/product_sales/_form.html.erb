@@ -101,7 +101,7 @@
               <%= f.label :product_sale_items, class: 'control-label' %>
 
               <div class="cocoon-nested-form">
-                <div class="col-sm-11 p-0 <%= get_error_class(@product_sale, :product_sale_items) %>">
+                <div class="<%= get_error_class(@product_sale, :product_sale_items) %>">
                   <%= field_errors(@product_sale, :product_sale_items) %>
                   <table class="table table-bordered" id="tb_product_sale_items">
                     <tr>
@@ -118,7 +118,7 @@
                     <% end %>
                   </table>
                 </div>
-                <div class="links col-sm-1 pull-left">
+                <div class="links">
                   <%= link_to_add_association f, :product_sale_items, data: {association_insertion_node: '#tb_product_sale_items', association_insertion_method: :append} do %>
                     <%= nested_add_btn %>
                   <% end %>

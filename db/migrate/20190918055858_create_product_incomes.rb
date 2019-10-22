@@ -5,6 +5,7 @@ class CreateProductIncomes < ActiveRecord::Migration[5.2]
       t.datetime :income_date
       t.string :note
       t.references :supplier, foreign_key: {to_table: :product_suppliers}
+      t.float :sum_price, limit: 53
 
       t.timestamps
     end
