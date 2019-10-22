@@ -1,5 +1,7 @@
 class ProductSupplyOrder < ApplicationRecord
   belongs_to :supplier, -> {with_deleted}, :class_name => "ProductSupplier"
+  belongs_to :user
+
   has_many :items, :class_name => "ProductSupplyOrderItem", :foreign_key => "supply_order_id", dependent: :destroy
 
   validates :supplier_id, :code, :payment, :exchange, :exchange_value, presence: true
@@ -29,9 +31,13 @@ class ProductSupplyOrder < ApplicationRecord
     items
   }
 
+  def exchange_value
+    ApplicationController.helpers.get_f(self[:exchange_value])
+  end
+
   def sum_price
     sum_price = items.sum("quantity*price")
-    sum_price * self.exchange_value
+    ApplicationController.helpers.get_currency_mn(sum_price * self.exchange_value)
   end
 
   def code_with_info

@@ -39,6 +39,8 @@ class ProductSaleItem < ApplicationRecord
   def set_product_balance
     if product_balance.present?
       self.product_balance.update(
+          product: product,
+          feature_rel: product_feature_rel,
           operator: product_sale.created_operator,
           quantity: -quantity)
     else

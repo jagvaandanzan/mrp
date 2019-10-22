@@ -8,7 +8,6 @@ class CreateProductSupplyOrderItems < ActiveRecord::Migration[5.2]
       t.string :link, limit: 500
       t.float :shuudan
       t.string :note, limit: 1000
-      t.integer :remainder
 
       t.timestamps
     end

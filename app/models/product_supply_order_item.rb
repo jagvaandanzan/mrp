@@ -1,13 +1,14 @@
 class ProductSupplyOrderItem < ApplicationRecord
-  before_save :set_remainder
 
   belongs_to :supply_order, :class_name => "ProductSupplyOrder"
   belongs_to :product, -> { with_deleted }
   has_many :income_items, :class_name => "ProductIncomeItem", :foreign_key => "supply_order_item_id", dependent: :destroy
 
-  validates :supply_order_id, :product_id, :quantity, :price, presence: true
+  has_one :product_income_balance, :class_name => "ProductIncomeBalance", :foreign_key => "supply_order_item_id", dependent: :destroy
 
-  validate :quantity_greater_than_total_ordered_supply
+  before_save :set_product_balance
+
+  validates :supply_order_id, :product_id, :quantity, :price, presence: true
 
   scope :order_by_date, -> {
     order(:created_at)
@@ -29,17 +30,23 @@ class ProductSupplyOrderItem < ApplicationRecord
     "#{self.product.code} - #{self.product.name}"
   end
 
-  private
-
-  def quantity_greater_than_total_ordered_supply
-    t = ProductIncomeItem.total_ordered_supply_item(self.id)
-    if self.quantity.present? && t.floor > self.quantity.floor
-      errors.add(:quantity, "は #{t} 以上の値にしてください")
-    end
+  def price
+    ApplicationController.helpers.get_f(self[:price])
   end
 
-  def set_remainder
-    t = ProductIncomeItem.total_ordered_supply_item(self.id)
-    self.remainder = self.quantity - t
+  private
+
+  def set_product_balance
+    if product_income_balance.present?
+      self.product_income_balance.update(
+          product: product,
+          user_supply: supply_order.user,
+          quantity: quantity
+      )
+    else
+      self.product_income_balance = ProductIncomeBalance.create(product: product,
+                                                         user_supply: supply_order.user,
+                                                         quantity: quantity)
+    end
   end
 end

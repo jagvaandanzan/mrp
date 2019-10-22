@@ -10,6 +10,13 @@ class Users::ProductSupplyOrderItemsController < Users::BaseController
   def new
     @item = ProductSupplyOrderItem.new
     @item.supply_order = ProductSupplyOrder.find_by!(id: params[:order_id])
+
+    items = ProductSupplyOrderItem.all
+    @item.price = if items.present?
+                    items.last.price
+                  else
+                    0
+                  end
   end
 
   def create

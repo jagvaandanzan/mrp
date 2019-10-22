@@ -9,7 +9,7 @@ class CreateProductSupplyOrders < ActiveRecord::Migration[5.2]
       t.float :exchange_value
       t.datetime :closed_date
       t.integer :is_closed, default: 0
-      t.integer :remainder
+      t.references :user, foreign_key: true
 
       t.timestamps
     end

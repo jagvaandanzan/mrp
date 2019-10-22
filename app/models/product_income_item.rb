@@ -7,24 +7,25 @@ class ProductIncomeItem < ApplicationRecord
   belongs_to :user
   has_many :income_locations, :class_name => "ProductIncomeLocation", :foreign_key => "income_item_id", dependent: :destroy
 
+  has_one :product_income_balance, :class_name => "ProductIncomeBalance", :foreign_key => "income_item_id", dependent: :destroy
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "income_item_id", dependent: :destroy
   before_save :set_product_balance
 
   validates :income_id, :supply_order_item_id, :feature_rel_id, :urgent_type, :quantity, :price, presence: true
-
   validates :quantity, :price, numericality: {greater_than: 0}
-
-  # validate :total_must_be_less_than_remainder
-  # validate :income_locations_count_check
+  validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
+  before_validation :set_remainder
+  validate :income_locations_count_check
 
   accepts_nested_attributes_for :income_locations, allow_destroy: true
+
+  attr_accessor :remainder
 
   enum urgent_type: {engiin: 0, yaaraltai: 1}
 
   scope :search, ->(income_id, sname, scode, stype) {
     # items = created_at_desc
     items = where(income_id: income_id)
-    # items = items.joins(:supply_order_item)
     items = items.joins(supply_order_item: :product).where("products.name LIKE :value", value: "%#{sname}%") if sname.present?
     items = items.joins(supply_order_item: :supply_order)
     items = items.where("product_supply_orders.code LIKE :value", value: "%#{scode}%") if scode.present?
@@ -38,21 +39,6 @@ class ProductIncomeItem < ApplicationRecord
   }
 
   private
-
-  def total_must_be_less_than_remainder
-    quantity_prev = self.quantity_was || 0
-    remainder = ProductSupplyOrderItem.get_remainder(supply_order_item_id) + quantity_prev
-    current_total = ProductIncomeItem.total_ordered_supply_item(supply_order_item_id) - quantity_prev
-    if remainder < current_total + (self.quantity || 0)
-      errors.add(:quantity, :greater_than_or_equal_to, count: remainder)
-    end
-  end
-
-  def update_supply_order_item_remainder
-    quantity_prev = self.quantity_was || 0
-    remainder = ProductSupplyOrderItem.get_remainder(supply_order_item_id) + quantity_prev - (self.quantity || 0)
-    ProductSupplyOrderItem.find(supply_order_item.id).update_column(:remainder, remainder)
-  end
 
   def income_locations_count_check
     s = 0
@@ -72,6 +58,8 @@ class ProductIncomeItem < ApplicationRecord
   def set_product_balance
     if product_balance.present?
       self.product_balance.update(
+          product: supply_order_item.product,
+          feature_rel: feature_rel,
           user: user,
           quantity: quantity
       )
@@ -81,5 +69,21 @@ class ProductIncomeItem < ApplicationRecord
                                                    user: user,
                                                    quantity: quantity)
     end
+
+    if product_income_balance.present?
+      self.product_income_balance.update(
+          product: supply_order_item.product,
+          user_income: user,
+          quantity: -quantity)
+    else
+      self.product_income_balance = ProductIncomeBalance.create(product: supply_order_item.product,
+                                                                user_income: user,
+                                                                quantity: -quantity)
+    end
+
+  end
+
+  def set_remainder
+    self.remainder = ProductIncomeBalance.balance(self.supply_order_item.product_id) + (quantity_was.presence || 0)
   end
 end
