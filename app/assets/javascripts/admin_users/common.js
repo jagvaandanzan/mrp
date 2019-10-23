@@ -50,3 +50,6 @@ function getDecimalPay(numval) {
 function valid_id(id) {
     return id !== undefined && id !== null && id !== ""
 }
+function select_parent(select) {
+    return $(select).parent().parent().hasClass('field_with_errors') ? $(select).parent().parent().parent().parent() : $(select).parent().parent().parent();
+}

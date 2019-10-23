@@ -72,8 +72,7 @@ Rails.application.routes.draw do
     resources :product_feature_rels, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_supply_orders, only: [:index, :create, :new, :edit, :show, :update, :destroy]
     resources :product_locations, only: [:index, :create, :new, :edit, :update, :destroy]
-    resources :product_incomes, only: [:index, :create, :new, :edit, :update, :destroy]
-    resources :product_income_items, only: [:index, :create, :new, :edit, :update, :destroy] do
+    resources :product_incomes, only: [:index, :create, :new, :edit, :show, :update, :destroy] do
       collection do
         patch 'get_location_children'
         patch 'get_supply_order_info'

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_22_072530) do
+ActiveRecord::Schema.define(version: 2019_10_23_081546) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -187,21 +187,24 @@ ActiveRecord::Schema.define(version: 2019_10_22_072530) do
   end
 
   create_table "product_income_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "income_id"
+    t.bigint "product_income_id"
     t.bigint "supply_order_item_id"
+    t.bigint "product_id"
+    t.bigint "product_supplier_id"
     t.bigint "feature_rel_id"
     t.integer "quantity"
     t.float "price", limit: 53
     t.float "shuudan"
     t.integer "urgent_type"
+    t.datetime "date"
     t.string "note", limit: 1000
-    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["feature_rel_id"], name: "index_product_income_items_on_feature_rel_id"
-    t.index ["income_id"], name: "index_product_income_items_on_income_id"
+    t.index ["product_id"], name: "index_product_income_items_on_product_id"
+    t.index ["product_income_id"], name: "index_product_income_items_on_product_income_id"
+    t.index ["product_supplier_id"], name: "index_product_income_items_on_product_supplier_id"
     t.index ["supply_order_item_id"], name: "index_product_income_items_on_supply_order_item_id"
-    t.index ["user_id"], name: "index_product_income_items_on_user_id"
   end
 
   create_table "product_income_locations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -218,11 +221,11 @@ ActiveRecord::Schema.define(version: 2019_10_22_072530) do
     t.string "code"
     t.datetime "income_date"
     t.string "note"
-    t.bigint "supplier_id"
     t.float "sum_price", limit: 53
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["supplier_id"], name: "index_product_incomes_on_supplier_id"
+    t.index ["user_id"], name: "index_product_incomes_on_user_id"
   end
 
   create_table "product_locations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -436,12 +439,13 @@ ActiveRecord::Schema.define(version: 2019_10_22_072530) do
   add_foreign_key "product_income_balances", "users", column: "user_income_id"
   add_foreign_key "product_income_balances", "users", column: "user_supply_id"
   add_foreign_key "product_income_items", "product_feature_rels", column: "feature_rel_id"
-  add_foreign_key "product_income_items", "product_incomes", column: "income_id"
+  add_foreign_key "product_income_items", "product_incomes"
+  add_foreign_key "product_income_items", "product_suppliers"
   add_foreign_key "product_income_items", "product_supply_order_items", column: "supply_order_item_id"
-  add_foreign_key "product_income_items", "users"
+  add_foreign_key "product_income_items", "products"
   add_foreign_key "product_income_locations", "product_income_items", column: "income_item_id"
   add_foreign_key "product_income_locations", "product_locations", column: "location_id"
-  add_foreign_key "product_incomes", "product_suppliers", column: "supplier_id"
+  add_foreign_key "product_incomes", "users"
   add_foreign_key "product_locations", "product_locations", column: "parent_id"
   add_foreign_key "product_sale_items", "product_feature_rels"
   add_foreign_key "product_sale_items", "product_sales"

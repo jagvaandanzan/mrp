@@ -1,0 +1,78 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "show" %>
+<% end %>
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('activerecord.models.product_income') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <%= link_to t('controls.button.edit'), edit_users_product_income_path(@product_income), class: 'btn btn-info' %>
+    <%= link_to t('titles.back_to_list'), users_product_incomes_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
+    <%= link_to t('controls.button.delete'), users_product_income_path(@product_income), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-3 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_income.code') %>:</b> <%= @product_income.code %>
+              </div>
+            </div>
+            <div class="col-md-3 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_income.income_date') %>:</b> <%= @product_income.income_date.strftime('%F') %>
+              </div>
+            </div>
+            <div class="col-md-6 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_income.note') %>:</b> <%= @product_income.note %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <% if @product_income.product_income_items.present? %>
+          <div class="col-md-12 group_div m-t-20">
+              <b><%= t('activerecord.attributes.product_income.product_income_items') %></b>
+              <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th><%= t('activerecord.attributes.product_income_item.supply_order_item_code') %></th>
+                  <th><%= t('activerecord.attributes.product_income_item.supply_order_item_id') %></th>
+                  <th><%= t('activerecord.attributes.product_income_item.exchange') %></th>
+                  <th><%= t('activerecord.attributes.product_income_item.feature_rel_id') %></th>
+                  <th><%= t('activerecord.attributes.product_income_item.quantity') %></th>
+                  <th><%= t('activerecord.attributes.product_income_item.price') %></th>
+                  <th><%= t('activerecord.attributes.product_income_item.shuudan') %></th>
+                  <th><%= t('activerecord.attributes.product_income_item.urgent_type') %></th>
+                  <th><%= t('activerecord.attributes.product_income_item.date') %></th>
+                  <th><%= t('activerecord.attributes.product_income_item.note') %></th>
+                </tr>
+                </thead>
+                <tbody>
+                <% @product_income.product_income_items.each do |i| %>
+                  <tr>
+                    <td class="va-mid"><%= i.supply_order_item.product_supply_order.code  %></td>
+                    <td class="va-mid"><%= i.supply_order_item.product_name_with_code  %></td>
+                    <td class="va-mid"><%= i.supply_order_item.product_supply_order.exchange_i18n + ' ' + get_currency_mn(i.supply_order_item.product_supply_order.exchange_value) %></td>
+                    <td class="va-mid"><%= i.feature_rel.rel_names %></td>
+                    <td class="va-mid"><%= i.quantity %></td>
+                    <td class="va-mid"><%= get_currency_mn i.price %></td>
+                    <td class="va-mid"><%= get_f i.shuudan %></td>
+                    <td class="va-mid"><%= i.urgent_type_i18n %></td>
+                    <td class="va-mid"><%= i.date.strftime('%F') %></td>
+                    <td class="va-mid"><%= i.note.presence || '' %></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,69 @@
+<tr class="nested-fields">
+  <td>
+    <%= field_errors f.object, :location_id %>
+
+    <%= f.collection_select :location_id, get_all_location(), :id, :name,
+                            {:prompt => t('controls.select.none')},
+                            {class: 'form-control selectpicker', "data-live-search": "true", "data-container": ".box-info"}%>
+  </td>
+  <td>
+    <%= f.number_field :quantity, class: 'form-control field', placeholder: t('activerecord.attributes.product_income_item.quantity') %>
+  </td>
+  <td class="remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>
+
+<script>
+    $(document).ready(function() {
+        $('.selectpicker').selectpicker('refresh');
+    })
+    function callLocChildren(select){
+        var val = null;
+        if(select != undefined && select != null) {
+            val = $(select).val();
+            if(val!="" && val!=undefined && val!=null) {
+                $("input#product_income_item_location_id").val(val);
+
+                Rails.ajax({
+                    url: "<%= get_location_children_users_product_income_items_path %>",
+                    type: "PATCH",
+                    data: "parent_id=" + val,
+                    success: function (data) {
+                        var childrens = data.childrens;
+                        if (childrens!=undefined && childrens.length > 0) {
+                            $(select).prop("disabled", true);
+
+                            var divSelect = "<div class=\"col-sm-12 product-location\" style='padding: 0; padding-top: 10px;' > " +
+                                "<select name='sub_location_id' class='form-control' onchange='callLocChildren(this)'>" +
+                                "<option value=''>Дэд ангилал сонгох</option>";
+
+                            for (var i = 0; i < childrens.length; i++) {
+                                divSelect += '<option value="' + childrens[i]["id"] + '">' + childrens[i]["name"] + '</option>';
+                            }
+                            divSelect += "</select>" + "</div>";
+
+                            $("#div_product_location").append(divSelect);
+                        }
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                }); // end ajax
+            } // val is undefined chek
+        }// select is undefined check
+    }
+
+    function clearLocation() {
+        $("#mainLocId")
+            .prop("disabled", false)
+            .val("");
+
+        $(".product-location").each(function () {
+            $(this).remove();
+        })
+    }
+
+</script>

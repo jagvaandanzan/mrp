@@ -52,6 +52,6 @@ class ProductSaleItem < ApplicationRecord
   end
 
   def set_remainder
-    self.remainder = ProductBalance.balance(self.product_id, self.product_feature_rel_id) + (quantity_was.presence || 0)
+    self.remainder = ProductBalance.balance(product_id, product_feature_rel_id) + (quantity_was.presence || 0) if product_id.present? && product_feature_rel_id.present?
   end
 end

@@ -109,7 +109,9 @@
 .no-underline {
   text-decoration: none !important;
 }
-
+.no-wrap {
+  white-space: nowrap;
+}
 .box-body a {
   text-decoration: underline;
 }
@@ -535,6 +537,7 @@ div .breadcrumb-container .box .breadcrumb {
 
 /****  Padding  ****/
 .p-0 {padding:0 !important;}
+.p-2 {padding:2px !important;}
 .p-5 {padding:5px !important;}
 .p-10 {padding:10px !important;}
 .p-15 {padding:15px !important;}
@@ -587,7 +590,6 @@ div .breadcrumb-container .box .breadcrumb {
 }
 
 .cocoon-nested-form .field{
-  width: 96%;
   border: none;
 }
 .cocoon-nested-form select.form-control {
@@ -624,7 +626,6 @@ div .breadcrumb-container .box .breadcrumb {
   font-size: 12px;
   padding: 2px 4px!important;
 }
-
 #map {
   width: 100%;
   height: 500px;
