@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_23_081546) do
+ActiveRecord::Schema.define(version: 2019_10_25_062716) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -38,6 +38,15 @@ ActiveRecord::Schema.define(version: 2019_10_23_081546) do
     t.index ["admin_permission_id"], name: "index_admin_users_on_admin_permission_id"
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+  end
+
+  create_table "customers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "queue"
+    t.string "name"
+    t.text "description"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "loc_districts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -349,6 +358,7 @@ ActiveRecord::Schema.define(version: 2019_10_23_081546) do
   end
 
   create_table "products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "customer_id"
     t.bigint "category_id"
     t.string "name"
     t.string "code"
@@ -363,6 +373,7 @@ ActiveRecord::Schema.define(version: 2019_10_23_081546) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_products_on_category_id"
+    t.index ["customer_id"], name: "index_products_on_customer_id"
   end
 
   create_table "travel_configs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -464,6 +475,7 @@ ActiveRecord::Schema.define(version: 2019_10_23_081546) do
   add_foreign_key "product_supply_order_items", "products"
   add_foreign_key "product_supply_orders", "product_suppliers", column: "supplier_id"
   add_foreign_key "product_supply_orders", "users"
+  add_foreign_key "products", "customers"
   add_foreign_key "products", "product_categories", column: "category_id"
   add_foreign_key "travel_configs", "users"
   add_foreign_key "users", "user_permissions"

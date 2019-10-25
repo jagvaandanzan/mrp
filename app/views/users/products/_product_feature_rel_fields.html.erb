@@ -1,0 +1,30 @@
+<tr class="nested-fields">
+  <td>
+    <%= field_errors f.object, :barcode %>
+    <%= f.text_field :barcode, class: 'form-control field', placeholder: t('activerecord.attributes.product_feature_rel.barcode') %>
+  </td>
+  <td>
+    <%= field_errors f.object, :sale_price %>
+    <%= f.number_field :sale_price, min: 0, step: 0.01, class: 'form-control field', placeholder: t('activerecord.attributes.product_feature_rel.sale_price') %>
+  </td>
+  <td>
+    <%= field_errors f.object, :discount_price %>
+    <%= f.number_field :discount_price, min: 0, step: 0.01, class: 'form-control field', placeholder: t('activerecord.attributes.product_feature_rel.discount_price') %>
+  </td>
+  <td>
+    <%= field_errors(f.object, :product_feature_option_rels) %>
+    <%= f.fields_for :product_feature_option_rels do |m| %>
+      <%= render 'product_feature_option_rel_fields', :f => m %>
+    <% end %>
+    <div class="links links-in">
+      <%= link_to_add_association f, :product_feature_option_rels do %>
+        <%= nested_add_btn %>
+      <% end %>
+    </div>
+  </td>
+  <td class="remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>

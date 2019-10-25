@@ -1,4 +1,6 @@
-
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "show" %>
+<% end %>
 <div class="content-wrapper">
   <%= render 'layouts/flash_message' %>
   <section class="content-header align-left padding-15">
@@ -7,51 +9,84 @@
 
   <div class="action-buttons">
     <%= link_to t('controls.button.edit'), edit_users_product_path(@product), class: 'btn btn-info' %>
-    <%= link_to t('controls.button.delete'), users_product_path(@product), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <%= link_to t('titles.back_to_list'), users_products_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
+    <%= link_to t('controls.button.delete'), users_product_path(@product), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
   </div>
   <%= show_body do %>
     <div class="box">
-      <div class="box-body table-responsive no-padding">
-        <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.product.name') %> :</div>
-          <div class="col-data"><%= @product.name %></div>
+      <div class="box-body">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-4 field_div">
+              <b><%= t('activerecord.attributes.product.name') %>:</b> <%= @product.name %>
+            </div>
+            <div class="col-md-4 field_div">
+              <b><%= t('activerecord.attributes.product.detail') %>:</b> <%= @product.detail %>
+            </div>
+            <div class="col-md-4 field_div">
+              <b><%= t('activerecord.attributes.product.category_id') %>:</b> <%= get_name_recursive(@product.category) %>
+            </div>
+          </div>
         </div>
-        <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.product.code') %> :</div>
-          <div class="col-data"><%= @product.code %></div>
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-3 field_div">
+              <b><%= t('activerecord.attributes.product.code') %>:</b> <%= @product.code %>
+            </div>
+            <div class="col-md-3 field_div">
+              <b><%= t('activerecord.attributes.product.main_code') %>:</b> <%= @product.main_code %>
+            </div>
+            <div class="col-md-3 field_div">
+              <b><%= t('activerecord.attributes.product.barcode') %>:</b> <%= @product.barcode %>
+            </div>
+            <div class="col-md-3 field_div">
+              <b><%= t('activerecord.attributes.product.customer_id') %>:</b> <%= @product.customer.name %>
+            </div>
+          </div>
         </div>
-        <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.product.main_code') %> :</div>
-          <div class="col-data"><%= @product.main_code %></div>
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-3 field_div">
+              <b><%= t('activerecord.attributes.product.measure') %>:</b> <%= @product.measure_i18n %>
+            </div>
+            <div class="col-md-3 field_div">
+              <b><%= t('activerecord.attributes.product.sale_price') %>:</b> <%= get_currency_mn @product.sale_price %>
+            </div>
+            <div class="col-md-3 field_div">
+              <b><%= t('activerecord.attributes.product.discount_price') %>:</b> <%= get_currency_mn @product.discount_price %>
+            </div>
+            <div class="col-md-3 field_div">
+              <b><%= t('activerecord.attributes.product.ptype') %>:</b> <%= @product.ptype_i18n %>
+            </div>
+          </div>
         </div>
-        <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.product.barcode') %> :</div>
-          <div class="col-data"><%= @product.barcode %></div>
-        </div>
-        <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.product.sale_price') %> :</div>
-          <div class="col-data"><%= @product.sale_price %></div>
-        </div>
-        <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.product.discount_price') %> :</div>
-          <div class="col-data"><%= @product.discount_price %></div>
-        </div>
-        <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.product.measure') %> :</div>
-          <div class="col-data"><%= @product.measure_i18n %></div>
-        </div>
-        <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.product.ptype') %> :</div>
-          <div class="col-data"><%= @product.ptype_i18n %></div>
-        </div>
-        <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.product.detail') %> :</div>
-          <div class="col-data"><%= @product.detail %></div>
-        </div>
-        <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.product.category') %> :</div>
-          <div class="col-data"><%= get_name_recursive(@product.category)  %></div>
+
+        <div class="col-md-12 group_div m-t-20">
+          <b><%= t('activerecord.attributes.product.product_feature_rels') %></b>
+          <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th><%= t('activerecord.attributes.product_feature_rel.barcode') %></th>
+              <th><%= t('activerecord.attributes.product_feature_rel.sale_price') %></th>
+              <th><%= t('activerecord.attributes.product_feature_rel.discount_price') %></th>
+              <th width="40%"><%= t('activerecord.attributes.product_feature_rel.product_feature_option_rels') %></th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @product.product_feature_rels.each do |p| %>
+              <tr>
+                <td class="va-mid"><%= p.barcode %></td>
+                <td class="va-mid"><%= get_currency_mn p.sale_price %></td>
+                <td class="va-mid"><%= get_currency_mn p.discount_price %></td>
+                <td class="va-mid">
+                  <% p.product_feature_option_rels.each do |rel| %>
+                    <div style="font-weight: bold"><%= rel.feature_option.name %></div>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

@@ -92,8 +92,8 @@ def get_name_recursive(obj)
       @headers.reverse().each do |item|
         unless item.nil?
           i = content_tag :i do
-            concat link_to(item.name,
-                    users_product_categorys_path(parent_id: item.id))
+            # concat link_to(item.name, users_product_categorys_path(parent_id: item.id))
+            concat item.name
             concat ( item == @headers.first ? "" : " >> ")
           end
           concat i

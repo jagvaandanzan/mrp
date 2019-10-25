@@ -69,7 +69,6 @@ Rails.application.routes.draw do
         patch 'get_product_category_children'
       end
     end
-    resources :product_feature_rels, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_supply_orders, only: [:index, :create, :new, :edit, :show, :update, :destroy]
     resources :product_locations, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_incomes, only: [:index, :create, :new, :edit, :show, :update, :destroy] do

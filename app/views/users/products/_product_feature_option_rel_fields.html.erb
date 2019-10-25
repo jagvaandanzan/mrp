@@ -1,5 +1,5 @@
-<tr class="nested-fields">
-  <td>
+<div class="nested-fields">
+  <div style="width: 90%;display: inline-block;margin-top: 4px">
     <%= field_errors f.object, :feature_option_id %>
 
     <%= f.grouped_collection_select :feature_option_id, ProductFeature.search(""),
@@ -7,13 +7,13 @@
                                     :id, :name,
                                     {:prompt => t('controls.select.none')},
                                     {class: 'form-control selectpicker', "data-live-search": "true", "data-container": ".box-info" } %>
-  </td>
-  <td class="remove">
+  </div>
+  <div class="remove" style="vertical-align: middle;width: 9%;display: inline-block">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
       <%= nested_remove_btn %>
     <% end %>
-  </td>
-</tr>
+  </div>
+</div>
 
 <script>
     $(document).ready(function() {

@@ -5,10 +5,11 @@ class ProductFeatureRel < ApplicationRecord
   has_many :product_balances, :class_name => "ProductBalance", :foreign_key => "feature_rel_id"
   has_many :product_sale_items
 
-
-  validates :product_id, :barcode, :sale_price, :discount_price, presence: true
+  validates :barcode, :sale_price, :product_feature_option_rels, presence: true
 
   accepts_nested_attributes_for :product_feature_option_rels, allow_destroy: true
+
+  before_save :set_defaults
 
   scope :search, ->(p_id) {
     if p_id.nil?
@@ -19,6 +20,14 @@ class ProductFeatureRel < ApplicationRecord
     end
   }
 
+  def sale_price
+    ApplicationController.helpers.get_f(self[:sale_price])
+  end
+
+  def discount_price
+    ApplicationController.helpers.get_f(self[:discount_price])
+  end
+
   def rel_names
     option_names = ""
 
@@ -28,5 +37,11 @@ class ProductFeatureRel < ApplicationRecord
     end
 
     option_names
+  end
+
+  private
+
+  def set_defaults
+    self.discount_price = self.sale_price if discount_price.nil? || discount_price == 0
   end
 end

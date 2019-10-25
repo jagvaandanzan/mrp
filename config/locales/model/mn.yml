@@ -141,9 +141,8 @@ mn:
         sale_price: Зарах үнэ
         discount_price: Хямдарсан үнэ
         product_feature_rels: Барааны шинж чанарууд
+        customer_id: Харилцагч
       product_feature_rel:
-        product_id: Бараа
-        product_name: Бараа
         sale_price: Зарах үнэ
         discount_price:  Хямдарсан үнэ
         barcode: Бар код

@@ -1,119 +1,150 @@
-
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "form" %>
+<% end %>
+<script>
+    var category_max_index = 0;
+</script>
 <div class="content-wrapper">
-
   <section class="content">
     <div class="box box-info">
       <%= form_with model: @product, url: @product.persisted? ? users_product_path : users_products_path,
                     method: @product.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
-          <div class="form-group">
-            <%= f.label :name, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@product, :name) %>">
-              <%= field_errors(@product, :name) %>
-              <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.product.name') %>
-            </div>
-          </div>
-          <div class="form-group">
-            <%= f.label :code, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@product, :code) %>">
-              <%= field_errors(@product, :code) %>
-              <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product.code') %>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :main_code, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@product, :main_code) %>">
-              <%= field_errors(@product, :main_code) %>
-              <%= f.text_field :main_code, class: 'form-control', placeholder: t('activerecord.attributes.product.main_code') %>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :barcode, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@product, :barcode) %>">
-              <%= field_errors(@product, :barcode) %>
-              <%= f.text_field :barcode, class: 'form-control', placeholder: t('activerecord.attributes.product.barcode') %>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :detail, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@product, :detail) %>">
-              <%= field_errors(@product, :detail) %>
-              <%= f.text_area :detail, class: 'form-control', placeholder: t('activerecord.attributes.product.detail') %>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :measure, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@product, :measure) %>">
-              <%= field_errors(@product, :measure) %>
-              <%= f.select :measure, Product.measures_i18n.keys.map {|k| [Product.measures_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control'} %>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :sale_price, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@product, :sale_price) %>">
-              <%= field_errors(@product, :sale_price) %>
-              <%= f.number_field :sale_price, class: 'form-control', min:0, step: 0.01, placeholder: t('activerecord.attributes.product.sale_price')  %>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :discount_price, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@product, :discount_price) %>">
-              <%= field_errors(@product, :discount_price) %>
-              <%= f.number_field :discount_price, class: 'form-control', min:0, step: 0.01, placeholder: t('activerecord.attributes.product.discount_price')  %>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :ptype, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@product, :ptype) %>">
-              <%= field_errors(@product, :ptype) %>
-              <%= f.select :ptype, Product.ptypes_i18n.keys.map {|k| [Product.ptypes_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control'} %>
-            </div>
-          </div>
-
-          <div class="form-group" >
-            <%= f.label :category_id, class: 'col-sm-3 control-label' %>
-            <%= f.hidden_field :category_id %>
-            <% if @product.persisted? == false || (@product.persisted? && @product.category.nil?) %>
-              <div class="col-sm-6" id="div_product_category">
-                <%= f.collection_select :main_category_id, ProductCategory.top_level(), :id, :name,
-                                        {:prompt => t('controls.select.none')},
-                                        {class: 'form-control', id:"mainCatId", onchange: 'callChildren(this)'} %>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-4 field_div">
+                <%= f.label :name, class: 'control-label' %>
+                <div class="<%= get_error_class(@product, :name) %>">
+                  <%= field_errors(@product, :name) %>
+                  <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.product.name') %>
+                </div>
               </div>
-              <div class="col-sm-2">
-                <button type="button" class="btn blck-btn pull-left" title="clear_cat" onclick="clearCategory()"><i class="fa fa-times"></i></button>
+              <div class="col-md-4 field_div">
+                <%= f.label :detail, class: 'control-label' %>
+                <div class="<%= get_error_class(@product, :detail) %>">
+                  <%= field_errors(@product, :detail) %>
+                  <%= f.text_area :detail, class: 'form-control', placeholder: t('activerecord.attributes.product.detail') %>
+                </div>
               </div>
-            <% else %>
-              <div class="col-sm-6" id="div_product_category">
-                <%= f.collection_select :main_category_id, ProductCategory.top_level(), :id, :name,
-                                        {:prompt => t('controls.select.none'), :selected => @headers.first.id},
-                                        {class: 'form-control', id:"mainCatId", onchange: 'callChildren(this)', disabled: "true"} %>
-                <% @headers.each do |h| %>
-                  <% if h != @headers.first %>
-                    <div class="col-sm-12 product-category" style='padding: 0; padding-top: 10px;' >
-                      <select name='sub_category_id' class='form-control' onchange='callChildren(this)' disabled="true">
-                        <option value="<%= h.id %>"><%= h.name %></option>
-                      </select>
-                    </div>
+              <div class="col-md-4 field_div">
+                <%= f.label :category_id, class: 'control-label' %>
+                <div class="<%= get_error_class(@product, :category_id) %>" id="product_category">
+                  <%= f.hidden_field :category_id %>
+                  <%= field_errors(@product, :category_id) %>
+                  <%= collection_select @product, :main_category_id, ProductCategory.top_level, :id, :name,
+                                        {:prompt => t('controls.select.none'), selected: @headers.present? ? @headers.first.id : ""},
+                                        {class: 'form-control selectpicker', id: "category-0", ind: 0, onchange: 'callChildren(this)'} %>
+
+                  <% @headers.present? && @headers.each_with_index do |h, i| %>
+                    <% if h != @headers.first %>
+                      <div class="col-sm-12 sub_category" id="category-<%= i + 1 %>" style="padding: 10px 0 0 0;">
+                        <select class='form-control selectpicker' onchange='callChildren(this)' ind=<%= i + 1 %>>
+                          <option value="<%= h.id %>"><%= h.name %></option>
+                        </select>
+                      </div>
+                      <script type="text/javascript" charset="utf-8">
+                          category_max_index = <%= i + 1  %>;
+                      </script>
+                    <% end %>
                   <% end %>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-3 field_div">
+                <%= f.label :code, class: 'control-label' %>
+                <div class="<%= get_error_class(@product, :code) %>">
+                  <%= field_errors(@product, :code) %>
+                  <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product.code') %>
+                </div>
+              </div>
+              <div class="col-md-3 field_div">
+                <%= f.label :main_code, class: 'control-label' %>
+                <div class="<%= get_error_class(@product, :main_code) %>">
+                  <%= field_errors(@product, :main_code) %>
+                  <%= f.text_field :main_code, class: 'form-control', placeholder: t('activerecord.attributes.product.main_code') %>
+                </div>
+              </div>
+              <div class="col-md-3 field_div">
+                <%= f.label :barcode, class: 'control-label' %>
+                <div class="<%= get_error_class(@product, :barcode) %>">
+                  <%= field_errors(@product, :barcode) %>
+                  <%= f.text_field :barcode, class: 'form-control', placeholder: t('activerecord.attributes.product.barcode') %>
+                </div>
+              </div>
+              <div class="col-md-3 field_div">
+                <%= f.label :customer_id, class: 'control-label' %>
+                <div class="<%= get_error_class(@product, :customer_id) %>">
+                  <%= field_errors(@product, :customer_id) %>
+                  <%= f.collection_select :customer_id, Customer.order_by_name, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-3 field_div">
+                <%= f.label :measure, class: 'control-label' %>
+                <div class="<%= get_error_class(@product, :measure) %>">
+                  <%= field_errors(@product, :measure) %>
+                  <%= f.select :measure, Product.measures_i18n.keys.map {|k| [Product.measures_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+                </div>
+              </div>
+              <div class="col-md-3 field_div">
+                <%= f.label :sale_price, class: 'control-label' %>
+                <div class="<%= get_error_class(@product, :sale_price) %>">
+                  <%= field_errors(@product, :sale_price) %>
+                  <%= f.number_field :sale_price, class: 'form-control', min: 0, step: 0.01, placeholder: t('activerecord.attributes.product.sale_price') %>
+                </div>
+              </div>
+              <div class="col-md-3 field_div">
+                <%= f.label :discount_price, class: 'control-label' %>
+                <div class="<%= get_error_class(@product, :discount_price) %>">
+                  <%= field_errors(@product, :discount_price) %>
+                  <%= f.number_field :discount_price, class: 'form-control', min: 0, step: 0.01, placeholder: t('activerecord.attributes.product.discount_price') %>
+                </div>
+              </div>
+              <div class="col-md-3 field_div">
+                <%= f.label :ptype, class: 'control-label' %>
+                <div class="<%= get_error_class(@product, :ptype) %>">
+                  <%= field_errors(@product, :ptype) %>
+                  <%= f.select :ptype, Product.ptypes_i18n.keys.map {|k| [Product.ptypes_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 field_div">
+            <%= f.label :product_feature_rels, class: 'control-label' %>
+
+            <div class="cocoon-nested-form">
+              <div class="<%= get_error_class(@product, :product_feature_rels) %>">
+                <%= field_errors(@product, :product_feature_rels) %>
+                <table class="table table-bordered" id="tb_product_feature_rels">
+                  <tr>
+                    <th><%= t('activerecord.attributes.product_feature_rel.barcode') %></th>
+                    <th><%= t('activerecord.attributes.product_feature_rel.sale_price') %></th>
+                    <th><%= t('activerecord.attributes.product_feature_rel.discount_price') %></th>
+                    <th width="40%"><%= t('activerecord.attributes.product_feature_rel.product_feature_option_rels') %></th>
+                    <th width="50px"></th>
+                  </tr>
+                  <%= f.fields_for :product_feature_rels do |m| %>
+                    <%= render 'product_feature_rel_fields', :f => m %>
+                  <% end %>
+                </table>
+              </div>
+              <div class="links item_append">
+                <%= link_to_add_association f, :product_feature_rels, data: {association_insertion_node: '#tb_product_feature_rels', association_insertion_method: :append} do %>
+                  <%= nested_add_btn %>
                 <% end %>
               </div>
-              <div class="col-sm-2">
-                <button type="button" class="btn blck-btn pull-left" title="clear_cat" onclick="clearCategory()"><i class="fa fa-times"></i></button>
-              </div>
-            <% end %>
+            </div>
           </div>
-
 
           <div class="action-buttons">
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
-            <%= link_to t('titles.back_to_list'), users_products_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
           </div>
         <% end %>
       <% end %>
@@ -122,55 +153,48 @@
 </div>
 
 <script>
-  var selected_category_id = 0;
 
-  function callChildren(select){
-      var val = null;
-      if(select != undefined && select != null) {
-          val = $(select).val();
-          if(val!="" && val!=undefined && val!=null) {
-              selected_category_id = val;
+    function callChildren(select) {
+        let val = $(select).val();
+        let ind = parseInt($(select).attr('ind')) + 1;
+        for (let i = ind; i <= category_max_index; i++) {
+            $("#category-" + i).remove();
+        }
 
-              $("input#product_category_id").val(val);
+        if (valid_id(val)) {
+            if (ind > category_max_index) {
+                category_max_index = ind;
+            }
+            Rails.ajax({
+                url: "<%= get_product_category_children_users_products_path %>",
+                type: "PATCH",
+                data: "parent_id=" + val,
+                success: function (data) {
 
-              Rails.ajax({
-                  url: "<%= get_product_category_children_users_products_path %>",
-                  type: "PATCH",
-                  data: "parent_id=" + val,
-                  success: function (data) {
-                      var childrens = data.childrens;
-                      if (childrens!=undefined && childrens.length > 0) {
-                          $(select).prop("disabled", true);
+                    let childrens = data.childrens;
+                    if (childrens.length > 0) {
+                        $("#product_category_id").val("");
+                        var divSelect = "<div class='col-sm-12 sub_category' id=category-" + ind + " style='padding: 10px 0 0 0;'>" +
+                            "<select class='form-control' onchange='callChildren(this)' ind=" + ind + ">" +
+                            "<option value=''>Дэд ангилал сонгох</option>";
 
-                          var divSelect = "<div class=\"col-sm-12 product-category\" style='padding: 0; padding-top: 10px;' > " +
-                              "<select name='sub_category_id' class='form-control' onchange='callChildren(this)'>" +
-                              "<option value=''>Дэд ангилал сонгох</option>";
+                        for (var i = 0; i < childrens.length; i++) {
+                            divSelect += '<option value="' + childrens[i]["id"] + '">' + childrens[i]["name"] + '</option>';
+                        }
+                        divSelect += "</select>" + "</div>";
 
-                          for (var i = 0; i < childrens.length; i++) {
-                              divSelect += '<option value="' + childrens[i]["id"] + '">' + childrens[i]["name"] + '</option>';
-                          }
-                          divSelect += "</select>" + "</div>";
-
-                          $("#div_product_category").append(divSelect);
-                      }
-                  },
-                  error: function (data) {
-                      console.log(data);
-                  }
-              });
-          } // val is undefined chek
-      }// select is undefined check
-  }
-
-  function clearCategory() {
-      $("#mainCatId").prop("disabled", false);
-      $("#mainCatId").val("");
-
-      $(".product-category").each(function () {
-          $(this).remove();
-      })
-
-
-  }
-
+                        $("#product_category").append(divSelect);
+                        $('#product_category select:last').selectpicker('refresh');
+                    } else {
+                        $("#product_category_id").val(val);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        } else {
+            $("#product_category_id").val("");
+        }
+    }
 </script>
