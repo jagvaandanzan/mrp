@@ -24,7 +24,8 @@
               <b><%= t('activerecord.attributes.product.detail') %>:</b> <%= @product.detail %>
             </div>
             <div class="col-md-4 field_div">
-              <b><%= t('activerecord.attributes.product.category_id') %>:</b> <%= get_name_recursive(@product.category) %>
+              <b><%= t('activerecord.attributes.product.category_id') %>
+                :</b> <%= get_name_recursive(@product.category) %>
             </div>
           </div>
         </div>
@@ -53,7 +54,8 @@
               <b><%= t('activerecord.attributes.product.sale_price') %>:</b> <%= get_currency_mn @product.sale_price %>
             </div>
             <div class="col-md-3 field_div">
-              <b><%= t('activerecord.attributes.product.discount_price') %>:</b> <%= get_currency_mn @product.discount_price %>
+              <b><%= t('activerecord.attributes.product.discount_price') %>
+                :</b> <%= get_currency_mn @product.discount_price %>
             </div>
             <div class="col-md-3 field_div">
               <b><%= t('activerecord.attributes.product.ptype') %>:</b> <%= @product.ptype_i18n %>
@@ -75,6 +77,11 @@
             <tbody>
             <% @product.product_feature_rels.each do |p| %>
               <tr>
+                <td class="va-mid ">
+                  <%= link_to p.image.url, "data-lightbox": "roadtrip" do %>
+                    <%= image_tag p.image.url(:tumb), class: 'tumb' %>
+                  <% end %>
+                </td>
                 <td class="va-mid"><%= p.barcode %></td>
                 <td class="va-mid"><%= get_currency_mn p.sale_price %></td>
                 <td class="va-mid"><%= get_currency_mn p.discount_price %></td>
@@ -92,3 +99,8 @@
     </div>
   <% end %>
 </div>
+<script>
+    lightbox.option({
+        'resizeDuration': 200,
+    })
+</script>

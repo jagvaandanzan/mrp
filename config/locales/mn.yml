@@ -62,7 +62,6 @@ mn:
     product_incomes: Орлого
     product_income_items: Орлогын бараанууд
     product_sales: Борлуулалтууд
-
   models:
     user:
       age: Нас
@@ -77,6 +76,7 @@ mn:
   are_sure_change: "Өөрчлөх үү ?"
   currency: ₮
   currency_name: Төгрөг
+  upload_file: Файл хуулах
   errors:
     format: "%{attribute}%{message}"
     messages:

@@ -5,7 +5,11 @@ class ProductFeatureRel < ApplicationRecord
   has_many :product_balances, :class_name => "ProductBalance", :foreign_key => "feature_rel_id"
   has_many :product_sale_items
 
-  validates :barcode, :sale_price, :product_feature_option_rels, presence: true
+  has_attached_file :image, :path => ":rails_root/public/products/:id_partition/:style.:extension", styles: {original: "800x600>", tumb: "200x150>"}, :url => '/products/:id_partition/:style.:extension'
+  validates_attachment :image,
+                       content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 2.megabytes}
+
+  validates :barcode, :sale_price, :image, :product_feature_option_rels, presence: true
 
   accepts_nested_attributes_for :product_feature_option_rels, allow_destroy: true
 

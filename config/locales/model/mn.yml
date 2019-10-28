@@ -143,6 +143,7 @@ mn:
         product_feature_rels: Барааны шинж чанарууд
         customer_id: Харилцагч
       product_feature_rel:
+        image: Зураг
         sale_price: Зарах үнэ
         discount_price:  Хямдарсан үнэ
         barcode: Бар код

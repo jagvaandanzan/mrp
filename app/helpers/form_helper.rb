@@ -66,8 +66,8 @@ module FormHelper
     end
   end
 
-  def nested_add_btn
-    content_tag :button, type: 'button', class: 'btn btn-block btn-success btn-xs', id: 'btn-append' do
+  def nested_add_btn(id = 'btn-append')
+    content_tag :button, type: 'button', class: 'btn btn-block btn-success btn-xs', id: id do
       content_tag :i, class: 'fa fa-plus', style: 'color: white' do
       end
     end

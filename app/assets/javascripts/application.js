@@ -16,6 +16,7 @@
 //= require admin-lte/dist/js/adminlte.min.js
 //= require jquery-ui-dist/jquery-ui.js
 //= require moment/min/moment.min.js
+//= require lightbox2/dist/js/lightbox.js
 //= require bootstrap-daterangepicker/daterangepicker.js
 //= require bootstrap-datepicker/dist/js/bootstrap-datepicker.js
 //= require bootstrap-datetimepicker

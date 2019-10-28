@@ -124,6 +124,7 @@
                 <%= field_errors(@product, :product_feature_rels) %>
                 <table class="table table-bordered" id="tb_product_feature_rels">
                   <tr>
+                    <th><%= t('activerecord.attributes.product_feature_rel.image') %></th>
                     <th><%= t('activerecord.attributes.product_feature_rel.barcode') %></th>
                     <th><%= t('activerecord.attributes.product_feature_rel.sale_price') %></th>
                     <th><%= t('activerecord.attributes.product_feature_rel.discount_price') %></th>
@@ -137,7 +138,7 @@
               </div>
               <div class="links item_append">
                 <%= link_to_add_association f, :product_feature_rels, data: {association_insertion_node: '#tb_product_feature_rels', association_insertion_method: :append} do %>
-                  <%= nested_add_btn %>
+                  <%= nested_add_btn('add_product_feature_rel_field') %>
                 <% end %>
               </div>
             </div>
@@ -195,6 +196,38 @@
             });
         } else {
             $("#product_category_id").val("");
+        }
+    }
+
+    $(document).ready(function () {
+        $('.preview').on('click', function () {
+            $(this).parent().find('input').click();
+        });
+        $('input.image-file').on('change', function () {
+            readURL(this, $(this).parent().parent().find('.preview:first'));
+        });
+
+        $('#add_product_feature_rel_field').click(function () {
+            setTimeout(image_last_event, 200);
+        });
+    });
+
+    function image_last_event() {
+        $('.preview:last').on('click', function () {
+            $(this).parent().find('input').click();
+        });
+        $('input.image-file:last').on('change', function () {
+            readURL(this, $(this).parent().parent().find('.preview:first'));
+        });
+    }
+
+    function readURL(input, div) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                div.html("<img class='preview-img' src='" + e.target.result + "'>");
+            };
+            reader.readAsDataURL(input.files[0]);
         }
     }
 </script>

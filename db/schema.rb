@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_25_062716) do
+ActiveRecord::Schema.define(version: 2019_10_25_092513) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -167,6 +167,10 @@ ActiveRecord::Schema.define(version: 2019_10_25_062716) do
     t.string "barcode", limit: 53
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "image_file_name"
+    t.string "image_content_type"
+    t.integer "image_file_size"
+    t.datetime "image_updated_at"
     t.index ["product_id"], name: "index_product_feature_rels_on_product_id"
   end
 
