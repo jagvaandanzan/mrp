@@ -5,6 +5,8 @@ class CreateProductSupplyOrderItems < ActiveRecord::Migration[5.2]
       t.references :product, foreign_key: true
       t.integer :quantity
       t.float :price, limit: 53
+      t.float :sum_price, limit: 53
+      t.float :sum_tug, limit: 53
       t.string :link, limit: 500
       t.float :shuudan
       t.string :note, limit: 1000

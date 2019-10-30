@@ -51,6 +51,8 @@ class ProductSupplyOrder < ApplicationRecord
       sum += item.quantity * item.price
     end
     self.sum_price = sum * self.exchange_value
+
+    self.closed_date = Time.current unless closed_date.present? && is_closed=='_no'
   end
 
 end

@@ -1,11 +1,12 @@
 <% content_for :stylesheets do -%>
   <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
 <% end %>
 <div class="content-wrapper">
 
   <div class="col-md-12 m-t-10 m-b-10">
     <%= form_with url: users_product_supply_orders_path, method: "get", class: "", local: true do |f| %>
-      <div class="col-md-3 search">
+      <div class="col-md-2 search">
         <div id="searchDate" class="form-control search">
           <i class="fa fa-calendar fa-lg p-r-0"></i>
           <span><%= t("filters.product_supply_order.by_date") %>...</span>
@@ -13,8 +14,11 @@
           <%= f.hidden_field :by_end, value: @by_end %>
         </div>
       </div>
-      <div class="col-md-3 search">
+      <div class="col-md-2 search">
         <%= text_field_tag :by_code, @by_code, {class: 'form-control', placeholder: t('filters.product_supply_order.by_code')} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.product_supply_order.by_product')} %>
       </div>
       <div class="col-md-6 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
@@ -30,34 +34,41 @@
         <div class="box" id="div_list">
           <div class="box-body table-responsive no-padding">
             <%= render 'layouts/flash_message' %>
-            <table class="table table-hover">
+            <table class="table table-hover table-bordered">
               <tr>
-                <th><%= t('activerecord.attributes.product_supply_order.code') %></th>
                 <th><%= t('activerecord.attributes.product_supply_order.ordered_date') %></th>
-                <th><%= t('activerecord.attributes.product_supply_order.supplier_id') %></th>
-                <th><%= t('activerecord.attributes.product_supply_order.payment') %></th>
-                <th><%= t('activerecord.attributes.product_supply_order.exchange') %></th>
+                <th><%= t('activerecord.attributes.product_supply_order.code') %></th>
+                <th><%= t('activerecord.attributes.product_supply_order_item.product_id') %></th>
+                <th><%= t('activerecord.attributes.product_supply_order_item.price') %></th>
+                <th><%= t('activerecord.attributes.product_supply_order_item.quantity') %></th>
                 <th><%= t('activerecord.attributes.product_supply_order.exchange_value') %></th>
-                <th><%= t('activerecord.attributes.product_supply_order.sum_price') %></th>
+                <th><%= t('activerecord.attributes.product_supply_order_item.shuudan') %></th>
+                <th><%= t('activerecord.attributes.product_supply_order_item.sum_price') %></th>
+                <th><%= t('titles.total_tugrug') %></th>
+                <th><%= t('activerecord.attributes.product_supply_order.payment') %></th>
                 <th><%= t('activerecord.attributes.product_supply_order.is_closed') %></th>
               </tr>
-              <% @supply_orders.each do |p| %>
+              <% @product_supply_order_items.each do |i| %>
+                <% supply_order = i.product_supply_order %>
                 <tr>
-                  <td class="va-mid"><%= link_to p.code, users_product_supply_order_path(p) %></td>
-                  <td class="va-mid"><%= p.ordered_date.strftime('%F') %></td>
-                  <td class="va-mid"><%= p.supplier.name %></td>
-                  <td class="va-mid"><%= p.payment_i18n %></td>
-                  <td class="va-mid"><%= p.exchange_i18n %></td>
-                  <td class="va-mid"><%= get_currency_mn(p.exchange_value) %></td>
-                  <td class="va-mid"><%= get_currency_mn(p.sum_price) %></td>
-                  <td class="va-mid"><%= p.is_closed == 1 ? (p.closed_date.nil? ? "Хаагдсан" : p.closed_date.strftime('%F')) : "" %></td>
+                  <td class="va-mid"><%= supply_order.ordered_date.strftime('%F') %></td>
+                  <td class="va-mid"><%= link_to supply_order.code, users_product_supply_order_path(supply_order) %></td>
+                  <td class="va-mid"><%= i.product.name_with_code %></td>
+                  <td class="va-mid"><%= i.get_currency i.price %></td>
+                  <td class="va-mid"><%= i.quantity %></td>
+                  <td class="va-mid"><%= get_currency_mn supply_order.exchange_value %></td>
+                  <td class="va-mid"><%= i.get_currency i.shuudan %></td>
+                  <td class="va-mid"><%= i.get_currency i.sum_price %></td>
+                  <td class="va-mid"><%= get_currency_mn i.sum_tug %></td>
+                  <td class="va-mid"><%= supply_order.payment_i18n %></td>
+                  <td class="va-mid"><%= supply_order.is_closed == 1 ? (supply_order.closed_date.nil? ? "Хаагдсан" : supply_order.closed_date.strftime('%F')) : "" %></td>
                 </tr>
               <% end %>
             </table>
           </div>
         </div>
 
-        <%= paginate @supply_orders %>
+        <%= paginate @product_supply_order_items %>
       </div>
     </div>
   </section>

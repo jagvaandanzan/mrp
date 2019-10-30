@@ -228,6 +228,7 @@
         let price = $(select).find('option:selected').attr("price");
         let product_id = $(select).find('option:selected').attr("product");
         let parentTr = select_parent(select);
+        reset_input_vals(parentTr);
         parentTr.find("input.item_price").val(price);
 
         let feature_rel = $(select).val();
@@ -248,37 +249,35 @@
 
     function func_call_feature_rel(select) {
         let product_id = $(select).val();
-        if (product_id > 0) {
-            let parentTr = select_parent(select);
+        let parentTr = select_parent(select);
+        parentTr.find("select.feature_rel").html("").selectpicker("refresh");
+        reset_input_vals(parentTr);
+        if (valid_id(product_id)) {
+            // alert(product_id);
 
-            if (valid_id(product_id)) {
-                parentTr.find("select.feature_rel").html("");
-                // alert(product_id);
+            Rails.ajax({
+                url: "<%= get_product_features_operators_product_sales_path %>",
+                type: "PATCH",
+                data: "product_id=" + product_id,
+                success: function (data) {
+                    var childrens = data.childrens;
+                    if (childrens != undefined && childrens.length > 0) {
+                        var divSelect = "<option value=''>Сонгох</option>";
 
-                Rails.ajax({
-                    url: "<%= get_product_features_operators_product_sales_path %>",
-                    type: "PATCH",
-                    data: "product_id=" + product_id,
-                    success: function (data) {
-                        var childrens = data.childrens;
-                        if (childrens != undefined && childrens.length > 0) {
-                            var divSelect = "<option value=''>Сонгох</option>";
-
-                            for (var i = 0; i < childrens.length; i++) {
-                                divSelect += '<option value="' + childrens[i]["id"] + '" product="' + childrens[i]["product"] + '" price = "' + childrens[i]["price"] + '" >' + childrens[i]["name"] + '</option>';
-                            }
-
-                            parentTr.find("select.feature_rel").html(divSelect);
+                        for (var i = 0; i < childrens.length; i++) {
+                            divSelect += '<option value="' + childrens[i]["id"] + '" product="' + childrens[i]["product"] + '" price = "' + childrens[i]["price"] + '" >' + childrens[i]["name"] + '</option>';
                         }
-                        parentTr.find("input.item_price").val(data.price);
 
-                        parentTr.find("select.feature_rel").selectpicker("refresh");
-                    },
-                    error: function (data) {
-                        console.log(data);
+                        parentTr.find("select.feature_rel").html(divSelect);
                     }
-                });
-            }
+                    parentTr.find("input.item_price").val(data.price);
+
+                    parentTr.find("select.feature_rel").selectpicker("refresh");
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
         }
     }
 
@@ -361,6 +360,11 @@
         $("#product_sale_sum_price").val(sum);
     }
 
+    function reset_input_vals(tr) {
+        $("#product_sale_sum_price").val("");
+        tr.find("input.item_quantity").val("");
+        tr.find("input.item_sum").val("");
+    }
     var selected_map = null, selected_marker;
 
     function initSelectedMap() {

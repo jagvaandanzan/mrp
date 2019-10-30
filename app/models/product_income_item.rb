@@ -12,6 +12,7 @@ class ProductIncomeItem < ApplicationRecord
   accepts_nested_attributes_for :income_locations, allow_destroy: true
 
   before_save :set_product_balance
+  before_save :set_sum_price
 
   before_validation :set_remainder
   before_validation :set_defaults
@@ -25,23 +26,31 @@ class ProductIncomeItem < ApplicationRecord
 
   enum urgent_type: {engiin: 0, yaaraltai: 1}
 
-  scope :search, ->(income_id, sname, scode, stype) {
-    # items = created_at_desc
-    items = where(income_id: income_id)
-    items = items.joins(supply_order_item: :product).where("products.name LIKE :value", value: "%#{sname}%") if sname.present?
-    items = items.joins(supply_order_item: :product_supply_order)
-    items = items.where("product_supply_orders.code LIKE :value", value: "%#{scode}%") if scode.present?
-    items = items.where('urgent_type = ?', ProductIncomeItem.urgent_types[stype]) if stype.present?
+  scope :search, ->(start, finish, income_code, supply_code, product_name, type) {
+    items = income_date_desc
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time) if start.present? && finish.present?
+    items = items.joins(:product_income).where('product_incomes.code LIKE :value', value: "%#{income_code}%") if income_code.present?
+    items = items.joins(supply_order_item: :product_supply_order).where('product_supply_orders.code LIKE :value', value: "%#{supply_code}%") if supply_code.present?
+    items = items.joins(:product).where('products.code LIKE :value OR products.name LIKE :value', value: "%#{product_name}%") if product_name.present?
+    items = items.where('urgent_type = ?', ProductIncomeItem.urgent_types[type]) if type.present?
+    items
+  }
 
-    items.order("product_supply_orders.code")
+  scope :income_date_desc, -> {
+    order(date: :desc)
   }
 
   scope :total_ordered_supply_item, ->(supply_order_item_id) {
     where(supply_order_item_id: supply_order_item_id).sum(:quantity)
   }
 
+
   def get_balance
     ProductIncomeBalance.balance(product_id)
+  end
+
+  def get_currency(value)
+    ApplicationController.helpers.get_currency(value, Const::CURRENCY[supply_order_item.product_supply_order.exchange_before_type_cast.to_i], 0)
   end
 
   private
@@ -99,4 +108,12 @@ class ProductIncomeItem < ApplicationRecord
       self.product_supplier = supply_order_item.product_supply_order.supplier
     end
   end
+
+  def set_sum_price
+    self.sum_price = price * quantity
+    self.sum_price += shuudan if shuudan.present?
+
+    self.sum_tug = self.sum_price * supply_order_item.product_supply_order.exchange_value
+  end
+
 end

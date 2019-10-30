@@ -45,8 +45,10 @@
                   <th><%= t('activerecord.attributes.product_income_item.supply_order_item_id') %></th>
                   <th><%= t('activerecord.attributes.product_income_item.exchange') %></th>
                   <th><%= t('activerecord.attributes.product_income_item.feature_rel_id') %></th>
-                  <th><%= t('activerecord.attributes.product_income_item.quantity') %></th>
                   <th><%= t('activerecord.attributes.product_income_item.price') %></th>
+                  <th><%= t('activerecord.attributes.product_income_item.quantity') %></th>
+                  <th><%= t('activerecord.attributes.product_supply_order_item.sum_price') %></th>
+                  <th><%= t('titles.total_tugrug') %></th>
                   <th><%= t('activerecord.attributes.product_income_item.shuudan') %></th>
                   <th><%= t('activerecord.attributes.product_income_item.urgent_type') %></th>
                   <th><%= t('activerecord.attributes.product_income_item.date') %></th>
@@ -60,9 +62,11 @@
                     <td class="va-mid"><%= i.supply_order_item.product_name_with_code  %></td>
                     <td class="va-mid"><%= i.supply_order_item.product_supply_order.exchange_i18n + ' ' + get_currency_mn(i.supply_order_item.product_supply_order.exchange_value) %></td>
                     <td class="va-mid"><%= i.feature_rel.rel_names %></td>
+                    <td class="va-mid"><%= i.get_currency i.price %></td>
                     <td class="va-mid"><%= i.quantity %></td>
-                    <td class="va-mid"><%= get_currency_mn i.price %></td>
-                    <td class="va-mid"><%= get_f i.shuudan %></td>
+                    <td class="va-mid"><%= i.get_currency i.sum_price %></td>
+                    <td class="va-mid"><%= get_currency_mn i.sum_tug %></td>
+                    <td class="va-mid"><%= i.get_currency i.shuudan %></td>
                     <td class="va-mid"><%= i.urgent_type_i18n %></td>
                     <td class="va-mid"><%= i.date.strftime('%F') %></td>
                     <td class="va-mid"><%= i.note.presence || '' %></td>

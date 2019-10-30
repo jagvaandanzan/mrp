@@ -119,7 +119,7 @@ class Operators::ProductSalesController < Operators::BaseController
       feature_rels = ProductFeatureRel.search(params[:product_id])
 
       feature_rels.each do |rel|
-        features.push({id: rel.id, name: rel.rel_names, price: rel.sale_price, product: params[:product_id]})
+        features.push({id: rel.id, name: rel.rel_names, price: rel.discount_price, product: params[:product_id]})
       end
     end
 

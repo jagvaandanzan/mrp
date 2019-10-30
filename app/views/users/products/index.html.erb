@@ -1,3 +1,7 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
 <div class="content-wrapper index">
   <section class="content-header align-left padding-15 m-b-5">
     <h1> <%= t('titles.products') %> </h1>
@@ -19,7 +23,7 @@
 
             <%= render 'layouts/flash_message' %>
 
-            <table class="table table-hover">
+            <table class="table table-hover table-bordered">
               <tr>
                 <th><%= t('activerecord.attributes.product.name') %></th>
                 <th><%= t('activerecord.attributes.product.code') %></th>

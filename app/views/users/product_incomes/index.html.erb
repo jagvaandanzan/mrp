@@ -1,11 +1,12 @@
 <% content_for :stylesheets do -%>
   <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
 <% end %>
 <div class="content-wrapper">
 
   <div class="col-md-12 m-t-10 m-b-10">
     <%= form_with url: users_product_incomes_path, method: "get", class: "", local: true do |f| %>
-      <div class="col-md-3 search">
+      <div class="col-md-2 search">
         <div id="searchDate" class="form-control search">
           <i class="fa fa-calendar fa-lg p-r-0"></i>
           <span><%= t("filters.product_supply_order.by_date") %>...</span>
@@ -13,10 +14,20 @@
           <%= f.hidden_field :by_end, value: @by_end %>
         </div>
       </div>
-      <div class="col-md-3 search">
+      <div class="col-md-2 search">
+        <%= text_field_tag :by_income_code, @by_income_code, {class: 'form-control', placeholder: t('filters.product_supply_order.by_income_code')} %>
+      </div>
+      <div class="col-md-2 search">
         <%= text_field_tag :by_code, @by_code, {class: 'form-control', placeholder: t('filters.product_supply_order.by_code')} %>
       </div>
-      <div class="col-md-6 search">
+      <div class="col-md-2 search">
+        <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.product_supply_order.by_product')} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= f.select :by_type, ProductIncomeItem.urgent_types_i18n.keys.map {|k| [ProductIncomeItem.urgent_types_i18n[k], k]},
+                     {:selected => @by_type, :include_blank => t('activerecord.attributes.product_income_item.urgent_type')}, {class: 'form-control selectpicker'} %>
+      </div>
+      <div class="col-md-2 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
 
         <%= link_to t('controls.button.create'), new_users_product_income_path, class: 'btn btn-warning pull-right' %>
@@ -30,26 +41,39 @@
         <div class="box" id="div_list">
           <div class="box-body table-responsive no-padding">
             <%= render 'layouts/flash_message' %>
-            <table class="table table-hover">
+            <table class="table table-hover table-bordered">
               <tr>
                 <th><%= t('activerecord.attributes.product_income.code') %></th>
-                <th><%= t('activerecord.attributes.product_income.income_date') %></th>
-                <th><%= t('activerecord.attributes.product_income.sum_price') %></th>
-                <th><%= t('activerecord.attributes.product_income.note') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.supply_order_item_code') %></th>
+                <th><%= t('activerecord.attributes.product_supply_order_item.product_id') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.price') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.quantity') %></th>
+                <th><%= t('activerecord.attributes.product_supply_order_item.sum_price') %></th>
+                <th><%= t('titles.total_tugrug') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.shuudan') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.urgent_type') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.date') %></th>
               </tr>
-              <% @incomes.each do |p| %>
+              <% @product_income_items.each do |i| %>
+                <% income = i.product_income %>
                 <tr>
-                  <td class="va-mid"><%= link_to p.code, users_product_income_path(p) %></td>
-                  <td class="va-mid"><%= p.income_date.strftime('%F') %></td>
-                  <td class="va-mid"><%= get_currency_mn p.sum_price %></td>
-                  <td class="va-mid"><%= p.note %></td>
+                  <td class="va-mid"><%= link_to income.code, users_product_income_path(income) %></td>
+                  <td class="va-mid"><%= i.supply_order_item.product_supply_order.code  %></td>
+                  <td class="va-mid"><%= i.supply_order_item.product_name_with_code  %></td>
+                  <td class="va-mid"><%= i.get_currency i.price %></td>
+                  <td class="va-mid"><%= i.quantity %></td>
+                  <td class="va-mid"><%= i.get_currency i.sum_price %></td>
+                  <td class="va-mid"><%= get_currency_mn i.sum_tug %></td>
+                  <td class="va-mid"><%= i.get_currency i.shuudan %></td>
+                  <td class="va-mid"><%= i.urgent_type_i18n %></td>
+                  <td class="va-mid"><%= i.date.strftime('%F') %></td>
                 </tr>
               <% end %>
             </table>
           </div>
         </div>
 
-        <%= paginate @incomes %>
+        <%= paginate @product_income_items %>
       </div>
     </div>
   </section>

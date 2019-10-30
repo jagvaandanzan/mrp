@@ -84,7 +84,7 @@ def get_search_recursive(obj, type)
 end
 
 def get_name_recursive(obj)
-  content_tag :p, class: '' do
+  content_tag :span, class: '' do
     if obj.presence
       @headers = []
       get_recursive_header(obj)

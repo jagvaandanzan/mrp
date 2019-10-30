@@ -8,6 +8,8 @@ class CreateProductIncomeItems < ActiveRecord::Migration[5.2]
       t.references :feature_rel, foreign_key: {to_table: :product_feature_rels}
       t.integer :quantity
       t.float :price, limit: 53
+      t.float :sum_price, limit: 53
+      t.float :sum_tug, limit: 53
       t.float :shuudan
       t.integer :urgent_type
       t.datetime :date

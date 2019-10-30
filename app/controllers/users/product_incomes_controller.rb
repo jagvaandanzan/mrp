@@ -2,10 +2,14 @@ class Users::ProductIncomesController < Users::BaseController
   before_action :set_product_income, only: [:edit, :update, :show, :destroy]
 
   def index
-    @by_code = params[:by_code]
     @by_start = params[:by_start]
     @by_end = params[:by_end]
-    @incomes = ProductIncome.search(@by_code, @by_start, @by_end).page(params[:page])
+    @by_income_code = params[:by_income_code]
+    @by_code = params[:by_code]
+    @by_product_name = params[:by_product_name]
+    @by_type = params[:by_type]
+
+    @product_income_items = ProductIncomeItem.search(@by_start, @by_end, @by_income_code, @by_code, @by_product_name, @by_type).page(params[:page])
   end
 
   def new

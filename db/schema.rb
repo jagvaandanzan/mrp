@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_25_092513) do
+ActiveRecord::Schema.define(version: 2019_10_29_063004) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -207,6 +207,8 @@ ActiveRecord::Schema.define(version: 2019_10_25_092513) do
     t.bigint "feature_rel_id"
     t.integer "quantity"
     t.float "price", limit: 53
+    t.float "sum_price", limit: 53
+    t.float "sum_tug", limit: 53
     t.float "shuudan"
     t.integer "urgent_type"
     t.datetime "date"
@@ -339,6 +341,8 @@ ActiveRecord::Schema.define(version: 2019_10_25_092513) do
     t.string "note", limit: 1000
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "sum_price", limit: 53
+    t.float "sum_tug", limit: 53
     t.index ["product_id"], name: "index_product_supply_order_items_on_product_id"
     t.index ["product_supply_order_id"], name: "index_product_supply_order_items_on_product_supply_order_id"
     t.index ["supply_order_id"], name: "index_product_supply_order_items_on_supply_order_id"

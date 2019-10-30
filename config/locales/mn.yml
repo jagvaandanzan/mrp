@@ -43,6 +43,7 @@ mn:
     operator_show: Операторын мэдээлэл
     back_to_list: Жагсаалтруу буцах
     total: Нийт
+    total_tugrug: Нийт ₮
     user_sign_in: Нэвтрэх
     operator_sign_in: Нэвтрэх
     locations: Байршилууд

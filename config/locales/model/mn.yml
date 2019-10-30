@@ -3,6 +3,7 @@ mn:
     product_supply_order:
       by_date: Огноо сонгох
       by_code: Захиалгын кодоор
+      by_income_code: Орлогийн кодоор
       by_product: Барааны [нэр/код]-р
       by_payment: Төлбөрийн хэлбэрээр
       by_close: Хаагдсан
@@ -178,7 +179,7 @@ mn:
         link: Линк
         shuudan: Шуудан
         note: Тайлбар
-        sum_price: Нийт дүн (₮)
+        sum_price: Нийт дүн
       product_income:
         code: Код
         income_date: Огноо

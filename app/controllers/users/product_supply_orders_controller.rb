@@ -2,10 +2,12 @@ class Users::ProductSupplyOrdersController < Users::BaseController
   before_action :set_product_supply_order, only: [:edit, :show, :update, :destroy]
 
   def index
-    @by_code = params[:by_code]
     @by_start = params[:by_start]
     @by_end = params[:by_end]
-    @supply_orders = ProductSupplyOrder.search(@by_code, @by_start, @by_end).page(params[:page])
+    @by_code = params[:by_code]
+    @by_product_name = params[:by_product_name]
+
+    @product_supply_order_items = ProductSupplyOrderItem.search(@by_start, @by_end, @by_code, @by_product_name).page(params[:page])
   end
 
   def new
