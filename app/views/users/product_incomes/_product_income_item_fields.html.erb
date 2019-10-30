@@ -30,11 +30,11 @@
   </td>
   <td>
     <%= field_errors f.object, :price %>
-    <%= f.number_field :price, class: 'form-control p-2 field', min: 0, step: 0.1, placeholder: t('activerecord.attributes.product_income_item.price') %>
+    <%= f.number_field :price, class: 'form-control p-2 field price', min: 0, step: 0.1, placeholder: t('activerecord.attributes.product_income_item.price') %>
   </td>
   <td>
     <%= field_errors f.object, :shuudan %>
-    <%= f.number_field :shuudan, class: 'form-control p-2 field', min: 0, step: 0.1, placeholder: t('activerecord.attributes.product_income_item.shuudan') %>
+    <%= f.number_field :shuudan, class: 'form-control p-2 field shuudan', min: 0, step: 0.1, placeholder: t('activerecord.attributes.product_income_item.shuudan') %>
   </td>
   <td>
     <%= field_errors f.object, :urgent_type %>

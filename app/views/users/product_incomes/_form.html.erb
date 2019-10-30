@@ -96,6 +96,8 @@
                         parentTr.find('input[name=supply_order_item_code]').val(data.order_code);
                         parentTr.find('input[name=exchange]').val(data.exchange+"("+data.exchange_value+")");
                         parentTr.find('input.remainder').val(data.remainder);
+                        parentTr.find('input.price').val(data.price);
+                        parentTr.find('input.shuudan').val(data.shuudan);
                         let features = data.features;
                         var feature_select = "";
                         for (var i = 0; i < features.length; i++) {

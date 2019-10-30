@@ -15,6 +15,8 @@ class ProductFeatureRel < ApplicationRecord
 
   before_save :set_defaults
 
+  attr_accessor :pre_image
+
   scope :search, ->(p_id) {
     if p_id.nil?
       []

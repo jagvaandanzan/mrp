@@ -72,6 +72,8 @@ class Users::ProductIncomesController < Users::BaseController
                     exchange: @supply_order_item.product_supply_order.exchange_i18n,
                     exchange_value: ApplicationController.helpers.get_currency_mn(@supply_order_item.product_supply_order.exchange_value),
                     remainder: ProductIncomeBalance.balance(@supply_order_item.product_id),
+                    price: @supply_order_item.price,
+                    shuudan: @supply_order_item.shuudan,
                     features: feature_arr}
     else
       render json: {}
