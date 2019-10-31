@@ -1,32 +1,39 @@
 <tr class="nested-fields">
-  <td>
+  <th class="image">
+    <% if f.object.product_feature_rel_id.present? %>
+      <%= link_to f.object.product_feature_rel.image.url, "data-lightbox": "roadtrip" do %>
+        <%= image_tag f.object.product_feature_rel.image.url(:tumb), class: 'tumb' %>
+      <% end %>
+    <% end %>
+  </th>
+  <td class="va-mid">
     <%= field_errors f.object, :product_id %>
 
     <%= f.collection_select :product_id, Product.search_by_id(f.object.product_id), :id, :full_name,
                             {:prompt => t('controls.select.none')},
                             {class: 'form-control selectpicker select_product', onchange: 'func_call_feature_rel(this)', "data-live-search": "true"} %>
   </td>
-  <td>
+  <td class="va-mid">
     <%= field_errors f.object, :product_feature_rel_id %>
     <%= f.select :product_feature_rel_id, ProductFeatureRel.search(f.object.product_id.presence || nil).collect {|p| [p.rel_names, p.id, {'price' => p.sale_price, product: p.product_id}]},
                  {:prompt => t('controls.select.none')},
                  {class: 'form-control selectpicker feature_rel', onchange: 'func_change_price(this)', "data-live-search": "true"} %>
   </td>
-  <td>
+  <td class="va-mid">
     <%= field_errors f.object, :quantity %>
     <%= f.number_field :quantity, class: 'form-control field item_quantity', oninput: "func_input_change(this, 'quantity')", placeholder: t('activerecord.attributes.product_sale_item.quantity') %>
   </td>
-  <td>
+  <td class="va-mid">
     <%= field_errors f.object, :price %>
     <%= f.text_field :price, class: 'form-control field item_price', oninput: "func_input_change(this, 'price')", placeholder: t('activerecord.attributes.product_sale_item.price') %>
   </td>
-  <td>
+  <td class="va-mid">
     <%= f.text_field :sum_price, class: 'form-control field item_sum', readonly: true, placeholder: t('activerecord.attributes.product_sale_item.sum_price') %>
   </td>
-  <td>
+  <td class="va-mid">
     <%= f.text_field :remainder, class: 'form-control field remainder', value: f.object.remainder.presence || f.object.get_balance, readonly: true, placeholder: t('activerecord.attributes.product_sale_item.remainder') %>
   </td>
-  <td class="remove">
+  <td class="va-mid remove">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
       <%= nested_remove_btn %>
     <% end %>

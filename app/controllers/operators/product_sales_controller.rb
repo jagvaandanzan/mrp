@@ -1,15 +1,14 @@
 class Operators::ProductSalesController < Operators::BaseController
-  before_action :set_product_sale, only: [:edit, :update, :show]
+  before_action :set_product_sale, only: [:edit, :update, :show, :update_status]
 
   def index
     @code = params[:code]
     @status_id = params[:status_id]
-    @location_id = params[:location_id]
     @phone = params[:phone]
     @start = params[:start]
     @finish = params[:finish]
 
-    @product_sales = ProductSale.search(@code, @start, @finish, @phone, @status_id, @location_id).page(params[:page])
+    @product_sales = ProductSale.search(@code, @start, @finish, @phone, @status_id).page(params[:page])
   end
 
   def new
@@ -36,26 +35,13 @@ class Operators::ProductSalesController < Operators::BaseController
   def create
     @product_sale = ProductSale.new(product_sale_params)
     @product_sale.created_operator = current_operator
-
-    if @product_sale.status.present? && @product_sale.status.alias == "approved"
-      @product_sale.approved_operator = current_operator
-      @product_sale.approved_date = Time.current
-    end
+    check_approved(@product_sale)
 
     if @product_sale.save
-      @product_sale_status_log = ProductSaleStatusLog.new
-      @product_sale_status_log.product_sale = @product_sale
-      @product_sale_status_log.operator = current_operator
-      @product_sale_status_log.status = @product_sale.status
-      @product_sale_status_log.note = @product_sale.status_note
+      create_log(@product_sale)
+      flash[:success] = t('alert.saved_successfully')
 
-      if @product_sale_status_log.save
-        flash[:success] = t('alert.saved_successfully')
-      else
-        flash[:success] = t('alert.info_updated')
-      end
-
-      redirect_to action: :index
+      redirect_to action: 'show', id: @product_sale.id
     else
       logger.debug(@product_sale.errors.full_messages)
       render 'new'
@@ -70,29 +56,31 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def update
     @product_sale.attributes = product_sale_params
-
-    if @product_sale.status.present? && @product_sale.status.alias == "approved"
-      @product_sale.approved_operator = current_operator
-      @product_sale.approved_date = Time.current
-    end
+    check_approved(@product_sale)
 
     if @product_sale.save
-      @product_sale_status_log = ProductSaleStatusLog.new
-      @product_sale_status_log.product_sale = @product_sale
-      @product_sale_status_log.operator = current_operator
-      @product_sale_status_log.status = @product_sale.status
-      @product_sale_status_log.note = @product_sale.status_note
-
-      if @product_sale_status_log.save
-        flash[:success] = t('alert.info_updated')
-      else
-        flash[:success] = t('alert.info_updated')
-      end
-
+      create_log(@product_sale)
+      flash[:success] = t('alert.info_updated')
       redirect_to action: :index
     else
       render 'edit'
     end
+  end
+
+  def update_status
+    @product_sale.update_status = true
+    @product_sale.attributes = params.require(:product_sale).permit(:main_status_id, :status_id, :status_note, :status_user_type)
+    check_approved(@product_sale)
+
+    if @product_sale.save
+      create_log(@product_sale)
+      flash[:success] = t('alert.info_updated')
+      redirect_to action: :index
+    else
+      render 'show'
+      logger.debug(@product_sale.errors.full_messages)
+    end
+
   end
 
   def show
@@ -175,14 +163,37 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def get_product_balance
-    product_balance = ProductBalance.balance(params[:product_id], params[:feature_rel_id])
-    render json: {balance: product_balance}
+    feature_rel_id = params[:feature_rel_id]
+    product_balance = ProductBalance.balance(params[:product_id], feature_rel_id)
+    feature_rel = ProductFeatureRel.find(feature_rel_id)
+    render json: {balance: product_balance, img: feature_rel.image.url, tumb: feature_rel.image.url(:tumb)}
   end
 
   private
 
   def set_product_sale
     @product_sale = ProductSale.find(params[:id])
+  end
+
+  def create_log(product_sale)
+    product_sale_status_log = ProductSaleStatusLog.new
+    product_sale_status_log.product_sale = product_sale
+    product_sale_status_log.operator = current_operator
+    product_sale_status_log.status = product_sale.status
+    product_sale_status_log.note = product_sale.status_note
+    product_sale_status_log.save
+  end
+
+  def check_approved(product_sale)
+    if product_sale.status.present?
+      if product_sale.status.alias == "approved"
+        product_sale.approved_operator = current_operator
+        product_sale.approved_date = Time.current
+      else
+        product_sale.approved_operator = nil
+        product_sale.approved_date = nil
+      end
+    end
   end
 
   def product_sale_params

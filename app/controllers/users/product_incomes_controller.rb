@@ -26,7 +26,7 @@ class Users::ProductIncomesController < Users::BaseController
     @product_income = ProductIncome.new(product_income_params)
     if @product_income.save
       flash[:success] = t('alert.saved_successfully')
-      redirect_to action: 'show', id: @product_supply_order.id
+      redirect_to action: 'show', id: @product_income.id
     else
       render 'new'
     end

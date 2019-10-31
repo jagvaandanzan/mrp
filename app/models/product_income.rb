@@ -8,6 +8,7 @@ class ProductIncome < ApplicationRecord
 
   validates :code, presence: true
   validates :code, uniqueness: true
+  validate :valid_quantity
 
   scope :income_date_desc, -> {
     order(income_date: :desc)
@@ -29,5 +30,26 @@ class ProductIncome < ApplicationRecord
     end
 
     self.sum_price = sum
+  end
+
+  def valid_quantity
+    remainder = Hash.new
+    sums = Hash.new
+
+    product_income_items.each do |i|
+      if i.supply_order_item.present?
+        unless remainder[i.supply_order_item.id].present?
+          remainder[i.supply_order_item.id] = ProductIncomeBalance.balance(i.supply_order_item.product_id)
+          sums[i.supply_order_item.id] = 0
+        end
+        sums[i.supply_order_item.id] += (i.quantity - (i.quantity_was.presence || 0))
+      end
+    end
+
+    remainder.each do |key, value|
+      if value < sums[key]
+        self.errors.add(:product_income_items, :over_quantity)
+      end
+    end
   end
 end

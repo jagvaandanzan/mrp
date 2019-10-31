@@ -46,6 +46,7 @@
                 <th><%= t('activerecord.attributes.product_income.code') %></th>
                 <th><%= t('activerecord.attributes.product_income_item.supply_order_item_code') %></th>
                 <th><%= t('activerecord.attributes.product_supply_order_item.product_id') %></th>
+                <th><%= t('activerecord.models.product_feature') %></th>
                 <th><%= t('activerecord.attributes.product_income_item.price') %></th>
                 <th><%= t('activerecord.attributes.product_income_item.quantity') %></th>
                 <th><%= t('activerecord.attributes.product_supply_order_item.sum_price') %></th>
@@ -60,6 +61,7 @@
                   <td class="va-mid"><%= link_to income.code, users_product_income_path(income) %></td>
                   <td class="va-mid"><%= i.supply_order_item.product_supply_order.code  %></td>
                   <td class="va-mid"><%= i.supply_order_item.product_name_with_code  %></td>
+                  <td class="va-mid"><%= i.feature_rel.rel_names(true) %></td>
                   <td class="va-mid"><%= i.get_currency i.price %></td>
                   <td class="va-mid"><%= i.quantity %></td>
                   <td class="va-mid"><%= i.get_currency i.sum_price %></td>

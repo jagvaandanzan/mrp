@@ -1,6 +1,10 @@
 <% content_for :stylesheets do -%>
   <%= stylesheet_link_tag "show" %>
 <% end %>
+<% provide :head_tags do %>
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_KEY'] %>&libraries=places"></script>
+<% end %>
 <div class="content-wrapper">
   <%= render 'layouts/flash_message' %>
   <section class="content-header align-left padding-15">
@@ -15,79 +19,81 @@
   <%= show_body do %>
     <div class="box">
       <div class="box-body">
-
-        <div class="col-md-12 group_div">
-          <div class="col-md-12 field_div">
-            <b>Ерөнхий мэдээлэл</b>
-          </div>
-
-          <div style="clear: both"></div>
-          <div class="col-md-4 field_div">
-            <div class="div_input">
-              <b><%= t('activerecord.attributes.product_sale.phone') %>:</b> <%= @product_sale.phone %>
-            </div>
-          </div>
-          <div class="col-md-4 field_div">
-            <div class="div_input">
-              <b><%= t('activerecord.attributes.product_sale.delivery_end') %>
-                :</b> <%= @product_sale.delivery_time.html_safe %>
-            </div>
-          </div>
-          <div class="col-md-4 field_div">
-            <div class="div_input">
-              <b><%= t('activerecord.attributes.product_sale.created_operator_id') %>
-                :</b> <%= @product_sale.created_operator.operator_name %>
-            </div>
-          </div>
-          <div style="clear: both"></div>
-          <div class="col-md-7 field_div">
-            <div class="div_input">
-              <b><%= t('activerecord.attributes.product_sale.location_id') %>
-                :</b> <%= @product_sale.location.full_name %>
-            </div>
-          </div>
-          <div style="clear: both"></div>
-          <div class="col-md-4 field_div">
-            <div class="div_input">
-              <b><%= t('activerecord.attributes.product_sale.loc_note') %>:</b> <%= @product_sale.loc_note %>
-            </div>
-          </div>
-          <div class="col-md-4 field_div">
-            <div class="div_input">
-              <b><%= t('activerecord.attributes.product_sale.building_code') %>:</b> <%= @product_sale.building_code %>
-            </div>
-          </div>
-          <div style="clear: both"></div>
-          <% if @product_sale.approved_operator.present? %>
-            <div class="col-md-4 field_div">
-              <div class="div_input">
-                <b><%= t('activerecord.attributes.product_sale.approved_operator_id') %>
-                  :</b> <%= @product_sale.approved_operator.operator_name %>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="col-md-8">
+              <div class="row">
+                <div class="col-md-6 field_div">
+                  <b><%= t('activerecord.attributes.product_sale.phone') %>:</b> <%= @product_sale.phone %>
+                </div>
+                <div class="col-md-6 field_div">
+                  <b><%= t('activerecord.attributes.product_sale.delivery_end') %>
+                    :</b> <%= @product_sale.delivery_time.html_safe %>
+                </div>
               </div>
-            </div>
-            <div class="col-md-4 field_div">
-              <div class="div_input">
-                <b><%= t('activerecord.attributes.product_sale.approved_date') %>
-                  :</b> <%= @product_sale.approved_date.strftime('%F %R') %>
+              <div class="row">
+                <div class="col-md-12 field_div">
+                  <b><%= t('activerecord.attributes.product_sale.location_id') %>
+                    :</b> <%= @product_sale.location.full_name %>
+                </div>
               </div>
+              <div class="row">
+                <div class="col-md-6 field_div">
+                  <b><%= t('activerecord.attributes.product_sale.loc_note') %>:</b> <%= @product_sale.loc_note %>
+                </div>
+                <div class="col-md-6 field_div">
+                  <b><%= t('activerecord.attributes.product_sale.building_code') %>
+                    :</b> <%= @product_sale.building_code %>
+                </div>
+              </div>
+              <%= form_with model: @product_sale, url: update_status_operators_product_sales_path(id: @product_sale.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
+                <%= f.hidden_field :status_user_type %>
+                <div class="row">
+                  <div class="col-md-6 field_div">
+                    <%= f.label :main_status_id, class: 'control-label' %>
+                    <div class="<%= get_error_class(@product_sale, :main_status_id) %>">
+                      <%= field_errors(@product_sale, :main_status) %>
+                      <%= f.collection_select :main_status_id, ProductSaleStatus.search(nil, @product_sale.status_user_type), :id, :name,
+                                              {:prompt => t('controls.select.none')},
+                                              {class: 'form-control selectpicker', onchange: 'callChildren(this)', "data-live-search": "true"} %>
+                    </div>
+                  </div>
+                  <div class="col-md-6 field_div">
+                    <label class="control-label" for="product_sale_status_id" style="margin-bottom: 13px"></label>
+                    <div id="status" class="<%= get_error_class(@product_sale, :status_id) %>">
+                      <%= field_errors(@product_sale, :status_id) %>
+                      <% if (@product_sale.status.present? && @product_sale.status.id != @product_sale.main_status.id) ||
+                          (@product_sale.main_status.present? && @product_sale.main_status.get_status_childs(@product_sale.status_user_type).count > 0) %>
+                        <%= f.collection_select :status_id, ProductSaleStatus.search(@product_sale.main_status_id, @product_sale.status_user_type), :id, :name,
+                                                {:prompt => t('controls.select.none')},
+                                                {class: 'form-control selectpicker', id: 'status_id'} %>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 field_div">
+                    <%= f.label :status_note, class: 'control-label' %>
+                    <div class="<%= get_error_class(@product_sale, :status_note) %>">
+                      <%= field_errors(@product_sale, :status_note) %>
+                      <%= f.text_area :status_note, class: 'form-control', placeholder: t('activerecord.attributes.product_sale.status_note') %>
+                    </div>
+                  </div>
+                  <div class="col-md-4 field_div">
+                    <%= f.submit t('controls.button.update'), class: 'btn btn-warning', style: 'margin-top: 25px' %>
+                  </div>
+                </div>
+              <% end %>
+
             </div>
-          <% end %>
-          <div style="clear: both"></div>
-          <div class="col-md-4 field_div">
-            <div class="div_input">
-              <b><%= t('activerecord.attributes.product_sale.status_id') %>
-                :</b> <%= @product_sale.status.name_with_parent %>
-            </div>
-          </div>
-          <div class="col-md-4 field_div">
-            <div class="div_input">
-              <b><%= t('activerecord.attributes.product_sale.status_note') %>:</b> <%= @product_sale.status_note %>
+            <div class="col-md-4" style="padding: 0">
+              <div id="selected_map" style="position:absolute;right: 0;width:100%;background-color: lightgrey;height: 242px"></div>
             </div>
           </div>
         </div>
 
         <% if @product_sale.product_sale_items.present? %>
-          <div class="col-md-12 group_div m-t-20">
+          <div class="col-md-12 group_div m-t-10">
             <div class="col-md-12 field_div">
               <b><%= t('activerecord.attributes.product_sale.product_sale_items') %></b>
             </div>
@@ -95,17 +101,19 @@
             <div style="clear: both"></div>
             <div class="col-md-4 field_div">
               <div class="div_input">
-                <b><%= t('activerecord.attributes.product_sale.sum_price') %>:</b> <%= get_currency_mn(@product_sale.sum_price) %>
+                <b><%= t('activerecord.attributes.product_sale.sum_price') %>
+                  :</b> <%= get_currency_mn(@product_sale.sum_price) %>
               </div>
             </div>
             <div class="col-md-4 field_div">
               <div class="div_input">
-                <b><%= t('activerecord.attributes.product_sale.bonus') %>:</b> <%=get_currency_mn(@product_sale.bonus) %>
+                <b><%= t('activerecord.attributes.product_sale.bonus') %>
+                  :</b> <%= get_currency_mn(@product_sale.bonus) %>
               </div>
             </div>
             <div class="col-md-4 field_div">
               <div class="div_input">
-                <b><%= t('activerecord.attributes.product_sale.money') %>:</b> <%=@product_sale.money_i18n %>
+                <b><%= t('activerecord.attributes.product_sale.money') %>:</b> <%= @product_sale.money_i18n %>
               </div>
             </div>
             <div style="clear: both"></div>
@@ -113,6 +121,7 @@
               <table style="background: white;" class="table table-bordered">
                 <thead>
                 <tr>
+                  <th><%= t('activerecord.attributes.product_feature_rel.image') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.product_feature_rel_id') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
@@ -123,6 +132,11 @@
                 <tbody>
                 <% @product_sale.product_sale_items.each do |p| %>
                   <tr>
+                    <td>
+                      <%= link_to p.product_feature_rel.image.url, "data-lightbox": "roadtrip" do %>
+                        <%= image_tag p.product_feature_rel.image.url(:tumb), class: 'tumb' %>
+                      <% end %>
+                    </td>
                     <td class="va-mid"><%= p.product.name_with_code %></td>
                     <td class="va-mid"><%= p.product_feature_rel.rel_names %></td>
                     <td class="va-mid"><%= p.quantity %></td>
@@ -137,7 +151,7 @@
         <% end %>
 
 
-        <% if @product_sale.product_sale_status_logs.present?%>
+        <% if @product_sale.product_sale_status_logs.present? %>
           <div class="col-md-12 group_div m-t-20">
             <div class="col-md-12 field_div">
               <b><%= t('activerecord.attributes.product_sale.product_sale_status_logs') %></b>
@@ -172,3 +186,66 @@
     </div>
   <% end %>
 </div>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+        initSelectedMap();
+    });
+    function callChildren(select) {
+        let val = null;
+        if (select !== undefined && select !== null) {
+            val = $(select).val();
+            if (valid_id(val)) {
+
+                Rails.ajax({
+                    url: "<%= get_sub_status_operators_product_sales_path %>",
+                    type: "PATCH",
+                    data: "parent_id=" + val + "&status_user_type=<%= @product_sale.status_user_type %>",
+                    success: function (data) {
+                        let childrens = data.childrens;
+                        if (childrens !== undefined && childrens.length > 0) {
+                            let divSelect =
+                                "<select name='product_sale[status_id]' id=\"status_id\" class='form-control'>" +
+                                "<option value=''>Сонгох</option>";
+
+                            for (var i = 0; i < childrens.length; i++) {
+                                divSelect += '<option value="' + childrens[i]["id"] + '">' + childrens[i]["name"] + '</option>';
+                            }
+                            divSelect += "</select>";
+
+                            $("#status").html(divSelect);
+
+                            $("#status_id").selectpicker("refresh");
+                        } else {
+                            $("#status").html("");
+                        }
+
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                });
+            } // val is undefined chek
+        }// select is undefined check
+    }
+
+    var selected_map = null, selected_marker;
+
+    function initSelectedMap() {
+        let myCoords = new google.maps.LatLng(<%= @product_sale.location.latitude %>, <%= @product_sale.location.longitude %>);
+        let mapOptions = {
+            center: myCoords,
+            zoom: 15,
+            mapTypeId: 'hybrid',
+            output: 'embed',
+            streetViewControl: false,
+            mapTypeControl: false,
+        };
+        selected_map = new google.maps.Map(document.getElementById('selected_map'), mapOptions);
+        selected_marker = new google.maps.Marker({
+            position: myCoords,
+            animation: google.maps.Animation.DROP,
+            map: selected_map
+        });
+    }
+
+</script>

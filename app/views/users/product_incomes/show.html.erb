@@ -42,6 +42,7 @@
                 <thead>
                 <tr>
                   <th><%= t('activerecord.attributes.product_income_item.supply_order_item_code') %></th>
+                  <th><%= t('activerecord.attributes.product_feature_rel.image') %></th>
                   <th><%= t('activerecord.attributes.product_income_item.supply_order_item_id') %></th>
                   <th><%= t('activerecord.attributes.product_income_item.exchange') %></th>
                   <th><%= t('activerecord.attributes.product_income_item.feature_rel_id') %></th>
@@ -59,6 +60,11 @@
                 <% @product_income.product_income_items.each do |i| %>
                   <tr>
                     <td class="va-mid"><%= i.supply_order_item.product_supply_order.code  %></td>
+                    <td class="va-mid">
+                      <%= link_to i.feature_rel.image.url, "data-lightbox": "roadtrip" do %>
+                      <%= image_tag i.feature_rel.image.url(:tumb), class: 'tumb' %>
+                    <% end %>
+                    </td>
                     <td class="va-mid"><%= i.supply_order_item.product_name_with_code  %></td>
                     <td class="va-mid"><%= i.supply_order_item.product_supply_order.exchange_i18n + ' ' + get_currency_mn(i.supply_order_item.product_supply_order.exchange_value) %></td>
                     <td class="va-mid"><%= i.feature_rel.rel_names %></td>

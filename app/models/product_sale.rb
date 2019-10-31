@@ -16,33 +16,34 @@ class ProductSale < ApplicationRecord
 
   enum money: {account: 1, cash: 0}
 
-  attr_accessor :hour_now, :hour_start, :hour_end, :status_user_type
+  attr_accessor :hour_now, :hour_start, :hour_end, :status_user_type, :update_status
 
-  validates_numericality_of :hour_end, greater_than: Proc.new(&:hour_start)
-  validates :phone, :location_id, :product_sale_items, :money, :main_status, presence: true
+  with_options :if => Proc.new {|m| m.update_status == nil} do
+    validates_numericality_of :hour_end, greater_than: Proc.new(&:hour_start)
+    validates :phone, :location_id, :product_sale_items, :money, presence: true
+    validates :code, uniqueness: true
+    validate :feature_rel_should_be_uniq
+    # Утасны дугаар 8 оронтой байхаар шалгадаг, буруу байвал хадгалдаггүй
+    validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
+  end
+
   before_validation :validate_status
-  validates :code, uniqueness: true
-
-  # Утасны дугаар 8 оронтой байхаар шалгадаг, буруу байвал хадгалдаггүй
-  validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
+  validates :main_status, presence: true
 
   scope :created_at_desc, -> {
     order(created_at: :desc)
   }
-  scope :search, ->(code, start, finish, phone, status_id, loc_id) {
-
-    items = joins(:product_sale_items)
-                .joins("LEFT JOIN products ON product_sale_items.product_id = products.id")
-    items.order("product_sale_status.queue")
-
+  scope :search, ->(code, start, finish, phone, status_id) {
+    items = joins(:status)
     items = items.where('phone LIKE :value', value: "%#{phone}%") if phone.present?
     items = items.where('products.code LIKE :value', value: "%#{code}%") if code.present?
     items = items.where('main_status_id = :s OR status_id=:s', s: status_id) if status_id.present?
-    items = items.where(location_id: loc_id) if loc_id.present?
     items = items.where('DATE(delivery_start) >= :s AND DATE(delivery_start) <= :f', s: "#{start}", f: "#{finish}") if start.present? && finish.present?
+    items = items.order("product_sale_statuses.queue")
 
     items
   }
+
   def bonus
     ApplicationController.helpers.get_f(self[:bonus])
   end
@@ -86,6 +87,14 @@ class ProductSale < ApplicationRecord
       else
         self.status = main_status
       end
+    end
+  end
+
+  def feature_rel_should_be_uniq
+    uniq_by_feature_rel = product_sale_items.uniq(&:product_feature_rel_id)
+
+    if product_sale_items.length != uniq_by_feature_rel.length
+      self.errors.add(:product_sale_items, :taken_feature_rel)
     end
   end
 end

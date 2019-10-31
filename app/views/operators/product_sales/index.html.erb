@@ -46,8 +46,8 @@
             <table class="table table-hover table-bordered">
               <tr>
                 <th><%= t('activerecord.attributes.product_sale.product_sale_item') %></th>
-                <th><%= t('activerecord.attributes.product_sale.delivery_end') %></th>
                 <th><%= t('activerecord.attributes.product_sale.phone') %></th>
+                <th><%= t('activerecord.attributes.product_sale.delivery_end') %></th>
                 <th><%= t('activerecord.attributes.product_sale.location_id') %></th>
                 <th><%= t('activerecord.attributes.product_sale.loc_note') %></th>
                 <th><%= t('activerecord.attributes.product_sale.sum_price') %></th>
@@ -59,8 +59,8 @@
               <% @product_sales.each do |p| %>
                 <tr>
                   <td class="va-mid text-center"><%= link_to p.product_sale_items.count, operators_product_sale_path(p) %></td>
+                  <td class="va-mid"><%= link_to p.phone, operators_product_sale_path(p)  %></td>
                   <td class="va-mid" style="white-space: nowrap"><%= p.delivery_time.html_safe %></td>
-                  <td class="va-mid"><%= p.phone %></td>
                   <td class="va-mid"><%= p.location.full_name %></td>
                   <td class="va-mid"><%= p.loc_note %></td>
                   <td class="va-mid"><%= get_currency_mn(p.sum_price) %></td>

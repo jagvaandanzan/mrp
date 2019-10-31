@@ -99,6 +99,7 @@ Rails.application.routes.draw do
         post 'get_last_location'
         post 'get_location'
         post 'get_product_balance'
+        patch 'update_status'
       end
     end
 

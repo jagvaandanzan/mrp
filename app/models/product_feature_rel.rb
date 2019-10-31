@@ -34,12 +34,16 @@ class ProductFeatureRel < ApplicationRecord
     ApplicationController.helpers.get_f(self[:discount_price])
   end
 
-  def rel_names
+  def rel_names(mini_text = nil)
     option_names = ""
 
     self.product_feature_option_rels.each_with_index do |rel, index|
       option_names += (index == 0 ? "" : ", ")
-      option_names += "#{rel.feature_option.product_feature.name}: #{rel.feature_option.name}"
+      option_names += if mini_text.present?
+                        rel.feature_option.name
+                      else
+                        "#{rel.feature_option.product_feature.name}: #{rel.feature_option.name}"
+                      end
     end
 
     option_names
