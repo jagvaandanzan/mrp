@@ -28,7 +28,7 @@ class ProductIncomeItem < ApplicationRecord
 
   scope :search, ->(start, finish, income_code, supply_code, product_name, type) {
     items = income_date_desc
-    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time) if start.present? && finish.present?
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items = items.joins(:product_income).where('product_incomes.code LIKE :value', value: "%#{income_code}%") if income_code.present?
     items = items.joins(supply_order_item: :product_supply_order).where('product_supply_orders.code LIKE :value', value: "%#{supply_code}%") if supply_code.present?
     items = items.joins(:product).where('products.code LIKE :value OR products.name LIKE :value', value: "%#{product_name}%") if product_name.present?

@@ -1,12 +1,12 @@
 mn:
   filters:
-    product_supply_order:
-      by_date: Огноо сонгох
-      by_code: Захиалгын кодоор
-      by_income_code: Орлогийн кодоор
-      by_product: Барааны [нэр/код]-р
-      by_payment: Төлбөрийн хэлбэрээр
-      by_close: Хаагдсан
+    by_date: Огноо сонгох
+    by_code: Захиалгын кодоор
+    by_income_code: Орлогийн кодоор
+    by_product: Барааны [нэр/код]-р
+    by_payment: Төлбөрийн хэлбэрээр
+    by_phone: Утасаар
+    by_close: Хаагдсан
   enums:
     user:
       gender:
@@ -25,9 +25,9 @@ mn:
         sh: ш
         kg: кг
       ptype:
-       zahialga: Захиалгын
-       deej: Дээж бараа
-       damjuulah: Дамжуулан борлуулах
+        zahialga: Захиалгын
+        deej: Дээж бараа
+        damjuulah: Дамжуулан борлуулах
     product_supply_order:
       payment:
         belneer: Бэлнээр
@@ -70,6 +70,7 @@ mn:
       product_income: Орлого
       product_income_item: Орлогын бараа
       product_sale: Борлуулалт
+      product_sale_call: Залгах
     attributes:
       admin_user:
         email: Имэйл
@@ -242,6 +243,12 @@ mn:
         created_at: Огноо
         status_id: Статус
         note: Тайлбар
+      product_sale_call:
+        phone: Утас
+        product_id: Бараа
+        quantity: Тоо хэмжээ
+        remainder: Үлдэгдэл
+        created_at: Огноо
     errors:
       messages:
         blank: " хоосон байна!"

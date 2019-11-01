@@ -9,9 +9,9 @@ class ProductBalance < ApplicationRecord
   belongs_to :operator, optional: true
 
 
-  scope :balance, -> (product_id, feature_rel_id) {
-    where(product_id: product_id)
-        .where(feature_rel_id: feature_rel_id)
-        .sum(:quantity)
+  scope :balance, -> (product_id, feature_rel_id = nil) {
+    items = where(product_id: product_id)
+    items = items.where(feature_rel_id: feature_rel_id) if feature_rel_id.present?
+    items.sum(:quantity)
   }
 end

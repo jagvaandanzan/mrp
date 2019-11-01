@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_29_063004) do
+ActiveRecord::Schema.define(version: 2019_10_31_065625) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -253,6 +253,17 @@ ActiveRecord::Schema.define(version: 2019_10_29_063004) do
     t.index ["parent_id"], name: "index_product_locations_on_parent_id"
   end
 
+  create_table "product_sale_calls", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "phone"
+    t.bigint "product_id"
+    t.integer "quantity"
+    t.bigint "operator_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["operator_id"], name: "index_product_sale_calls_on_operator_id"
+    t.index ["product_id"], name: "index_product_sale_calls_on_product_id"
+  end
+
   create_table "product_sale_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "product_sale_id"
     t.bigint "product_id"
@@ -466,6 +477,8 @@ ActiveRecord::Schema.define(version: 2019_10_29_063004) do
   add_foreign_key "product_income_locations", "product_locations", column: "location_id"
   add_foreign_key "product_incomes", "users"
   add_foreign_key "product_locations", "product_locations", column: "parent_id"
+  add_foreign_key "product_sale_calls", "operators"
+  add_foreign_key "product_sale_calls", "products"
   add_foreign_key "product_sale_items", "product_feature_rels"
   add_foreign_key "product_sale_items", "product_sales"
   add_foreign_key "product_sale_items", "products"

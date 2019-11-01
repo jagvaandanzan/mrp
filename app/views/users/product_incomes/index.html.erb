@@ -9,19 +9,19 @@
       <div class="col-md-2 search">
         <div id="searchDate" class="form-control search">
           <i class="fa fa-calendar fa-lg p-r-0"></i>
-          <span><%= t("filters.product_supply_order.by_date") %>...</span>
+          <span><%= t("filters.by_date") %>...</span>
           <%= f.hidden_field :by_start, value: @by_start %>
           <%= f.hidden_field :by_end, value: @by_end %>
         </div>
       </div>
       <div class="col-md-2 search">
-        <%= text_field_tag :by_income_code, @by_income_code, {class: 'form-control', placeholder: t('filters.product_supply_order.by_income_code')} %>
+        <%= text_field_tag :by_income_code, @by_income_code, {class: 'form-control', placeholder: t('filters.by_income_code')} %>
       </div>
       <div class="col-md-2 search">
-        <%= text_field_tag :by_code, @by_code, {class: 'form-control', placeholder: t('filters.product_supply_order.by_code')} %>
+        <%= text_field_tag :by_code, @by_code, {class: 'form-control', placeholder: t('filters.by_code')} %>
       </div>
       <div class="col-md-2 search">
-        <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.product_supply_order.by_product')} %>
+        <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.by_product')} %>
       </div>
       <div class="col-md-2 search">
         <%= f.select :by_type, ProductIncomeItem.urgent_types_i18n.keys.map {|k| [ProductIncomeItem.urgent_types_i18n[k], k]},
@@ -125,7 +125,7 @@
         });
         $('#searchDate').on('cancel.daterangepicker', function (ev, picker) {
             console.log("cancel event fired");
-            $('#searchDate span').html("<%= t("filters.product_supply_order.by_date") %>...");
+            $('#searchDate span').html("<%= t("filters.by_date") %>...");
             startDate.val("");
             endDate.val("");
         });

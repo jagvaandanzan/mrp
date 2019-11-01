@@ -89,7 +89,7 @@ Rails.application.routes.draw do
   namespace :operators, path: :operator do
     root 'product_sales#index'
 
-    resources :product_sales, only: [:index, :create, :new, :show, :edit, :update] do
+    resources :product_sales, only: [:index, :create, :new, :show, :edit, :update, :destroy] do
       collection do
         patch 'get_sub_status'
         patch 'get_product_features'
@@ -100,6 +100,12 @@ Rails.application.routes.draw do
         post 'get_location'
         post 'get_product_balance'
         patch 'update_status'
+      end
+    end
+
+    resources :product_sale_calls, only: [:index, :create, :new, :edit, :update, :destroy] do
+      collection do
+        post 'get_product_balance'
       end
     end
 

@@ -13,7 +13,7 @@ class ProductSupplyOrderItem < ApplicationRecord
 
   scope :search, ->(start, finish, supply_code, product_name) {
     items = joins(:product_supply_order)
-    items = items.where('? <= product_supply_orders.ordered_date AND product_supply_orders.ordered_date <= ?', start.to_time, finish.to_time) if start.present? && finish.present?
+    items = items.where('? <= product_supply_orders.ordered_date AND product_supply_orders.ordered_date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items = items.where('product_supply_orders.code LIKE :value', value: "%#{supply_code}%") if supply_code.present?
     items = items.joins(:product).where('products.code LIKE :value OR products.name LIKE :value', value: "%#{product_name}%") if product_name.present?
     items.order("product_supply_orders.ordered_date": :desc)

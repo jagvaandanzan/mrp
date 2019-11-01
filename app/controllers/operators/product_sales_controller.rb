@@ -1,14 +1,14 @@
 class Operators::ProductSalesController < Operators::BaseController
-  before_action :set_product_sale, only: [:edit, :update, :show, :update_status]
+  before_action :set_product_sale, only: [:edit, :update, :show, :update_status, :destroy]
 
   def index
-    @code = params[:code]
+    @product_name = params[:product_name]
     @status_id = params[:status_id]
     @phone = params[:phone]
     @start = params[:start]
     @finish = params[:finish]
 
-    @product_sales = ProductSale.search(@code, @start, @finish, @phone, @status_id).page(params[:page])
+    @product_sales = ProductSale.search(@product_name, @start, @finish, @phone, @status_id).page(params[:page])
   end
 
   def new
@@ -52,6 +52,12 @@ class Operators::ProductSalesController < Operators::BaseController
     @product_sale.status_user_type = 'operator'
     @product_sale.hour_start = @product_sale.delivery_start.hour
     @product_sale.hour_end = @product_sale.delivery_end.hour
+  end
+
+  def destroy
+    @product_sale.destroy!
+    flash[:success] = t('alert.deleted_successfully')
+    redirect_to action: 'index'
   end
 
   def update

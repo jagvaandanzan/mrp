@@ -1,0 +1,78 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1><%= t('activerecord.models.product_sale_call') + t(@sale_call.persisted? ? 'titles.edit' : 'titles.add') %></h1>
+  </section>
+
+  <section class="content">
+    <div class="box box-info">
+      <%= form_with model: @sale_call, url: @sale_call.persisted? ? operators_product_sale_call_path : operators_product_sale_calls_path,
+                    method: @sale_call.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <div class="form-group">
+            <%= f.label :phone, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@sale_call, :phone) %>">
+              <%= field_errors(@sale_call, :phone) %>
+              <%= f.text_field :phone, class: 'form-control', placeholder: t('activerecord.attributes.product_sale_call.phone') %>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :product_id, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@sale_call, :product_id) %>">
+              <%= field_errors(@sale_call, :product_id) %>
+              <%= f.collection_select :product_id, Product.search_by_id(f.object.product_id), :id, :full_name,
+                                      {:prompt => t('controls.select.none')},
+                                      {class: 'form-control selectpicker select_product', onchange: 'func_call_feature_rel(this)', "data-live-search": "true"} %>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :quantity, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@sale_call, :quantity) %>">
+              <%= field_errors(@sale_call, :quantity) %>
+              <%= f.number_field :quantity, class: 'form-control', min: 0, step: 1, placeholder: t('activerecord.attributes.product_sale_call.quantity') %>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :remainder, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@sale_call, :remainder) %>">
+              <%= field_errors(@sale_call, :remainder) %>
+              <%= f.number_field :remainder, class: 'form-control', value: @sale_call.remainder.presence || @sale_call.get_balance, readonly: true, placeholder: t('activerecord.attributes.product_sale_call.remainder') %>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>
+<%= render 'shared/suggestion_search', id: 'product_sale_call_product_id', url: search_product_path %>
+<script>
+    function suggestion_search_enter(select) {
+        func_call_feature_rel(select);
+    }
+
+    function func_call_feature_rel(select) {
+        let product_id = $(select).val();
+        $("#product_sale_call_quantity").val("");
+
+        if (valid_id(product_id)) {
+            Rails.ajax({
+                url: "<%= get_product_balance_operators_product_sale_calls_path %>",
+                type: "POST",
+                data: "product_id=" + product_id,
+                success: function (data) {
+                    $("#product_sale_call_remainder").val(data.balance);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+    }
+
+</script>

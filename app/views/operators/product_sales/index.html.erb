@@ -9,17 +9,17 @@
       <div class="col-md-2 search">
         <div id="search-date" class="form-control search">
           <i class="fa fa-calendar fa-lg p-r-0"></i>
-          <span><%= t("filters.product_supply_order.by_date") %>...</span>
+          <span><%= t("filters.by_date") %>...</span>
           <%= f.hidden_field :start, value: @start %>
           <%= f.hidden_field :finish, value: @finish %>
         </div>
       </div>
       <div class="col-md-2 search">
-        <%= text_field_tag :code, @code, {class: 'form-control', placeholder: t('activerecord.attributes.product_sale.code')} %>
+        <%= text_field_tag :product_name, @product_name, {class: 'form-control', placeholder: t('filters.by_product')} %>
       </div>
 
       <div class="col-md-2 search">
-        <%= text_field_tag :phone, @phone, {class: 'form-control', placeholder: t('activerecord.attributes.product_sale.phone')} %>
+        <%= text_field_tag :phone, @phone, {class: 'form-control', placeholder: t('filters.by_phone')} %>
       </div>
       <div class="col-md-2 search">
         <%= f.collection_select :status_id, ProductSaleStatus.search(nil, nil), :id, :name,
