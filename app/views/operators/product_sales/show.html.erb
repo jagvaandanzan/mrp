@@ -13,7 +13,7 @@
 
   <div class="action-buttons">
     <%= link_to t('controls.button.edit'), edit_operators_product_sale_path(@product_sale), class: 'btn btn-info' %>
-    <%= link_to t('controls.button.delete'), operators_product_path(@product_sale), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <%= link_to t('controls.button.delete'), operators_product_sale_path(@product_sale), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <%= link_to t('titles.back_to_list'), operators_product_sales_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
   </div>
   <%= show_body do %>
