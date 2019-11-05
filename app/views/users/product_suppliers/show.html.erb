@@ -1,4 +1,3 @@
-
 <div class="content-wrapper">
   <%= render 'layouts/flash_message' %>
   <section class="content-header align-left padding-15">
@@ -6,8 +5,10 @@
   </section>
 
   <div class="action-buttons">
-    <%= link_to t('controls.button.edit'), edit_users_product_supplier_path(@product_supplier), class: 'btn btn-info' %>
-    <%= link_to t('controls.button.delete'), users_product_supplier_path(@product_supplier), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <% if can? :manage, ProductSupplier %>
+      <%= link_to t('controls.button.edit'), edit_users_product_supplier_path(@product_supplier), class: 'btn btn-info' %>
+      <%= link_to t('controls.button.delete'), users_product_supplier_path(@product_supplier), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <% end %>
     <%= link_to t('titles.back_to_list'), users_product_suppliers_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
   </div>
   <%= show_body do %>

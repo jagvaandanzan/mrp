@@ -4,7 +4,10 @@
   </section>
 
   <div class="action-buttons">
-    <%= link_to t('controls.button.create'), new_users_loc_district_path, class: 'btn btn-warning' %>
+    <% is_manage = can? :manage, Location %>
+    <% if is_manage %>
+      <%= link_to t('controls.button.create'), new_users_loc_district_path, class: 'btn btn-warning' %>
+    <% end %>
   </div>
   <section class="content container-fluid">
     <div class="row">
@@ -18,23 +21,27 @@
               <tr>
                 <th class="th-email"><%= t('activerecord.attributes.loc_district.name') %></th>
                 <th class="th-email"><%= t('titles.loc_khoroos') %></th>
-                <th></th>
+                <% if is_manage %>
+                  <th></th>
+                <% end %>
               </tr>
               <% @loc_districts.each do |loc_district| %>
                 <tr>
                   <td class="va-mid underline"><%= link_to loc_district.name, users_loc_khoroos_path(id: loc_district.id) %></td>
                   <td class="va-mid"><%= loc_district.loc_khoroos.count %></td>
-                  <td>
-                    <div class="btn-group">
-                      <%= link_to edit_users_loc_district_path(loc_district), class: 'no-underline' do %>
-                        <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
-                      <% end %>
+                  <% if is_manage %>
+                    <td>
+                      <div class="btn-group">
+                        <%= link_to edit_users_loc_district_path(loc_district), class: 'no-underline' do %>
+                          <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
+                        <% end %>
 
-                      <%= link_to users_loc_district_path(loc_district), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
-                        <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
-                      <% end %>
-                    </div>
-                  </td>
+                        <%= link_to users_loc_district_path(loc_district), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
+                          <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
+                        <% end %>
+                      </div>
+                    </td>
+                  <% end %>
                 </tr>
               <% end %>
             </table>

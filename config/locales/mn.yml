@@ -139,3 +139,9 @@ mn:
   filters:
     by_date: Огноо сонгох
     status: Статус
+  unauthorized:
+    manage:
+      all: "Та хандах эрхгүй байна!" #%{action} %{subject}
+      product: "Барааны сангийн хандах эрхгүй байна!"
+    update:
+      all: "Та өөрчлөх эрхгүй байна"

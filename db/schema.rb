@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_31_065625) do
+ActiveRecord::Schema.define(version: 2019_11_05_051018) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -405,7 +405,19 @@ ActiveRecord::Schema.define(version: 2019_10_31_065625) do
     t.index ["user_id"], name: "index_travel_configs_on_user_id"
   end
 
+  create_table "user_permission_rels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "user_permission_id"
+    t.integer "user_action"
+    t.integer "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_permission_rels_on_user_id"
+    t.index ["user_permission_id"], name: "index_user_permission_rels_on_user_permission_id"
+  end
+
   create_table "user_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "queue"
     t.string "name"
     t.string "description"
     t.datetime "created_at", null: false
@@ -424,7 +436,6 @@ ActiveRecord::Schema.define(version: 2019_10_31_065625) do
     t.string "email", default: "", null: false
     t.string "phone"
     t.integer "gender"
-    t.bigint "user_permission_id"
     t.bigint "user_position_id"
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -441,7 +452,6 @@ ActiveRecord::Schema.define(version: 2019_10_31_065625) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["user_permission_id"], name: "index_users_on_user_permission_id"
     t.index ["user_position_id"], name: "index_users_on_user_position_id"
   end
 
@@ -499,6 +509,7 @@ ActiveRecord::Schema.define(version: 2019_10_31_065625) do
   add_foreign_key "products", "customers"
   add_foreign_key "products", "product_categories", column: "category_id"
   add_foreign_key "travel_configs", "users"
-  add_foreign_key "users", "user_permissions"
+  add_foreign_key "user_permission_rels", "user_permissions"
+  add_foreign_key "user_permission_rels", "users"
   add_foreign_key "users", "user_positions"
 end

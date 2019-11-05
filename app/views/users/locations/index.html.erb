@@ -13,7 +13,9 @@
       <%= hidden_field_tag :id, @loc_khoroo.id %>
       <%= text_field_tag :location_name, @search_name, {class: 'form-control search'} %>
       <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn' %>
-      <%= link_to t('controls.button.create'), new_users_location_path(id: @loc_khoroo.id), class: 'btn btn-warning' %>
+      <% if can? :manage, Location %>
+        <%= link_to t('controls.button.create'), new_users_location_path(id: @loc_khoroo.id), class: 'btn btn-warning' %>
+      <% end %>
     <% end %>
   </div>
 

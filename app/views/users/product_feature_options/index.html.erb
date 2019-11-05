@@ -6,13 +6,15 @@
   <section class="content-header align-left with-breadcrumbs">
     <h4> (<%= t('titles.total') %>：<%= @options.total_count %>)</h4>
   </section>
-
+  <% is_manage = can? :manage, Product %>
   <div class="action-buttons">
     <%= form_with url: users_product_feature_options_path, method: "get", class: 'form-horizontal', local: true do |f| %>
       <%= hidden_field_tag :product_feature_id, @product_feature.id %>
       <%= text_field_tag :option_name, @search_name, {class: 'form-control search'} %>
       <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn' %>
-      <%= link_to t('controls.button.create'), new_users_product_feature_option_path(product_feature_id: @product_feature.id), class: 'btn btn-warning' %>
+      <% if is_manage %>
+        <%= link_to t('controls.button.create'), new_users_product_feature_option_path(product_feature_id: @product_feature.id), class: 'btn btn-warning' %>
+      <% end %>
     <% end %>
   </div>
 
@@ -25,23 +27,27 @@
           <div class="box-body table-responsive no-padding">
             <table class="table table-hover">
               <tr>
-                <th  class="th-email"><%= t('activerecord.attributes.product_feature_option.name') %></th>
-                <th  class="th-email"></th>
+                <th class="th-email"><%= t('activerecord.attributes.product_feature_option.name') %></th>
+                <% if is_manage %>
+                  <th class="th-email"></th>
+                <% end %>
               </tr>
               <% @options.each_with_index do |o| %>
                 <tr>
                   <td class="va-mid underline"><%= o.name %></td>
-                  <td>
-                    <div class="btn-loc_khoroo">
-                      <%= link_to edit_users_product_feature_option_path(o), class: 'no-underline' do %>
-                        <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
-                      <% end %>
+                  <% if is_manage %>
+                    <td>
+                      <div class="btn-loc_khoroo">
+                        <%= link_to edit_users_product_feature_option_path(o), class: 'no-underline' do %>
+                          <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
+                        <% end %>
 
-                      <%= link_to users_product_feature_option_path(o), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
-                        <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
-                      <% end %>
-                    </div>
-                  </td>
+                        <%= link_to users_product_feature_option_path(o), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
+                          <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
+                        <% end %>
+                      </div>
+                    </td>
+                  <% end %>
                 </tr>
               <% end %>
             </table>

@@ -7,12 +7,16 @@
     <h4> (<%= t('titles.total') %>：<%= @loc_khoroos.total_count %>)</h4>
   </section>
 
+  <% is_manage = can? :manage, Location %>
+
   <div class="action-buttons">
     <%= form_with url: users_loc_khoroos_path, method: "get", class: 'form-horizontal', local: true do |f| %>
       <%= hidden_field_tag :id, @loc_district.id %>
       <%= text_field_tag :loc_khoroo_name, @search_name, {class: 'form-control search'} %>
       <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn' %>
-      <%= link_to t('controls.button.create'), new_users_loc_khoroo_path(id: @loc_district.id), class: 'btn btn-warning' %>
+      <% if is_manage %>
+        <%= link_to t('controls.button.create'), new_users_loc_khoroo_path(id: @loc_district.id), class: 'btn btn-warning' %>
+      <% end %>
     <% end %>
   </div>
 
@@ -27,23 +31,27 @@
               <tr>
                 <th class="th-center va-mid" style="width: 30px"><%= t('activerecord.attributes.loc_khoroo.queue') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.loc_khoroo.name') %></th>
-                <th class="th-center va-mid"></th>
+                <% if is_manage %>
+                  <th class="th-center va-mid"></th>
+                <% end %>
               </tr>
               <% @loc_khoroos.each_with_index do |loc_khoroo, index| %>
                 <tr>
                   <td class="va-mid underline" style="width: 30px"><%= loc_khoroo.queue %></td>
                   <td class="va-mid underline"><%= link_to loc_khoroo.name, users_locations_path(id: loc_khoroo.id) %></td>
-                  <td>
-                    <div class="btn-loc_khoroo">
-                      <%= link_to edit_users_loc_khoroo_path(loc_khoroo), class: 'no-underline' do %>
-                        <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
-                      <% end %>
+                  <% if is_manage %>
+                    <td>
+                      <div class="btn-loc_khoroo">
+                        <%= link_to edit_users_loc_khoroo_path(loc_khoroo), class: 'no-underline' do %>
+                          <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
+                        <% end %>
 
-                      <%= link_to users_loc_khoroo_path(loc_khoroo), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
-                        <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
-                      <% end %>
-                    </div>
-                  </td>
+                        <%= link_to users_loc_khoroo_path(loc_khoroo), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
+                          <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
+                        <% end %>
+                      </div>
+                    </td>
+                  <% end %>
                 </tr>
               <% end %>
             </table>

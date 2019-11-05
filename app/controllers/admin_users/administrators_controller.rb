@@ -1,4 +1,5 @@
 class AdminUsers::AdministratorsController < AdminUsers::BaseController
+  authorize_resource class: false
   before_action :set_admin_user, only: [:edit, :update, :destroy]
 
   def index

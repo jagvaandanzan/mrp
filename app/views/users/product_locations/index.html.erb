@@ -3,13 +3,15 @@
   <%= get_search_recursive(@parent, "location") %>
 
   <section class="content-header align-left with-breadcrumbs">
-      <h4> (<%= t('titles.total') %>：<%= @locations.total_count %>)</h4>
+    <h4> (<%= t('titles.total') %>：<%= @locations.total_count %>)</h4>
   </section>
-
+  <% is_manage = can? :manage, ProductLocation %>
   <div class="action-buttons index">
     <%= form_with url: users_product_locations_path, method: "get", class: 'form-horizontal', local: true do |f| %>
       <%= hidden_field_tag :parent_id, @parent.nil? ? nil : @parent.id %>
-      <%= link_to t('controls.button.create'), new_users_product_location_path(parent_id: @parent.nil? ? nil : @parent.id), class: 'btn btn-warning' %>
+      <% if is_manage %>
+        <%= link_to t('controls.button.create'), new_users_product_location_path(parent_id: @parent.nil? ? nil : @parent.id), class: 'btn btn-warning' %>
+      <% end %>
     <% end %>
   </div>
 
@@ -23,29 +25,33 @@
 
             <table class="table table-hover">
               <tr>
-                <th class="text-center"><%= t('activerecord.attributes.product_location.name') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.product_location.code') %></th>
+                <th class="text-center"><%= t('activerecord.attributes.product_location.name') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.product_location.parent') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.product_location.children') %></th>
-                <th></th>
+                <% if is_manage %>
+                  <th></th>
+                <% end %>
               </tr>
               <% @locations.each do |c| %>
                 <tr>
-                  <td class="text-center va-mid"><%= link_to c.name, users_product_locations_path(parent_id: c.id) %></td>
                   <td class="text-center va-mid"><%= link_to c.code, users_product_locations_path(parent_id: c.id) %></td>
+                  <td class="text-center va-mid"><%= c.name %></td>
                   <td class="text-center va-mid"><%= c.parent.present? ? c.parent.name : "" %></td>
                   <td class="text-center va-mid"><%= c.children.present? ? c.children.count : "0" %></td>
-                  <td>
-                    <div class="btn-group">
-                      <%= link_to edit_users_product_location_path(c), class: 'no-underline m-r-10' do %>
-                        <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
-                      <% end %>
+                  <% if is_manage %>
+                    <td>
+                      <div class="btn-group">
+                        <%= link_to edit_users_product_location_path(c), class: 'no-underline m-r-10' do %>
+                          <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
+                        <% end %>
 
-                      <%= link_to users_product_location_path(c), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
-                        <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
-                      <% end %>
-                    </div>
-                  </td>
+                        <%= link_to users_product_location_path(c), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
+                          <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
+                        <% end %>
+                      </div>
+                    </td>
+                  <% end %>
                 </tr>
               <% end %>
             </table>

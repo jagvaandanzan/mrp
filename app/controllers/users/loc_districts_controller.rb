@@ -1,4 +1,5 @@
 class Users::LocDistrictsController < Users::BaseController
+  load_and_authorize_resource
   before_action :set_loc_district, only: [:edit, :update, :destroy]
 
   def index

@@ -8,9 +8,13 @@
   </section>
 
   <div class="action-buttons">
-    <%= link_to t('controls.button.edit'), edit_users_product_income_path(@product_income), class: 'btn btn-info' %>
+    <% if can? :update, ProductIncome %>
+      <%= link_to t('controls.button.edit'), edit_users_product_income_path(@product_income), class: 'btn btn-info' %>
+    <% end %>
     <%= link_to t('titles.back_to_list'), users_product_incomes_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
-    <%= link_to t('controls.button.delete'), users_product_income_path(@product_income), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <% if can? :destroy, ProductIncome %>
+      <%= link_to t('controls.button.delete'), users_product_income_path(@product_income), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <% end %>
   </div>
   <%= show_body do %>
     <div class="box">

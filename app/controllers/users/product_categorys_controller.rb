@@ -1,4 +1,5 @@
 class Users::ProductCategorysController < Users::BaseController
+  load_and_authorize_resource
   before_action :setCategory, only: [:edit, :update, :destroy]
 
   def index
@@ -7,7 +8,7 @@ class Users::ProductCategorysController < Users::BaseController
     # = ProductCategory.find_by!(id: params[:parent_id])
     puts(params)
     if params[:parent_id].nil?
-      @categories = ProductCategory.top_level().page(params[:page])
+      @categories = ProductCategory.top_level.page(params[:page])
     else
       @parent = ProductCategory.find_by!(id: params[:parent_id])
       @categories = ProductCategory.search(@parent.id).page(params[:page])

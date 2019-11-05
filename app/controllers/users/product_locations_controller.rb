@@ -1,4 +1,5 @@
 class Users::ProductLocationsController < Users::BaseController
+  load_and_authorize_resource
   before_action :setLocation, only: [:edit, :update, :destroy]
 
   def index

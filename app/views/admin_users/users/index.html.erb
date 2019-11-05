@@ -25,18 +25,14 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.user.user_permission') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.user.email') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.user.phone') %></th>
-                <th class="th-center va-mid"></th>
               </tr>
               <% @users.each do |user| %>
                 <tr>
-                  <td class="td-center va-mid underline"><%= link_to user.name, admin_users_user_path(user) %></td>
+                  <td class="va-mid underline"><%= link_to user.name, admin_users_user_path(user) %></td>
                   <td class="td-center va-mid"><%= user.user_position.name %></td>
-                  <td class="td-center va-mid"><%= user.user_permission.name %></td>
-                  <td class="td-center va-mid"><%= user.email %></td>
-                  <td class="td-center va-mid"><%= user.phone %></td>
-                  <td class="td-center va-mid">
-                    <%= link_to t('titles.user_sign_in'), user_sign_in_admin_users_user_path(user), class: 'btn-sm btn-primary no-underline', target: '_blank' %>
-                  </td>
+                  <td class="va-mid"><%= user.email %></td>
+                  <td class="va-mid"><%= user.email %></td>
+                  <td class="va-mid"><%= user.phone %></td>
                 </tr>
               <% end %>
             </table>

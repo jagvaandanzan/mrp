@@ -18,6 +18,10 @@ class AdminUser < ApplicationRecord
     send_devise_notification(:first_password_instructions, password, subject: "Нэвтрэх нууц үгийн мэдээлэл", to: email)
   end
 
+  def is_admin
+    admin_permission_id == 1
+  end
+
   protected
 
   def devise_mailer

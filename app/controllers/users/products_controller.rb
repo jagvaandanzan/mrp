@@ -1,5 +1,5 @@
 class Users::ProductsController < Users::BaseController
-  # include SearchHelper
+  load_and_authorize_resource
 
   before_action :set_product, only: [:edit, :update, :destroy, :show]
 

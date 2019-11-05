@@ -51,6 +51,13 @@ mn:
       money:
         account: Дансаар
         cash: Бэлнээр
+    user_permission_rel:
+      role:
+        is_read: Харах
+        is_create: Үүсгэх
+        is_update: Өөрчлөх
+        is_destroy: Устгах
+        is_manage: Засах
   activerecord:
     models:
       admin_user: Админ
@@ -90,9 +97,8 @@ mn:
         gender: Хүйс
         user_position: Албан тушаал
         user_position_id: Албан тушаал
-        user_permission: Хандах эрх
-        user_permission_id: Хандах эрх
         phone: Утас
+        user_permission_rels: Хандах эрхүүд
       operator:
         email: Имэйл
         password: Нууц үг
@@ -249,6 +255,9 @@ mn:
         quantity: Тоо хэмжээ
         remainder: Үлдэгдэл
         created_at: Огноо
+      user_permission_rel:
+        user_permission_id: Хандах эрх
+        role: Үйлдэл
     errors:
       messages:
         blank: " хоосон байна!"

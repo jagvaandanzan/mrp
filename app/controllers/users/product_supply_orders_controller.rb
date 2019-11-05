@@ -1,4 +1,5 @@
 class Users::ProductSupplyOrdersController < Users::BaseController
+  load_and_authorize_resource
   before_action :set_product_supply_order, only: [:edit, :show, :update, :destroy]
 
   def index

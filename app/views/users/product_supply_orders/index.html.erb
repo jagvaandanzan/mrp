@@ -22,8 +22,9 @@
       </div>
       <div class="col-md-6 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
-
-        <%= link_to t('controls.button.create'), new_users_product_supply_order_path, class: 'btn btn-warning pull-right' %>
+        <% if can? :create, ProductSupplyOrder %>
+          <%= link_to t('controls.button.create'), new_users_product_supply_order_path, class: 'btn btn-warning pull-right' %>
+        <% end %>
       </div>
     <% end %>
   </div>

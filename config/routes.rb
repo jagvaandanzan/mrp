@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
-  # devise_for :operators
-  root 'users/loc_districts#index'
+  root 'users/base#root'
 
   post 'search_product', to: 'application#search_product'
 
@@ -41,17 +40,14 @@ Rails.application.routes.draw do
   namespace :admin_users, path: :admin do
     root 'users#index'
     resources :administrators, only: [:index, :create, :new, :edit, :update, :destroy]
-    resources :users, only: [:index, :create, :new, :show, :edit, :update, :destroy] do
-      member do
-        get 'user_sign_in'
-      end
-    end
+    resources :users, only: [:index, :create, :new, :show, :edit, :update, :destroy]
 
     match "*any", to: "base#routing_error", via: :all
   end
 
   namespace :users, path: :user do
-    root "loc_districts#index"
+    root "base#root"
+    get "panel", to: 'pages#panel'
 
     namespace :calc do
       get 'vrptw'
@@ -77,11 +73,7 @@ Rails.application.routes.draw do
         patch 'get_supply_order_info'
       end
     end
-    resources :operators, only: [:index, :create, :new, :show, :edit, :update, :destroy] do
-      member do
-        get 'operator_sign_in'
-      end
-    end
+    resources :operators, only: [:index, :create, :new, :show, :edit, :update, :destroy]
 
     match "*any", to: "base#routing_error", via: :all
   end

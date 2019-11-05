@@ -10,8 +10,10 @@
   </section>
 
   <div class="action-buttons">
-    <%= link_to t('controls.button.edit'), edit_users_location_path(@location), class: 'btn btn-info' %>
-    <%= link_to t('controls.button.delete'), users_location_path(@location), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <% if can? :manage, Location %>
+      <%= link_to t('controls.button.edit'), edit_users_location_path(@location), class: 'btn btn-info' %>
+      <%= link_to t('controls.button.delete'), users_location_path(@location), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <% end %>
     <%= link_to t('titles.back_to_list'), users_locations_path(id: @location.loc_khoroo_id, page: cookies[:page_number]), {class: "btn blck-btn"} %>
   </div>
   <%= show_body do %>

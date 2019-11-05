@@ -1,5 +1,5 @@
 class AdminUsers::UsersController < AdminUsers::BaseController
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :user_sign_in]
+  before_action :set_user, only: [:show, :edit, :update, :destroy]
 
   def index
     @semail = params[:email]
@@ -11,6 +11,7 @@ class AdminUsers::UsersController < AdminUsers::BaseController
 
   def new
     @user = User.new
+    @user.user_permission_rels << UserPermissionRel.new
   end
 
   def create
@@ -47,10 +48,10 @@ class AdminUsers::UsersController < AdminUsers::BaseController
     redirect_to action: :index
   end
 
-  def user_sign_in
-    sign_in :user, @user
-    redirect_to users_root_path
-  end
+  # def user_sign_in
+  #   sign_in :user, @user
+  #   redirect_to users_root_path
+  # end
 
   private
 
@@ -59,6 +60,7 @@ class AdminUsers::UsersController < AdminUsers::BaseController
   end
 
   def user_params
-    params.require(:user).permit(:surname, :name, :gender, :email, :phone, :user_position_id, :user_permission_id)
+    params.require(:user).permit(:surname, :name, :gender, :email, :phone, :user_position_id,
+                                 user_permission_rels_attributes: [:id, :user_permission_id, :role, :_destroy])
   end
 end

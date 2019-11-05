@@ -11,7 +11,9 @@
     <%= form_with url: users_products_path, method: "get", class: 'form-horizontal', local: true do |f| %>
       <%= text_field_tag :product_name, @search_name, {class: 'form-control search'} %>
       <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn' %>
-      <%= link_to t('controls.button.create'), new_users_product_path, class: 'btn btn-warning' %>
+      <% if can? :create, Product %>
+        <%= link_to t('controls.button.create'), new_users_product_path, class: 'btn btn-warning' %>
+      <% end %>
     <% end %>
   </div>
 

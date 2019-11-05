@@ -6,9 +6,10 @@
   </section>
 
   <div class="action-buttons">
-    <%= link_to t('titles.operator_sign_in'), operator_sign_in_users_operator_path(@operator), target: '_blank', class: 'btn btn-primary' %>
-    <%= link_to t('controls.button.edit'), edit_users_operator_path(@operator), class: 'btn btn-info' %>
-    <%= link_to t('controls.button.delete'), users_operator_path(@operator), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <% if can? :manage, Operator %>
+      <%= link_to t('controls.button.edit'), edit_users_operator_path(@operator), class: 'btn btn-info' %>
+      <%= link_to t('controls.button.delete'), users_operator_path(@operator), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <% end %>
     <%= link_to t('titles.back_to_list'), users_operators_path(page: cookies[:operator_page_number]), {class: "btn blck-btn"} %>
   </div>
   <%= show_body do %>

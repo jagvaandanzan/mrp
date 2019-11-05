@@ -1,5 +1,6 @@
 class Users::OperatorsController < Users::BaseController
-  before_action :set_operator, only: [:show, :edit, :update, :destroy, :operator_sign_in]
+  load_and_authorize_resource
+  before_action :set_operator, only: [:show, :edit, :update, :destroy]
 
   def index
     @semail = params[:email]
@@ -46,11 +47,11 @@ class Users::OperatorsController < Users::BaseController
     flash[:success] = t('alert.deleted_successfully')
     redirect_to action: :index
   end
-
-  def operator_sign_in
-    sign_in :operator, @operator
-    redirect_to operators_root_path
-  end
+  #
+  # def operator_sign_in
+  #   sign_in :operator, @operator
+  #   redirect_to operators_root_path
+  # end
 
   private
 

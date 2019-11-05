@@ -6,10 +6,9 @@
   </section>
 
   <div class="action-buttons">
-    <%= link_to t('titles.user_sign_in'), user_sign_in_admin_users_user_path(@user), target: '_blank', class: 'btn btn-primary' %>
     <%= link_to t('controls.button.edit'), edit_admin_users_user_path(@user), class: 'btn btn-info' %>
-    <%= link_to t('controls.button.delete'), admin_users_user_path(@user), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <%= link_to t('titles.back_to_list'), admin_users_users_path(page: cookies[:user_page_number]), {class: "btn blck-btn"} %>
+    <%= link_to t('controls.button.delete'), admin_users_user_path(@user), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
   </div>
   <%= show_body do %>
     <div class="box">
@@ -35,12 +34,29 @@
           <div class="col-data"><%= @user.phone.presence || :'---' %></div>
         </div>
         <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.user.user_permission') %> :</div>
-          <div class="col-data"><%= @user.user_permission.name %></div>
-        </div>
-        <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.user.user_position') %> :</div>
           <div class="col-data"><%= @user.user_position.name %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.user.user_permission_rels') %> :</div>
+          <div class="col-data">
+            <table class="table table-bordered">
+              <thead>
+              <tr>
+                <th><%= t('activerecord.attributes.user_permission_rel.user_permission_id') %></th>
+                <th><%= t('activerecord.attributes.user_permission_rel.role') %></th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @user.user_permission_rels.each do |r| %>
+                <tr>
+                  <td class="va-mid"><%= r.user_permission.description %></td>
+                  <td class="va-mid"><%= r.role_i18n %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

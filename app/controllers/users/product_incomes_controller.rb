@@ -1,4 +1,5 @@
 class Users::ProductIncomesController < Users::BaseController
+  load_and_authorize_resource
   before_action :set_product_income, only: [:edit, :update, :show, :destroy]
 
   def index

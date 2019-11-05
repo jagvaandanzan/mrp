@@ -4,7 +4,7 @@
   </section>
   <section class="content">
     <div class="box box-info">
-      <%= form_for :user, url: @user.persisted? ? admin_users_user_path : admin_users_users_path, method: @user.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+      <%= form_with model: @user, url: @user.persisted? ? admin_users_user_path : admin_users_users_path, method: @user.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
           <div class="form-group">
             <%= f.label :surname, class: 'col-sm-3 control-label' %>
@@ -33,7 +33,7 @@
             <%= f.label :email, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@user, :email) %>">
               <%= get_user_field_errors(@user, :email) %>
-              <%= f.email_field :email, class: 'form-control', placeholder: t('activerecord.attributes.user.email'), disabled: @user.persisted? %>
+              <%= f.email_field :email, class: 'form-control', placeholder: t('activerecord.attributes.user.email'), readonly: @user.persisted? %>
             </div>
           </div>
           <div class="form-group">
@@ -51,10 +51,27 @@
             </div>
           </div>
           <div class="form-group">
-            <%= f.label :user_permission, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-9 <%= get_error_class(@user, :user_permission_id) %>">
-              <%= field_errors(@user, :user_permission_id) %>
-              <%= f.collection_select :user_permission_id, UserPermission.all, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control', id: 'permission-select'} %>
+            <%= f.label :user_permission_rels, class: 'col-sm-3 control-label' %>
+
+            <div class="col-sm-9 cocoon-nested-form">
+              <div class="<%= get_error_class(@user, :user_permission_rels) %>">
+                <%= field_errors(@user, :user_permission_rels) %>
+                <table class="table table-bordered" id="tb_user_permission_rels">
+                  <tr>
+                    <th width="45%"><%= t('activerecord.attributes.user_permission_rel.user_permission_id') %></th>
+                    <th width="45%"><%= t('activerecord.attributes.user_permission_rel.role') %></th>
+                    <th width="50px"></th>
+                  </tr>
+                  <%= f.fields_for :user_permission_rels do |rel| %>
+                    <%= render 'user_permission_rel_fields', f: rel %>
+                  <% end %>
+                </table>
+              </div>
+              <div class="links item_append">
+                <%= link_to_add_association f, :user_permission_rels, data: {association_insertion_node: '#tb_user_permission_rels', association_insertion_method: :append} do %>
+                  <%= nested_add_btn %>
+                <% end %>
+              </div>
             </div>
           </div>
           <div class="action-buttons">
