@@ -16,15 +16,7 @@ class Users::ProductSupplyOrdersController < Users::BaseController
     @product_supply_order.ordered_date = Time.current
     @product_supply_order.code = ApplicationController.helpers.get_code(ProductSupplyOrder.last)
 
-    item = ProductSupplyOrderItem.new
-    items = ProductSupplyOrderItem.all
-    item.price = if items.present?
-                   items.last.price
-                 else
-                   0
-                 end
-    @product_supply_order.product_supply_order_items << item
-
+    @product_supply_order.product_supply_order_items << ProductSupplyOrderItem.new
   end
 
   def create
@@ -58,6 +50,18 @@ class Users::ProductSupplyOrdersController < Users::BaseController
     @product_supply_order.destroy!
     flash[:success] = t('alert.deleted_successfully')
     redirect_to action: 'index'
+  end
+
+  def last_product_price
+    price = 0
+    order_items = ProductSupplyOrderItem.where(product_id: params[:product_id])
+
+    if order_items.present?
+      price = order_items.last.price
+    end
+
+    render json: {price: price}
+
   end
 
   private
