@@ -62,7 +62,7 @@
                   <td class="va-mid"><%= link_to income.code, users_product_income_path(income) %></td>
                   <td class="va-mid"><%= i.supply_order_item.product_supply_order.code %></td>
                   <td class="va-mid"><%= i.supply_order_item.product_name_with_code %></td>
-                  <td class="va-mid"><%= i.feature_rel.rel_names(true) %></td>
+                  <td class="va-mid"><%= i.feature_item.name %></td>
                   <td class="va-mid"><%= i.get_currency i.price %></td>
                   <td class="va-mid"><%= i.quantity %></td>
                   <td class="va-mid"><%= i.get_currency i.sum_price %></td>

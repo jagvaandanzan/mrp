@@ -20,9 +20,9 @@
     <%= f.text_field :remainder, value: f.object.remainder.presence || f.object.get_balance, class: 'form-control p-2 field remainder', placeholder: t('activerecord.attributes.product_income_item.remainder'), readonly: true %>
   </td>
   <td>
-    <%= field_errors f.object, :feature_rel_id %>
-    <%= f.collection_select :feature_rel_id, ProductFeatureRel.search(f.object.supply_order_item.present? ? f.object.supply_order_item.product.id : nil), :id, :rel_names,
-                            {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker feature_rel', "data-live-search": "true"} %>
+    <%= field_errors f.object, :feature_item_id %>
+    <%= f.collection_select :feature_item_id, ProductFeatureItem.search(f.object.supply_order_item.present? ? f.object.supply_order_item.product.id : nil), :id, :name,
+                            {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker feature_item', "data-live-search": "true"} %>
   </td>
   <td>
     <%= field_errors f.object, :quantity %>

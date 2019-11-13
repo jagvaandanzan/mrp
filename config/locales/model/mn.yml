@@ -161,9 +161,11 @@ mn:
         feature_id: Шинж чанар
         feature_option_id: Шинж чанарын утга
       product_feature:
+        queue: Дараалал
         name: Нэр
         description: Дэлгэрэнгүй
       product_feature_option:
+        queue: Дараалал
         name: Утга
         product_feature_id: Шинж чанар
         product_feature: Шинж чанар
@@ -208,7 +210,7 @@ mn:
         urgent_type: Төрөл
         location_id: Байршил
         sum_price: Нийт дүн (₮)
-        feature_rel_id: Барааны шинж чанар
+        feature_item_id: Барааны шинж чанар
         date: Огноо
         income_locations: Агуулахын байршил
       product_income_feature_rel:
@@ -239,7 +241,7 @@ mn:
         sum_price: Нийт дүн
       product_sale_item:
         product_id: Бараа
-        product_feature_rel_id: Шинж чанар
+        feature_item_id: Шинж чанар
         quantity: Тоо хэмжээ
         price: Үнэ
         sum_price: Нийт

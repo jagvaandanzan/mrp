@@ -47,6 +47,6 @@ class Users::ProductFeaturesController < Users::BaseController
   end
 
   def product_feature_params
-    params.require(:product_feature).permit(:name, :description)
+    params.require(:product_feature).permit(:queue, :name, :description)
   end
 end

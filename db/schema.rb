@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_05_051018) do
+ActiveRecord::Schema.define(version: 2019_11_13_333322) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -115,7 +115,7 @@ ActiveRecord::Schema.define(version: 2019_11_05_051018) do
 
   create_table "product_balances", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "product_id"
-    t.bigint "feature_rel_id"
+    t.bigint "feature_item_id"
     t.bigint "income_item_id"
     t.bigint "sale_item_id"
     t.bigint "user_id"
@@ -124,7 +124,7 @@ ActiveRecord::Schema.define(version: 2019_11_05_051018) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["feature_rel_id"], name: "index_product_balances_on_feature_rel_id"
+    t.index ["feature_item_id"], name: "index_product_balances_on_feature_item_id"
     t.index ["income_item_id"], name: "index_product_balances_on_income_item_id"
     t.index ["operator_id"], name: "index_product_balances_on_operator_id"
     t.index ["product_id"], name: "index_product_balances_on_product_id"
@@ -142,6 +142,23 @@ ActiveRecord::Schema.define(version: 2019_11_05_051018) do
     t.index ["parent_id"], name: "index_product_categories_on_parent_id"
   end
 
+  create_table "product_feature_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "product_id"
+    t.bigint "feature_rel_id"
+    t.bigint "feature1_id"
+    t.bigint "option1_id"
+    t.bigint "feature2_id"
+    t.bigint "option2_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["feature1_id"], name: "index_product_feature_items_on_feature1_id"
+    t.index ["feature2_id"], name: "index_product_feature_items_on_feature2_id"
+    t.index ["feature_rel_id"], name: "index_product_feature_items_on_feature_rel_id"
+    t.index ["option1_id"], name: "index_product_feature_items_on_option1_id"
+    t.index ["option2_id"], name: "index_product_feature_items_on_option2_id"
+    t.index ["product_id"], name: "index_product_feature_items_on_product_id"
+  end
+
   create_table "product_feature_option_rels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "feature_rel_id"
     t.bigint "feature_option_id"
@@ -152,6 +169,7 @@ ActiveRecord::Schema.define(version: 2019_11_05_051018) do
   end
 
   create_table "product_feature_options", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "queue"
     t.string "name"
     t.bigint "product_feature_id"
     t.datetime "created_at", null: false
@@ -175,6 +193,7 @@ ActiveRecord::Schema.define(version: 2019_11_05_051018) do
   end
 
   create_table "product_features", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "queue"
     t.string "name"
     t.string "description"
     t.datetime "created_at", null: false
@@ -205,6 +224,7 @@ ActiveRecord::Schema.define(version: 2019_11_05_051018) do
     t.bigint "product_id"
     t.bigint "product_supplier_id"
     t.bigint "feature_rel_id"
+    t.bigint "feature_item_id"
     t.integer "quantity"
     t.float "price", limit: 53
     t.float "sum_price", limit: 53
@@ -215,6 +235,7 @@ ActiveRecord::Schema.define(version: 2019_11_05_051018) do
     t.string "note", limit: 1000
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["feature_item_id"], name: "index_product_income_items_on_feature_item_id"
     t.index ["feature_rel_id"], name: "index_product_income_items_on_feature_rel_id"
     t.index ["product_id"], name: "index_product_income_items_on_product_id"
     t.index ["product_income_id"], name: "index_product_income_items_on_product_income_id"
@@ -267,13 +288,15 @@ ActiveRecord::Schema.define(version: 2019_11_05_051018) do
   create_table "product_sale_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "product_sale_id"
     t.bigint "product_id"
-    t.bigint "product_feature_rel_id"
+    t.bigint "feature_rel_id"
+    t.bigint "feature_item_id"
     t.integer "quantity"
     t.float "price"
     t.float "sum_price", limit: 53
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["product_feature_rel_id"], name: "index_product_sale_items_on_product_feature_rel_id"
+    t.index ["feature_item_id"], name: "index_product_sale_items_on_feature_item_id"
+    t.index ["feature_rel_id"], name: "index_product_sale_items_on_feature_rel_id"
     t.index ["product_id"], name: "index_product_sale_items_on_product_id"
     t.index ["product_sale_id"], name: "index_product_sale_items_on_product_sale_id"
   end
@@ -408,7 +431,6 @@ ActiveRecord::Schema.define(version: 2019_11_05_051018) do
   create_table "user_permission_rels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "user_permission_id"
-    t.integer "user_action"
     t.integer "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -463,12 +485,18 @@ ActiveRecord::Schema.define(version: 2019_11_05_051018) do
   add_foreign_key "locations", "operators"
   add_foreign_key "locations", "users"
   add_foreign_key "product_balances", "operators"
-  add_foreign_key "product_balances", "product_feature_rels", column: "feature_rel_id"
+  add_foreign_key "product_balances", "product_feature_items", column: "feature_item_id"
   add_foreign_key "product_balances", "product_income_items", column: "income_item_id"
   add_foreign_key "product_balances", "product_sale_items", column: "sale_item_id"
   add_foreign_key "product_balances", "products"
   add_foreign_key "product_balances", "users"
   add_foreign_key "product_categories", "product_categories", column: "parent_id"
+  add_foreign_key "product_feature_items", "product_feature_options", column: "option1_id"
+  add_foreign_key "product_feature_items", "product_feature_options", column: "option2_id"
+  add_foreign_key "product_feature_items", "product_feature_rels", column: "feature_rel_id"
+  add_foreign_key "product_feature_items", "product_features", column: "feature1_id"
+  add_foreign_key "product_feature_items", "product_features", column: "feature2_id"
+  add_foreign_key "product_feature_items", "products"
   add_foreign_key "product_feature_option_rels", "product_feature_options", column: "feature_option_id"
   add_foreign_key "product_feature_option_rels", "product_feature_rels", column: "feature_rel_id"
   add_foreign_key "product_feature_options", "product_features"
@@ -478,6 +506,7 @@ ActiveRecord::Schema.define(version: 2019_11_05_051018) do
   add_foreign_key "product_income_balances", "products"
   add_foreign_key "product_income_balances", "users", column: "user_income_id"
   add_foreign_key "product_income_balances", "users", column: "user_supply_id"
+  add_foreign_key "product_income_items", "product_feature_items", column: "feature_item_id"
   add_foreign_key "product_income_items", "product_feature_rels", column: "feature_rel_id"
   add_foreign_key "product_income_items", "product_incomes"
   add_foreign_key "product_income_items", "product_suppliers"
@@ -489,7 +518,8 @@ ActiveRecord::Schema.define(version: 2019_11_05_051018) do
   add_foreign_key "product_locations", "product_locations", column: "parent_id"
   add_foreign_key "product_sale_calls", "operators"
   add_foreign_key "product_sale_calls", "products"
-  add_foreign_key "product_sale_items", "product_feature_rels"
+  add_foreign_key "product_sale_items", "product_feature_items", column: "feature_item_id"
+  add_foreign_key "product_sale_items", "product_feature_rels", column: "feature_rel_id"
   add_foreign_key "product_sale_items", "product_sales"
   add_foreign_key "product_sale_items", "products"
   add_foreign_key "product_sale_status_logs", "operators"

@@ -9,3 +9,9 @@
   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
   <i class="icon fa fa-check"></i><p class="message-container inline"><%= flash[:alert] %></p>
 <% end %>
+
+<% display_class = flash[:notice].present? ? '' : 'none' %>
+<%= content_tag :div, class: "alert alert-info alert-dismissible #{display_class}" do %>
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  <i class="icon fa fa-check"></i><p class="message-container inline"><%= flash[:notice] %></p>
+<% end %>

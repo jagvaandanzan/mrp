@@ -123,7 +123,7 @@
                 <tr>
                   <th><%= t('activerecord.attributes.product_feature_rel.image') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
-                  <th><%= t('activerecord.attributes.product_sale_item.product_feature_rel_id') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.price') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
@@ -133,12 +133,12 @@
                 <% @product_sale.product_sale_items.each do |p| %>
                   <tr>
                     <td>
-                      <%= link_to p.product_feature_rel.image.url, "data-lightbox": "roadtrip" do %>
-                        <%= image_tag p.product_feature_rel.image.url(:tumb), class: 'tumb' %>
+                      <%= link_to p.feature_rel.image.url, "data-lightbox": "roadtrip" do %>
+                        <%= image_tag p.feature_rel.image.url(:tumb), class: 'tumb' %>
                       <% end %>
                     </td>
                     <td class="va-mid"><%= p.product.name_with_code %></td>
-                    <td class="va-mid"><%= p.product_feature_rel.rel_names %></td>
+                    <td class="va-mid"><%= p.feature_item.name %></td>
                     <td class="va-mid"><%= p.quantity %></td>
                     <td class="va-mid"><%= get_currency_mn(p.price) %></td>
                     <td class="va-mid"><%= get_currency_mn(p.sum_price) %></td>

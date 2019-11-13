@@ -107,7 +107,7 @@
                     <tr>
                       <th><%= t('activerecord.attributes.product_feature_rel.image') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
-                      <th><%= t('activerecord.attributes.product_sale_item.product_feature_rel_id') %></th>
+                      <th><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.price') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
@@ -241,7 +241,7 @@
             Rails.ajax({
                 url: "<%= get_product_balance_operators_product_sales_path %>",
                 type: "POST",
-                data: "product_id=" + product_id + "&feature_rel_id=" + feature_rel,
+                data: "product_id=" + product_id + "&feature_item_id=" + feature_rel,
                 success: function (data) {
                     parentTr.find('.remainder').val(data.balance);
                     parentTr.find('.image').html("<a href='" + data.img + "' data-lightbox='roadtrip'> <img src='" + data.tumb + "', class='tumb'></a>");
@@ -256,7 +256,7 @@
     function func_call_feature_rel(select) {
         let product_id = $(select).val();
         let parentTr = select_parent(select);
-        parentTr.find("select.feature_rel").html("").selectpicker("refresh");
+        parentTr.find("select.feature_item").html("").selectpicker("refresh");
         reset_input_vals(parentTr);
         if (valid_id(product_id)) {
             // alert(product_id);
@@ -274,11 +274,11 @@
                             divSelect += '<option value="' + childrens[i]["id"] + '" product="' + childrens[i]["product"] + '" price = "' + childrens[i]["price"] + '" >' + childrens[i]["name"] + '</option>';
                         }
 
-                        parentTr.find("select.feature_rel").html(divSelect);
+                        parentTr.find("select.feature_item").html(divSelect);
                     }
                     parentTr.find("input.item_price").val(data.price);
 
-                    parentTr.find("select.feature_rel").selectpicker("refresh");
+                    parentTr.find("select.feature_item").selectpicker("refresh");
                 },
                 error: function (data) {
                     console.log(data);

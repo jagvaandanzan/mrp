@@ -110,10 +110,10 @@ class Operators::ProductSalesController < Operators::BaseController
 
       price = product.sale_price if product.present? && product.sale_price.present?
 
-      feature_rels = ProductFeatureRel.search(params[:product_id])
+      feature_rels = ProductFeatureItem.search(params[:product_id])
 
       feature_rels.each do |rel|
-        features.push({id: rel.id, name: rel.rel_names, price: rel.discount_price, product: params[:product_id]})
+        features.push({id: rel.id, name: rel.name, price: rel.price, product: params[:product_id]})
       end
     end
 
@@ -169,9 +169,10 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def get_product_balance
-    feature_rel_id = params[:feature_rel_id]
-    product_balance = ProductBalance.balance(params[:product_id], feature_rel_id)
-    feature_rel = ProductFeatureRel.find(feature_rel_id)
+    feature_item_id = params[:feature_item_id]
+    product_balance = ProductBalance.balance(params[:product_id], feature_item_id)
+    feature_item = ProductFeatureItem.find(feature_item_id)
+    feature_rel = feature_item.feature_rel
     render json: {balance: product_balance, img: feature_rel.image.url, tumb: feature_rel.image.url(:tumb)}
   end
 
@@ -207,6 +208,6 @@ class Operators::ProductSalesController < Operators::BaseController
         .permit(:phone, :delivery_start, :hour_start, :hour_end, :location_id, :building_code, :loc_note,
                 :sum_price, :money, :bonus,
                 :main_status_id, :status_id, :status_note, :status_user_type,
-                product_sale_items_attributes: [:id, :product_id, :product_feature_rel_id, :quantity, :price, :sum_price, :remainder, :_destroy])
+                product_sale_items_attributes: [:id, :product_id, :feature_item_id, :quantity, :price, :sum_price, :remainder, :_destroy])
   end
 end

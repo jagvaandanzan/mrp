@@ -90,7 +90,7 @@
                 <%= f.label :measure, class: 'control-label' %>
                 <div class="<%= get_error_class(@product, :measure) %>">
                   <%= field_errors(@product, :measure) %>
-                  <%= f.select :measure, Product.measures_i18n.keys.map {|k| [Product.measures_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+                  <%= f.select :measure, Product.measures_i18n.keys.map {|k| [Product.measures_i18n[k], k]}, {}, {class: 'form-control selectpicker'} %>
                 </div>
               </div>
               <div class="col-md-3 field_div">

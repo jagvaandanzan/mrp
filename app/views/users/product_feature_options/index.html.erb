@@ -27,13 +27,15 @@
           <div class="box-body table-responsive no-padding">
             <table class="table table-hover">
               <tr>
-                <th class="th-email"><%= t('activerecord.attributes.product_feature_option.name') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_feature_option.queue') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_feature_option.name') %></th>
                 <% if is_manage %>
                   <th class="th-email"></th>
                 <% end %>
               </tr>
               <% @options.each_with_index do |o| %>
                 <tr>
+                  <td class="va-mid underline"><%= o.queue %></td>
                   <td class="va-mid underline"><%= o.name %></td>
                   <% if is_manage %>
                     <td>

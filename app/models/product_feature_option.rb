@@ -9,7 +9,8 @@ class ProductFeatureOption < ApplicationRecord
   scope :search, ->(f_id, sname) {
     items = where(product_feature_id: f_id)
     items = items.where('name LIKE :value', value: "%#{sname}%") if sname.present?
-    items.order(:name)
+    items.order(:queue)
+        .order(:name)
   }
 
 end

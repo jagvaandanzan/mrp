@@ -63,10 +63,10 @@ class Users::ProductIncomesController < Users::BaseController
     end
 
     if @supply_order_item.present?
-      @features = ProductFeatureRel.search(@supply_order_item.product_id)
+      @features = ProductFeatureItem.search(@supply_order_item.product_id)
       feature_arr = []
       @features.each do |item|
-        feature_arr.push({id: item.id, name: item.rel_names})
+        feature_arr.push({id: item.id, name: item.name})
       end
 
       render json: {order_code: @supply_order_item.product_supply_order.code,
@@ -98,7 +98,7 @@ class Users::ProductIncomesController < Users::BaseController
 
   def product_income_params
     params.require(:product_income).permit(:code, :income_date, :note,
-                                           product_income_items_attributes: [:id, :supply_order_item_id, :remainder, :feature_rel_id, :quantity, :price, :shuudan, :urgent_type, :date, :note, :_destroy])
+                                           product_income_items_attributes: [:id, :supply_order_item_id, :remainder, :feature_item_id, :quantity, :price, :shuudan, :urgent_type, :date, :note, :_destroy])
         .merge(:user => current_user)
   end
 end

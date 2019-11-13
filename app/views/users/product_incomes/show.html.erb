@@ -49,7 +49,7 @@
                   <th><%= t('activerecord.attributes.product_feature_rel.image') %></th>
                   <th><%= t('activerecord.attributes.product_income_item.supply_order_item_id') %></th>
                   <th><%= t('activerecord.attributes.product_income_item.exchange') %></th>
-                  <th><%= t('activerecord.attributes.product_income_item.feature_rel_id') %></th>
+                  <th><%= t('activerecord.attributes.product_income_item.feature_item_id') %></th>
                   <th><%= t('activerecord.attributes.product_income_item.price') %></th>
                   <th><%= t('activerecord.attributes.product_income_item.quantity') %></th>
                   <th><%= t('activerecord.attributes.product_supply_order_item.sum_price') %></th>
@@ -71,7 +71,7 @@
                     </td>
                     <td class="va-mid"><%= i.supply_order_item.product_name_with_code  %></td>
                     <td class="va-mid"><%= i.supply_order_item.product_supply_order.exchange_i18n + ' ' + get_currency_mn(i.supply_order_item.product_supply_order.exchange_value) %></td>
-                    <td class="va-mid"><%= i.feature_rel.rel_names %></td>
+                    <td class="va-mid"><%= i.feature_item.name %></td>
                     <td class="va-mid"><%= i.get_currency i.price %></td>
                     <td class="va-mid"><%= i.quantity %></td>
                     <td class="va-mid"><%= i.get_currency i.sum_price %></td>

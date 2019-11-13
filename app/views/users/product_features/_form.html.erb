@@ -1,4 +1,3 @@
-
 <div class="content-wrapper">
 
   <section class="content">
@@ -6,6 +5,13 @@
       <%= form_with model: @product_feature, url: @product_feature.persisted? ? users_product_feature_path : users_product_features_path,
                     method: @product_feature.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
+          <div class="form-group">
+            <%= f.label :queue, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@product_feature, :queue) %>">
+              <%= field_errors(@product_feature, :queue) %>
+              <%= f.number_field :queue, class: 'form-control', min: 0, step: 1, placeholder: t('activerecord.attributes.product_feature.queue') %>
+            </div>
+          </div>
           <div class="form-group">
             <%= f.label :name, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@product_feature, :name) %>">
