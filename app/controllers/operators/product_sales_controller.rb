@@ -173,7 +173,7 @@ class Operators::ProductSalesController < Operators::BaseController
     product_balance = ProductBalance.balance(params[:product_id], feature_item_id)
     feature_item = ProductFeatureItem.find(feature_item_id)
     feature_rel = feature_item.feature_rel
-    render json: {balance: product_balance, img: feature_rel.image.url, tumb: feature_rel.image.url(:tumb)}
+    render json: {balance: product_balance, img: feature_rel.image.present? ? feature_rel.image.url : '/assets/no-image.png', tumb: feature_rel.image.present? ? feature_rel.image.url(:tumb) : '/assets/no-image.png'}
   end
 
   private

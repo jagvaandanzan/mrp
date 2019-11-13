@@ -121,7 +121,7 @@
               <table style="background: white;" class="table table-bordered">
                 <thead>
                 <tr>
-                  <th><%= t('activerecord.attributes.product_feature_rel.image') %></th>
+                  <th style="width: 100px"><%= t('activerecord.attributes.product_feature_rel.image') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
@@ -133,8 +133,12 @@
                 <% @product_sale.product_sale_items.each do |p| %>
                   <tr>
                     <td>
-                      <%= link_to p.feature_rel.image.url, "data-lightbox": "roadtrip" do %>
-                        <%= image_tag p.feature_rel.image.url(:tumb), class: 'tumb' %>
+                      <% if p.image.present? %>
+                        <%= link_to p.feature_rel.image.url, "data-lightbox": "roadtrip" do %>
+                          <%= image_tag p.feature_rel.image.url(:tumb), class: 'tumb' %>
+                        <% end %>
+                      <% else %>
+                        <%= image_tag 'no-image.png', class: 'tumb' %>
                       <% end %>
                     </td>
                     <td class="va-mid"><%= p.product.name_with_code %></td>
@@ -190,6 +194,7 @@
     $(document).ready(function () {
         initSelectedMap();
     });
+
     function callChildren(select) {
         let val = null;
         if (select !== undefined && select !== null) {

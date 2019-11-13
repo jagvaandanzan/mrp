@@ -72,7 +72,7 @@
           <table class="table table-bordered">
             <thead>
             <tr>
-              <th><%= t('activerecord.attributes.product_feature_rel.image') %></th>
+              <th style="width: 100px"><%= t('activerecord.attributes.product_feature_rel.image') %></th>
               <th><%= t('activerecord.attributes.product_feature_rel.barcode') %></th>
               <th><%= t('activerecord.attributes.product_feature_rel.sale_price') %></th>
               <th><%= t('activerecord.attributes.product_feature_rel.discount_price') %></th>
@@ -82,9 +82,13 @@
             <tbody>
             <% @product.product_feature_rels.each do |p| %>
               <tr>
-                <td class="va-mid ">
-                  <%= link_to p.image.url, "data-lightbox": "roadtrip" do %>
-                    <%= image_tag p.image.url(:tumb), class: 'tumb' %>
+                <td class="va-mid">
+                  <% if p.image.present? %>
+                    <%= link_to p.image.url, "data-lightbox": "roadtrip" do %>
+                      <%= image_tag p.image.url(:tumb), class: 'tumb' %>
+                    <% end %>
+                  <% else %>
+                    <%= image_tag 'no-image.png', class: 'tumb' %>
                   <% end %>
                 </td>
                 <td class="va-mid"><%= p.barcode %></td>

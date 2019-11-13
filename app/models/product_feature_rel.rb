@@ -5,13 +5,13 @@ class ProductFeatureRel < ApplicationRecord
   has_many :product_income_items, :class_name => "ProductIncomeItem", :foreign_key => "feature_rel_id"
   has_many :product_balances, :class_name => "ProductBalance", :foreign_key => "feature_rel_id"
   has_many :product_sale_items, :class_name => "ProductSaleItem", :foreign_key => "feature_rel_id"
-  has_many :product_feature_items, dependent: :destroy
+  has_many :product_feature_items, :class_name => "ProductFeatureItem", :foreign_key => "feature_rel_id", dependent: :destroy
 
   has_attached_file :image, :path => ":rails_root/public/products/:id_partition/:style.:extension", styles: {original: "800x600>", tumb: "200x150>"}, :url => '/products/:id_partition/:style.:extension'
   validates_attachment :image,
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 2.megabytes}
 
-  validates :barcode, :sale_price, :image, :product_feature_option_rels, presence: true
+  validates :barcode, :product_feature_option_rels, presence: true
   validate :option_should_be_uniq
 
   accepts_nested_attributes_for :product_feature_option_rels, allow_destroy: true
@@ -38,6 +38,7 @@ class ProductFeatureRel < ApplicationRecord
   end
 
   def set_defaults
+    self.sale_price = 0 if sale_price.nil?
     self.discount_price = self.sale_price if discount_price.nil? || discount_price == 0
   end
 

@@ -28,7 +28,8 @@
             </div>
             <div class="col-md-3 field_div">
               <div class="div_input">
-                <b><%= t('activerecord.attributes.product_income.income_date') %>:</b> <%= @product_income.income_date.strftime('%F') %>
+                <b><%= t('activerecord.attributes.product_income.income_date') %>
+                  :</b> <%= @product_income.income_date.strftime('%F') %>
               </div>
             </div>
             <div class="col-md-6 field_div">
@@ -41,49 +42,53 @@
 
         <% if @product_income.product_income_items.present? %>
           <div class="col-md-12 group_div m-t-20">
-              <b><%= t('activerecord.attributes.product_income.product_income_items') %></b>
-              <table class="table table-bordered">
-                <thead>
+            <b><%= t('activerecord.attributes.product_income.product_income_items') %></b>
+            <table class="table table-bordered">
+              <thead>
+              <tr>
+                <th><%= t('activerecord.attributes.product_income_item.supply_order_item_code') %></th>
+                <th style="width: 100px"><%= t('activerecord.attributes.product_feature_rel.image') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.supply_order_item_id') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.exchange') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.feature_item_id') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.price') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.quantity') %></th>
+                <th><%= t('activerecord.attributes.product_supply_order_item.sum_price') %></th>
+                <th><%= t('titles.total_tugrug') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.shuudan') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.urgent_type') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.date') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.note') %></th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @product_income.product_income_items.each do |i| %>
                 <tr>
-                  <th><%= t('activerecord.attributes.product_income_item.supply_order_item_code') %></th>
-                  <th><%= t('activerecord.attributes.product_feature_rel.image') %></th>
-                  <th><%= t('activerecord.attributes.product_income_item.supply_order_item_id') %></th>
-                  <th><%= t('activerecord.attributes.product_income_item.exchange') %></th>
-                  <th><%= t('activerecord.attributes.product_income_item.feature_item_id') %></th>
-                  <th><%= t('activerecord.attributes.product_income_item.price') %></th>
-                  <th><%= t('activerecord.attributes.product_income_item.quantity') %></th>
-                  <th><%= t('activerecord.attributes.product_supply_order_item.sum_price') %></th>
-                  <th><%= t('titles.total_tugrug') %></th>
-                  <th><%= t('activerecord.attributes.product_income_item.shuudan') %></th>
-                  <th><%= t('activerecord.attributes.product_income_item.urgent_type') %></th>
-                  <th><%= t('activerecord.attributes.product_income_item.date') %></th>
-                  <th><%= t('activerecord.attributes.product_income_item.note') %></th>
-                </tr>
-                </thead>
-                <tbody>
-                <% @product_income.product_income_items.each do |i| %>
-                  <tr>
-                    <td class="va-mid"><%= i.supply_order_item.product_supply_order.code  %></td>
-                    <td class="va-mid">
+                  <td class="va-mid"><%= i.supply_order_item.product_supply_order.code %></td>
+                  <td class="va-mid">
+                    <% if i.feature_rel.image.present? %>
                       <%= link_to i.feature_rel.image.url, "data-lightbox": "roadtrip" do %>
-                      <%= image_tag i.feature_rel.image.url(:tumb), class: 'tumb' %>
+                        <%= image_tag i.feature_rel.image.url(:tumb), class: 'tumb' %>
+                      <% end %>
+                    <% else %>
+                      <%= image_tag 'no-image.png', class: 'tumb' %>
                     <% end %>
-                    </td>
-                    <td class="va-mid"><%= i.supply_order_item.product_name_with_code  %></td>
-                    <td class="va-mid"><%= i.supply_order_item.product_supply_order.exchange_i18n + ' ' + get_currency_mn(i.supply_order_item.product_supply_order.exchange_value) %></td>
-                    <td class="va-mid"><%= i.feature_item.name %></td>
-                    <td class="va-mid"><%= i.get_currency i.price %></td>
-                    <td class="va-mid"><%= i.quantity %></td>
-                    <td class="va-mid"><%= i.get_currency i.sum_price %></td>
-                    <td class="va-mid"><%= get_currency_mn i.sum_tug %></td>
-                    <td class="va-mid"><%= i.get_currency i.shuudan %></td>
-                    <td class="va-mid"><%= i.urgent_type_i18n %></td>
-                    <td class="va-mid"><%= i.date.strftime('%F') %></td>
-                    <td class="va-mid"><%= i.note.presence || '' %></td>
-                  </tr>
-                <% end %>
-                </tbody>
-              </table>
+                  </td>
+                  <td class="va-mid"><%= i.supply_order_item.product_name_with_code %></td>
+                  <td class="va-mid"><%= i.supply_order_item.product_supply_order.exchange_i18n + ' ' + get_currency_mn(i.supply_order_item.product_supply_order.exchange_value) %></td>
+                  <td class="va-mid"><%= i.feature_item.name %></td>
+                  <td class="va-mid"><%= i.get_currency i.price %></td>
+                  <td class="va-mid"><%= i.quantity %></td>
+                  <td class="va-mid"><%= i.get_currency i.sum_price %></td>
+                  <td class="va-mid"><%= get_currency_mn i.sum_tug %></td>
+                  <td class="va-mid"><%= i.get_currency i.shuudan %></td>
+                  <td class="va-mid"><%= i.urgent_type_i18n %></td>
+                  <td class="va-mid"><%= i.date.strftime('%F') %></td>
+                  <td class="va-mid"><%= i.note.presence || '' %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
           </div>
         <% end %>
       </div>
