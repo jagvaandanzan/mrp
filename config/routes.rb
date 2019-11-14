@@ -1,4 +1,11 @@
 Rails.application.routes.draw do
+  namespace :api do
+    namespace :v1 do
+      mount_devise_token_auth_for 'SysUser', at: '/auth'
+    end
+  end
+  mount API::Base => '/api'
+
   root 'users/base#root'
 
   post 'search_product', to: 'application#search_product'

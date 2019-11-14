@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  skip_before_action :verify_authenticity_token
 
   def current_ability
     @current_ability ||= current_user ? Ability.new(current_user) : AdminAbility.new(current_admin_user)

@@ -60,6 +60,7 @@ group :test do
 end
 
 gem 'devise'
+gem 'devise_token_auth'
 gem 'hashie'
 gem 'figaro' # application.yml
 gem 'enum_help' #i18n
