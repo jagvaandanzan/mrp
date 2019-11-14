@@ -5,11 +5,11 @@ module ApiHelper
   # response.is_a?(Net::HTTPSuccess) &&
   def api_request(url, method, params = nil)
     uri = URI.parse(ENV['SERVER_API'] + url)
-    req = if method == :Post
+    req = if method == 'post'
             Net::HTTP::Post.new(uri)
-          elsif method == :Patch
+          elsif method == 'patch'
             Net::HTTP::Patch.new(uri)
-          elsif method == :Get
+          elsif method == 'get'
             Net::HTTP::Get.new(uri)
           else
             Net::HTTP::Delete.new(uri)

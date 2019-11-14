@@ -4,7 +4,7 @@ class ProductFeatureOption < ApplicationRecord
   belongs_to :product_feature
   has_many :product_feature_option_rels, :class_name => "ProductFeatureOptionRel", :foreign_key => "feature_option_id", dependent: :destroy
 
-  validates :name, presence: true
+  validates :queue, :name, presence: true
 
   scope :search, ->(f_id, sname) {
     items = where(product_feature_id: f_id)
