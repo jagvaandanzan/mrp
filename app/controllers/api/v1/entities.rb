@@ -2,8 +2,8 @@ module API
   module V1
     module Entities
 
-      class SysUser < Grape::Entity
-        expose :name, :email, :updated_at
+      class ProductFeature < Grape::Entity
+        expose :method, :id, :queue, :name, :description
       end
 
     end

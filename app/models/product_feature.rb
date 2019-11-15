@@ -1,11 +1,12 @@
 class ProductFeature < ApplicationRecord
   acts_as_paranoid
 
-  after_create -> {sync_web('post')}
-  after_update -> {sync_web('patch')}
-  after_destroy -> {sync_web('delete')}
-
   has_many :options, -> {order(:queue).order(:name)}, :class_name => "ProductFeatureOption", :foreign_key => "product_feature_id", dependent: :destroy
+
+  after_create -> {sync_web('post')}
+  after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
+  after_destroy -> {sync_web('delete')}
+  attr_accessor :method_type
 
   validates :queue, :name, presence: true
 
@@ -22,18 +23,18 @@ class ProductFeature < ApplicationRecord
   private
 
   def sync_web(method)
+    self.method_type = method
+    url = "product/feature"
     if method == 'delete'
-      params = {method: method, id: id}
+      params = nil
+      url += "/" + id.to_s
     else
-      params = {method: method, id: id, queue: queue, name: name, description: description}
-      method = 'post'
+      params = self.to_json(methods: [:method_type], only: [:id, :queue, :name, :description])
     end
 
-    response = ApplicationController.helpers.api_request('product/features', method, params)
-    if response.code.to_i == 200
-      Rails.logger.debug(response.body.to_s)
-      data = MultiJson.load(response.body)
+    response = ApplicationController.helpers.api_request(url, method, params)
+    if response.code.to_i == 201
+      self.update(sync_at: Time.now, method_type: 'sync')
     end
-
   end
 end

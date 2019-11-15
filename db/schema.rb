@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_14_071229) do
+ActiveRecord::Schema.define(version: 2019_11_14_082132) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -139,6 +139,7 @@ ActiveRecord::Schema.define(version: 2019_11_14_071229) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "sync_at"
     t.index ["parent_id"], name: "index_product_categories_on_parent_id"
   end
 
@@ -175,6 +176,7 @@ ActiveRecord::Schema.define(version: 2019_11_14_071229) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
+    t.datetime "sync_at"
     t.index ["product_feature_id"], name: "index_product_feature_options_on_product_feature_id"
   end
 
@@ -199,6 +201,7 @@ ActiveRecord::Schema.define(version: 2019_11_14_071229) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
+    t.datetime "sync_at"
   end
 
   create_table "product_income_balances", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -414,6 +417,7 @@ ActiveRecord::Schema.define(version: 2019_11_14_071229) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "sync_at"
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["customer_id"], name: "index_products_on_customer_id"
   end
