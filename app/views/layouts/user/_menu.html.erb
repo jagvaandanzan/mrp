@@ -24,7 +24,7 @@
       <% end %>
       <% if (can? :read, Location) || (can? :read, Product)  || (can? :read, ProductLocation)  || (can? :read, Operator)  || (can? :read, ProductSupplier) %>
         <%= content_tag :li, class: controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations' ||
-            controller_name == 'product_categorys' || controller_name == 'product_suppliers' ||
+            controller_name == 'product_categories' || controller_name == 'product_suppliers' ||
             controller_name == 'product_features' || controller_name == 'product_feature_options' ||
             controller_name == 'product_locations' ||
             controller_name == 'operators' ? 'treeview active' : 'treeview' do %>
@@ -44,9 +44,9 @@
               <% end %>
             <% end %>
             <% if can? :read, Product %>
-              <%= content_tag :li, class: (controller_name == 'product_categorys') ? 'active' : '' do %>
-                <%= link_to users_product_categorys_path do %>
-                  <i class="fa fa-navicon"></i><span><%= t('titles.product_categorys') %></span>
+              <%= content_tag :li, class: (controller_name == 'product_categories') ? 'active' : '' do %>
+                <%= link_to users_product_categories_path do %>
+                  <i class="fa fa-navicon"></i><span><%= t('titles.product_categories') %></span>
                 <% end %>
               <% end %>
               <%= content_tag :li, class: (controller_name == 'product_features' || controller_name == 'product_feature_options') ? 'active' : '' do %>

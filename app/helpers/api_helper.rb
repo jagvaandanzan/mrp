@@ -6,9 +6,9 @@ module ApiHelper
   def api_request(url, method, params = nil)
     uri = URI.parse(ENV['SERVER_API'] + url)
     req = if method == 'post' || method == 'update'
-            Net::HTTP::Post.new(uri)
+            Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
           elsif method == 'patch'
-            Net::HTTP::Patch.new(uri)
+            Net::HTTP::Patch.new(uri, 'Content-Type' => 'application/json')
           elsif method == 'get'
             Net::HTTP::Get.new(uri)
           else
@@ -18,10 +18,10 @@ module ApiHelper
     req['access-token'] = header["access-token"]
     req['uid'] = header["uid"]
     req['client'] = header["client"]
-    req.form_data = JSON.parse(params) unless params.nil?
+    req.body = JSON.parse(params).to_json unless params.nil?
 
     Net::HTTP.start(uri.hostname, uri.port,
-                               :use_ssl => uri.scheme == 'https') {|http|
+                    :use_ssl => uri.scheme == 'https') {|http|
       http.request(req)
     }
   end

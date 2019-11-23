@@ -1,6 +1,6 @@
 class ProductFeatureRel < ApplicationRecord
   belongs_to :product
-  has_many :product_feature_option_rels, -> {joins(:product_features).order("product_features.queue")}, :class_name => "ProductFeatureOptionRel", :foreign_key => "feature_rel_id"
+  has_many :product_feature_option_rels, -> {joins(:product_features).order("product_features.queue")}, :class_name => "ProductFeatureOptionRel", :foreign_key => "feature_rel_id", dependent: :destroy
   has_many :feature_options, through: :product_feature_option_rels
   has_many :product_income_items, :class_name => "ProductIncomeItem", :foreign_key => "feature_rel_id"
   has_many :product_balances, :class_name => "ProductBalance", :foreign_key => "feature_rel_id"
@@ -28,6 +28,10 @@ class ProductFeatureRel < ApplicationRecord
     ApplicationController.helpers.get_f(self[:discount_price])
   end
 
+  def image_url
+    image.url
+  end
+
   private
 
   def option_should_be_uniq
@@ -47,7 +51,7 @@ class ProductFeatureRel < ApplicationRecord
     options = Hash.new
     product_feature_option_rels.each do |option_rel|
       if option_rel._destroy
-        ProductFeatureItem.where('option1_id = :feature_option_id OR option2_id = :feature_option_id', feature_option_id: option_rel.feature_option_id).destroy_all
+        ProductFeatureItem.where('product_id = :p_id AND (option1_id = :feature_option_id OR option2_id = :feature_option_id)', p_id: product.id, feature_option_id: option_rel.feature_option_id).destroy_all
       else
         if self.product_feature_items.exists?(['option1_id = :feature_option_id OR option2_id = :feature_option_id', feature_option_id: option_rel.feature_option_id])
           options[option_rel.feature_option_id] = 'upt'

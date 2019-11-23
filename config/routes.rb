@@ -63,7 +63,7 @@ Rails.application.routes.draw do
     resources :locations, only: [:index, :create, :new, :show, :edit, :update, :destroy]
     resources :loc_districts, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :loc_khoroos, only: [:index, :create, :new, :edit, :update, :destroy]
-    resources :product_categorys, only: [:index, :create, :new, :edit, :update, :destroy]
+    resources :product_categories, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_suppliers, only: [:index, :create, :new, :show, :edit, :update, :destroy]
     resources :product_features, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_feature_options, only: [:index, :create, :new, :edit, :update, :destroy]

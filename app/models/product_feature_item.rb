@@ -6,7 +6,6 @@ class ProductFeatureItem < ApplicationRecord
   belongs_to :feature2, :class_name => "ProductFeature"
   belongs_to :option2, :class_name => "ProductFeatureOption"
 
-
   scope :search, ->(product_id) {
     if product_id.nil?
       []
@@ -16,6 +15,10 @@ class ProductFeatureItem < ApplicationRecord
       # .order("IF(product_features.queue<feature2s_product_feature_items.queue, product_features.queue, feature2s_product_feature_items.queue)")
     end
   }
+
+  def balance
+    ProductBalance.balance(product_id, id)
+  end
 
   def name
     if option1_id == option2_id

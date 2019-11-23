@@ -1,6 +1,6 @@
-class Users::ProductCategorysController < Users::BaseController
+class Users::ProductCategoriesController < Users::BaseController
   load_and_authorize_resource
-  before_action :setCategory, only: [:edit, :update, :destroy]
+  before_action :set_category, only: [:edit, :update, :destroy]
 
   def index
     @parent = nil
@@ -56,11 +56,11 @@ class Users::ProductCategorysController < Users::BaseController
 
   private
 
-  def setCategory
+  def set_category
     @category = ProductCategory.find(params[:id])
   end
+
   def category_params
-    params.require(:product_category)
-        .permit(:parent_id, :name, :code)
+    params.require(:product_category).permit(:parent_id, :name, :code)
   end
 end

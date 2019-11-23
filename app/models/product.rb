@@ -10,6 +10,10 @@ class Product < ApplicationRecord
   accepts_nested_attributes_for :product_feature_rels, allow_destroy: true
 
   before_save :set_defaults
+  after_create -> {sync_web('post')}
+  after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
+  after_destroy -> {sync_web('delete')}
+  attr_accessor :method_type
 
   validates :name, :category_id, :code, :main_code, :barcode, :customer_id, :measure, :sale_price, :ptype, :product_feature_rels, presence: true
 
@@ -59,5 +63,29 @@ class Product < ApplicationRecord
 
   def valid_category
     errors.add(:category_id, :blank) if category_id.present? && ProductCategory.search(category_id).count > 0
+  end
+
+  def sync_web(method)
+    self.method_type = method
+    url = "products"
+    if method == 'delete'
+      params = nil
+      url += "/" + id.to_s
+    else
+      params = self.to_json(methods: [:method_type], except: [:deleted_at, :created_at, :updated_at, :sync_at],
+                            :include => {:product_feature_rels => {
+                                only: [:id, :product_id, :sale_price, :discount_price, :barcode], :methods => [:image_url],
+                                :include => {:product_feature_items => {
+                                    only: [:id, :product_id, :feature_rel_id, :feature1_id, :option1_id, :feature2_id, :option2_id], :methods => [:balance]
+                                }}
+                            }})
+    end
+    # Rails.logger.debug(params)
+    response = ApplicationController.helpers.api_request(url, method, params)
+    # Rails.logger.debug(response.code)
+    # Rails.logger.debug(response.body)
+    if response.code.to_i == 201
+      self.update(sync_at: Time.now, method_type: 'sync')
+    end
   end
 end

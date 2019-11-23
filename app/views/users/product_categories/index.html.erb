@@ -7,7 +7,7 @@
   </section>
   <% is_manage = can? :manage, Product %>
   <div class="action-buttons index">
-    <%= form_with url: users_product_categorys_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+    <%= form_with url: users_product_categories_path, method: "get", class: 'form-horizontal', local: true do |f| %>
       <%= hidden_field_tag :parent_id, @parent.nil? ? nil : @parent.id %>
       <% if is_manage %>
         <%= link_to t('controls.button.create'), new_users_product_category_path(parent_id: @parent.nil? ? nil : @parent.id), class: 'btn btn-warning' %>
@@ -35,7 +35,7 @@
               </tr>
               <% @categories.each do |c| %>
                 <tr>
-                  <td class="va-mid"><%= link_to c.code, users_product_categorys_path(parent_id: c.id) %></td>
+                  <td class="va-mid"><%= link_to c.code, users_product_categories_path(parent_id: c.id) %></td>
                   <td class="va-mid"><%= c.name %></td>
                   <td class="va-mid"><%= c.parent.presence ? c.parent.name : "" %></td>
                   <td class="text-center va-mid"><%= c.children.presence ? c.children.count : "0" %></td>

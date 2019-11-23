@@ -52,7 +52,7 @@ def get_search_recursive(obj, type)
 
     header_li = content_tag :li do # first header
       link_to( type=="category" ? "Ангилалууд" : "Байршлууд" ,
-               type=="category" ? users_product_categorys_path(parent_id: nil) : users_product_locations_path(parent_id: nil))
+               type=="category" ? users_product_categories_path(parent_id: nil) : users_product_locations_path(parent_id: nil))
     end
 
     main_ol = content_tag :ol, class: 'breadcrumb' do
@@ -65,7 +65,7 @@ def get_search_recursive(obj, type)
         @headers.reverse().each do |item|
           unless item.nil?
             li = content_tag :li, class: item == @headers.first ? "active" : "" do
-              link_to(item.name, type=="category" ? users_product_categorys_path(parent_id: item.id)
+              link_to(item.name, type=="category" ? users_product_categories_path(parent_id: item.id)
                                      : users_product_locations_path(parent_id: item.id) )
             end
             concat li
@@ -92,7 +92,7 @@ def get_name_recursive(obj)
       @headers.reverse().each do |item|
         unless item.nil?
           i = content_tag :i do
-            # concat link_to(item.name, users_product_categorys_path(parent_id: item.id))
+            # concat link_to(item.name, users_product_categories_path(parent_id: item.id))
             concat item.name
             concat ( item == @headers.first ? "" : " >> ")
           end
