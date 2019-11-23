@@ -1,12 +1,11 @@
 class Users::ProductCategoriesController < Users::BaseController
-  load_and_authorize_resource
+  # load_and_authorize_resource
   before_action :set_category, only: [:edit, :update, :destroy]
 
   def index
     @parent = nil
     @categories = nil
     # = ProductCategory.find_by!(id: params[:parent_id])
-    puts(params)
     if params[:parent_id].nil?
       @categories = ProductCategory.top_level.page(params[:page])
     else
