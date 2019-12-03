@@ -38,7 +38,7 @@
                       <%= f.label :phone, class: 'control-label' %>
                       <div class="<%= get_error_class(@product_sale, :phone) %>">
                         <%= field_errors(@product_sale, :phone) %>
-                        <%= f.number_field :phone, class: 'form-control', placeholder: t('activerecord.attributes.product_sale.phone') %>
+                        <%= f.number_field :phone, class: 'form-control', placeholder: t('activerecord.attributes.product_sale.phone'), id: 'phone_number' %>
                       </div>
                     </div>
                     <div class="col-md-3 field_div">
@@ -108,6 +108,7 @@
                       <th><%= t('activerecord.attributes.product_feature_rel.image') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
+                      <th><%= t('activerecord.attributes.product_sale_item.to_see') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.price') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
@@ -119,7 +120,7 @@
                     <% end %>
                   </table>
                 </div>
-                <div class="links">
+                <div class="links item_append">
                   <%= link_to_add_association f, :product_sale_items, data: {association_insertion_node: '#tb_product_sale_items', association_insertion_method: :append} do %>
                     <%= nested_add_btn %>
                   <% end %>
@@ -201,7 +202,12 @@
   </section>
 </div>
 <%= render 'shared/suggestion_search', id: 'product_sale_location_id', url: search_locations_operators_product_sales_path %>
+<% unless @product_sale.persisted? %>
+  <%= render 'previous_sales' %>
+<% end %>
 <script>
+    var to_see = false;
+
     function suggestion_search_enter(select) {
         func_call_feature_rel(select);
     }
@@ -357,7 +363,7 @@
         });
 
         let bonus = $("#product_sale_bonus").val();
-        if (!isNaN(parseFloat(bonus))) sum -= parseFloat(bonus);
+        if (!isNaN(parseFloat(bonus))) sum -= parseInt((parseFloat(bonus) * sum) / 100);
 
         if (sum < 20000) {
             sum += 2000;

@@ -23,7 +23,7 @@ class ProductSale < ApplicationRecord
     validates :phone, :location_id, :product_sale_items, :money, presence: true
     validates :code, uniqueness: true
     validate :feature_rel_should_be_uniq
-    # Утасны дугаар 8 оронтой байхаар шалгадаг, буруу байвал хадгалдаггүй
+    validates :bonus, numericality: {greater_than_or_equal_to: 0, less_than: 100, message: :invalid}
     validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
   end
 
@@ -41,8 +41,15 @@ class ProductSale < ApplicationRecord
     items = items.where('main_status_id = :s OR status_id=:s', s: status_id) if status_id.present?
     items = items.where('? <= delivery_start AND delivery_start <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items = items.order("product_sale_statuses.queue")
+                .created_at_desc
 
     items
+  }
+
+  scope :by_phone, ->(phone) {
+    where('phone LIKE :value', value: "%#{phone}%")
+        .order("product_sale_statuses.queue")
+        .order(created_at: :desc)
   }
 
   def bonus
@@ -72,7 +79,7 @@ class ProductSale < ApplicationRecord
       end
     end
 
-    s -= bonus if bonus.present?
+    s -= ((bonus * s) / 100).to_i if bonus.present?
 
     s += 2000 if s < 20000
 

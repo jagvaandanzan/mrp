@@ -103,6 +103,7 @@ Rails.application.routes.draw do
         post 'get_location'
         post 'get_product_balance'
         patch 'update_status'
+        post 'get_prev_sales'
       end
     end
 

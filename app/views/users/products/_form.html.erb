@@ -54,60 +54,46 @@
           </div>
           <div class="col-md-12">
             <div class="row">
-              <div class="col-md-3 field_div">
+              <div class="col-md-4 field_div">
                 <%= f.label :code, class: 'control-label' %>
                 <div class="<%= get_error_class(@product, :code) %>">
                   <%= field_errors(@product, :code) %>
                   <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product.code') %>
                 </div>
               </div>
-              <div class="col-md-3 field_div">
+              <div class="col-md-4 field_div">
                 <%= f.label :main_code, class: 'control-label' %>
                 <div class="<%= get_error_class(@product, :main_code) %>">
                   <%= field_errors(@product, :main_code) %>
                   <%= f.text_field :main_code, class: 'form-control', placeholder: t('activerecord.attributes.product.main_code') %>
                 </div>
               </div>
-              <div class="col-md-3 field_div">
+              <div class="col-md-4 field_div">
                 <%= f.label :barcode, class: 'control-label' %>
                 <div class="<%= get_error_class(@product, :barcode) %>">
                   <%= field_errors(@product, :barcode) %>
                   <%= f.text_field :barcode, class: 'form-control', placeholder: t('activerecord.attributes.product.barcode') %>
                 </div>
               </div>
-              <div class="col-md-3 field_div">
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-4 field_div">
                 <%= f.label :customer_id, class: 'control-label' %>
                 <div class="<%= get_error_class(@product, :customer_id) %>">
                   <%= field_errors(@product, :customer_id) %>
                   <%= f.collection_select :customer_id, Customer.order_by_name, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-3 field_div">
+              <div class="col-md-4 field_div">
                 <%= f.label :measure, class: 'control-label' %>
                 <div class="<%= get_error_class(@product, :measure) %>">
                   <%= field_errors(@product, :measure) %>
                   <%= f.select :measure, Product.measures_i18n.keys.map {|k| [Product.measures_i18n[k], k]}, {}, {class: 'form-control selectpicker'} %>
                 </div>
               </div>
-              <div class="col-md-3 field_div">
-                <%= f.label :sale_price, class: 'control-label' %>
-                <div class="<%= get_error_class(@product, :sale_price) %>">
-                  <%= field_errors(@product, :sale_price) %>
-                  <%= f.number_field :sale_price, class: 'form-control', min: 0, step: 0.01, placeholder: t('activerecord.attributes.product.sale_price') %>
-                </div>
-              </div>
-              <div class="col-md-3 field_div">
-                <%= f.label :discount_price, class: 'control-label' %>
-                <div class="<%= get_error_class(@product, :discount_price) %>">
-                  <%= field_errors(@product, :discount_price) %>
-                  <%= f.number_field :discount_price, class: 'form-control', min: 0, step: 0.01, placeholder: t('activerecord.attributes.product.discount_price') %>
-                </div>
-              </div>
-              <div class="col-md-3 field_div">
+              <div class="col-md-4 field_div">
                 <%= f.label :ptype, class: 'control-label' %>
                 <div class="<%= get_error_class(@product, :ptype) %>">
                   <%= field_errors(@product, :ptype) %>

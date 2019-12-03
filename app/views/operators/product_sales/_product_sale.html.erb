@@ -1,0 +1,12 @@
+<tr>
+  <td class="va-mid text-center"><%= link_to product_sale.product_sale_items.count, operators_product_sale_path(product_sale), target: '_blank' %></td>
+  <td class="va-mid"><%= link_to product_sale.phone, operators_product_sale_path(product_sale), target: '_blank' %></td>
+  <td class="va-mid" style="white-space: nowrap"><%= product_sale.delivery_time.html_safe %></td>
+  <td class="va-mid"><%= product_sale.location.full_name %></td>
+  <td class="va-mid"><%= product_sale.loc_note %></td>
+  <td class="va-mid"><%= get_currency_mn(product_sale.sum_price) %></td>
+  <td class="va-mid"><%= product_sale.status.name_with_parent %></td>
+  <td class="va-mid"><%= product_sale.created_operator.present? ? product_sale.created_operator.name : "" %></td>
+  <td class="va-mid"><%= product_sale.approved_operator.present? ? product_sale.approved_operator.name : "" %></td>
+  <td class="va-mid"><%= product_sale.approved_date.present? ? product_sale.approved_date.strftime('%F %R') : "" %></td>
+</tr>

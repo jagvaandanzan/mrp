@@ -106,14 +106,11 @@ class Operators::ProductSalesController < Operators::BaseController
     features = []
     price = 0
     if params[:product_id].present?
-      product = Product.find(params[:product_id])
 
-      price = product.sale_price if product.present? && product.sale_price.present?
+      feature_items = ProductFeatureItem.search(params[:product_id])
 
-      feature_rels = ProductFeatureItem.search(params[:product_id])
-
-      feature_rels.each do |rel|
-        features.push({id: rel.id, name: rel.name, price: rel.price, product: params[:product_id]})
+      feature_items.each do |item|
+        features.push({id: item.id, name: item.name, price: item.feature_rel.discount_price, product: params[:product_id]})
       end
     end
 
@@ -174,6 +171,13 @@ class Operators::ProductSalesController < Operators::BaseController
     feature_item = ProductFeatureItem.find(feature_item_id)
     feature_rel = feature_item.feature_rel
     render json: {balance: product_balance, img: feature_rel.image.present? ? feature_rel.image.url : '/assets/no-image.png', tumb: feature_rel.image.present? ? feature_rel.image.url(:tumb) : '/assets/no-image.png'}
+  end
+
+  def get_prev_sales
+    @product_sales = ProductSale.search(nil, nil, nil, params[:phone], nil).first(3)
+    respond_to do |format|
+      format.js {render 'previous_sales'}
+    end
   end
 
   private

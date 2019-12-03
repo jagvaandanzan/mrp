@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_14_082132) do
+ActiveRecord::Schema.define(version: 2019_12_03_035609) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -298,6 +298,7 @@ ActiveRecord::Schema.define(version: 2019_11_14_082132) do
     t.float "sum_price", limit: 53
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "to_see", default: false
     t.index ["feature_item_id"], name: "index_product_sale_items_on_feature_item_id"
     t.index ["feature_rel_id"], name: "index_product_sale_items_on_feature_rel_id"
     t.index ["product_id"], name: "index_product_sale_items_on_product_id"
@@ -412,8 +413,6 @@ ActiveRecord::Schema.define(version: 2019_11_14_082132) do
     t.string "detail"
     t.integer "measure"
     t.integer "ptype"
-    t.float "sale_price", limit: 53
-    t.float "discount_price", limit: 53
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

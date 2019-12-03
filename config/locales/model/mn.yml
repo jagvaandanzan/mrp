@@ -227,7 +227,7 @@ mn:
         delivery_date: Хүргэсэн огноо
         payment_delivery: Хүргэлтийн төлбөр
         money: Төлбөрийн хэлбэр
-        bonus: Бонус
+        bonus: Хямдрал (%)
         main_status: Статус
         main_status_id: Статус
         status_id: Статус
@@ -242,6 +242,7 @@ mn:
       product_sale_item:
         product_id: Бараа
         feature_item_id: Шинж чанар
+        to_see: Үзэх
         quantity: Тоо хэмжээ
         price: Үнэ
         sum_price: Нийт

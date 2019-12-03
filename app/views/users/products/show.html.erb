@@ -35,33 +35,26 @@
         </div>
         <div class="col-md-12">
           <div class="row">
-            <div class="col-md-3 field_div">
+            <div class="col-md-4 field_div">
               <b><%= t('activerecord.attributes.product.code') %>:</b> <%= @product.code %>
             </div>
-            <div class="col-md-3 field_div">
+            <div class="col-md-4 field_div">
               <b><%= t('activerecord.attributes.product.main_code') %>:</b> <%= @product.main_code %>
             </div>
-            <div class="col-md-3 field_div">
+            <div class="col-md-4 field_div">
               <b><%= t('activerecord.attributes.product.barcode') %>:</b> <%= @product.barcode %>
-            </div>
-            <div class="col-md-3 field_div">
-              <b><%= t('activerecord.attributes.product.customer_id') %>:</b> <%= @product.customer.name %>
             </div>
           </div>
         </div>
         <div class="col-md-12">
           <div class="row">
-            <div class="col-md-3 field_div">
+            <div class="col-md-4 field_div">
+              <b><%= t('activerecord.attributes.product.customer_id') %>:</b> <%= @product.customer.name %>
+            </div>
+            <div class="col-md-4 field_div">
               <b><%= t('activerecord.attributes.product.measure') %>:</b> <%= @product.measure_i18n %>
             </div>
-            <div class="col-md-3 field_div">
-              <b><%= t('activerecord.attributes.product.sale_price') %>:</b> <%= get_currency_mn @product.sale_price %>
-            </div>
-            <div class="col-md-3 field_div">
-              <b><%= t('activerecord.attributes.product.discount_price') %>
-                :</b> <%= get_currency_mn @product.discount_price %>
-            </div>
-            <div class="col-md-3 field_div">
+            <div class="col-md-4 field_div">
               <b><%= t('activerecord.attributes.product.ptype') %>:</b> <%= @product.ptype_i18n %>
             </div>
           </div>

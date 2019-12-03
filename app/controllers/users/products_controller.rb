@@ -74,7 +74,7 @@ class Users::ProductsController < Users::BaseController
   end
 
   def product_params
-    params.require(:product).permit(:name, :detail, :category_id, :code, :main_code, :barcode, :customer_id, :sale_price, :discount_price, :measure, :ptype,
+    params.require(:product).permit(:name, :detail, :category_id, :code, :main_code, :barcode, :customer_id, :measure, :ptype,
                                     product_feature_rels_attributes: [:id, :image, :barcode, :sale_price, :discount_price, :_destroy,
                                                                       product_feature_option_rels_attributes: [:id, :feature_option_id, :_destroy]])
   end

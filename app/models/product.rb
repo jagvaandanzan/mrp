@@ -9,13 +9,12 @@ class Product < ApplicationRecord
 
   accepts_nested_attributes_for :product_feature_rels, allow_destroy: true
 
-  before_save :set_defaults
   after_create -> {sync_web('post')}
   after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
   after_destroy -> {sync_web('delete')}
   attr_accessor :method_type
 
-  validates :name, :category_id, :code, :main_code, :barcode, :customer_id, :measure, :sale_price, :ptype, :product_feature_rels, presence: true
+  validates :name, :category_id, :code, :main_code, :barcode, :customer_id, :measure, :ptype, :product_feature_rels, presence: true
 
   validates :code, uniqueness: true
   validate :valid_category
@@ -47,19 +46,7 @@ class Product < ApplicationRecord
     "#{self.code} - #{self.name}"
   end
 
-  def sale_price
-    ApplicationController.helpers.get_f(self[:sale_price])
-  end
-
-  def discount_price
-    ApplicationController.helpers.get_f(self[:discount_price])
-  end
-
   private
-
-  def set_defaults
-    self.discount_price = self.sale_price if discount_price.nil? || discount_price == 0
-  end
 
   def valid_category
     errors.add(:category_id, :blank) if category_id.present? && ProductCategory.search(category_id).count > 0

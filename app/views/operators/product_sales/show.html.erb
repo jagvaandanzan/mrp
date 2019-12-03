@@ -108,7 +108,7 @@
             <div class="col-md-4 field_div">
               <div class="div_input">
                 <b><%= t('activerecord.attributes.product_sale.bonus') %>
-                  :</b> <%= get_currency_mn(@product_sale.bonus) %>
+                  :</b> <%= get_f(@product_sale.bonus) %>
               </div>
             </div>
             <div class="col-md-4 field_div">
@@ -124,28 +124,30 @@
                   <th style="width: 100px"><%= t('activerecord.attributes.product_feature_rel.image') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_item.to_see') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.price') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
                 </tr>
                 </thead>
                 <tbody>
-                <% @product_sale.product_sale_items.each do |p| %>
+                <% @product_sale.product_sale_items.each do |i| %>
                   <tr>
                     <td>
-                      <% if p.image.present? %>
-                        <%= link_to p.feature_rel.image.url, "data-lightbox": "roadtrip" do %>
-                          <%= image_tag p.feature_rel.image.url(:tumb), class: 'tumb' %>
+                      <% if i.feature_rel.image.present? %>
+                        <%= link_to i.feature_rel.image.url, "data-lightbox": "roadtrip" do %>
+                          <%= image_tag i.feature_rel.image.url(:tumb), class: 'tumb' %>
                         <% end %>
                       <% else %>
                         <%= image_tag 'no-image.png', class: 'tumb' %>
                       <% end %>
                     </td>
-                    <td class="va-mid"><%= p.product.name_with_code %></td>
-                    <td class="va-mid"><%= p.feature_item.name %></td>
-                    <td class="va-mid"><%= p.quantity %></td>
-                    <td class="va-mid"><%= get_currency_mn(p.price) %></td>
-                    <td class="va-mid"><%= get_currency_mn(p.sum_price) %></td>
+                    <td class="va-mid"><%= i.product.name_with_code %></td>
+                    <td class="va-mid"><%= i.feature_item.name %></td>
+                    <td class="va-mid"><% if i.to_see %> <i class="fa fa-check"></i> <% end %></td>
+                    <td class="va-mid"><%= i.quantity %></td>
+                    <td class="va-mid"><%= get_currency_mn(i.price) %></td>
+                    <td class="va-mid"><%= get_currency_mn(i.sum_price) %></td>
                   </tr>
                 <% end %>
                 </tbody>
