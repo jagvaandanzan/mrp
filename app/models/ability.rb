@@ -19,6 +19,7 @@ class Ability
         can role, ProductFeature
       when "operator"
         can role, Operator
+        can role, Salesman
       when "map_location"
         can role, LocDistrict
         can role, LocKhoroo

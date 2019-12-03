@@ -58,11 +58,16 @@ mn:
         is_update: Өөрчлөх
         is_destroy: Устгах
         is_manage: Засах
+    salesman:
+      gender:
+        male: Эрэгтэй
+        female: Эмэгтэй
   activerecord:
     models:
       admin_user: Админ
       user: Хэрэглэгч
       operator: Оператор
+      saleman: Түгээгч
       location: Байршил
       loc_district: Дүүрэг/аймаг
       loc_khoroo: Хороо/сум
@@ -261,6 +266,17 @@ mn:
       user_permission_rel:
         user_permission_id: Хандах эрх
         role: Үйлдэл
+      salesman:
+        id: ID
+        surname: Овог
+        name: Нэр
+        email: Имэйл
+        password: Нууц үг
+        gender: Хүйс
+        phone: Утас
+        register: Регистерийн дугаар
+        address: Хаяг
+        pin_code: Пин код
     errors:
       messages:
         blank: " хоосон байна!"

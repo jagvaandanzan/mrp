@@ -1,19 +1,30 @@
 <div class="content-wrapper">
-  <section class="content-header align-left padding-15">
-    <h1> <%= t('titles.users') %> (<%= t('titles.total') %>：<%= @users.total_count %>)</h1>
-  </section>
+  <div class="col-md-12 m-t-10 m-b-10">
+    <div class="row">
+      <%= form_with url: admin_users_users_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+        <div class="col-md-3 search">
+          <%= text_field_tag :name, @sname, {class: 'form-control search', placeholder: t('filters.name')} %>
+        </div>
+        <div class="col-md-3 search">
+          <%= text_field_tag :email, @semail, {class: 'form-control search', placeholder: t('filters.email')} %>
+        </div>
+        <div class="col-md-3 search">
+          <%= text_field_tag :phone, @sphone, {class: 'form-control search', placeholder: t('filters.phone')} %>
+        </div>
+        <div class="col-md-3 search">
+          <%= submit_tag t('controls.button.searching') + " (" + @users.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
 
-  <div class="action-buttons">
-    <%= link_to t('controls.button.create'), new_admin_users_user_path, class: 'btn btn-warning' %>
-
-    <%= button_tag t('controls.button.search'), class: 'btn blck-btn', data: {toggle: 'modal', target: '#model-user-search'} %>
+          <%= link_to t('controls.button.create'), new_admin_users_user_path, class: 'btn btn-warning pull-right' %>
+        </div>
+      <% end %>
+    </div>
   </div>
 
   <section class="content container-fluid">
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <%= get_search_criteria([@sname, t('activerecord.attributes.user.name')], [@semail, t('activerecord.attributes.user.email')], [@sphone, t('activerecord.attributes.user.phone')]) %>
+          <%#= get_search_criteria([@sname, t('activerecord.attributes.user.name')], [@semail, t('activerecord.attributes.user.email')], [@sphone, t('activerecord.attributes.user.phone')]) %>
 
           <%= render 'layouts/flash_message' %>
 
@@ -22,7 +33,6 @@
               <tr>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.user.name') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.user.user_position') %></th>
-                <th class="th-center va-mid"><%= t('activerecord.attributes.user.user_permission') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.user.email') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.user.phone') %></th>
               </tr>
@@ -30,9 +40,8 @@
                 <tr>
                   <td class="va-mid underline"><%= link_to user.name, admin_users_user_path(user) %></td>
                   <td class="td-center va-mid"><%= user.user_position.name %></td>
-                  <td class="va-mid"><%= user.email %></td>
-                  <td class="va-mid"><%= user.email %></td>
-                  <td class="va-mid"><%= user.phone %></td>
+                  <td class="td-center va-mid"><%= user.email %></td>
+                  <td class="td-center va-mid"><%= user.phone %></td>
                 </tr>
               <% end %>
             </table>
@@ -42,5 +51,4 @@
       </div>
     </div>
   </section>
-  <%= render 'modal_user_search', search_name: @sname, search_email: @semail , search_phone: @sphone %>
 </div>

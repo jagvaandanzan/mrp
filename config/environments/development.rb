@@ -40,7 +40,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
       user_name: 'info@market.mn',
-      password: 'news@123',
+      password: 'Ariwise2019@',
       port:587,
       domain: 'market.mn',
       address: 'smtp.market.mn',

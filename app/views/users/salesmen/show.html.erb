@@ -1,0 +1,57 @@
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('activerecord.models.saleman') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <% if can? :manage, Salesman %>
+      <%= link_to t('controls.button.edit'), edit_users_salesman_path(@salesman), class: 'btn btn-info' %>
+      <%= link_to t('controls.button.delete'), users_salesman_path(@salesman), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <% end %>
+    <%= link_to t('titles.back_to_list'), users_salesmen_path(page: cookies[:salesman_page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body table-responsive no-padding">
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.salesman.id') %> :</div>
+          <div class="col-data"><%= @salesman.id_number %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.salesman.surname') %> :</div>
+          <div class="col-data"><%= @salesman.surname %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.salesman.name') %> :</div>
+          <div class="col-data"><%= @salesman.name %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.salesman.gender') %> :</div>
+          <div class="col-data"><%= @salesman.gender_i18n %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.salesman.register') %> :</div>
+          <div class="col-data"><%= @salesman.register %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.salesman.email') %> :</div>
+          <div class="col-data"><%= @salesman.email %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.salesman.phone') %> :</div>
+          <div class="col-data"><%= @salesman.phone %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.salesman.address') %> :</div>
+          <div class="col-data"><%= @salesman.address.presence || :'---' %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.salesman.pin_code') %> :</div>
+          <div class="col-data"><%= @salesman.pin_code %></div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

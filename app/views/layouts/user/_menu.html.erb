@@ -27,7 +27,7 @@
             controller_name == 'product_categories' || controller_name == 'product_suppliers' ||
             controller_name == 'product_features' || controller_name == 'product_feature_options' ||
             controller_name == 'product_locations' ||
-            controller_name == 'operators' ? 'treeview active' : 'treeview' do %>
+            controller_name == 'operators' || controller_name == 'salesmen' ? 'treeview active' : 'treeview' do %>
           <%= link_to "#" do %>
             <i class="fa fa-cogs"></i><span><%= t('titles.settings') %></span>
             <span class="pull-right-container">
@@ -66,6 +66,11 @@
               <%= content_tag :li, class: (controller_name == 'operators') ? 'active' : '' do %>
                 <%= link_to users_operators_path do %>
                   <i class="fa fa-users"></i><span><%= t('titles.operators') %></span>
+                <% end %>
+              <% end %>
+              <%= content_tag :li, class: (controller_name == 'salesmen') ? 'active' : '' do %>
+                <%= link_to users_salesmen_path do %>
+                  <i class="fa fa-car"></i><span><%= t('titles.salesmen') %></span>
                 <% end %>
               <% end %>
             <% end %>

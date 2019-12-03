@@ -40,6 +40,7 @@ mn:
     user: Хэрэглэгч
     user_show: Хэрэглэгчийн мэдээлэл
     operators: Операторууд
+    salesmen: Түгээгч нар
     operator: Оператор
     operator_show: Операторын мэдээлэл
     back_to_list: Жагсаалтруу буцах
@@ -139,6 +140,10 @@ mn:
   filters:
     by_date: Огноо сонгох
     status: Статус
+    name: Нэрээр
+    email: Имэйлээр
+    phone: Утсаар
+    id: ID-р
   unauthorized:
     manage:
       all: "Та хандах эрхгүй байна!" #%{action} %{subject}

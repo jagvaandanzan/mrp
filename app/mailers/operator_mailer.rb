@@ -1,5 +1,8 @@
-class OperatorMailer < Devise::Mailer
-  layout 'mailer'
+class OperatorMailer < BaseMailer
+
+  def headers_for(action, opts)
+    super.merge!({template_path: 'mailer/operator'})
+  end
 
   def first_password_instructions(record, password, opts = {})
     @password = password

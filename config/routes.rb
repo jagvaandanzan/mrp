@@ -3,6 +3,9 @@ Rails.application.routes.draw do
     namespace :v1 do
       mount_devise_token_auth_for 'SysUser', at: '/auth'
     end
+    namespace :salesman do
+      mount_devise_token_auth_for 'Salesman', at: 'auth'
+    end
   end
   mount API::Base => '/api'
 
@@ -85,6 +88,7 @@ Rails.application.routes.draw do
       end
     end
     resources :operators, only: [:index, :create, :new, :show, :edit, :update, :destroy]
+    resources :salesmen, only: [:index, :create, :new, :show, :edit, :update, :destroy]
 
     match "*any", to: "base#routing_error", via: :all
   end
