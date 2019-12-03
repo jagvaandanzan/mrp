@@ -54,3 +54,8 @@ module API
     end
   end
 end
+# uid: ch.enkhamgalan@yahoo.com
+# access-token: ohJhZNxmipJM8DRcYc67Kw
+# client: 9PkhsJ9nNjx9gYtXAtT0WA
+# Content-Type: application/json; charset=utf-8
+# expiry: 1576568760
