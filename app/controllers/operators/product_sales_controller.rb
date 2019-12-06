@@ -196,8 +196,8 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def check_approved(product_sale)
-    if product_sale.status.present?
-      if product_sale.status.alias == "approved"
+    if product_sale.main_status.present?
+      if product_sale.main_status.alias == "approved"
         product_sale.approved_operator = current_operator
         product_sale.approved_date = Time.current
       else

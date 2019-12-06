@@ -28,6 +28,14 @@ class ProductSaleItem < ApplicationRecord
     ProductBalance.balance(product_id, feature_item_id)
   end
 
+  def product_image
+    feature_rel.image
+  end
+
+  def product_size
+    feature_item.name
+  end
+
   private
 
   def set_defaults

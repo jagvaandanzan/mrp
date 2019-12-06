@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_03_043207) do
+ActiveRecord::Schema.define(version: 2019_12_05_071336) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -349,6 +349,7 @@ ActiveRecord::Schema.define(version: 2019_12_03_043207) do
     t.bigint "created_operator_id"
     t.bigint "approved_operator_id"
     t.datetime "approved_date"
+    t.bigint "salesman_travel_id"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -356,6 +357,7 @@ ActiveRecord::Schema.define(version: 2019_12_03_043207) do
     t.index ["created_operator_id"], name: "index_product_sales_on_created_operator_id"
     t.index ["location_id"], name: "index_product_sales_on_location_id"
     t.index ["main_status_id"], name: "index_product_sales_on_main_status_id"
+    t.index ["salesman_travel_id"], name: "index_product_sales_on_salesman_travel_id"
     t.index ["status_id"], name: "index_product_sales_on_status_id"
   end
 
@@ -421,6 +423,42 @@ ActiveRecord::Schema.define(version: 2019_12_03_043207) do
     t.index ["customer_id"], name: "index_products_on_customer_id"
   end
 
+  create_table "salesman_travel_routes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "salesman_travel_id"
+    t.integer "queue"
+    t.integer "distance"
+    t.integer "duration"
+    t.integer "wage"
+    t.bigint "location_id"
+    t.bigint "product_sale_id"
+    t.datetime "load_at"
+    t.datetime "delivery_at"
+    t.datetime "delivered_at"
+    t.integer "delivery_time"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_salesman_travel_routes_on_location_id"
+    t.index ["product_sale_id"], name: "index_salesman_travel_routes_on_product_sale_id"
+    t.index ["salesman_travel_id"], name: "index_salesman_travel_routes_on_salesman_travel_id"
+  end
+
+  create_table "salesman_travels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "salesman_id"
+    t.integer "distance"
+    t.integer "duration"
+    t.integer "wage"
+    t.bigint "user_id"
+    t.datetime "load_at"
+    t.datetime "delivery_at"
+    t.datetime "delivered_at"
+    t.integer "delivery_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["salesman_id"], name: "index_salesman_travels_on_salesman_id"
+    t.index ["user_id"], name: "index_salesman_travels_on_user_id"
+  end
+
   create_table "salesmen", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "surname"
     t.string "name"
@@ -471,6 +509,7 @@ ActiveRecord::Schema.define(version: 2019_12_03_043207) do
   create_table "travel_configs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id"
     t.integer "max_travel"
+    t.integer "max_distance"
     t.integer "waiting_time"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
@@ -581,6 +620,7 @@ ActiveRecord::Schema.define(version: 2019_12_03_043207) do
   add_foreign_key "product_sales", "operators", column: "created_operator_id"
   add_foreign_key "product_sales", "product_sale_statuses", column: "main_status_id"
   add_foreign_key "product_sales", "product_sale_statuses", column: "status_id"
+  add_foreign_key "product_sales", "salesman_travels"
   add_foreign_key "product_supply_order_items", "product_supply_orders"
   add_foreign_key "product_supply_order_items", "product_supply_orders", column: "supply_order_id"
   add_foreign_key "product_supply_order_items", "products"
@@ -588,6 +628,11 @@ ActiveRecord::Schema.define(version: 2019_12_03_043207) do
   add_foreign_key "product_supply_orders", "users"
   add_foreign_key "products", "customers"
   add_foreign_key "products", "product_categories", column: "category_id"
+  add_foreign_key "salesman_travel_routes", "locations"
+  add_foreign_key "salesman_travel_routes", "product_sales"
+  add_foreign_key "salesman_travel_routes", "salesman_travels"
+  add_foreign_key "salesman_travels", "salesmen"
+  add_foreign_key "salesman_travels", "users"
   add_foreign_key "travel_configs", "users"
   add_foreign_key "user_permission_rels", "user_permissions"
   add_foreign_key "user_permission_rels", "users"

@@ -5,6 +5,7 @@ class Salesman < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable, :rememberable, :registerable,
   devise :database_authenticatable, :recoverable, :trackable, :validatable
   include DeviseTokenAuth::Concerns::User
+  has_many :salesman_travels
 
   after_destroy :destroy_email
   before_validation :generate_password, on: :create
@@ -44,7 +45,7 @@ class Salesman < ActiveRecord::Base
   private
 
   def set_pin_code
-    self.pin_code = 4.times.map{rand(10)}.join
+    self.pin_code = 4.times.map {rand(10)}.join
   end
 
   def generate_password

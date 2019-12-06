@@ -19,4 +19,8 @@ module ApplicationHelper
   def get_currency(value, unit, precision)
     number_to_currency(value, unit: unit, separator: ".", delimiter: ",", precision: precision, format: "%n %u")
   end
+
+  def local_date(date)
+    Time.zone.parse(date.strftime('%F'))
+  end
 end

@@ -1,7 +1,7 @@
 module API
   module SALESMAN
     class Base < Grape::API
-      version 'v1', using: :path
+      version 'salesman', using: :path
       format :json
       formatter :json, Grape::Formatter::Jbuilder
 
@@ -25,7 +25,7 @@ module API
           error!('You need to log in to use the app.', 401, h)
         end
 
-        def current_sys_user
+        def current_salesman
           @resource
         end
 
@@ -50,7 +50,8 @@ module API
       end
 
       # mounts
-      mount API::SALESMAN::ProductSales
+      mount API::SALESMAN::Distributing
+      mount API::SALESMAN::Travels
     end
   end
 end

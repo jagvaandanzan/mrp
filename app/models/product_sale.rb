@@ -6,9 +6,11 @@ class ProductSale < ApplicationRecord
   belongs_to :status, :class_name => "ProductSaleStatus"
   belongs_to :created_operator, :class_name => "Operator", optional: true
   belongs_to :approved_operator, :class_name => "Operator", optional: true
+  belongs_to :salesman_travel, optional: true
 
   has_many :product_sale_items
   has_many :product_sale_status_logs
+  has_one :salesman_travel_route, dependent: :destroy
 
   accepts_nested_attributes_for :product_sale_items, allow_destroy: true
 
@@ -46,10 +48,11 @@ class ProductSale < ApplicationRecord
     items
   }
 
-  scope :by_phone, ->(phone) {
-    where('phone LIKE :value', value: "%#{phone}%")
-        .order("product_sale_statuses.queue")
-        .order(created_at: :desc)
+  scope :by_salesman_nil, ->() {
+    where.not("approved_date IS ?", nil)
+        .where("main_status_id = ?", 2)
+        .where("salesman_travel_id IS ?", nil)
+        .order(:approved_date)
   }
 
   def bonus
@@ -63,6 +66,11 @@ class ProductSale < ApplicationRecord
   def delivery_time
     delivery_start.strftime('%Y/%m/%d') + '&nbsp;&nbsp;' + delivery_start.hour.to_s + "-" + delivery_end.hour.to_s
   end
+
+  def count_product
+    product_sale_items.sum(:quantity)
+  end
+
 
   private
 
