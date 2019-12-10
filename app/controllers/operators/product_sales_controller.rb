@@ -212,6 +212,6 @@ class Operators::ProductSalesController < Operators::BaseController
         .permit(:phone, :delivery_start, :hour_start, :hour_end, :location_id, :building_code, :loc_note,
                 :sum_price, :money, :bonus,
                 :main_status_id, :status_id, :status_note, :status_user_type,
-                product_sale_items_attributes: [:id, :product_id, :feature_item_id, :quantity, :price, :sum_price, :remainder, :_destroy])
+                product_sale_items_attributes: [:id, :product_id, :feature_item_id, :to_see, :quantity, :price, :sum_price, :remainder, :_destroy])
   end
 end
