@@ -107,7 +107,7 @@ class ProductSale < ApplicationRecord
   end
 
   def feature_rel_should_be_uniq
-    uniq_by_feature_rel = product_sale_items.uniq(&:product_feature_rel_id)
+    uniq_by_feature_rel = product_sale_items.uniq(&:feature_item_id)
 
     if product_sale_items.length != uniq_by_feature_rel.length
       self.errors.add(:product_sale_items, :taken_feature_rel)
