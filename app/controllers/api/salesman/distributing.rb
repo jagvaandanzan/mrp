@@ -14,11 +14,11 @@ module API
             location_ids.unshift(1) # Агуулахаас эхлэнэ
             # [1, 2687, 3727, 3, 16, 7, 2823]
 
-            # locations = Location.search_by_ids(location_ids)
-            # location_travels = save_travels(locations)
-            # hash_location_travels = location_travels.map {|i| [i.location_from_id.to_s + "-" + i.location_to_id.to_s, i]}.to_h
-            # routing = vrptw(location_ids, hash_location_travels)
-            routing = [138, 0, 4, 3, 1, 5, 6, 2, 0].map(&:to_i)
+            locations = Location.search_by_ids(location_ids)
+            location_travels = save_travels(locations)
+            hash_location_travels = location_travels.map {|i| [i.location_from_id.to_s + "-" + i.location_to_id.to_s, i]}.to_h
+            routing = vrptw(location_ids, hash_location_travels).map(&:to_i)
+            # routing = [138, 0, 4, 3, 1, 5, 6, 2, 0].map(&:to_i)
 
             travel = SalesmanTravel.new
             travel.salesman = salesman
@@ -29,16 +29,15 @@ module API
               if i > 1 && r > 0
                 product_sale = product_sales[r - 1]
                 product_sale.salesman_travel = travel
-                product_sale.update_status = true
-                product_sale.save
+                product_sale.save(validate: false)
                 location = product_sale.location
-                # location_travel = hash_location_travels[loc_from_id.to_s + '-' + location.id.to_s]
-                # loc_from_id = location.id
+                location_travel = hash_location_travels[loc_from_id.to_s + '-' + location.id.to_s]
+                loc_from_id = location.id
 
                 travel_route = SalesmanTravelRoute.new
                 travel_route.queue = i - 2
-                # travel_route.distance = location_travel.distance
-                # travel_route.duration = location_travel.duration
+                travel_route.distance = location_travel.distance
+                travel_route.duration = location_travel.duration
                 travel_route.salesman_travel = travel
                 travel_route.location = location
                 travel_route.product_sale = product_sale
@@ -60,7 +59,6 @@ end
 
 def vrptw(location_ids, hash_loc_travels) # return routing = [138, 0, 7, 4, 3, 1, 6, 10, 2, 9, 8, 5, 11, 0]
   # location_travels = LocationTravel.search(location_ids).map {|i| [i.location_from_id.to_s + "-" + i.location_to_id.to_s, i]}.to_h
-
 
   folder_path = "public/routing/"
   file_temp = "#{Time.zone.now.to_i}"
