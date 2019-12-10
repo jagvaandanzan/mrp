@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_05_071336) do
+ActiveRecord::Schema.define(version: 2019_12_10_064817) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -133,6 +133,7 @@ ActiveRecord::Schema.define(version: 2019_12_05_071336) do
   end
 
   create_table "product_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "queue", default: 0
     t.string "name"
     t.string "code"
     t.bigint "parent_id"

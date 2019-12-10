@@ -11,17 +11,24 @@ class ProductCategory < ApplicationRecord
   after_destroy -> {sync_web('delete')}
   attr_accessor :method_type
 
-  validates :name, :code, presence: true
+  validates :queue, :name, :code, presence: true
   validates :code, uniqueness: true
 
   scope :search, ->(p_id) {
     items = where(parent_id: p_id)
-    items.order(:name)
+    items.order(:queue)
+        .order(:name)
+  }
+
+  scope :order_by, ->() {
+    order(:queue)
+        .order(:name)
   }
 
   scope :top_level, ->() {
     items = where(parent_id: nil)
-    items.order(:name)
+    items.order(:queue)
+        .order(:name)
   }
 
 

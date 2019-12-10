@@ -60,6 +60,6 @@ class Users::ProductCategoriesController < Users::BaseController
   end
 
   def category_params
-    params.require(:product_category).permit(:parent_id, :name, :code)
+    params.require(:product_category).permit(:parent_id, :queue, :name, :code)
   end
 end

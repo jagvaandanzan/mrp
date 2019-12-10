@@ -126,6 +126,7 @@ mn:
         name: Нэр
         queue: Дараалал
       product_category:
+        queue: Дараалал
         name: Нэр
         code: Код
         parent_id: Эцэг ангилал
