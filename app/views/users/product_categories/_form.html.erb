@@ -37,7 +37,7 @@
             <%= f.label :code, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@category, :code) %>">
               <%= field_errors(@category, :code) %>
-              <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product_category.code') %>
+              <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product_category.code'), readonly: true  %>
             </div>
           </div>
           <div class="action-buttons">
