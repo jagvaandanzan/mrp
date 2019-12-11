@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_10_064817) do
+ActiveRecord::Schema.define(version: 2019_12_11_061054) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -300,6 +300,7 @@ ActiveRecord::Schema.define(version: 2019_12_10_064817) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "to_see", default: false
+    t.datetime "bought_at"
     t.index ["feature_item_id"], name: "index_product_sale_items_on_feature_item_id"
     t.index ["feature_rel_id"], name: "index_product_sale_items_on_feature_rel_id"
     t.index ["product_id"], name: "index_product_sale_items_on_product_id"
@@ -342,6 +343,7 @@ ActiveRecord::Schema.define(version: 2019_12_10_064817) do
     t.string "loc_note"
     t.datetime "delivery_date"
     t.integer "money"
+    t.integer "paid"
     t.float "bonus"
     t.float "sum_price", limit: 53
     t.bigint "main_status_id"

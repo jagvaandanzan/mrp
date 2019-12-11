@@ -114,6 +114,9 @@
             <div class="col-md-4 field_div">
               <div class="div_input">
                 <b><%= t('activerecord.attributes.product_sale.money') %>:</b> <%= @product_sale.money_i18n %>
+                <% if @product_sale.paid.present?%>
+                , <b><%= t('activerecord.attributes.product_sale.paid') %>:</b> <%= get_currency_mn(@product_sale.paid) %>
+                <% end %>
               </div>
             </div>
             <div style="clear: both"></div>

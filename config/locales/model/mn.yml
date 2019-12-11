@@ -49,8 +49,9 @@ mn:
         yaaraltai: Яаралтай
     product_sale:
       money:
-        account: Дансаар
         cash: Бэлнээр
+        account: Дансаар
+        mixed: Данс+Бэлнээр
     user_permission_rel:
       role:
         is_read: Харах
@@ -233,6 +234,7 @@ mn:
         delivery_date: Хүргэсэн огноо
         payment_delivery: Хүргэлтийн төлбөр
         money: Төлбөрийн хэлбэр
+        paid: Төлсөн
         bonus: Хямдрал (%)
         main_status: Статус
         main_status_id: Статус
@@ -273,6 +275,7 @@ mn:
         name: Нэр
         email: Имэйл
         password: Нууц үг
+        password_confirmation: 'Нууц үг баталгаажуулалт'
         gender: Хүйс
         phone: Утас
         register: Регистерийн дугаар
@@ -308,6 +311,13 @@ mn:
           attributes:
             password_confirmation:
               confirmation: " нууц үг баталгаажуулалт таарахгүй байна"
+            email:
+              taken: " энэ имэйлийг ашиглаж байна"
+              invalid: " буруу байна"
+        salesman:
+          attributes:
+            password_confirmation:
+              confirmation: " таарахгүй байна"
             email:
               taken: " энэ имэйлийг ашиглаж байна"
               invalid: " буруу байна"

@@ -87,7 +87,7 @@ mn:
       accepted: を受諾してください
       blank: " хоосон байна!"
       present: は入力しないでください
-      confirmation: と%{attribute}の入力が一致しません
+      confirmation: "%{attribute} баталгаажуулалт буруу байна"
       empty: " хоосон байна!"
       equal_to: は%{count}にしてください
       even: " тэгш тоо байх ёстой"

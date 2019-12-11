@@ -210,7 +210,7 @@ class Operators::ProductSalesController < Operators::BaseController
   def product_sale_params
     params.require(:product_sale)
         .permit(:phone, :delivery_start, :hour_start, :hour_end, :location_id, :building_code, :loc_note,
-                :sum_price, :money, :bonus,
+                :sum_price, :money, :paid, :bonus,
                 :main_status_id, :status_id, :status_note, :status_user_type,
                 product_sale_items_attributes: [:id, :product_id, :feature_item_id, :to_see, :quantity, :price, :sum_price, :remainder, :_destroy])
   end

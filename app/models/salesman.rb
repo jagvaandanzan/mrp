@@ -29,8 +29,13 @@ class Salesman < ActiveRecord::Base
   }
 
   def send_first_password_instructions
-    send_devise_notification(:first_password_instructions, password, subject: 'Нэвтрэх нууц үгийн мэдээлэл', to: email)
+    send_devise_notification(:first_password_instructions, password, subject: '[Market.mn] Нэвтрэх нууц үгийн мэдээлэл', to: email)
   end
+
+  def reset_password_instructions(email, url_token)
+    send_devise_notification(:reset_password_instructions, email, url_token, subject: '[Market.mn] Нууц үг солих хүсэлт', to: email)
+  end
+
 
   def id_number
     id.to_s.rjust(3, '0')

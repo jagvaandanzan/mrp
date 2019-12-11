@@ -45,6 +45,8 @@ module API
         end
       end
 
+      mount API::SALESMAN::Passwords
+
       before do
         authenticate_user!
       end

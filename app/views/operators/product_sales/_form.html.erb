@@ -137,7 +137,7 @@
                 </div>
                 <div class="col-md-4 field_div">
                   <%= f.label :money, class: 'control-label' %>
-                  <div class="radio-group p-t-5 <%= get_error_class(@product_sale, :money) %>">
+                  <div class="radio-group p-t-5 money_select <%= get_error_class(@product_sale, :money) %>">
                     <%= field_errors(@product_sale, :money) %>
                     <%= f.collection_radio_buttons :money, ProductSale.money_i18n, :first, :second do |b| %>
                       <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
@@ -155,7 +155,6 @@
             </div>
             <div class="row">
               <div class="col-md-12">
-
                 <div class="col-md-4 field_div">
                   <%= f.label :main_status_id, class: 'control-label' %>
                   <div class="<%= get_error_class(@product_sale, :main_status_id) %>">
@@ -163,6 +162,13 @@
                     <%= f.collection_select :main_status_id, ProductSaleStatus.search(nil, @product_sale.status_user_type), :id, :name,
                                             {:prompt => t('controls.select.none')},
                                             {class: 'form-control selectpicker', onchange: 'callChildren(this)', "data-live-search": "true"} %>
+                  </div>
+                </div>
+                <div id="paid_div" class="col-md-4 field_div <%= (!@product_sale.persisted? || @product_sale.cash?) ? 'none' : '' %>">
+                  <%= f.label :paid, class: 'control-label' %>
+                  <div class="<%= get_error_class(@product_sale, :paid) %>">
+                    <%= field_errors(@product_sale, :paid) %>
+                    <%= f.number_field :paid, class: 'form-control', placeholder: t('activerecord.attributes.product_sale.paid') %>
                   </div>
                 </div>
                 <div class="col-md-4 field_div">
@@ -229,6 +235,14 @@
                         console.log(data);
                     }
                 });
+            }
+        });
+        $('div.money_select input').on('change', function () {
+            if ($(this).prop('checked')) {
+                let paid_div = $('div#paid_div');
+                if ($(this).val() === 'cash') {
+                    paid_div.addClass('none');
+                } else paid_div.removeClass('none');
             }
         });
         initSelectedMap();

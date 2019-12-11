@@ -14,11 +14,13 @@ class ProductSale < ApplicationRecord
 
   accepts_nested_attributes_for :product_sale_items, allow_destroy: true
 
-  before_save :set_defaults
-
-  enum money: {account: 1, cash: 0}
+  enum money: {cash: 0, account: 1, mixed: 2}
 
   attr_accessor :hour_now, :hour_start, :hour_end, :status_user_type, :update_status
+
+  before_validation :validate_status
+  before_validation :set_sum_price
+  before_save :set_defaults
 
   with_options :if => Proc.new {|m| m.update_status == nil} do
     validates_numericality_of :hour_end, greater_than: Proc.new(&:hour_start)
@@ -29,8 +31,12 @@ class ProductSale < ApplicationRecord
     validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
   end
 
-  before_validation :validate_status
   validates :main_status, presence: true
+
+  with_options :if => Proc.new {|m| m.money == 'mixed'} do
+    validates :paid, presence: true
+    validates_numericality_of :paid, less_than_or_equal_to: Proc.new(&:sum_price)
+  end
 
   scope :created_at_desc, -> {
     order(created_at: :desc)
@@ -80,6 +86,9 @@ class ProductSale < ApplicationRecord
     self.delivery_end = delivery_start.change({hour: hour_end})
     self.delivery_start = delivery_start.change({hour: hour_start})
 
+  end
+
+  def set_sum_price
     s = 0
     if product_sale_items.present?
       product_sale_items.each do |item|
