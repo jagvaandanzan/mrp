@@ -1,5 +1,4 @@
 # Additional translations at https://github.com/plataformatec/devise/wiki/I18n
-
 mn:
   devise:
     confirmations:
@@ -31,10 +30,11 @@ mn:
       failure: "Could not authenticate you from %{kind} because \"%{reason}\"."
       success: "Successfully authenticated from %{kind} account."
     passwords:
-      no_token: "You can't access this page without coming from a password reset email. If you do come from a password reset email, please make sure you used the full URL provided."
-      send_instructions: "Хэдэн минутын дараа нууц үгээ хэрхэн шинэчлэх тухай зааврыг имэйлээр илгээх болно."
+      no_token: "Токен буруу байна!, та дахин шинэ хүсэлт илгээнэ үү."
+      no_email: "Имэйл хаяг олдсонгүй!"
+      send_instructions: "Бид таны нууц солих хүсэлтийг имэйлээр илгээх болно."
       send_paranoid_instructions: "If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes."
-      updated: "Your password has been changed successfully. You are now signed in."
+      updated: "Нууц үг амжилттай солигдлоо."
       updated_not_active: "Your password has been changed successfully."
     registrations:
       destroyed: "Bye! Your account has been successfully cancelled. We hope to see you again soon."
@@ -56,9 +56,12 @@ mn:
     messages:
       already_confirmed: "was already confirmed, please try signing in"
       confirmation_period_expired: "needs to be confirmed within %{period}, please request a new one"
-      expired: "has expired, please request a new one"
+      expired: "Нууц үг сэргээх хугацаа дууссан байна!"
       not_found: " олдсонгүй"
       not_locked: "was not locked"
       not_saved:
         one: "%{resource} хадгалахад доорх нэг алдаа гарлаа:"
         other: "%{resource} хадгалахад доорх %{count} алдаа гарлаа:"
+  devise_token_auth:
+    sessions:
+      bad_credentials: Имэйл хаяг эсвэл нууц үг буруу байна!
