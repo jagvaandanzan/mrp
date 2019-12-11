@@ -99,7 +99,8 @@ Rails.application.configure do
   if ENV["RAILS_LOG_TO_STDOUT"].present?
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
-    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+    # config.logger    = ActiveSupport::TaggedLogging.new(logger)
+    config.logger = Logger.new( Rails.root.join("log", Rails.env + ".log" ), 5 , 100 * 1024 * 1024 )
   end
 
   # Do not dump schema after migrations.

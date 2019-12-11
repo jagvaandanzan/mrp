@@ -50,7 +50,7 @@ module API
             travel.save
 
           end
-          present :travel, travel, with: API::SALESMAN::Entities::SalesmanTravels
+          present :travel, travel.first, with: API::SALESMAN::Entities::SalesmanTravels
         end
 
       end
