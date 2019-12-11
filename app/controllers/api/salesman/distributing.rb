@@ -23,7 +23,7 @@ module API
             travel = SalesmanTravel.new
             travel.salesman = salesman
             travel.distance = routing[0]
-
+            travel_duration = 0
             loc_from_id = 1
             routing.each_with_index {|r, i|
               if i > 1 && r > 0
@@ -38,6 +38,7 @@ module API
                 travel_route.queue = i - 2
                 travel_route.distance = location_travel.distance
                 travel_route.duration = location_travel.duration
+                travel_duration += location_travel.duration
                 travel_route.salesman_travel = travel
                 travel_route.location = location
                 travel_route.product_sale = product_sale
@@ -45,7 +46,7 @@ module API
                 travel.salesman_travel_routes << travel_route
               end
             }
-
+            travel.duration = travel_duration
             travel.save
 
           end
@@ -138,8 +139,8 @@ def vrptw(location_ids, hash_loc_travels) # return routing = [138, 0, 7, 4, 3, 1
 
     end
   end
-
-  FileUtils.rm [folder_path + file_name, result_path]
+  # TODO буцаах устгадаг болгох
+  # FileUtils.rm [folder_path + file_name, result_path]
 
   routing
 end
