@@ -14,6 +14,18 @@ class SalesmanTravelRoute < ApplicationRecord
     location.name
   end
 
+  def payable
+    if self[:payable].present?
+      self[:payable]
+    else
+      product_sale.sum_price
+    end
+  end
+
+  def main_payable
+    self[:payable]
+  end
+
   def phone
     product_sale.phone
   end
@@ -28,5 +40,32 @@ class SalesmanTravelRoute < ApplicationRecord
 
   def product_count
     product_sale.count_product
+  end
+
+  def calculate_payable
+    s = 0
+    if product_sale.present? && product_sale.product_sale_items.present?
+      product_sale.product_sale_items.each do |item|
+        s += (item.price * item.bought_quantity) if item.price.present? && item.bought_quantity.present?
+      end
+    end
+
+    self.payable = if s > 0
+                     s
+                   else
+                     nil
+                   end
+    self.save
+  end
+
+  def calculate_delivery
+    if self.payable > 0
+      self.delivered_at = Time.now
+      self.delivery_time = ApplicationController.helpers.get_minutes(delivered_at, load_at)
+    else
+      self.delivered_at = nil
+      self.delivery_time = nil
+    end
+    self.save
   end
 end

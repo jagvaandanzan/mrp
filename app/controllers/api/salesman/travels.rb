@@ -56,6 +56,110 @@ module API
               end
             end
 
+            resource :bought_by_product do
+              desc "PATCH travels/routes/:id/bought_by_product"
+              params do
+                requires :product_sale_item_id, type: Integer
+                requires :quantity, type: Integer
+              end
+              patch do
+                message = ""
+                salesman = current_salesman
+                product_sale_item = ProductSaleItem.find(params[:product_sale_item_id])
+                travel_route = SalesmanTravelRoute.find(params[:id])
+                product_sale = product_sale_item.product_sale
+                travel = product_sale.salesman_travel
+
+                if travel.present? && salesman.id == travel.salesman_id
+                  if product_sale_item.bought_at.present?
+                    product_sale_item.update_columns(bought_quantity: nil, bought_at: nil)
+                    travel_route.calculate_payable # өгөх төлбөр болон хүргэлтийн огноо, хугацааг авна
+                    message = I18n.t('alert.removed_successfully')
+                  else
+                    quantity_was = product_sale_item.quantity
+                    if params[:quantity] > 0 && params[:quantity] <= quantity_was
+                      product_sale_item.update_columns(bought_quantity: params[:quantity], bought_at: Time.now)
+                      travel_route.calculate_payable
+                      message = I18n.t('alert.info_updated')
+                    else
+                      message = I18n.t('activerecord.attributes.product_sale_item.quantity') +
+                          I18n.t('errors.messages.less_than_or_equal_to', count: product_sale_item.quantity)
+                    end
+                  end
+                end
+
+                if message.empty?
+                  error!("Couldn't find data", 404)
+                else
+                  {message: message, payable: travel_route.payable}
+                end
+              end
+            end
+
+            resource :payable do
+              desc "GET travels/routes/:id/payable"
+              get do
+                travel_route = SalesmanTravelRoute.find(params[:id])
+                {payable: travel_route.main_payable}
+              end
+            end
+
+            resource :register do
+              desc "PATCH travels/routes/:id/register"
+              #{0=Бэлнээр, 1=Дансаар, 2=Бэлнээр+Дансаар, 3=Авхаа больсон, 4=Хойшлуулсан, 5=Буруу захилга}
+              params do
+                requires :status, type: Integer
+              end
+              patch do
+                message = ""
+                salesman = current_salesman
+                travel_route = SalesmanTravelRoute.find(params[:id])
+                travel = travel_route.salesman_travel
+
+                if travel.present? && salesman.id == travel.salesman_id
+                  if params[:status] <= 2 # Авсан
+                    if travel_route.main_payable.present?
+                      travel_route.calculate_delivery
+                      travel.calculate_delivery
+                      status = ProductSaleStatus.find_by_alias("delivered")
+                      product_sale = travel_route.product_sale
+                      product_sale.update_columns(main_status_id: status.id, status_id: status.id)
+
+                      message = I18n.t('alert.info_updated')
+                    else
+                      message = I18n.t('activerecord.errors.models.salesman.attributes.payable.empty')
+                    end
+                  else # Аваагүй
+                    if travel_route.main_payable.present?
+                      message = I18n.t('activerecord.errors.models.salesman.attributes.payable.not_empty')
+                    else
+                      travel_route.update_columns(delivered_at: nil, delivery_time: nil)
+                      travel.calculate_delivery
+                      product_sale = travel_route.product_sale
+                      case params[:status]
+                      when 3 #Авхаа больсон
+                        status = ProductSaleStatus.find_by_alias("not_buy")
+                        product_sale.update_columns(main_status_id: status.id, status_id: status.id)
+                      when 4 #Хойшлуулсан
+                        main_status = ProductSaleStatus.find_by_alias("delay")
+                        status = ProductSaleStatus.find_by_alias("delay_salesman")
+                        product_sale.update_columns(main_status_id: main_status.id, status_id: status.id)
+                      else #5, Буруу захилга
+                        status = ProductSaleStatus.find_by_alias("wrong_book")
+                        product_sale.update_columns(main_status_id: status.id, status_id: status.id)
+                      end
+                      message = I18n.t('alert.info_updated')
+                    end
+                  end
+                end
+
+                if message.empty?
+                  error!("Couldn't find data", 404)
+                else
+                  {message: message}
+                end
+              end
+            end
           end
         end
       end

@@ -83,8 +83,8 @@ class ProductSale < ApplicationRecord
   def set_defaults
     self.code = ApplicationController.helpers.get_code(ProductSale.last) unless code.present?
 
-    self.delivery_end = delivery_start.change({hour: hour_end})
-    self.delivery_start = delivery_start.change({hour: hour_start})
+    self.delivery_end = delivery_start.change({hour: hour_end}) if hour_end.present?
+    self.delivery_start = delivery_start.change({hour: hour_start}) if hour_start.present?
 
   end
 

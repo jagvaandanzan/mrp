@@ -35,4 +35,24 @@ class SalesmanTravel < ApplicationRecord
     end
     total
   end
+
+  def calculate_delivery
+    c = 0
+    if salesman_travel_routes.present?
+      salesman_travel_routes.each do |route|
+        if route.main_payable.present?
+          c += 1
+        end
+      end
+
+      if salesman_travel_routes.length == c
+        self.delivered_at = Time.now
+        self.delivery_time = ApplicationController.helpers.get_minutes(delivered_at, load_at)
+      else
+        self.delivered_at = nil
+        self.delivery_time = nil
+      end
+      self.save
+    end
+  end
 end

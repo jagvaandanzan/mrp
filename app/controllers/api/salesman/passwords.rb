@@ -15,7 +15,7 @@ module API
               salesman.reset_password_instructions(salesman.email, url_token)
               Salesman.transaction do
                 salesman.reset_password_token = hashed_token
-                salesman.reset_password_sent_at = Time.now.utc
+                salesman.reset_password_sent_at = Time.now
                 salesman.save(validate: false)
               end
 

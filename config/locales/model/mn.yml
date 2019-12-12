@@ -321,6 +321,9 @@ mn:
             email:
               taken: " энэ имэйлийг ашиглаж байна"
               invalid: " буруу байна"
+            payable:
+              empty: "Ямар нэгэн бараа аваагүй байна!"
+              not_empty: "Ямар нэгэн бараа авсан байна!, түүнийг болиулна уу."
         organisational_culture:
           attributes:
             attachment_content_type:

@@ -23,4 +23,8 @@ module ApplicationHelper
   def local_date(date)
     Time.zone.parse(date.strftime('%F'))
   end
+
+  def get_minutes(date_s, date_f)
+    (date_s - date_f) / 1.minutes
+  end
 end

@@ -75,6 +75,7 @@ mn:
     saved_successfully: Амжилттай хадгаллаа
     deleted_successfully: Амжилттай устгагдсан
     info_updated: Мэдээлэл шинэчлэгдсэн
+    removed_successfully: Амжилттай хасагдсан
   are_you_sure: "Та устгахдаа итгэлтэй байна уу ?"
   are_you_update: "Хадгалах уу ?"
   are_sure_change: "Өөрчлөх үү ?"
