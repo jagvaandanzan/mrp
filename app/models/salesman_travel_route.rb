@@ -51,7 +51,7 @@ class SalesmanTravelRoute < ApplicationRecord
     end
 
     self.payable = if s > 0
-                     s
+                     s - (product_sale.paid.presence || 0)
                    else
                      nil
                    end
