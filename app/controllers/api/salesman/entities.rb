@@ -24,6 +24,14 @@ module API
         expose :product_sale, using: API::SALESMAN::Entities::ProductSale
       end
 
+      class ProductSearch < Grape::Entity
+        expose :id, :full_name
+      end
+
+      class ProductFeatureItems < Grape::Entity
+        expose :id, :name
+      end
+
     end
   end
 end

@@ -6,6 +6,8 @@ class Product < ApplicationRecord
   has_many :product_feature_rels
   has_many :supply_order_items, :class_name => "ProductSupplyOrderItem", :foreign_key => "product_id"
   has_many :product_sale_items
+  has_many :product_sales, through: :product_sale_items
+  has_many :salesman_travel, through: :product_sales
 
   accepts_nested_attributes_for :product_feature_rels, allow_destroy: true
 
@@ -36,6 +38,14 @@ class Product < ApplicationRecord
     else
       []
     end
+  }
+  scope :sale_available, ->(salesman_id) {
+    joins(:salesman_travel)
+        .where("salesman_travels.salesman_id = ?", salesman_id)
+        .where("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) > ?", 0)
+        .order(:code)
+        .order(:name)
+        .group(:id)
   }
 
   def full_name

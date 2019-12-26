@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_12_045212) do
+ActiveRecord::Schema.define(version: 2019_12_18_072810) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -118,6 +118,7 @@ ActiveRecord::Schema.define(version: 2019_12_12_045212) do
     t.bigint "feature_item_id"
     t.bigint "income_item_id"
     t.bigint "sale_item_id"
+    t.bigint "sale_direct_id"
     t.bigint "user_id"
     t.bigint "operator_id"
     t.integer "quantity"
@@ -128,6 +129,7 @@ ActiveRecord::Schema.define(version: 2019_12_12_045212) do
     t.index ["income_item_id"], name: "index_product_balances_on_income_item_id"
     t.index ["operator_id"], name: "index_product_balances_on_operator_id"
     t.index ["product_id"], name: "index_product_balances_on_product_id"
+    t.index ["sale_direct_id"], name: "index_product_balances_on_sale_direct_id"
     t.index ["sale_item_id"], name: "index_product_balances_on_sale_item_id"
     t.index ["user_id"], name: "index_product_balances_on_user_id"
   end
@@ -287,6 +289,25 @@ ActiveRecord::Schema.define(version: 2019_12_12_045212) do
     t.datetime "updated_at", null: false
     t.index ["operator_id"], name: "index_product_sale_calls_on_operator_id"
     t.index ["product_id"], name: "index_product_sale_calls_on_product_id"
+  end
+
+  create_table "product_sale_directs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "salesman_id"
+    t.bigint "product_id"
+    t.bigint "feature_rel_id"
+    t.bigint "feature_item_id"
+    t.bigint "income_item_id"
+    t.integer "quantity"
+    t.integer "price"
+    t.integer "sum_price"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["feature_item_id"], name: "index_product_sale_directs_on_feature_item_id"
+    t.index ["feature_rel_id"], name: "index_product_sale_directs_on_feature_rel_id"
+    t.index ["income_item_id"], name: "index_product_sale_directs_on_income_item_id"
+    t.index ["product_id"], name: "index_product_sale_directs_on_product_id"
+    t.index ["salesman_id"], name: "index_product_sale_directs_on_salesman_id"
   end
 
   create_table "product_sale_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -581,6 +602,7 @@ ActiveRecord::Schema.define(version: 2019_12_12_045212) do
   add_foreign_key "product_balances", "operators"
   add_foreign_key "product_balances", "product_feature_items", column: "feature_item_id"
   add_foreign_key "product_balances", "product_income_items", column: "income_item_id"
+  add_foreign_key "product_balances", "product_sale_directs", column: "sale_direct_id"
   add_foreign_key "product_balances", "product_sale_items", column: "sale_item_id"
   add_foreign_key "product_balances", "products"
   add_foreign_key "product_balances", "users"
@@ -612,6 +634,11 @@ ActiveRecord::Schema.define(version: 2019_12_12_045212) do
   add_foreign_key "product_locations", "product_locations", column: "parent_id"
   add_foreign_key "product_sale_calls", "operators"
   add_foreign_key "product_sale_calls", "products"
+  add_foreign_key "product_sale_directs", "product_feature_items", column: "feature_item_id"
+  add_foreign_key "product_sale_directs", "product_feature_rels", column: "feature_rel_id"
+  add_foreign_key "product_sale_directs", "product_income_items", column: "income_item_id"
+  add_foreign_key "product_sale_directs", "products"
+  add_foreign_key "product_sale_directs", "salesmen"
   add_foreign_key "product_sale_items", "product_feature_items", column: "feature_item_id"
   add_foreign_key "product_sale_items", "product_feature_rels", column: "feature_rel_id"
   add_foreign_key "product_sale_items", "product_sales"
