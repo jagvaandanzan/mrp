@@ -281,6 +281,11 @@ mn:
         register: Регистерийн дугаар
         address: Хаяг
         pin_code: Пин код
+      product_sale_direct:
+        phone: Утас
+        price: Үнэ
+        sum_price: Нийт
+        quantity: Тоо хэмжээ
     errors:
       messages:
         blank: " хоосон байна!"

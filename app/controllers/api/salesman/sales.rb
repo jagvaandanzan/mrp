@@ -23,8 +23,10 @@ module API
                 resource :quantity do
                   desc "GET sales/products/:id/items/:f_item_id/quantity"
                   get do
+                    feature_item = ProductFeatureItem.find(params[:f_item_id])
                     quantity = ProductFeatureItem.sale_available_item_quantity(current_salesman.id, params[:f_item_id])
                     present :available_quantity, quantity
+                    present :price, feature_item.price
                   end
                 end
               end
@@ -32,19 +34,36 @@ module API
           end
         end
 
-        resource :travels do
+        resource :sell do
+          desc "POST sales/sell"
+          params do
+            requires :feature_item_id, type: Integer
+            requires :phone, type: Integer
+            requires :quantity, type: Integer
+          end
+          post do
+            salesman = current_salesman
+            quantity = ProductFeatureItem.sale_available_item_quantity(salesman.id, params[:feature_item_id])
+            feature_item = ProductFeatureItem.find(params[:feature_item_id])
+            product_sale_items = ProductSaleItem.find_by_salesman_id(feature_item.id, salesman.id)
 
-          resource :get_balance do
-            desc "GET travels/get_balance"
-            params do
-              requires :email, type: String
-            end
-            post do
-              feature_item_id = params[:feature_item_id]
-              product_balance = ProductBalance.balance(params[:product_id], feature_item_id)
-              feature_item = ProductFeatureItem.find(feature_item_id)
-              feature_rel = feature_item.feature_rel
-              render json: {balance: product_balance, img: feature_rel.image.present? ? feature_rel.image.url : '/assets/no-image.png', tumb: feature_rel.image.present? ? feature_rel.image.url(:tumb) : '/assets/no-image.png'}
+            if feature_item.present? && product_sale_items.present?
+              product_sale_item = product_sale_items.first
+
+              sale_direct = ProductSaleDirect.new(remainder: quantity,
+                                                  salesman: salesman,
+                                                  phone: params[:phone],
+                                                  price: feature_item.price,
+                                                  product: feature_item.product,
+                                                  feature_rel: feature_item.feature_rel,
+                                                  feature_item: feature_item,
+                                                  sale_item: product_sale_item,
+                                                  quantity: params[:quantity])
+              if sale_direct.save
+                present :created_at, sale_direct.created_at
+              else
+                error!(sale_direct.errors.full_messages, 422)
+              end
             end
           end
         end

@@ -42,7 +42,7 @@ class Product < ApplicationRecord
   scope :sale_available, ->(salesman_id) {
     joins(:salesman_travel)
         .where("salesman_travels.salesman_id = ?", salesman_id)
-        .where("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) > ?", 0)
+        .where("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0) > ?", 0)
         .order(:code)
         .order(:name)
         .group(:id)

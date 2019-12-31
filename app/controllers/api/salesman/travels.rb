@@ -11,7 +11,7 @@ module API
           end
         end
 
-        desc "GET travels"
+        desc "POST travels"
         params do
           requires :date, type: DateTime
         end
@@ -76,14 +76,14 @@ module API
                     travel_route.calculate_payable # өгөх төлбөр болон хүргэлтийн огноо, хугацааг авна
                     message = I18n.t('alert.removed_successfully')
                   else
-                    quantity_was = product_sale_item.quantity
+                    quantity_was = product_sale_item.quantity - product_sale_item.back_quantity.presence || 0
                     if params[:quantity] > 0 && params[:quantity] <= quantity_was
                       product_sale_item.update_columns(bought_quantity: params[:quantity], bought_at: Time.now)
                       travel_route.calculate_payable
                       message = I18n.t('alert.info_updated')
                     else
                       message = I18n.t('activerecord.attributes.product_sale_item.quantity') +
-                          I18n.t('errors.messages.less_than_or_equal_to', count: product_sale_item.quantity)
+                          I18n.t('errors.messages.less_than_or_equal_to', count: quantity_was)
                     end
                   end
                 end

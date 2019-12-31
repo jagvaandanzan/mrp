@@ -24,14 +24,14 @@ class ProductFeatureItem < ApplicationRecord
     joins(:salesman_travel)
         .where(product_id: product_id)
         .where("salesman_travels.salesman_id = ?", salesman_id)
-        .where("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) > ?", 0)
+        .where("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0) > ?", 0)
   }
 
   scope :sale_available_item_quantity, ->(salesman_id, feature_item_id) {
-        joins(:salesman_travel)
+    joins(:salesman_travel)
         .where(id: feature_item_id)
         .where("salesman_travels.salesman_id = ?", salesman_id)
-        .sum("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0)")
+        .sum("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0)")
   }
 
   def balance

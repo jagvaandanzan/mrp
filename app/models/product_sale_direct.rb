@@ -5,17 +5,17 @@ class ProductSaleDirect < ApplicationRecord
   belongs_to :product
   belongs_to :feature_rel, :class_name => "ProductFeatureRel"
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
+  belongs_to :sale_item, :class_name => "ProductSaleItem"
 
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "sale_direct_id", dependent: :destroy
 
   before_save :set_defaults
   before_save :set_product_balance
-  before_validation :set_feature_rel
   validates :product_id, :feature_item_id, :price, :quantity, presence: true
   validates :quantity, :price, numericality: {greater_than: 0}
   validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
+  validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
 
-  before_validation :set_remainder
   attr_accessor :remainder
 
   def price
@@ -53,21 +53,27 @@ class ProductSaleDirect < ApplicationRecord
       self.product_balance.update(
           product: product,
           feature_item: feature_item,
-          operator: product_sale.created_operator,
           quantity: -quantity)
     else
       self.product_balance = ProductBalance.create(product: product,
                                                    feature_item: feature_item,
-                                                   operator: product_sale.created_operator,
                                                    quantity: -quantity)
+
     end
+
+    sale_item_balances = ProductBalance.by_sale_item(feature_item_id, sale_item_id)
+    if sale_item_balances.present?
+      sale_item_balance = sale_item_balances.first
+      sale_item_quantity = sale_item.quantity - quantity
+      Rails.logger.debug("sale_item_quantity==" + sale_item_quantity.to_s)
+      if sale_item_quantity == 0
+        sale_item_balance.destroy
+      else
+        sale_item_balance.update_columns(quantity: sale_item_quantity)
+      end
+    end
+
+    sale_item.update_columns(back_quantity: sale_item.back_quantity.present? ? sale_item.back_quantity + quantity : quantity)
   end
 
-  def set_remainder
-    self.remainder = ProductBalance.balance(product_id, feature_item_id) + (quantity_was.presence || 0) if product_id.present? && feature_item_id.present?
-  end
-
-  def set_feature_rel
-    self.feature_rel_id = feature_item.feature_rel_id if feature_item_id.present?
-  end
 end
