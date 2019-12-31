@@ -58,6 +58,7 @@ mn:
     product_suppliers: Нийлүүлэгчид
     product_features: Шинж чанар
     product_feature_options: Шинж чанарын утгууд
+    category_filter_groups: Категорын шүүлтүүр
     products: Бараа
     product_feature_rels: Барааны шинж чанар
     product_supply_orders: Худалдан авалтын захиалга

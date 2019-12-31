@@ -84,6 +84,7 @@ mn:
       product_income_item: Орлогын бараа
       product_sale: Борлуулалт
       product_sale_call: Залгах
+      category_filter_group: Категорын шүүлтүүр
     attributes:
       admin_user:
         email: Имэйл
@@ -133,6 +134,7 @@ mn:
         parent_id: Эцэг ангилал
         parent: Эцэг ангилал
         children: Дэд ангилал
+        product_category_filters: Шүүлтүүр
       product_location:
         name: Нэр
         code: Код
@@ -286,6 +288,11 @@ mn:
         price: Үнэ
         sum_price: Нийт
         quantity: Тоо хэмжээ
+      category_filter_group:
+        name: Бүлгийн нэр
+        category_filters: Шүүлтүүрүүд
+      category_filter:
+        name: Нэр
     errors:
       messages:
         blank: " хоосон байна!"

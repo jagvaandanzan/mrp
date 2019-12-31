@@ -1,0 +1,54 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "show" %>
+<% end %>
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('activerecord.models.category_filter_group') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <% if can? :update, Product %>
+      <%= link_to t('controls.button.edit'), edit_users_category_filter_group_path(@filter_group), class: 'btn btn-info' %>
+    <% end %>
+    <%= link_to t('titles.back_to_list'), users_category_filter_groups_path(page: cookies[:category_filter_page_number]), {class: "btn blck-btn"} %>
+    <% if can? :destroy, Product %>
+      <%= link_to t('controls.button.delete'), users_category_filter_group_path(@filter_group), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <% end %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.category_filter_group.name') %>:</b> <%= @filter_group.name %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <% if @filter_group.category_filters.present? %>
+          <div class="col-md-12 group_div m-t-20">
+              <b><%= t('activerecord.attributes.category_filter_group.category_filters') %></b>
+              <table class="table table-bordered">
+                <thead>
+                <tr>
+                  <th><%= t('activerecord.attributes.category_filter.name') %></th>
+                </tr>
+                </thead>
+                <tbody>
+                <% @filter_group.category_filters.each do |filter| %>
+                  <tr>
+                    <td class="va-mid"><%= filter.name %></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

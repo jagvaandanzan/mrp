@@ -5,14 +5,18 @@ class ProductCategory < ApplicationRecord
   belongs_to :parent, -> {with_deleted}, :class_name => "ProductCategory", optional: true
 
   has_many :products, :class_name => "Product", :foreign_key => "category_id"
+  has_many :product_category_filters, dependent: :destroy
 
-  after_create -> {sync_web('post')}
-  after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
-  after_destroy -> {sync_web('delete')}
+  accepts_nested_attributes_for :product_category_filters, allow_destroy: true
+
+  # after_create -> {sync_web('post')}
+  # after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
+  # after_destroy -> {sync_web('delete')}
   attr_accessor :method_type
 
   validates :queue, :name, :code, presence: true
   validates :code, uniqueness: true
+  validate :filter_should_be_uniq
 
   scope :search, ->(p_id) {
     items = where(parent_id: p_id)
@@ -43,6 +47,14 @@ class ProductCategory < ApplicationRecord
   }
 
   private
+
+  def filter_should_be_uniq
+    uniq_by_filters = product_category_filters.uniq(&:category_filter_group_id)
+
+    if product_category_filters.length != uniq_by_filters.length
+      self.errors.add(:product_category_filters, :taken)
+    end
+  end
 
   def sync_web(method)
     self.method_type = method

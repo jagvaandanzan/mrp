@@ -17,6 +17,7 @@ class Ability
         can role, ProductCategory
         can role, ProductFeatureOption
         can role, ProductFeature
+        can role, CategoryFilterGroup
       when "operator"
         can role, Operator
         can role, Salesman

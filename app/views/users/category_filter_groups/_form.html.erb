@@ -1,0 +1,52 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "form" %>
+<% end %>
+<div class="content-wrapper">
+  <section class="content">
+    <div class="box box-info">
+      <%= form_with model: @filter_group, url: @filter_group.persisted? ? users_category_filter_group_path : users_category_filter_groups_path,
+                    method: @filter_group.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-12 field_div">
+                <%= f.label :name, class: 'control-label' %>
+                <div class="<%= get_error_class(@filter_group, :name) %>">
+                  <%= field_errors(@filter_group, :name) %>
+                  <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.category_filter_group.name') %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 field_div">
+            <%= f.label :category_filters, class: 'control-label' %>
+
+            <div class="cocoon-nested-form">
+              <div class="<%= get_error_class(@filter_group, :category_filters) %>">
+                <%= field_errors(@filter_group, :category_filters) %>
+                <table class="table table-bordered" id="tb_category_filters">
+                  <tr>
+                    <th><%= t('activerecord.attributes.category_filter.name') %></th>
+                    <th width="50px"></th>
+                  </tr>
+                  <%= f.fields_for :category_filters do |m| %>
+                    <%= render 'category_filter_fields', :f => m %>
+                  <% end %>
+                </table>
+              </div>
+              <div class="links item_append">
+                <%= link_to_add_association f, :category_filters, data: {association_insertion_node: '#tb_category_filters', association_insertion_method: :append} do %>
+                  <%= nested_add_btn %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>

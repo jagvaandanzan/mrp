@@ -30,6 +30,7 @@
                 <th class="text-center"><%= t('activerecord.attributes.product_category.name') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.product_category.parent') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.product_category.children') %></th>
+                <th class="text-center"><%= t('activerecord.attributes.product_category.product_category_filters') %></th>
                 <% if is_manage %>
                   <th></th>
                 <% end %>
@@ -41,6 +42,7 @@
                   <td class="va-mid"><%= link_to c.name, users_product_categories_path(parent_id: c.id) %></td>
                   <td class="va-mid"><%= c.parent.presence ? c.parent.name : "" %></td>
                   <td class="text-center va-mid"><%= c.children.presence ? c.children.count : "0" %></td>
+                  <td class="text-center va-mid"><%= c.product_category_filters.count %></td>
                   <% if is_manage %>
                     <td>
                       <div class="btn-group">
