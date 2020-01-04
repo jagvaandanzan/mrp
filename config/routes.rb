@@ -6,6 +6,9 @@ Rails.application.routes.draw do
     namespace :salesman do
       mount_devise_token_auth_for 'Salesman', at: '/auth'
     end
+    namespace :user do
+      mount_devise_token_auth_for 'User', at: '/auth'
+    end
   end
   mount API::Base => '/api'
 

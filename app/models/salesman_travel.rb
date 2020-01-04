@@ -4,6 +4,8 @@ class SalesmanTravel < ApplicationRecord
 
   has_many :salesman_travel_routes, -> {with_deleted.order(:queue)}
   has_many :product_sales
+  has_many :salesman_travel_signs, dependent: :destroy
+  has_many :product_warehouse_locs, -> {order(:queue)}, dependent: :destroy
 
   scope :open_delivery, ->(salesman_id) {
     where(salesman_id: salesman_id)
@@ -24,8 +26,23 @@ class SalesmanTravel < ApplicationRecord
         .where(id: id)
   }
 
+  scope :by_signed, ->(signed, date) {
+    items = left_joins(:salesman_travel_signs)
+                .where("salesman_travel_signs.id IS #{signed ? "NOT" : ""} ?", nil)
+    items = items.where('load_at >= ?', date).where('load_at < ?', date + 1.days) if date.present?
+    items
+  }
+
+  def id_number
+    id.to_s.rjust(5, '0')
+  end
+
   def route_count
     salesman_travel_routes.count
+  end
+
+  def load_count
+    salesman_travel_routes.by_not_load_at.count
   end
 
   def product_count

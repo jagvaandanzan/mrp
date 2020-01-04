@@ -16,6 +16,18 @@
     <div class="box">
       <div class="box-body table-responsive no-padding">
         <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.salesman.avatar') %> :</div>
+          <div class="col-data">
+            <% if @salesman.avatar.present? %>
+              <%= link_to @salesman.avatar.url, "data-lightbox": "roadtrip" do %>
+                <%= image_tag @salesman.avatar.url(:tumb), class: 'tumb' %>
+              <% end %>
+            <% else %>
+              <%= image_tag 'no-image.png', class: 'tumb' %>
+            <% end %>
+          </div>
+        </div>
+        <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.salesman.id') %> :</div>
           <div class="col-data"><%= @salesman.id_number %></div>
         </div>

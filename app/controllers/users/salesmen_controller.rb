@@ -56,6 +56,6 @@ class Users::SalesmenController < Users::BaseController
   end
 
   def salesman_params
-    params.require(:salesman).permit(:surname, :name, :gender, :register, :email, :phone, :address)
+    params.require(:salesman).permit(:avatar, :surname, :name, :gender, :register, :email, :phone, :address)
   end
 end

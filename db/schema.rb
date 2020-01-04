@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_18_072810) do
+ActiveRecord::Schema.define(version: 2020_01_04_110639) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -38,6 +38,21 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
     t.index ["admin_permission_id"], name: "index_admin_users_on_admin_permission_id"
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+  end
+
+  create_table "category_filter_groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "category_filters", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "category_filter_group_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_filter_group_id"], name: "index_category_filters_on_category_filter_group_id"
   end
 
   create_table "customers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -122,7 +137,6 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
     t.bigint "user_id"
     t.bigint "operator_id"
     t.integer "quantity"
-    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["feature_item_id"], name: "index_product_balances_on_feature_item_id"
@@ -144,6 +158,15 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
     t.datetime "updated_at", null: false
     t.datetime "sync_at"
     t.index ["parent_id"], name: "index_product_categories_on_parent_id"
+  end
+
+  create_table "product_category_filters", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "product_category_id"
+    t.bigint "category_filter_group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_filter_group_id"], name: "index_product_category_filters_on_category_filter_group_id"
+    t.index ["product_category_id"], name: "index_product_category_filters_on_product_category_id"
   end
 
   create_table "product_feature_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -173,37 +196,37 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
   end
 
   create_table "product_feature_options", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "queue"
+    t.integer "queue", default: 0
     t.string "name"
     t.bigint "product_feature_id"
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
     t.datetime "sync_at"
     t.index ["product_feature_id"], name: "index_product_feature_options_on_product_feature_id"
   end
 
   create_table "product_feature_rels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "product_id"
-    t.float "sale_price"
+    t.float "sale_price", limit: 53
     t.float "discount_price", limit: 53
-    t.string "barcode", limit: 53
+    t.string "barcode"
+    t.datetime "image_updated_at"
+    t.integer "image_file_size"
+    t.string "image_content_type"
+    t.string "image_file_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "image_file_name"
-    t.string "image_content_type"
-    t.integer "image_file_size"
-    t.datetime "image_updated_at"
     t.index ["product_id"], name: "index_product_feature_rels_on_product_id"
   end
 
   create_table "product_features", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "queue"
+    t.integer "queue", default: 0
     t.string "name"
     t.string "description"
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
     t.datetime "sync_at"
   end
 
@@ -293,10 +316,11 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
 
   create_table "product_sale_directs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "salesman_id"
+    t.integer "phone"
     t.bigint "product_id"
     t.bigint "feature_rel_id"
     t.bigint "feature_item_id"
-    t.bigint "income_item_id"
+    t.bigint "sale_item_id"
     t.integer "quantity"
     t.integer "price"
     t.integer "sum_price"
@@ -305,8 +329,8 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
     t.datetime "updated_at", null: false
     t.index ["feature_item_id"], name: "index_product_sale_directs_on_feature_item_id"
     t.index ["feature_rel_id"], name: "index_product_sale_directs_on_feature_rel_id"
-    t.index ["income_item_id"], name: "index_product_sale_directs_on_income_item_id"
     t.index ["product_id"], name: "index_product_sale_directs_on_product_id"
+    t.index ["sale_item_id"], name: "index_product_sale_directs_on_sale_item_id"
     t.index ["salesman_id"], name: "index_product_sale_directs_on_salesman_id"
   end
 
@@ -318,11 +342,12 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
     t.integer "quantity"
     t.float "price"
     t.float "sum_price", limit: 53
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.boolean "to_see", default: false
     t.datetime "bought_at"
     t.integer "bought_quantity"
+    t.integer "back_quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["feature_item_id"], name: "index_product_sale_items_on_feature_item_id"
     t.index ["feature_rel_id"], name: "index_product_sale_items_on_feature_rel_id"
     t.index ["product_id"], name: "index_product_sale_items_on_product_id"
@@ -364,6 +389,7 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
     t.string "building_code"
     t.string "loc_note"
     t.datetime "delivery_date"
+    t.float "payment_delivery", limit: 53
     t.integer "money"
     t.integer "paid"
     t.float "bonus"
@@ -397,20 +423,18 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
 
   create_table "product_supply_order_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "product_supply_order_id"
-    t.bigint "supply_order_id"
     t.bigint "product_id"
-    t.float "quantity"
+    t.integer "quantity"
     t.float "price", limit: 53
+    t.float "sum_price", limit: 53
+    t.float "sum_tug", limit: 53
     t.string "link", limit: 500
     t.float "shuudan"
     t.string "note", limit: 1000
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.float "sum_price", limit: 53
-    t.float "sum_tug", limit: 53
     t.index ["product_id"], name: "index_product_supply_order_items_on_product_id"
     t.index ["product_supply_order_id"], name: "index_product_supply_order_items_on_product_supply_order_id"
-    t.index ["supply_order_id"], name: "index_product_supply_order_items_on_supply_order_id"
   end
 
   create_table "product_supply_orders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -419,7 +443,7 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
     t.bigint "supplier_id"
     t.integer "payment"
     t.integer "exchange"
-    t.float "exchange_value"
+    t.float "exchange_value", default: 1.0
     t.float "sum_price", limit: 53
     t.datetime "closed_date"
     t.integer "is_closed", default: 0
@@ -428,6 +452,24 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
     t.datetime "updated_at", null: false
     t.index ["supplier_id"], name: "index_product_supply_orders_on_supplier_id"
     t.index ["user_id"], name: "index_product_supply_orders_on_user_id"
+  end
+
+  create_table "product_warehouse_locs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "salesman_travel_id"
+    t.integer "queue"
+    t.bigint "product_id"
+    t.bigint "location_id"
+    t.bigint "feature_item_id"
+    t.bigint "feature_rel_id"
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "load_at"
+    t.index ["feature_item_id"], name: "index_product_warehouse_locs_on_feature_item_id"
+    t.index ["feature_rel_id"], name: "index_product_warehouse_locs_on_feature_rel_id"
+    t.index ["location_id"], name: "index_product_warehouse_locs_on_location_id"
+    t.index ["product_id"], name: "index_product_warehouse_locs_on_product_id"
+    t.index ["salesman_travel_id"], name: "index_product_warehouse_locs_on_salesman_travel_id"
   end
 
   create_table "products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -469,6 +511,22 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
     t.index ["salesman_travel_id"], name: "index_salesman_travel_routes_on_salesman_travel_id"
   end
 
+  create_table "salesman_travel_signs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "salesman_travel_id"
+    t.string "given_file_name"
+    t.string "given_content_type"
+    t.integer "given_file_size"
+    t.datetime "given_updated_at"
+    t.string "received_file_name"
+    t.string "received_content_type"
+    t.integer "received_file_size"
+    t.datetime "received_updated_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["salesman_travel_id"], name: "index_salesman_travel_signs_on_salesman_travel_id"
+  end
+
   create_table "salesman_travels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "salesman_id"
     t.integer "distance"
@@ -506,6 +564,10 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
     t.text "tokens"
+    t.datetime "avatar_updated_at"
+    t.integer "avatar_file_size"
+    t.string "avatar_content_type"
+    t.string "avatar_file_name"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -518,14 +580,14 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
     t.string "encrypted_password", default: "", null: false
+    t.string "name"
+    t.string "email"
+    t.text "tokens"
     t.integer "sign_in_count", default: 0, null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.string "name"
-    t.string "email"
-    t.text "tokens"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_sys_users_on_email", unique: true
@@ -584,6 +646,9 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
     t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
+    t.string "provider", default: "email", null: false
+    t.string "uid", default: "", null: false
+    t.text "tokens"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -593,6 +658,7 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
   end
 
   add_foreign_key "admin_users", "admin_permissions"
+  add_foreign_key "category_filters", "category_filter_groups"
   add_foreign_key "loc_khoroos", "loc_districts"
   add_foreign_key "location_travels", "locations", column: "location_from_id"
   add_foreign_key "location_travels", "locations", column: "location_to_id"
@@ -607,6 +673,8 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
   add_foreign_key "product_balances", "products"
   add_foreign_key "product_balances", "users"
   add_foreign_key "product_categories", "product_categories", column: "parent_id"
+  add_foreign_key "product_category_filters", "category_filter_groups"
+  add_foreign_key "product_category_filters", "product_categories"
   add_foreign_key "product_feature_items", "product_feature_options", column: "option1_id"
   add_foreign_key "product_feature_items", "product_feature_options", column: "option2_id"
   add_foreign_key "product_feature_items", "product_feature_rels", column: "feature_rel_id"
@@ -636,7 +704,7 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
   add_foreign_key "product_sale_calls", "products"
   add_foreign_key "product_sale_directs", "product_feature_items", column: "feature_item_id"
   add_foreign_key "product_sale_directs", "product_feature_rels", column: "feature_rel_id"
-  add_foreign_key "product_sale_directs", "product_income_items", column: "income_item_id"
+  add_foreign_key "product_sale_directs", "product_sale_items", column: "sale_item_id"
   add_foreign_key "product_sale_directs", "products"
   add_foreign_key "product_sale_directs", "salesmen"
   add_foreign_key "product_sale_items", "product_feature_items", column: "feature_item_id"
@@ -654,15 +722,20 @@ ActiveRecord::Schema.define(version: 2019_12_18_072810) do
   add_foreign_key "product_sales", "product_sale_statuses", column: "status_id"
   add_foreign_key "product_sales", "salesman_travels"
   add_foreign_key "product_supply_order_items", "product_supply_orders"
-  add_foreign_key "product_supply_order_items", "product_supply_orders", column: "supply_order_id"
   add_foreign_key "product_supply_order_items", "products"
   add_foreign_key "product_supply_orders", "product_suppliers", column: "supplier_id"
   add_foreign_key "product_supply_orders", "users"
+  add_foreign_key "product_warehouse_locs", "product_feature_items", column: "feature_item_id"
+  add_foreign_key "product_warehouse_locs", "product_feature_rels", column: "feature_rel_id"
+  add_foreign_key "product_warehouse_locs", "product_locations", column: "location_id"
+  add_foreign_key "product_warehouse_locs", "products"
+  add_foreign_key "product_warehouse_locs", "salesman_travels"
   add_foreign_key "products", "customers"
   add_foreign_key "products", "product_categories", column: "category_id"
   add_foreign_key "salesman_travel_routes", "locations"
   add_foreign_key "salesman_travel_routes", "product_sales"
   add_foreign_key "salesman_travel_routes", "salesman_travels"
+  add_foreign_key "salesman_travel_signs", "salesman_travels"
   add_foreign_key "salesman_travels", "salesmen"
   add_foreign_key "salesman_travels", "users"
   add_foreign_key "travel_configs", "users"

@@ -2,11 +2,23 @@ class Users::CalcController < Users::BaseController
   require "net/https"
   require "uri"
 
-  def vrptw22
-    # save_travels(Location.order('RAND()').first(12))
+  def vrptw
+    location = ProductLocation.find(1)
+    travel = SalesmanTravel.find(1)
+    travel.product_sales.each do |product_sale|
+      product_sale.product_sale_items.each_with_index {|item, index|
+        ProductWarehouseLoc.create(salesman_travel: travel,
+                                   product: item.product,
+                                   location: location,
+                                   feature_item: item.feature_item,
+                                   feature_rel: item.feature_rel,
+                                   quantity: item.quantity,
+                                   queue: index)
+      }
+    end
   end
 
-  def vrptw
+  def vrptw12
     array_locations = [527, 2909, 2577, 842, 1885, 1149, 2919, 875, 2347, 31, 2749, 2034]
     routing = [138, 0, 7, 4, 3, 1, 6, 10, 2, 9, 8, 5, 11, 0]
     locations = []

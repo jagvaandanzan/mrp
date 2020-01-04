@@ -10,6 +10,10 @@ class SalesmanTravelRoute < ApplicationRecord
         .where(queue: queue)
   }
 
+  scope :by_not_load_at, ->() {
+    where.not("load_at is ?", nil)
+  }
+
   def loc_name
     location.name
   end

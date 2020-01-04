@@ -99,11 +99,12 @@ mn:
       user:
         email: Имэйл
         password: Нууц үг
+        password_confirmation: 'Нууц үг баталгаажуулалт'
         name: Нэр
         surname: Овог
         gender: Хүйс
-        user_position: Албан тушаал
-        user_position_id: Албан тушаал
+        user_position: Апп эрх
+        user_position_id: Апп эрх
         phone: Утас
         user_permission_rels: Хандах эрхүүд
       operator:
@@ -272,6 +273,7 @@ mn:
         user_permission_id: Хандах эрх
         role: Үйлдэл
       salesman:
+        avatar: Зураг
         id: ID
         surname: Овог
         name: Нэр
@@ -308,7 +310,7 @@ mn:
               taken: " давхцаж байна"
               blank: " оруулна уу!"
             password_confirmation:
-              confirmation: " нууц үг баталгаажуулалт таарахгүй байна"
+              confirmation: " таарахгүй байна"
         operator:
           blank: " оруулна уу!"
           attributes:

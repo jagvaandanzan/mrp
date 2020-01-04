@@ -4,6 +4,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :registerable and :omniauthable
   devise :database_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable
+  include DeviseTokenAuth::Concerns::User
   belongs_to :user_position
   has_many :user_permission_rels, dependent: :destroy
 
@@ -36,8 +37,24 @@ class User < ApplicationRecord
     send_devise_notification(:first_password_instructions, password, subject: 'Нэвтрэх нууц үгийн мэдээлэл', to: email)
   end
 
+  def reset_password_app(email, url_token)
+    send_devise_notification(:reset_password_app, email, url_token, subject: '[Market.mn] Нууц үг солих хүсэлт', to: email)
+  end
+
   def user_name
     "#{surname} #{name}"
+  end
+
+  def is_admin?
+    user_position_id == 1
+  end
+
+  def is_stockkeeper?
+    user_position_id == 2
+  end
+
+  def is_user?
+    user_position_id == 3
   end
 
   protected
