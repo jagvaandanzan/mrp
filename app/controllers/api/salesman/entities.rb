@@ -12,7 +12,15 @@ module API
       end
 
       class ProductSaleItem < Grape::Entity
-        expose :id, :quantity, :price, :sum_price, :bought_at, :product_image, :product_size
+        expose :id, :quantity, :price, :sum_price, :bought_at, :product_name, :product_image, :product_feature
+      end
+
+      class ProductSaleItemDetail < ProductSaleItem
+        expose :product_code
+      end
+
+      class ProductSaleItemBarCode < ProductSaleItem
+        expose :product_barcode
       end
 
       class ProductSale < Grape::Entity

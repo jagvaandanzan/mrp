@@ -32,6 +32,37 @@ module API
           end
         end
 
+        resource :products do
+          route_param :id do
+            resource :scan do
+              desc "POST travels/products/:id/scan"
+              params do
+                optional :barcode, type: String
+                optional :skip_barcode, type: Boolean
+              end
+              patch do
+                if params[:barcode].present? || (params[:skip_barcode].present? && params[:skip_barcode])
+                  products = ProductWarehouseLoc.by_travel(nil, params[:id])
+                  present :product, products.first, with: API::USER::Entities::ProductWarehouse
+                else
+                  error!("Couldn't find data", 422)
+                end
+              end
+            end
+
+            resource :load do
+              desc "PATCH travels/products/:id/load"
+              patch do
+                warehouse_loc = ProductWarehouseLoc.find(params[:id])
+                warehouse_loc.load_at = Time.now
+                warehouse_loc.save
+
+                present :load_at, warehouse_loc.load_at
+              end
+            end
+          end
+        end
+
       end
     end
   end

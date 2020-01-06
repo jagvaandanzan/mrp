@@ -12,7 +12,7 @@ module API
       end
 
       class ProductWarehouse < Grape::Entity
-        expose :queue, :name, :code, :deck, :feature, :image, :quantity, :load_at
+        expose :id, :queue, :barcode, :name, :code, :deck, :feature, :image, :quantity, :load_at
       end
 
     end

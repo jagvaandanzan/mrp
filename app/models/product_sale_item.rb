@@ -40,8 +40,20 @@ class ProductSaleItem < ApplicationRecord
     feature_rel.image
   end
 
-  def product_size
+  def product_feature
     feature_item.name
+  end
+
+  def product_name
+    product.name
+  end
+
+  def product_code
+    product.main_code
+  end
+
+  def product_barcode
+    "90192012332"
   end
 
   private

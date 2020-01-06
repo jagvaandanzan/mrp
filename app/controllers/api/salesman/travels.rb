@@ -56,42 +56,67 @@ module API
               end
             end
 
-            resource :bought_by_product do
-              desc "PATCH travels/routes/:id/bought_by_product"
-              params do
-                requires :product_sale_item_id, type: Integer
-                requires :quantity, type: Integer
-              end
-              patch do
-                message = ""
-                salesman = current_salesman
-                product_sale_item = ProductSaleItem.find(params[:product_sale_item_id])
-                travel_route = SalesmanTravelRoute.find(params[:id])
-                product_sale = product_sale_item.product_sale
-                travel = product_sale.salesman_travel
+            resource :product do
+              route_param :p_item_id do
+                desc "GET travels/routes/:id/product/:p_item_id"
+                get do
+                  product_sale_item = ProductSaleItem.find(params[:p_item_id])
+                  present :product, product_sale_item, with: API::SALESMAN::Entities::ProductSaleItemDetail
+                end
 
-                if travel.present? && salesman.id == travel.salesman_id
-                  if product_sale_item.bought_at.present?
-                    product_sale_item.update_columns(bought_quantity: nil, bought_at: nil)
-                    travel_route.calculate_payable # өгөх төлбөр болон хүргэлтийн огноо, хугацааг авна
-                    message = I18n.t('alert.removed_successfully')
-                  else
-                    quantity_was = product_sale_item.quantity - product_sale_item.back_quantity.presence || 0
-                    if params[:quantity] > 0 && params[:quantity] <= quantity_was
-                      product_sale_item.update_columns(bought_quantity: params[:quantity], bought_at: Time.now)
-                      travel_route.calculate_payable
-                      message = I18n.t('alert.info_updated')
+                resource :scan do
+                  desc "POST travels/routes/:id/product/:p_item_id/scan"
+                  params do
+                    optional :barcode, type: String
+                    optional :skip_barcode, type: Boolean
+                  end
+                  post do
+                    if params[:barcode].present? || (params[:skip_barcode].present? && params[:skip_barcode])
+                      product_sale_item = ProductSaleItem.find(params[:p_item_id])
+                      present :product, product_sale_item, with: API::SALESMAN::Entities::ProductSaleItemBarCode
                     else
-                      message = I18n.t('activerecord.attributes.product_sale_item.quantity') +
-                          I18n.t('errors.messages.less_than_or_equal_to', count: quantity_was)
+                      error!("Couldn't find data", 422)
                     end
                   end
                 end
 
-                if message.empty?
-                  error!("Couldn't find data", 404)
-                else
-                  {message: message, payable: travel_route.payable}
+                resource :bought_by_product do
+                  desc "PATCH travels/routes/:id/product/:p_item_id/bought_by_product"
+                  params do
+                    requires :quantity, type: Integer
+                  end
+                  patch do
+                    message = ""
+                    salesman = current_salesman
+                    product_sale_item = ProductSaleItem.find(params[:p_item_id])
+                    travel_route = SalesmanTravelRoute.find(params[:id])
+                    product_sale = product_sale_item.product_sale
+                    travel = product_sale.salesman_travel
+
+                    if travel.present? && salesman.id == travel.salesman_id
+                      if product_sale_item.bought_at.present?
+                        product_sale_item.update_columns(bought_quantity: nil, bought_at: nil)
+                        travel_route.calculate_payable # өгөх төлбөр болон хүргэлтийн огноо, хугацааг авна
+                        message = I18n.t('alert.removed_successfully')
+                      else
+                        quantity_was = product_sale_item.quantity - product_sale_item.back_quantity.presence || 0
+                        if params[:quantity] > 0 && params[:quantity] <= quantity_was
+                          product_sale_item.update_columns(bought_quantity: params[:quantity], bought_at: Time.now)
+                          travel_route.calculate_payable
+                          message = I18n.t('alert.info_updated')
+                        else
+                          message = I18n.t('activerecord.attributes.product_sale_item.quantity') +
+                              I18n.t('errors.messages.less_than_or_equal_to', count: quantity_was)
+                        end
+                      end
+                    end
+
+                    if message.empty?
+                      error!("Couldn't find data", 404)
+                    else
+                      {message: message, payable: travel_route.payable}
+                    end
+                  end
                 end
               end
             end
