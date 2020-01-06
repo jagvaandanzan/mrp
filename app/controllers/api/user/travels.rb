@@ -40,7 +40,7 @@ module API
                 optional :barcode, type: String
                 optional :skip_barcode, type: Boolean
               end
-              patch do
+              post do
                 if params[:barcode].present? || (params[:skip_barcode].present? && params[:skip_barcode])
                   products = ProductWarehouseLoc.by_travel(nil, params[:id])
                   present :product, products.first, with: API::USER::Entities::ProductWarehouse
