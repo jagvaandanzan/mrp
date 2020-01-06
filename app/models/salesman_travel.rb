@@ -4,7 +4,7 @@ class SalesmanTravel < ApplicationRecord
 
   has_many :salesman_travel_routes, -> {with_deleted.order(:queue)}
   has_many :product_sales
-  has_many :salesman_travel_signs, dependent: :destroy
+  has_one :salesman_travel_sign, dependent: :destroy
   has_many :product_warehouse_locs, -> {order(:queue)}, dependent: :destroy
 
   scope :open_delivery, ->(salesman_id) {
@@ -17,7 +17,7 @@ class SalesmanTravel < ApplicationRecord
     where(salesman_id: salesman_id)
         .where('delivery_at >= ?', date)
         .where('delivery_at < ?', date + 1.days)
-        .order(:delivered_at)
+        .order(:delivery_at)
         .order(created_at: :desc)
   }
 
@@ -27,8 +27,7 @@ class SalesmanTravel < ApplicationRecord
   }
 
   scope :by_signed, ->(signed, date) {
-    items = left_joins(:salesman_travel_signs)
-                .where("salesman_travel_signs.id IS #{signed ? "NOT" : ""} ?", nil)
+    items = where("load_at IS#{signed ? " NOT" : ""} ?", nil)
     items = items.where('load_at >= ?', date).where('load_at < ?', date + 1.days) if date.present?
     items
   }
@@ -42,7 +41,11 @@ class SalesmanTravel < ApplicationRecord
   end
 
   def load_count
-    salesman_travel_routes.by_not_load_at.count
+    product_warehouse_locs.by_load_at(true).count
+  end
+
+  def load_sum
+    product_warehouse_locs.count
   end
 
   def product_count
@@ -51,6 +54,19 @@ class SalesmanTravel < ApplicationRecord
       total += r.product_count
     end
     total
+  end
+
+  def on_sign
+    now = Time.now
+    if salesman_travel_routes.present?
+      self.update_columns(load_at: now, delivery_at: now + (duration * 60))
+
+      salesman_travel_routes.each do |route|
+        to_time = now + (route.duration * 60)
+        route.update_columns(load_at: now, delivery_at: to_time)
+        now = to_time
+      end
+    end
   end
 
   def calculate_delivery

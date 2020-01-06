@@ -22,12 +22,34 @@ module API
 
         end
 
-
         route_param :id do
           resource :products do
             desc "GET travels/:id/products"
             get do
               present :products, ProductWarehouseLoc.by_travel(params[:id]), with: API::USER::Entities::ProductWarehouse
+            end
+          end
+
+          resource :signature do
+            desc "POST travels/:id/signature"
+            params do
+              requires :image, type: File
+            end
+            post do
+              user = current_user
+              salesman_travel = SalesmanTravel.find(params[:id])
+              if user.is_stockkeeper? && salesman_travel.load_at.nil?
+                image = params[:image] || {}
+                travel_sign = SalesmanTravelSign.create({
+                                                            salesman_travel: salesman_travel,
+                                                            user: user,
+                                                            given: image[:tempfile],
+                                                            given_file_name: image[:filename]
+                                                        })
+                salesman_travel.on_sign
+
+                present :sign_at, travel_sign.created_at
+              end
             end
           end
         end

@@ -18,6 +18,11 @@ class ProductWarehouseLoc < ApplicationRecord
     items.order(:queue)
   }
 
+  scope :by_load_at, ->(load) {
+    where("load_at is#{load ? ' NOT' : ''} ?", nil)
+  }
+
+
   def feature
     feature_item.name
   end

@@ -9,9 +9,9 @@ class ProductCategory < ApplicationRecord
 
   accepts_nested_attributes_for :product_category_filters, allow_destroy: true
 
-  # after_create -> {sync_web('post')}
-  # after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
-  # after_destroy -> {sync_web('delete')}
+  after_create -> {sync_web('post')}
+  after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
+  after_destroy -> {sync_web('delete')}
   attr_accessor :method_type
 
   validates :queue, :name, :code, presence: true

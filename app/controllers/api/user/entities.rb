@@ -6,8 +6,8 @@ module API
         expose :id, :id_number, :surname, :name, :avatar, :avatar_tumb
       end
 
-      class SalesmanTravels < API::SALESMAN::Entities::SalesmanTravels
-        expose :load_count
+      class SalesmanTravels < Grape::Entity
+        expose :id, :id_number, :load_at, :delivery_at, :sign_at, :load_at, :load_count, :load_sum
         expose :salesman, using: API::USER::Entities::Salesman
       end
 

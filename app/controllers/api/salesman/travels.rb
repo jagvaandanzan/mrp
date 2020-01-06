@@ -30,6 +30,28 @@ module API
               present :routes, travel.salesman_travel_routes, with: API::SALESMAN::Entities::SalesmanTravelRoutes
             end
           end
+
+          resource :signature do
+            desc "POST travels/:id/signature"
+            params do
+              requires :image, type: File
+            end
+            post do
+              salesman_travel = SalesmanTravel.find(params[:id])
+              if salesman_travel.load_at.nil?
+                error!("Couldn't find data", 422)
+              elsif salesman_travel.sign_at.nil?
+                image = params[:image] || {}
+                travel_sign = salesman_travel.salesman_travel_sign
+                travel_sign.received = image[:tempfile]
+                travel_sign.received_file_name = image[:filename]
+                travel_sign.save
+                salesman_travel.update_column(:sign_at, Time.now)
+
+                present :sign_at, salesman_travel.sign_at
+              end
+            end
+          end
         end
 
         resource :routes do
