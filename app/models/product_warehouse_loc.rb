@@ -7,6 +7,7 @@ class ProductWarehouseLoc < ApplicationRecord
 
   scope :by_travel, ->(travel_id) {
     select("products.name as name,
+            products.main_code as code,
             product_locations.name as deck,
             product_warehouse_locs.*")
         .joins(:product)
