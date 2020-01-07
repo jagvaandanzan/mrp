@@ -49,6 +49,8 @@ module API
                 salesman_travel.on_sign
 
                 present :sign_at, travel_sign.created_at
+              else
+                error!("Couldn't find data", 422)
               end
             end
           end

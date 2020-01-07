@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_04_110639) do
+ActiveRecord::Schema.define(version: 2020_01_06_114455) do
 
   create_table "admin_permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -513,6 +513,7 @@ ActiveRecord::Schema.define(version: 2020_01_04_110639) do
 
   create_table "salesman_travel_signs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "salesman_travel_id"
+    t.bigint "user_id"
     t.string "given_file_name"
     t.string "given_content_type"
     t.integer "given_file_size"
@@ -525,6 +526,7 @@ ActiveRecord::Schema.define(version: 2020_01_04_110639) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["salesman_travel_id"], name: "index_salesman_travel_signs_on_salesman_travel_id"
+    t.index ["user_id"], name: "index_salesman_travel_signs_on_user_id"
   end
 
   create_table "salesman_travels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -535,6 +537,7 @@ ActiveRecord::Schema.define(version: 2020_01_04_110639) do
     t.bigint "user_id"
     t.datetime "load_at"
     t.datetime "delivery_at"
+    t.datetime "sign_at"
     t.datetime "delivered_at"
     t.integer "delivery_time"
     t.datetime "created_at", null: false
@@ -736,6 +739,7 @@ ActiveRecord::Schema.define(version: 2020_01_04_110639) do
   add_foreign_key "salesman_travel_routes", "product_sales"
   add_foreign_key "salesman_travel_routes", "salesman_travels"
   add_foreign_key "salesman_travel_signs", "salesman_travels"
+  add_foreign_key "salesman_travel_signs", "users"
   add_foreign_key "salesman_travels", "salesmen"
   add_foreign_key "salesman_travels", "users"
   add_foreign_key "travel_configs", "users"

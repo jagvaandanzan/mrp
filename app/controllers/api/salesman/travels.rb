@@ -39,7 +39,7 @@ module API
             post do
               salesman_travel = SalesmanTravel.find(params[:id])
               if salesman_travel.load_at.nil?
-                error!("Couldn't find data", 422)
+                error!(I18n.t('errors.messages.stockkeeper_is_not_signed'), 422)
               elsif salesman_travel.sign_at.nil?
                 image = params[:image] || {}
                 travel_sign = salesman_travel.salesman_travel_sign
@@ -49,6 +49,8 @@ module API
                 salesman_travel.update_column(:sign_at, Time.now)
 
                 present :sign_at, salesman_travel.sign_at
+              else
+                error!("Couldn't find data", 422)
               end
             end
           end
