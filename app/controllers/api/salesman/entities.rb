@@ -3,7 +3,7 @@ module API
     module Entities
 
       class SalesmanTravels < Grape::Entity
-        expose :id, :id_number, :distance, :duration, :wage, :load_at, :delivery_at, :delivered_at, :delivery_time, :route_count, :product_count
+        expose :id, :id_number, :distance, :duration, :wage, :sign_at, :load_at, :delivery_at, :delivered_at, :delivery_time, :route_count, :product_count
       end
 
       class SalesmanTravelRoutes < Grape::Entity
