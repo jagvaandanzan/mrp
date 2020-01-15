@@ -161,6 +161,7 @@ module API
               end
               patch do
                 message = ""
+                r_s = 200
                 salesman = current_salesman
                 travel_route = SalesmanTravelRoute.find(params[:id])
                 travel = travel_route.salesman_travel
@@ -173,15 +174,18 @@ module API
                       status = ProductSaleStatus.find_by_alias("delivered")
                       product_sale = travel_route.product_sale
                       product_sale.update_columns(main_status_id: status.id, status_id: status.id)
-
+                      r_s = 200
                       message = I18n.t('alert.info_updated')
                     else
+                      r_s = 422
                       message = I18n.t('activerecord.errors.models.salesman.attributes.payable.empty')
                     end
                   else # Аваагүй
                     if travel_route.main_payable.present?
+                      r_s = 422
                       message = I18n.t('activerecord.errors.models.salesman.attributes.payable.not_empty')
                     else
+                      r_s = 200
                       travel_route.update_columns(delivered_at: nil, delivery_time: nil)
                       travel.calculate_delivery
                       product_sale = travel_route.product_sale
@@ -205,7 +209,11 @@ module API
                 if message.empty?
                   error!("Couldn't find data", 404)
                 else
-                  {message: message}
+                  if r_s == 200
+                    {message: message}
+                  else
+                    error!(message, r_s)
+                  end
                 end
               end
             end
