@@ -192,7 +192,7 @@ module API
                       message = I18n.t('activerecord.errors.models.salesman.attributes.payable.not_empty')
                     else
                       r_s = 200
-                      travel_route.update_columns(delivered_at: nil, delivery_time: nil)
+                      travel_route.calculate_delivery
                       travel.calculate_delivery
                       product_sale = travel_route.product_sale
                       case params[:status]

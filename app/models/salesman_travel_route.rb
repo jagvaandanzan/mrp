@@ -59,13 +59,8 @@ class SalesmanTravelRoute < ApplicationRecord
   end
 
   def calculate_delivery
-    if self.payable > 0
       self.delivered_at = Time.now
       self.delivery_time = ApplicationController.helpers.get_minutes(delivered_at, load_at)
-    else
-      self.delivered_at = nil
-      self.delivery_time = nil
-    end
     self.save
   end
 end
