@@ -111,6 +111,7 @@ module API
                   end
                   patch do
                     message = ""
+                    r_s = 200
                     salesman = current_salesman
                     product_sale_item = ProductSaleItem.find(params[:p_item_id])
                     travel_route = SalesmanTravelRoute.find(params[:id])
@@ -129,6 +130,7 @@ module API
                           travel_route.calculate_payable
                           message = I18n.t('alert.info_updated')
                         else
+                          r_s = 422
                           message = I18n.t('activerecord.attributes.product_sale_item.quantity') +
                               I18n.t('errors.messages.less_than_or_equal_to', count: quantity_was)
                         end
@@ -138,7 +140,11 @@ module API
                     if message.empty?
                       error!("Couldn't find data", 404)
                     else
-                      {message: message, payable: travel_route.payable}
+                      if r_s == 200
+                        {message: message, payable: travel_route.payable}
+                      else
+                        error!(message, r_s)
+                      end
                     end
                   end
                 end
