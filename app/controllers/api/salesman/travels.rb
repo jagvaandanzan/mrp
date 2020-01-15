@@ -123,7 +123,7 @@ module API
                         travel_route.calculate_payable # өгөх төлбөр болон хүргэлтийн огноо, хугацааг авна
                         message = I18n.t('alert.removed_successfully')
                       else
-                        quantity_was = product_sale_item.quantity - product_sale_item.back_quantity.presence || 0
+                        quantity_was = product_sale_item.quantity - (product_sale_item.back_quantity.presence || 0)
                         if params[:quantity] > 0 && params[:quantity] <= quantity_was
                           product_sale_item.update_columns(bought_quantity: params[:quantity], bought_at: Time.now)
                           travel_route.calculate_payable
