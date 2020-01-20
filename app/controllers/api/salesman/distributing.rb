@@ -20,7 +20,7 @@ module API
             routing = vrptw(location_ids, hash_location_travels).map(&:to_i)
             # routing = [138, 0, 4, 3, 1, 5, 6, 2, 0].map(&:to_i)
 
-            location = ProductLocation.find(1)
+            # product_location = ProductLocation.find(1)
             travel = SalesmanTravel.new
             travel.salesman = salesman
             travel.distance = routing[0]
