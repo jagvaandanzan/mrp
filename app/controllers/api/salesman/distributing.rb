@@ -230,7 +230,7 @@ def save_travels(locations)
       destinations += location.latitude.to_s + "," + location.longitude.to_s
     }
 
-    logger.debug(matrix_locations.to_s)
+    Rails.logger.debug(matrix_locations.to_s)
 
     url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + origins + "&destinations=" + destinations + "&key=" + ENV['GOOGLE_MAP_KEY']
     Rails.logger.debug(url)
