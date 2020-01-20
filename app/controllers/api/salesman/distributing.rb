@@ -6,7 +6,9 @@ module API
         get do
           salesman = current_salesman
           travel = SalesmanTravel.open_delivery(salesman.id)
-          unless travel.present?
+          if travel.present?
+            present :travel, travel.first, with: API::SALESMAN::Entities::SalesmanTravels
+          else
 
             product_sales = ProductSale.by_salesman_nil
 
@@ -48,20 +50,20 @@ module API
 
                 product_sale.product_sale_items.each_with_index {|item, index|
                   travel.product_warehouse_locs << ProductWarehouseLoc.new(salesman_travel: travel,
-                                                                              product: item.product,
-                                                                              location: product_location,
-                                                                              feature_item: item.feature_item,
-                                                                              feature_rel: item.feature_rel,
-                                                                              quantity: item.quantity,
-                                                                              queue: index)
+                                                                           product: item.product,
+                                                                           location: product_location,
+                                                                           feature_item: item.feature_item,
+                                                                           feature_rel: item.feature_rel,
+                                                                           quantity: item.quantity,
+                                                                           queue: index)
                 }
               end
             }
             travel.duration = travel_duration
             travel.save
-
+            present :travel, travel, with: API::SALESMAN::Entities::SalesmanTravels
           end
-          present :travel, travel.first, with: API::SALESMAN::Entities::SalesmanTravels
+
         end
 
       end
