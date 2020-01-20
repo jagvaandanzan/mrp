@@ -20,7 +20,7 @@ module API
             routing = vrptw(location_ids, hash_location_travels).map(&:to_i)
             # routing = [138, 0, 4, 3, 1, 5, 6, 2, 0].map(&:to_i)
 
-            # product_location = ProductLocation.find(1)
+            product_location = ProductLocation.find(1)
             travel = SalesmanTravel.new
             travel.salesman = salesman
             travel.distance = routing[0]
@@ -49,7 +49,7 @@ module API
                 product_sale.product_sale_items.each_with_index {|item, index|
                   travel.product_warehouse_locs << ProductWarehouseLoc.new(salesman_travel: travel,
                                                                               product: item.product,
-                                                                              location: location,
+                                                                              location: product_location,
                                                                               feature_item: item.feature_item,
                                                                               feature_rel: item.feature_rel,
                                                                               quantity: item.quantity,
