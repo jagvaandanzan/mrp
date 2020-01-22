@@ -15,7 +15,7 @@ class Salesman < ActiveRecord::Base
 
   validates :surname, :name, :phone, :register, presence: true, length: {maximum: 255}
   validates :gender, :email, :avatar, presence: true
-
+  validates :pin_code, length: {is: 4}, on: :update
   has_attached_file :avatar, :path => ":rails_root/public/salesman/:id_partition/:style.:extension", styles: {original: "800x800>", tumb: "200x200>"}, :url => '/salesman/:id_partition/:style.:extension'
   validates_attachment :avatar,
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}

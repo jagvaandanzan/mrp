@@ -108,7 +108,7 @@ mn:
       taken: " давхардаж байна!"
       too_long: бол %{count}-с дээр тэмдэгт байх ёстой
       too_short: бол %{count}-с дээр тэмдэгт байх ёстой
-      wrong_length: は%{count}文字で入力してください
+      wrong_length: "ны урт %{count} байх ёстой!"
       other_than: は%{count}以外の値にしてください
       over: " давсан байна"
       over_quantity: " тоо хэмжээний үлдэгдэл хүрэхгүй байна"
