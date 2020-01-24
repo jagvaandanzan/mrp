@@ -23,12 +23,12 @@ module API
         end
 
         route_param :id do
-          resource :products do
-            desc "GET travels/:id/products"
-            get do
-              present :products, ProductWarehouseLoc.by_travel(params[:id]), with: API::USER::Entities::ProductWarehouse
-            end
-          end
+          # resource :products do
+          #   desc "GET travels/:id/products"
+          #   get do
+          #     present :products, ProductWarehouseLoc.by_travel(params[:id]), with: API::USER::Entities::ProductWarehouse
+          #   end
+          # end
 
           resource :signature do
             desc "POST travels/:id/signature"
