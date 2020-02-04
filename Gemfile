@@ -49,13 +49,17 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'faker'
+  gem 'capybara', '~> 3.31'
+  gem 'selenium-webdriver'
+  gem 'chromedriver-helper'
+
 end
 
 group :test do
   # Adds support for Capybara system testing and selenium driver
-  gem 'capybara', '>= 2.15'
+  gem 'rspec-rails', '~> 3.9'
+  gem 'capybara', '~> 3.31'
   gem 'selenium-webdriver'
-  # Easy installation and use of chromedriver to run system tests with Chrome
   gem 'chromedriver-helper'
 end
 

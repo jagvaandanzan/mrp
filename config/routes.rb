@@ -55,6 +55,10 @@ Rails.application.routes.draw do
     resources :administrators, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :users, only: [:index, :create, :new, :show, :edit, :update, :destroy]
 
+    namespace :bank_logins do
+      get 'statement'
+    end
+
     match "*any", to: "base#routing_error", via: :all
   end
 
