@@ -5,26 +5,31 @@ describe "Category", type: :feature do
 
     Capybara.reset_sessions!
     visit('https://login.aliexpress.com')
-    find('#fm-login-id').set('ariwiseo@gmail.com')
-    find('#fm-login-password').set('marketpass1234')
-    click_button 'Sign In'
-    page.has_link?('all-wholesale-products.html')
 
-    categories = AliCategory.parent_nil
-    categories.each do |category|
 
-      unless category.checked
-        puts category.name
-        visit_link(category, false)
-        sleep_visit
-      end
-
-      category.sub_categories.none_check.each {|sub|
-        puts sub.name
-        visit_link(sub, true)
-        sleep_visit
-      }
+    if page.has_css?('div.login-title')
+      page.first('div.login-title').click
     end
+    # find('#fm-login-id').set('ariwiseo@gmail.com')
+    # find('#fm-login-password').set('marketpass1234')
+    # click_button 'Sign In'
+    # page.has_link?('all-wholesale-products.html')
+
+    # categories = AliCategory.parent_nil
+    # categories.each do |category|
+    #
+    #   unless category.checked
+    #     puts category.name
+    #     visit_link(category, false)
+    #     sleep_visit
+    #   end
+    #
+    #   category.sub_categories.none_check.each {|sub|
+    #     puts sub.name
+    #     visit_link(sub, true)
+    #     sleep_visit
+    #   }
+    # end
 
   end
 end
@@ -61,9 +66,8 @@ def visit_link(category, has_child)
           }
         end
       elsif cls.include?('custom-text') || cls.include?('custom-img')
-        if fl.has_content?('View More')
-          fl.find(:class, '.show-more').click
-          # fl.first('div.show-more').wait_while(&:obscured?).click
+        if fl.has_css?('div.show-more')
+          fl.first('div.show-more').click
         end
 
         is_img = cls.include?('custom-img')
