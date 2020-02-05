@@ -57,7 +57,6 @@ end
 group :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'rspec-rails', '~> 3.9'
-  gem 'watir-rails'
 end
 
 gem 'devise'
