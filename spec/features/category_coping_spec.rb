@@ -61,7 +61,7 @@ def visit_link(category, has_child)
           }
         end
       elsif cls.include?('custom-text') || cls.include?('custom-img')
-        if fl.has_css?('div.show-more')
+        if fl.has_content?('View More')
           fl.first('div.show-more').click
         end
 
