@@ -5,31 +5,26 @@ describe "Category", type: :feature do
 
     Capybara.reset_sessions!
     visit('https://login.aliexpress.com')
+    find('#fm-login-id').set('ariwiseo@gmail.com')
+    find('#fm-login-password').set('marketpass1234')
+    click_button 'Sign In'
+    page.has_link?('all-wholesale-products.html')
 
+    categories = AliCategory.parent_nil
+    categories.each do |category|
 
-    if page.has_css?('div.login-title')
-      page.first('div.login-title').click
+      unless category.checked
+        puts category.name
+        visit_link(category, false)
+        sleep_visit
+      end
+
+      category.sub_categories.none_check.each {|sub|
+        puts sub.name
+        visit_link(sub, true)
+        sleep_visit
+      }
     end
-    # find('#fm-login-id').set('ariwiseo@gmail.com')
-    # find('#fm-login-password').set('marketpass1234')
-    # click_button 'Sign In'
-    # page.has_link?('all-wholesale-products.html')
-
-    # categories = AliCategory.parent_nil
-    # categories.each do |category|
-    #
-    #   unless category.checked
-    #     puts category.name
-    #     visit_link(category, false)
-    #     sleep_visit
-    #   end
-    #
-    #   category.sub_categories.none_check.each {|sub|
-    #     puts sub.name
-    #     visit_link(sub, true)
-    #     sleep_visit
-    #   }
-    # end
 
   end
 end
