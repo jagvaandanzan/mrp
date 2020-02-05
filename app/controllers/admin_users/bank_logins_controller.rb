@@ -4,7 +4,7 @@
 require 'capybara/dsl'
 require 'selenium/webdriver'
 
-# Capybara.default_max_wait_time = 6
+Capybara.default_max_wait_time = 6
 Capybara.default_driver = :selenium_chrome
 Capybara.javascript_driver = :selenium_chrome
 # Capybara.app_host = 'https://m.aliexpress.com'
@@ -16,27 +16,39 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
   def statement
     # Capybara.reset_sessions!
     # visit('https://login.aliexpress.com')
-    # find('#fm-login-id').set('ch.enkhamgalan@yahoo.com')
+    # find('#fm-login-id').set('ariwiseo@gmail.com')
     # find('#fm-login-password').set('marketpass1234')
     # click_button 'Sign In'
     # page.has_link?('all-wholesale-products.html')
 
-    # categories = AliCategory.parent_nil.first(2)
-    # categories.each do |category|
+    categories = AliCategory.parent_nil
+    categories.each do |category|
 
-    category = AliCategory.find(16)
-    puts category.name
-
-    unless category.checked
-      visit_link(category, false)
+      unless category.checked
+        puts category.name
+        visit_link(category, false)
+        sleep_visit
+      end
+      category.sub_categories.none_check.each {|sub|
+        puts sub.name
+        visit_link(sub, true)
+        sleep_visit
+      }
     end
-    category.sub_categories.none_check.each {|sub|
-      puts sub.name
-      visit_link(sub, true)
-      sleep(32)
-    }
-    # sleep(32)
-    # end
+
+  end
+
+  def sleep_visit
+    rl = rand(61..120)
+    uld = rl % 5
+    rl = rl / 5
+    (1..rl).each do |i|
+      print "#{(i * 5)} "
+      STDOUT.flush
+      sleep(5)
+    end
+    sleep(uld)
+    puts ""
 
   end
 
@@ -54,7 +66,7 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
             ul = fl.find(('ul.child-menu'))
             ul.all('li').each {|li|
               a = li.first('a')
-              category.sub_categories << AliCategory.new(name: a.text, link: a[:href])
+              category.sub_categories << AliCategory.new(name: a.text, link: a[:href].gsub('https://www.aliexpress.com', ''))
             }
           end
         elsif cls.include?('custom-text') || cls.include?('custom-img')
