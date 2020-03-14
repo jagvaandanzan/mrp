@@ -21,25 +21,17 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
     # click_button 'Sign In'
     # page.has_link?('all-wholesale-products.html')
 
-    categories = AliCategory.parent_nil
-    categories.each do |category|
-
-      unless category.checked
-        puts category.name
-        visit_link(category, false)
-        sleep_visit
-      end
-      category.sub_categories.none_check.each {|sub|
-        puts sub.name
-        visit_link(sub, true)
-        sleep_visit
-      }
-    end
+    categories = AliCategory.none_check
+    categories.each {|category|
+      puts category.name
+      visit_link(category, true)
+      sleep_visit
+    }
 
   end
 
   def sleep_visit
-    rl = rand(61..120)
+    rl = rand(120..160)
     uld = rl % 5
     rl = rl / 5
     (1..rl).each do |i|
