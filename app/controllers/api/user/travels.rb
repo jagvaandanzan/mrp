@@ -10,7 +10,7 @@ module API
           end
           post do
             user = current_user
-            if user.is_stockkeeper?
+            # if user.is_stockkeeper?
               date = if params[:date].present?
                        ApplicationController.helpers.local_date(params[:date])
                      else
@@ -19,7 +19,7 @@ module API
 
               travels = SalesmanTravel.by_signed(params[:signed], date)
               present :travels, travels, with: API::USER::Entities::SalesmanTravels
-            end
+            # end
           end
         end
 
