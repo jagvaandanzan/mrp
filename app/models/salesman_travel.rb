@@ -27,8 +27,9 @@ class SalesmanTravel < ApplicationRecord
   }
 
   scope :by_signed, ->(signed, date) {
-    items = where("load_at IS#{signed ? " NOT" : ""} ?", nil)
-    items = items.where('load_at >= ?', date).where('load_at < ?', date + 1.days) if date.present?
+    items = where("sign_at IS#{signed ? " NOT" : ""} ?", nil)
+    items = items.where('sign_at >= ?', date)
+                .where('sign_at < ?', date + 1.days) if date.present?
     items
   }
 
@@ -59,7 +60,7 @@ class SalesmanTravel < ApplicationRecord
   def on_sign
     now = Time.now
     if salesman_travel_routes.present?
-      self.update_columns(load_at: now, delivery_at: now + (duration * 60))
+      self.update_columns(load_at: now, sign_at: now, delivery_at: now + (duration * 60))
 
       salesman_travel_routes.each do |route|
         to_time = now + (route.duration * 60)

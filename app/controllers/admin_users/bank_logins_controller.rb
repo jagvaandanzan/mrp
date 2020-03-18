@@ -14,19 +14,19 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
   include Capybara::DSL
 
   def statement
-    # Capybara.reset_sessions!
-    # visit('https://login.aliexpress.com')
-    # find('#fm-login-id').set('ariwiseo@gmail.com')
-    # find('#fm-login-password').set('marketpass1234')
+    Capybara.reset_sessions!
+    visit('https://login.aliexpress.com')
+    find('#fm-login-id').set('ariwiseo@gmail.com')
+    find('#fm-login-password').set('marketpass1234')
     # click_button 'Sign In'
     # page.has_link?('all-wholesale-products.html')
 
-    categories = AliCategory.none_check
-    categories.each {|category|
-      puts category.name
-      visit_link(category, true)
-      sleep_visit
-    }
+    # categories = AliCategory.none_check
+    # categories.each {|category|
+    #   puts category.name
+    #   visit_link(category, true)
+    #   sleep_visit
+    # }
 
   end
 
