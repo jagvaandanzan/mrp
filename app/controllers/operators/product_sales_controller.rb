@@ -14,13 +14,20 @@ class Operators::ProductSalesController < Operators::BaseController
   def new
     @product_sale = ProductSale.new
     # Шинэ захиалга үүсгэх үед + товч дарагдсан гарч ирэх
-    @product_sale.product_sale_items.push(ProductSaleItem.new)
+    @product_sale.product_sale_items.push(ProductSaleItem.new(product: Product.offset(rand(Product.count)).first))
     time = Time.current
     @product_sale.delivery_start = time
     @product_sale.hour_start = time.hour
     @product_sale.hour_now = time.hour
     @product_sale.hour_end = time.hour + 2
     @product_sale.status_user_type = 'operator'
+
+
+    @product_sale.phone = '99' + 6.times.map {rand(9)}.join
+    @product_sale.main_status_id = 2
+    @product_sale.location = Location.offset(rand(Location.count)).first
+    @product_sale.building_code = 4.times.map {rand(9)}.join
+    @product_sale.loc_note = (4.times.map {rand(9)}.join) +', ' + (4.times.map {rand(9)}.join)
   end
 
   def search_locations
@@ -178,6 +185,26 @@ class Operators::ProductSalesController < Operators::BaseController
     respond_to do |format|
       format.js {render 'previous_sales'}
     end
+  end
+
+  def auto
+  end
+
+  def auto_form
+    amount = params[:amount]
+    logger.info(amount)
+
+    product_sale = ProductSale.new
+    product_sale.product_sale_items.push(ProductSaleItem.new)
+    time = Time.current
+    product_sale.delivery_start = time
+    product_sale.hour_start = time.hour
+    product_sale.hour_now = time.hour
+    product_sale.hour_end = time.hour + 2
+    product_sale.status_user_type = 'operator'
+
+
+    redirect_to auto_operators_product_sales_path
   end
 
   private
