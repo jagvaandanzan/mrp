@@ -16,7 +16,7 @@ module API
                      nil #Time.now.beginning_of_day
                    end
 
-            travels = SalesmanTravel.by_signed(params[:signed], date)
+            travels = SalesmanTravel.by_load_at(params[:signed], date)
             present :travels, travels, with: API::USER::Entities::SalesmanTravels
           end
 
