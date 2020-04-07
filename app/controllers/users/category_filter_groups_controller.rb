@@ -2,7 +2,28 @@ class Users::CategoryFilterGroupsController < Users::BaseController
   authorize_resource
   before_action :set_filter_group, only: [:show, :edit, :update, :destroy]
 
+
+  require "google/cloud/translate"
+  # gem install google-protobuf --version=3.10.1 --platform=ruby
+
   def index
+
+    translate = Google::Cloud::Translate.new version: :v2
+
+    translation = translate.translate "Hello world!", to: "mn"
+
+    puts translation
+
+    # ali_categories = AliCategory.all
+    # ali_filter_group = AliFilterGroup.find(789)
+    #
+    # filter_group = CategoryFilterGroup.new(name_en: ali_filter_group.name, name: "test")
+    # ali_filter_group.filters.each do |filter|
+    #   filter_group.category_filters << CategoryFilter.new(name_en: 'image', name: "test", img: open(filter.img))
+    # end
+    # filter_group.save
+
+
     @filter_name = params[:filter_name]
     @filter_groups = CategoryFilterGroup.search(@filter_name).page(params[:page])
     cookies[:category_filter_page_number] = params[:page]

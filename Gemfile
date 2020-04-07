@@ -73,6 +73,7 @@ gem 'kaminari' # page
 gem 'grape'
 gem 'grape-jbuilder'
 gem 'grape-entity'
+gem 'google-cloud-translate'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

@@ -135,7 +135,7 @@ mn:
         parent_id: Эцэг ангилал
         parent: Эцэг ангилал
         children: Дэд ангилал
-        product_category_filters: Шүүлтүүр
+        category_filter_groups: Шүүлтүүр
       product_location:
         name: Нэр
         code: Код

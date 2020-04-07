@@ -36,12 +36,14 @@
                 <thead>
                 <tr>
                   <th><%= t('activerecord.attributes.category_filter.name') %></th>
+                  <th><%= t('activerecord.attributes.category_filter.name') %></th>
                 </tr>
                 </thead>
                 <tbody>
                 <% @filter_group.category_filters.each do |filter| %>
                   <tr>
                     <td class="va-mid"><%= filter.name %></td>
+                    <td class="va-mid"><%= image_tag filter.img.url, class: 'tumb' %></td>
                   </tr>
                 <% end %>
                 </tbody>

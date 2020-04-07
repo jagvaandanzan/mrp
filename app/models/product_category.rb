@@ -5,13 +5,13 @@ class ProductCategory < ApplicationRecord
   belongs_to :parent, -> {with_deleted}, :class_name => "ProductCategory", optional: true
 
   has_many :products, :class_name => "Product", :foreign_key => "category_id"
-  has_many :product_category_filters, dependent: :destroy
+  has_many :category_filter_groups, dependent: :destroy
 
-  accepts_nested_attributes_for :product_category_filters, allow_destroy: true
+  accepts_nested_attributes_for :category_filter_groups, allow_destroy: true
 
-  after_create -> {sync_web('post')}
-  after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
-  after_destroy -> {sync_web('delete')}
+  # after_create -> {sync_web('post')}
+  # after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
+  # after_destroy -> {sync_web('delete')}
   attr_accessor :method_type
 
   validates :queue, :name, :code, presence: true
