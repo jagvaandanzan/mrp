@@ -10,16 +10,16 @@ class Users::CategoryFilterGroupsController < Users::BaseController
 
     # project_id = "Your Google Cloud project ID"
 
-    require "google/cloud/storage"
-
-# If you don't specify credentials when constructing the client, the client
-# library will look for credentials in the environment.
-    storage = Google::Cloud::Storage.new project: 'market-1569213229660'
-
-# Make an authenticated API request
-    storage.buckets.each do |bucket|
-      puts bucket.name
-    end
+#     require "google/cloud/storage"
+#
+# # If you don't specify credentials when constructing the client, the client
+# # library will look for credentials in the environment.
+#     storage = Google::Cloud::Storage.new project: 'market-1569213229660'
+#
+# # Make an authenticated API request
+#     storage.buckets.each do |bucket|
+#       puts bucket.name
+#     end
 
     translate = Google::Cloud::Translate.new version: :v2, project_id: 'market-1569213229660'
 
