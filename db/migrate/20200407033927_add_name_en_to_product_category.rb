@@ -1,4 +1,4 @@
-class AddNameEnToProductCategory < ActiveRecord::Migration[6.0]
+class AddNameEnToProductCategory < ActiveRecord::Migration[5.2]
   def change
     add_column :product_categories, :name_en, :string, after: 'name'
     add_column :category_filter_groups, :name_en, :string, after: 'name'
