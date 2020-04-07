@@ -8,7 +8,7 @@ class Users::CategoryFilterGroupsController < Users::BaseController
 
   def index
 
-    translate = Google::Cloud::Translate.new version: :v2, project: 'market-1569213229660'
+    translate = Google::Cloud::Translate.new version: :v2
 
     translation = translate.translate "Hello world!", to: "mn"
 
