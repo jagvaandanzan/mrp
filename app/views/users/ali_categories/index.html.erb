@@ -10,7 +10,7 @@
         <%= text_field_tag :filter_name, @filter_name, {class: 'form-control search', placeholder: t('filters.name')} %>
       </div>
       <div class="col-md-4 search">
-        <div style="white-space: nowrap"><%= f.check_box :prod %> Шалгасан</div>
+        <div style="white-space: nowrap"><%= check_box_tag :prod, @prod, @prod %> Шалгасан</div>
       </div>
       <div class="col-md-4 search">
         <%= submit_tag t('controls.button.searching') + " (" + @ali_categories.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
