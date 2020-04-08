@@ -3,7 +3,7 @@ class Users::AliCategoriesController < Users::BaseController
   before_action :set_ali_category, only: [:show, :edit, :update, :destroy, :set_prod]
 
   def index
-    @prod = params[:prod]
+    @prod = params[:prod].presence || false
     @filter_name = params[:filter_name]
     @ali_categories = AliCategory.is_check
                           .by_name(@filter_name)
