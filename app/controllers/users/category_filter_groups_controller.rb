@@ -4,16 +4,16 @@ class Users::CategoryFilterGroupsController < Users::BaseController
 
 
   require "google/cloud/translate"
+
   def translate
     translate = Google::Cloud::Translate.new version: :v2, project_id: 'market-1569213229660'
 
     ali_filter_groups = AliFilterGroup.name_mn_nil
-    ali_filter_groups.each do |gr|
-      translation = translate.translate gr.name, to: "mn"
-      gr.update(name_mn: translation)
+    if ali_filter_groups.present?
+      trans(translate, ali_filter_groups.first)
     end
 
-    @count = ali_filter_groups.count
+    @count = 1000
     # ali_categories = AliCategory.all
     # ali_filter_group = AliFilterGroup.find(789)
     #
@@ -22,6 +22,20 @@ class Users::CategoryFilterGroupsController < Users::BaseController
     #   filter_group.category_filters << CategoryFilter.new(name_en: 'image', name: "test", img: open(filter.img))
     # end
     # filter_group.save
+  end
+
+  def trans(translate, ali_filter_group)
+    ali_filters = AliFilterGroup.name_mn_nil.by_name(ali_filter_group.name)
+
+    translation = translate.translate ali_filter_group.name, to: "mn"
+    ali_filters.update(name_mn: translation)
+
+
+    ali_filter_groups = AliFilterGroup.name_mn_nil
+    if ali_filter_groups.present?
+      trans(translate, ali_filter_groups.first)
+    end
+
   end
 
   def index
@@ -53,6 +67,7 @@ class Users::CategoryFilterGroupsController < Users::BaseController
 
   def update
     @filter_group.attributes = filter_group_params
+    @filter_group.prod = true
     if @filter_group.save
       flash[:success] = t('alert.info_updated')
       redirect_to action: 'index'
