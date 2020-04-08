@@ -4,39 +4,27 @@ class Users::CategoryFilterGroupsController < Users::BaseController
 
 
   require "google/cloud/translate"
-  # gem install google-protobuf --version=3.10.1 --platform=ruby
-
-  def index
-
-    # project_id = "Your Google Cloud project ID"
-
-#     require "google/cloud/storage"
-#
-# # If you don't specify credentials when constructing the client, the client
-# # library will look for credentials in the environment.
-#     storage = Google::Cloud::Storage.new project: 'market-1569213229660'
-#
-# # Make an authenticated API request
-#     storage.buckets.each do |bucket|
-#       puts bucket.name
-#     end
-
+  def translate
     translate = Google::Cloud::Translate.new version: :v2, project_id: 'market-1569213229660'
 
-    translation = translate.translate "Hello world!", to: "mn"
+    ali_filter_groups = AliFilterGroup.name_mn_nil
+    ali_filter_groups.each do |gr|
+      translation = translate.translate gr.name, to: "mn"
+      gr.update(name_mn: translation)
+    end
 
-    puts translation
+    @count = ali_filter_groups.count
+    # ali_categories = AliCategory.all
+    # ali_filter_group = AliFilterGroup.find(789)
+    #
+    # filter_group = CategoryFilterGroup.new(name_en: ali_filter_group.name, name: "test")
+    # ali_filter_group.filters.each do |filter|
+    #   filter_group.category_filters << CategoryFilter.new(name_en: 'image', name: "test", img: open(filter.img))
+    # end
+    # filter_group.save
+  end
 
-# ali_categories = AliCategory.all
-# ali_filter_group = AliFilterGroup.find(789)
-#
-# filter_group = CategoryFilterGroup.new(name_en: ali_filter_group.name, name: "test")
-# ali_filter_group.filters.each do |filter|
-#   filter_group.category_filters << CategoryFilter.new(name_en: 'image', name: "test", img: open(filter.img))
-# end
-# filter_group.save
-
-
+  def index
     @filter_name = params[:filter_name]
     @filter_groups = CategoryFilterGroup.search(@filter_name).page(params[:page])
     cookies[:category_filter_page_number] = params[:page]

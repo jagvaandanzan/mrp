@@ -77,7 +77,11 @@ Rails.application.routes.draw do
     resources :product_suppliers, only: [:index, :create, :new, :show, :edit, :update, :destroy]
     resources :product_features, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_feature_options, only: [:index, :create, :new, :edit, :update, :destroy]
-    resources :category_filter_groups, only: [:index, :create, :new, :show, :edit, :update, :destroy], path: "category/filters"
+    resources :category_filter_groups, only: [:index, :create, :new, :show, :edit, :update, :destroy], path: "category/filters" do
+      collection do
+        get 'translate'
+      end
+    end
     resources :products, only: [:index, :create, :new, :show, :edit, :update, :destroy] do
       collection do
         patch 'get_product_category_children'
