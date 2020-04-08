@@ -6,7 +6,8 @@ class AliFilter < ApplicationRecord
   }
 
   scope :name_mn_nil, ->() {
-    where("name_mn IS ?", nil)
+    where("name IS NOT ?", nil)
+        .where("name_mn IS ?", nil)
   }
   scope :mn_change, ->(bool) {
     where(mn_change: bool)
