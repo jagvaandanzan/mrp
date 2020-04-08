@@ -80,6 +80,7 @@ mn:
   are_you_sure: "Та устгахдаа итгэлтэй байна уу ?"
   are_you_update: "Хадгалах уу ?"
   are_sure_change: "Өөрчлөх үү ?"
+  are_you_sure_ok: "Та итгэлтэй байна уу ?"
   currency: ₮
   currency_name: Төгрөг
   upload_file: Файл хуулах

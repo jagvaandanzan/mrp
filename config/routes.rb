@@ -97,6 +97,12 @@ Rails.application.routes.draw do
     end
     resources :operators, only: [:index, :create, :new, :show, :edit, :update, :destroy]
     resources :salesmen, only: [:index, :create, :new, :show, :edit, :update, :destroy]
+    resources :ali_categories, only: [:index, :create, :new, :edit, :update, :destroy] do
+      collection do
+        patch 'set_prod'
+        patch 'set_name_as_filter'
+      end
+    end
 
     match "*any", to: "base#routing_error", via: :all
   end

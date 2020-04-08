@@ -1,0 +1,18 @@
+<tr class="nested-fields">
+  <td>
+    <%= field_errors f.object, :name %>
+    <%= f.text_field :name, class: 'form-control field name', placeholder: t('activerecord.attributes.ali_category.name') %>
+  </td>
+  <td class="va-mid text-center">
+    <button type="button" class="btn btn-warning btn-xs" onclick="set_name_as($(this))" ftype="filter">Энэ бүгд</button>
+  </td>
+  <td>
+    <%= field_errors f.object, :name_mn %>
+    <%= f.text_field :name_mn, class: 'form-control field name_mn', placeholder: t('activerecord.attributes.ali_category.name_mn') %>
+  </td>
+  <td class="remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>

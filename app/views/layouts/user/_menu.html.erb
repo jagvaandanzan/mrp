@@ -21,7 +21,12 @@
             <i class="fa fa-cube"></i><span><%= t('titles.products') %></span>
           <% end %>
         <% end %>
-      <% end %>
+        <%= content_tag :li, class: controller_name == 'ali_categories' ? 'active' : '' do %>
+          <%= link_to users_ali_categories_path do %>
+            <i class="fa fa-check"></i><span>Категри орчуулга</span>
+          <% end %>
+        <% end %>
+    <% end %>
       <% if (can? :read, Location) || (can? :read, Product)  || (can? :read, ProductLocation)  || (can? :read, Operator)  || (can? :read, ProductSupplier) %>
         <%= content_tag :li, class: controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations' ||
             controller_name == 'product_categories' || controller_name == 'product_suppliers' ||

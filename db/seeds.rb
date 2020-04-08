@@ -1,6 +1,6 @@
-puts '[START] load master data.'
+# puts '[START] load master data.'
 # load(Rails.root.join('db', 'seeds', 'master.rb'))
-puts '[END] load master data.'
+# puts '[END] load master data.'
 
 ########################################################
 puts '[START] load test data.'

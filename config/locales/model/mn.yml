@@ -295,6 +295,11 @@ mn:
         category_filters: Шүүлтүүрүүд
       category_filter:
         name: Нэр
+      ali_category:
+        name_mn: Монгол
+        name: Англи
+        prod: Шалгасан
+        ali_filter_groups: Филтер
     errors:
       messages:
         blank: " хоосон байна!"

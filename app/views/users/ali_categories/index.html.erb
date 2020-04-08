@@ -1,0 +1,45 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<div class="content-wrapper">
+
+  <div class="col-md-12 m-t-10 m-b-10">
+    <%= form_with url: users_ali_categories_path, method: "get", class: "", local: true do |f| %>
+      <div class="col-md-6 search">
+        <%= text_field_tag :filter_name, @filter_name, {class: 'form-control search', placeholder: t('filters.name')} %>
+      </div>
+      <div class="col-md-6 search">
+        <%= submit_tag t('controls.button.searching') + " (" + @ali_categories.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
+      </div>
+    <% end %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <%= render 'layouts/flash_message' %>
+
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-hover table-bordered">
+              <tr>
+                <th class="va-mid">Англи</th>
+                <th class="va-mid">Монгол</th>
+                <th class="va-mid">Шалгасан</th>
+              </tr>
+              <% @ali_categories.each do |ali_category| %>
+                <tr>
+                  <td class="va-mid underline"><%= link_to ali_category.name, edit_users_ali_category_path(ali_category) %></td>
+                  <td class="va-mid"><%= ali_category.name_mn %></td>
+                  <td class="va-mid"><%= ali_category.check_status %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+        <%= paginate @ali_categories %>
+      </div>
+    </div>
+  </section>
+</div>

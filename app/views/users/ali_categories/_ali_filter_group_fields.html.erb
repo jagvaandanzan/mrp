@@ -1,0 +1,17 @@
+<tr class="nested-fields">
+  <td>
+    <%= field_errors f.object, :name %>
+    <%= f.text_field :name, class: 'form-control field name', style: 'color: blue', placeholder: t('activerecord.attributes.ali_category.name') %>
+  </td>
+  <td class="va-mid text-center">
+    <button type="button" class="btn btn-warning btn-xs" onclick="set_name_as($(this))" ftype="group">Энэ бүгд</button>
+  </td>
+  <td>
+    <%= field_errors f.object, :name_mn %>
+    <%= f.text_field :name_mn, class: 'form-control field name_mn', style: 'color: blue', placeholder: t('activerecord.attributes.ali_category.name_mn') %>
+  </td>
+  <td class="remove"></td>
+</tr>
+<%= f.fields_for :ali_filters do |m| %>
+  <%= render 'ali_filter_fields', :f => m %>
+<% end %>
