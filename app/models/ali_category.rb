@@ -21,6 +21,10 @@ class AliCategory < ApplicationRecord
     where(prod: prod) if prod.present?
   }
 
+  scope :by_name, ->(name) {
+    where('name LIKE :value OR name_mn LIKE :value', value: "%#{name}%") if name.present?
+  }
+
   scope :name_mn_nil, ->() {
     where("name_mn IS ?", nil)
   }

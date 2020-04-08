@@ -6,10 +6,13 @@
 
   <div class="col-md-12 m-t-10 m-b-10">
     <%= form_with url: users_ali_categories_path, method: "get", class: "", local: true do |f| %>
-      <div class="col-md-6 search">
+      <div class="col-md-4 search">
         <%= text_field_tag :filter_name, @filter_name, {class: 'form-control search', placeholder: t('filters.name')} %>
       </div>
-      <div class="col-md-6 search">
+      <div class="col-md-4 search">
+        <div style="white-space: nowrap"><%= f.checkbox :prod %> Шалгасан</div>
+      </div>
+      <div class="col-md-4 search">
         <%= submit_tag t('controls.button.searching') + " (" + @ali_categories.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
       </div>
     <% end %>

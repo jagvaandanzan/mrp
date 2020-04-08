@@ -4,7 +4,11 @@ class Users::AliCategoriesController < Users::BaseController
 
   def index
     @prod = params[:prod]
-    @ali_categories = AliCategory.is_check.check_prod(@prod).page(params[:page])
+    @filter_name = params[:filter_name]
+    @ali_categories = AliCategory.is_check
+                          .by_name(@filter_name)
+                          .check_prod(@prod)
+                          .page(params[:page])
     cookies[:ali_categories_page_number] = params[:page]
   end
 
