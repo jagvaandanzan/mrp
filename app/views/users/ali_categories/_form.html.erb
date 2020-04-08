@@ -2,10 +2,11 @@
   <%= stylesheet_link_tag "form" %>
 <% end %>
 
-<%= form_with url: set_prod_users_ali_categories_path(id: @ali_category.id), method: 'PATCH', html: {id: 'all_prod'}, remote: true do |f| %>
-<% end %>
 <div class="content-wrapper">
-  <section class="content">
+  <div class="action-buttons">
+    <%= link_to t('titles.back_to_list'), users_ali_categories_path(page: cookies[:ali_categories_page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <%= show_body do %>
     <div class="box box-info">
       <div class="row">
         <div class="col-md-3" style="padding-right: 0">
@@ -88,7 +89,7 @@
         </div>
       </div>
     </div>
-  </section>
+  <% end %>
 </div>
 <script !src="">
     $(function () {
