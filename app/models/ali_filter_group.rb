@@ -14,4 +14,8 @@ class AliFilterGroup < ApplicationRecord
     where("name_mn IS ?", nil)
   }
 
+  scope :mn_change, ->(bool) {
+    where(mn_change: bool)
+  }
+
 end

@@ -55,12 +55,16 @@ class Users::AliCategoriesController < Users::BaseController
     name_mn = params[:name_mn]
 
     if params[:ftype] == "group"
-      ali_filters = AliFilterGroup.name_mn_nil.by_name(name)
+      ali_filters = AliFilterGroup.name_mn_nil
+                        .mn_change(false)
+                        .by_name(name)
     else
-      ali_filters = AliFilter.name_mn_nil.by_name(name)
+      ali_filters = AliFilter.name_mn_nil
+                        .mn_change(false)
+                        .by_name(name)
     end
     count = ali_filters.count
-    ali_filters.update(name_mn: name_mn)
+    ali_filters.update(name_mn: name_mn, mn_change: true)
 
     render json: {status: "#{name} => #{name_mn} = #{count}, #{t('alert.saved_successfully')}"}
   end
