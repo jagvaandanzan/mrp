@@ -55,11 +55,11 @@ class Users::AliCategoriesController < Users::BaseController
     name_mn = params[:name_mn]
 
     if params[:ftype] == "group"
-      ali_filters = AliFilterGroup.name_mn_nil
+      ali_filters = AliFilterGroup
                         .mn_change(false)
                         .by_name(name)
     else
-      ali_filters = AliFilter.name_mn_nil
+      ali_filters = AliFilter
                         .mn_change(false)
                         .by_name(name)
     end
