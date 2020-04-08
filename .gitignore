@@ -23,6 +23,9 @@
 
 /node_modules
 /yarn-error.log
+!.ruby-version
+!Gemfile.lock
+!Gemfile
 
 /public/assets
 .byebug_history

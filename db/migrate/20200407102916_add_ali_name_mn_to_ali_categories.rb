@@ -1,4 +1,4 @@
-class AddAliNameMnToAliCategories < ActiveRecord::Migration[6.0]
+class AddAliNameMnToAliCategories < ActiveRecord::Migration[5.2]
   def change
     add_column :ali_categories, :prod, :boolean, after: 'checked', default: false
     add_column :ali_categories, :name_mn, :string, after: 'name'
