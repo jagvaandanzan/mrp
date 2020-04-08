@@ -21,6 +21,10 @@ class AliCategory < ApplicationRecord
     where(prod: prod) if prod.present?
   }
 
+  scope :name_mn_nil, ->() {
+    where("name_mn IS ?", nil)
+  }
+
   scope :subs_not_check, ->() {
     sub_categories.none_check.count
   }

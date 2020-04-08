@@ -14,6 +14,24 @@ class Users::CategoryFilterGroupsController < Users::BaseController
     end
 
     @count = 1000
+
+
+    ali_filter_groups = AliFilterGroup.name_mn_nil
+    if ali_filter_groups.present?
+      trans(translate, ali_filter_groups.first)
+    end
+
+    ali_filters = AliFilter.name_mn_nil
+    if ali_filters.present?
+      trans_filter(translate, ali_filters.first)
+    end
+
+    ali_categories = AliCategory.name_mn_nil
+    ali_categories.each do |category|
+      translation = translate.translate category.name, to: "mn"
+      category.update(name_mn: translation)
+    end
+
     # ali_categories = AliCategory.all
     # ali_filter_group = AliFilterGroup.find(789)
     #
@@ -35,7 +53,19 @@ class Users::CategoryFilterGroupsController < Users::BaseController
     if ali_filter_groups.present?
       trans(translate, ali_filter_groups.first)
     end
+  end
 
+  def trans_filter(translate, ali_filter)
+    ali_filters = AliFilter.name_mn_nil.by_name(ali_filter.name)
+
+    translation = translate.translate ali_filter.name, to: "mn"
+    ali_filters.update(name_mn: translation)
+
+
+    list = AliFilter.name_mn_nil
+    if list.present?
+      trans_filter(translate, list.first)
+    end
   end
 
   def index
