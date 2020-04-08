@@ -57,7 +57,7 @@ class Users::CategoryFilterGroupsController < Users::BaseController
 
   def trans_filter(translate, ali_filter)
     ali_filters = AliFilter.name_mn_nil.by_name(ali_filter.name)
-    logger.info('ali_filter.name =>' + ali_filter.name)
+    logger.info('ali_filter.name =>' + ali_filter.name.to_s)
     translation = translate.translate ali_filter.name, to: "mn"
     ali_filters.update(name_mn: translation)
 
