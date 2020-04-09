@@ -36,27 +36,18 @@
 
               <div class="col-md-12">
                 <div class="row">
-                  <div class="col-md-5 field_div">
+                  <div class="col-md-6 field_div">
                     <%= f.label :name, class: 'control-label' %>
                     <div class="<%= get_error_class(@ali_category, :name) %>">
                       <%= field_errors(@ali_category, :name) %>
                       <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.ali_category.name') %>
                     </div>
                   </div>
-                  <div class="col-md-5 field_div">
+                  <div class="col-md-6 field_div">
                     <%= f.label :name_mn, class: 'control-label' %>
                     <div class="<%= get_error_class(@ali_category, :name_mn) %>">
                       <%= field_errors(@ali_category, :name_mn) %>
                       <%= f.text_field :name_mn, class: 'form-control', placeholder: t('activerecord.attributes.ali_category.name_mn') %>
-                    </div>
-                  </div>
-                  <div class="col-md-2 field_div">
-                    <%= f.label :prod, class: 'control-label' %>
-                    <div>
-                      <%= field_errors(@ali_category, :prod) %>
-                      <%= f.check_box :prod %>
-                      <%= link_to "Бүгд зөв", set_prod_users_ali_categories_path(id: @ali_category.id), {data: {confirm: t('are_you_update')},
-                                                                                                         class: "all_prod btn btn-warning", method: 'PATCH', remote: true, style: 'float: right'} %>
                     </div>
                   </div>
                 </div>
@@ -70,7 +61,6 @@
                     <table class="table table-bordered" id="tb_ali_filter_groups">
                       <tr>
                         <th><%= t('activerecord.attributes.ali_category.name') %></th>
-                        <th style="width: 80px"></th>
                         <th><%= t('activerecord.attributes.ali_category.name_mn') %></th>
                         <th width="50px"></th>
                       </tr>
@@ -91,42 +81,3 @@
     </div>
   <% end %>
 </div>
-<script !src="">
-    $(function () {
-        $('a.all_prod').on('ajax:success', function (e) {
-            $('#ali_category_prod').prop('checked', true);
-            $('.action-buttons input').attr('disabled', 'disabled');
-            $(this).attr('disabled', 'disabled');
-        }).on('ajax:error', function (e) {
-            window.location.reload();
-        });
-    });
-
-    function set_name_as(btn) {
-        let parent = btn.parent().parent();
-        let name = parent.find("input.name:first").val();
-        let name_mn = parent.find("input.name_mn:first").val();
-        if (name !== undefined && name_mn !== undefined && name.length > 0 && name_mn.length > 0) {
-
-            if (confirm("<%=t('are_you_sure_ok') %>")) {
-                btn.attr('disabled', 'disabled');
-                Rails.ajax({
-                    url: "<%= set_name_as_filter_users_ali_categories_path %>",
-                    type: "PATCH",
-                    data: "ftype=" + btn.attr('ftype') + "&name=" + name + "&name_mn=" + name_mn,
-                    success: function (data) {
-                        btn.removeAttr('disabled');
-                        alert(data.status)
-                    },
-                    error: function (data) {
-                        btn.removeAttr('disabled');
-                        console.log(data);
-                    }
-                }); // end ajax
-            }
-        } else {
-            alert("Өгөгдөл дутуу байна!")
-        }
-    }
-
-</script>

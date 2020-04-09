@@ -1,6 +1,8 @@
 class AliFilter < ApplicationRecord
   belongs_to :ali_filter_group
 
+  validates :name_mn, presence: true, on: :update
+
   scope :by_name, ->(name) {
     where(name: name) if name.present?
   }

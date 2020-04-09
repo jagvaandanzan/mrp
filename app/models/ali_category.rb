@@ -7,6 +7,8 @@ class AliCategory < ApplicationRecord
   has_many :ali_filter_groups, dependent: :destroy
   accepts_nested_attributes_for :ali_filter_groups, allow_destroy: true
 
+  validates :name_mn, presence: true, on: :update
+
   scope :parent_nil, ->() {
     where("ali_category_id IS NULL")
   }

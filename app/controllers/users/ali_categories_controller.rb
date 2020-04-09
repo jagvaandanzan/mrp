@@ -1,9 +1,10 @@
 # rails s -p 3000 -P 42342
+# rails s -e production -p 3000 -P 42342
 class Users::AliCategoriesController < Users::BaseController
   before_action :set_ali_category, only: [:show, :edit, :update, :destroy, :set_prod]
 
   def index
-    @prod = params[:prod].presence || false
+    @prod = params[:prod].presence || 0
     @filter_name = params[:filter_name]
     @ali_categories = AliCategory.is_check
                           .by_name(@filter_name)
@@ -35,8 +36,22 @@ class Users::AliCategoriesController < Users::BaseController
 
   def update
     @ali_category.attributes = ali_category_params
+    @ali_category.prod = true
     if @ali_category.save
       flash[:success] = t('alert.info_updated')
+      @ali_category.ali_filter_groups.each do |gr|
+        ali_filter_groups = AliFilterGroup
+                                .mn_change(false)
+                                .by_name(gr.name)
+        ali_filter_groups.update(name_mn: gr.name_mn, mn_change: true)
+
+        gr.ali_filters.each {|filter|
+          ali_filters = AliFilter
+                            .mn_change(false)
+                            .by_name(filter.name)
+          ali_filters.update(name_mn: filter.name_mn, mn_change: true)
+        }
+      end
       redirect_to action: 'index'
     else
       render 'edit'
@@ -80,7 +95,7 @@ class Users::AliCategoriesController < Users::BaseController
   end
 
   def ali_category_params
-    params.require(:ali_category).permit(:name, :name_mn, :prod,
+    params.require(:ali_category).permit(:name, :name_mn,
                                          ali_filter_groups_attributes: [:id, :name, :name_mn, :_destroy,
                                                                         ali_filters_attributes: [:id, :name, :name_mn, :_destroy]])
   end

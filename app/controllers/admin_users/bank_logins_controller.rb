@@ -13,14 +13,16 @@ Capybara.app_host = 'https://www.aliexpress.com'
 class AdminUsers::BankLoginsController < AdminUsers::BaseController
   include Capybara::DSL
 
-  def statement
-    # Capybara.reset_sessions!
-    # visit('https://login.aliexpress.com')
-    # find('#fm-login-id').set('ariwiseo@gmail.com')
-    # find('#fm-login-password').set('marketpass1234')
+  def login
+    Capybara.reset_sessions!
+    visit('https://login.aliexpress.com')
+    find('#fm-login-id').set('ariwiseo@gmail.com')
+    find('#fm-login-password').set('marketpass1234')
     # click_button 'Sign In'
     # page.has_link?('all-wholesale-products.html')
+  end
 
+  def statement
     categories = AliCategory.none_check
     categories.each {|category|
       puts category.name
@@ -31,7 +33,7 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
   end
 
   def sleep_visit
-    rl = rand(120..130)
+    rl = rand(60..90)
     uld = rl % 5
     rl = rl / 5
     (1..rl).each do |i|
@@ -75,6 +77,7 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
             filter = AliFilter.new(ali_filter_group: filter_group)
             if is_img
               filter.img = li.first('img')[:src]
+              filter.mn_change = true
             else
               filter.name = li[:title]
             end

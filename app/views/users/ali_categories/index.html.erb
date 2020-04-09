@@ -11,8 +11,8 @@
       </div>
       <div class="col-md-4 search">
         <select name="prod">
-          <option value="false" <%= @prod ? '' : 'selected' %>>Шалгаагүй</option>
-          <option value="true" <%= @prod ? 'selected' : '' %>>Шалгасан</option>
+          <option value="false" <%= @prod == 0 ? 'selected' : '' %>>Шалгаагүй</option>
+          <option value="true" <%= @prod != 0  ? 'selected' : '' %>>Шалгасан</option>
         </select>
       </div>
       <div class="col-md-4 search">

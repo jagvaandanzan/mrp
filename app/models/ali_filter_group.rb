@@ -6,6 +6,8 @@ class AliFilterGroup < ApplicationRecord
   has_many :ali_filters, dependent: :destroy
   accepts_nested_attributes_for :ali_filters, allow_destroy: true
 
+  validates :name_mn, presence: true, on: :update
+
   scope :by_name, ->(name) {
     where(name: name) if name.present?
   }

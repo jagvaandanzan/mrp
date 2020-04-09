@@ -56,6 +56,7 @@ Rails.application.routes.draw do
     resources :users, only: [:index, :create, :new, :show, :edit, :update, :destroy]
 
     namespace :bank_logins do
+      get 'login'
       get 'statement'
     end
 
