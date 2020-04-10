@@ -15,9 +15,15 @@ module API
         end
 
         post do
+          # params do
+          #   requires :entry, type: JSON
+          #   requires :object, type: String
+          # end
 
-          Rails.logger.info(env['api.request.body'])
+          json = env['api.request.body'].to_json
+          Rails.logger.info(json)
 
+          present :updated, Time.now
         end
 
       end
