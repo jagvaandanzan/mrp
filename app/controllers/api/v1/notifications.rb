@@ -10,7 +10,9 @@ module API
             Rails.logger.debug("mode:" + params['hub.mode'].to_s)
             Rails.logger.debug("challenge:" + params['hub.challenge'].to_s)
             Rails.logger.debug("verify_token:" + params['hub.verify_token'].to_s)
-            present :updated, Time.now
+
+            present params['hub.challenge']
+
           end
         end
 
