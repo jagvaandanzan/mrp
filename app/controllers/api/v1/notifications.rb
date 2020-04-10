@@ -26,7 +26,7 @@ module API
           entries = params[:entry]
 
           entries.each {|entry|
-            Rails.logger.info(entry)
+            # Rails.logger.info(entry)
             entry[:changes].each {|change|
               obj = change[:value]
               from_id = obj[:from][:id]

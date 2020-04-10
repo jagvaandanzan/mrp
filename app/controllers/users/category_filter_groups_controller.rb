@@ -6,9 +6,9 @@ class Users::CategoryFilterGroupsController < Users::BaseController
   # require "google/cloud/translate"
 
   def translate_prod
-    ali_filter_groups = AliFilterGroup.mn_change(true).name_mn_not_nil
-    ali_filter_groups.each do |gr|
-      list = AliFilterGroup.mn_change(false).by_name(gr.name)
+    ali_filters = AliFilter.mn_change(true).name_mn_not_nil
+    ali_filters.each do |gr|
+      list = AliFilter.mn_change(false).by_name(gr.name)
       list.update(name_mn: gr.name_mn, mn_change: true)
     end
 
