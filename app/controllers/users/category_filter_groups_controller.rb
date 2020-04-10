@@ -9,7 +9,7 @@ class Users::CategoryFilterGroupsController < Users::BaseController
     ali_filter_groups = AliFilterGroup.mn_change(true).name_mn_not_nil
     ali_filter_groups.each do |gr|
       list = AliFilterGroup.mn_change(false).by_name(gr.name)
-      list.update(name_mn: gr)
+      list.update(name_mn: gr.name_mn, mn_change: true)
     end
 
     # ali_filter_groups = AliFilterGroup.mn_change(true).name_mn_not_nil
