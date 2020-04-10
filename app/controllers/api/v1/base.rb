@@ -45,6 +45,8 @@ module API
         end
       end
 
+      mount API::V1::Notifications
+
       before do
         authenticate_user!
       end
