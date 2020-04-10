@@ -11,7 +11,7 @@ module API
             Rails.logger.debug("challenge:" + params['hub.challenge'].to_s)
             Rails.logger.debug("verify_token:" + params['hub.verify_token'].to_s)
 
-            present params['hub.challenge']
+            present params['hub.challenge'].to_i
 
           end
         end
@@ -25,7 +25,7 @@ module API
           json = env['api.request.body'].to_json
           Rails.logger.info(json)
 
-          present :updated, Time.now
+          present "updated"
         end
 
       end
