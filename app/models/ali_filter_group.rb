@@ -24,4 +24,8 @@ class AliFilterGroup < ApplicationRecord
     where(mn_change: bool)
   }
 
+  scope :order_by, ->() {
+    order(mn_change: :desc)
+  }
+
 end
