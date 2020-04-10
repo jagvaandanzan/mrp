@@ -3,7 +3,7 @@ class Users::CategoryFilterGroupsController < Users::BaseController
   before_action :set_filter_group, only: [:show, :edit, :update, :destroy]
 
 
-  # require "google/cloud/translate"
+  require "google/cloud/translate"
 
   def translate_prod
     ali_filters = AliFilterGroup.name_mn_nil
