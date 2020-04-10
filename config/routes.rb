@@ -81,6 +81,7 @@ Rails.application.routes.draw do
     resources :category_filter_groups, only: [:index, :create, :new, :show, :edit, :update, :destroy], path: "category/filters" do
       collection do
         get 'translate'
+        get 'translate_prod'
       end
     end
     resources :products, only: [:index, :create, :new, :show, :edit, :update, :destroy] do

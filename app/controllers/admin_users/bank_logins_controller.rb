@@ -69,8 +69,15 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
           end
 
           is_img = cls.include?('custom-img')
+          group_name = fl.find('div.title').text
 
-          filter_group = AliFilterGroup.new(ali_category: category, name: fl.find('div.title').text)
+          prod_group = AliFilterGroup.mn_change(true).by_name(group_name)
+          name_mn = nil
+          if prod_group.present?
+            fg = prod_group.first
+            name_mn = fg.name_mn
+          end
+          filter_group = AliFilterGroup.new(ali_category: category, name: group_name, name_mn: name_mn)
 
           ul = fl.find("ul.inner-item", match: :first)
           ul.all('li').each {|li|
@@ -79,7 +86,14 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
               filter.img = li.first('img')[:src]
               filter.mn_change = true
             else
-              filter.name = li[:title]
+              filter_name = li[:title]
+              prod_filter = AliFilter.mn_change(true).by_name(filter_name)
+              if prod_filter.present?
+                ff = prod_filter.first
+                filter.name_mn = ff.name_mn
+              end
+
+              filter.name = filter_name
             end
             filter_group.filters << filter
           }

@@ -17,17 +17,39 @@ module API
         end
 
         post do
-          # params do
-          #   requires :entry, type: JSON
-          #   requires :object, type: String
-          # end
+          params do
+            requires :entry, type: Array[JSON]
+            requires :object, type: String
+          end
+          # json = env['api.request.body'].to_json
+          # object = params[:object]
+          entries = params[:entry]
 
-          json = env['api.request.body'].to_json
-          Rails.logger.info(json)
+          entries.each {|entry|
+            Rails.logger.info(entry)
+            entry[:changes].each {|change|
+              obj = change[:value]
+              from_id = obj[:from][:id]
 
-          present "updated"
+              # Өөрийн бичсэн үзэгдэлүүдийг алгасах
+              if from_id != '0' && from_id != ENV['FB_PAGE_ID']
+                if obj[:item] == "comment"
+                  Rails.logger.info(obj[:message])
+                  Rails.logger.info("post_id=" + obj[:post_id])
+                  Rails.logger.info("comment_id=" + obj[:comment_id])
+                  if obj[:parent_id].present?
+                    Rails.logger.info("parent_id=" + obj[:parent_id])
+                  end
+                end
+              end
+
+            }
+            # Time.at(i)
+            # change
+          }
+
+          status 200
         end
-
       end
     end
   end

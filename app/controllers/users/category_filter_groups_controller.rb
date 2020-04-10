@@ -3,7 +3,24 @@ class Users::CategoryFilterGroupsController < Users::BaseController
   before_action :set_filter_group, only: [:show, :edit, :update, :destroy]
 
 
-  require "google/cloud/translate"
+  # require "google/cloud/translate"
+
+  def translate_prod
+    ali_filter_groups = AliFilterGroup.mn_change(true).name_mn_not_nil
+    ali_filter_groups.each do |gr|
+      list = AliFilterGroup.mn_change(false).by_name(gr.name)
+      list.update(name_mn: gr)
+    end
+
+    # ali_filter_groups = AliFilterGroup.mn_change(true).name_mn_not_nil
+    # ali_filter_groups.each do |gr|
+    #   list = AliFilterGroup.mn_change(false).by_name(gr.name)
+    #   list.update(name_mn: gr)
+    # end
+    #
+    #
+
+  end
 
   def translate
     translate = Google::Cloud::Translate.new version: :v2, project_id: 'market-1569213229660'
