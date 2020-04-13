@@ -23,5 +23,10 @@ class AliFilter < ApplicationRecord
   scope :order_by, ->() {
     order(mn_change: :desc)
   }
-
+  scope :check_prod, ->(prod) {
+    where(prod: prod) if prod.present?
+  }
+  scope :by_group_ids, ->(ids) {
+    where("ali_filter_group_id IN (?)", ids)
+  }
 end

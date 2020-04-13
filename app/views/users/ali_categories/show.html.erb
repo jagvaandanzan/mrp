@@ -1,0 +1,67 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('activerecord.models.product_category') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <% if @ali_category.ali_category.present? %>
+      <%= link_to t('titles.back_to_parent'), users_ali_category_path(@ali_category.ali_category), {class: "btn blck-btn"} %>
+    <% end %>
+    <%= link_to t('titles.back_to_list'), users_ali_categories_path(page: cookies[:ali_categories_page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body table-responsive no-padding">
+        <table class="table table-bordered" id="tb_sub_categories">
+          <thead>
+          <tr>
+            <th><%= t('activerecord.attributes.ali_category.name') %></th>
+            <th><%= t('activerecord.attributes.ali_category.name_mn') %></th>
+            <th class="text-center"><%= t('activerecord.attributes.ali_category.prod') %></th>
+            <th class="text-center"><%= t('activerecord.attributes.ali_category.sub_category_check') %></th>
+            <th class="text-center"><%= t('activerecord.attributes.ali_category.ali_filter_groups') %></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><%= link_to @ali_category.name, edit_users_ali_category_path(@ali_category), class: 'no-underline black' %></td>
+            <td><%= link_to @ali_category.name_mn, edit_users_ali_category_path(@ali_category), class: 'no-underline black' %></td>
+            <td class="text-center"><%= @ali_category.check_status %></td>
+            <td><%= @ali_category.prod_categories %></td>
+            <td>
+              <%= link_to form_filter_users_ali_categories_path(id: @ali_category.id), class: 'no-underline' do %>
+                <%= @ali_category.prod_filters %>
+              <% end %>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4" style="font-weight: bold"><%= t('activerecord.attributes.ali_category.sub_categories') %></td>
+          </tr>
+          <% @ali_category.sub_categories.each {|sub_category| %>
+            <tr>
+              <td><%= link_to sub_category.name, edit_users_ali_category_path(sub_category), class: 'no-underline black' %></td>
+              <td><%= link_to sub_category.name_mn, edit_users_ali_category_path(sub_category), class: 'no-underline black' %></td>
+              <td class="text-center"><%= sub_category.check_status %></td>
+              <td><%= sub_category.prod_categories %></td>
+              <td>
+                <%= link_to form_filter_users_ali_categories_path(id: sub_category.id), class: 'no-underline' do %>
+                  <%= sub_category.prod_filters %>
+                <% end %>
+              </td>
+            </tr>
+          <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+</div>
+<style>
+  .black {
+    color: #000;
+  }
+</style>

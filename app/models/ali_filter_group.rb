@@ -27,5 +27,7 @@ class AliFilterGroup < ApplicationRecord
   scope :order_by, ->() {
     order(mn_change: :desc)
   }
-
+  scope :check_prod, ->(prod) {
+    where(prod: prod) if prod.present?
+  }
 end

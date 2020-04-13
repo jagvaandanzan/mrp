@@ -44,6 +44,8 @@ mn:
     operator: Оператор
     operator_show: Операторын мэдээлэл
     back_to_list: Жагсаалтруу буцах
+    back: Буцах
+    back_to_parent: Эцэг ангилал
     total: Нийт
     total_tugrug: Нийт ₮
     user_sign_in: Нэвтрэх

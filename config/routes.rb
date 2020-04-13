@@ -55,10 +55,10 @@ Rails.application.routes.draw do
     resources :administrators, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :users, only: [:index, :create, :new, :show, :edit, :update, :destroy]
 
-    namespace :bank_logins do
-      get 'login'
-      get 'statement'
-    end
+    # namespace :bank_logins do
+    #   get 'login'
+    #   get 'statement'
+    # end
 
     match "*any", to: "base#routing_error", via: :all
   end
@@ -103,10 +103,12 @@ Rails.application.routes.draw do
     end
     resources :operators, only: [:index, :create, :new, :show, :edit, :update, :destroy]
     resources :salesmen, only: [:index, :create, :new, :show, :edit, :update, :destroy]
-    resources :ali_categories, only: [:index, :create, :new, :edit, :update, :destroy] do
+    resources :ali_categories, only: [:index, :create, :show, :edit, :update, :destroy] do
       collection do
         patch 'set_prod'
         patch 'set_name_as_filter'
+        get 'form_filter'
+        patch 'update_filter'
       end
     end
 

@@ -300,6 +300,8 @@ mn:
         name: Англи
         prod: Шалгасан
         ali_filter_groups: Филтер
+        sub_categories: Дэд ангилалууд
+        sub_category_check: Дэд ангилалууд
     errors:
       messages:
         blank: " хоосон байна!"

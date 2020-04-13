@@ -32,16 +32,23 @@
             <table class="table table-hover">
               <tr>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.user.name') %></th>
-                <th class="th-center va-mid"><%= t('activerecord.attributes.user.user_position') %></th>
-                <th class="th-center va-mid"><%= t('activerecord.attributes.user.email') %></th>
-                <th class="th-center va-mid"><%= t('activerecord.attributes.user.phone') %></th>
+                <th class="th-center va-mid">Ангилал</th>
+                <th class="th-center va-mid">Филтер бүлэг</th>
+                <th class="th-center va-mid">Филтер</th>
+
+                <!--                <th class="th-center va-mid"><%#= t('activerecord.attributes.user.user_position') %></th>-->
+                <!--                <th class="th-center va-mid"><%#= t('activerecord.attributes.user.email') %></th>-->
+                <!--                <th class="th-center va-mid"><%#= t('activerecord.attributes.user.phone') %></th>-->
               </tr>
               <% @users.each do |user| %>
                 <tr>
                   <td class="va-mid underline"><%= link_to user.name, admin_users_user_path(user) %></td>
-                  <td class="td-center va-mid"><%= user.user_position.name %></td>
-                  <td class="td-center va-mid"><%= user.email %></td>
-                  <td class="td-center va-mid"><%= user.phone %></td>
+                  <td class="td-center va-mid"><%= user.ali_c %></td>
+                  <td class="td-center va-mid"><%= user.ali_g %></td>
+                  <td class="td-center va-mid"><%= user.ali_c %></td>
+                  <!--                  <td class="td-center va-mid"><%#= user.user_position.name %></td>-->
+                  <!--                  <td class="va-mid"><%#= user.email %></td>-->
+                  <!--                  <td class="td-center va-mid"><%#= user.phone %></td>-->
                 </tr>
               <% end %>
             </table>
