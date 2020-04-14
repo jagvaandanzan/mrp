@@ -45,6 +45,7 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.date') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.post_id') %></th>
                 <th class="th-center va-mid"></th>
+                <th class="th-center va-mid"></th>
               </tr>
               <% @fb_comments.each do |fb_comment| %>
                 <tr>
@@ -55,7 +56,10 @@
                   <td class="td-center va-mid"><%= link_to 'fb post', "https://www.facebook.com/#{ENV['FB_PAGE_ID']}/posts/#{fb_comment.post_id}/", target: '_blank' %></td>
                   <td class="td-center va-mid">
                     <%= link_to edit_users_fb_comment_path(fb_comment) do %>
-                      <button type="button" class="btn btn-sm btn-info" disabled><%= t('controls.button.write_reply') %></button>
+                      <button type="button" class="btn btn-sm btn-info">Reply comment</button>
+                    <% end %>
+                    <%= link_to edit_users_fb_comment_path(fb_comment) do %>
+                      <button type="button" class="btn btn-sm btn-info" >Send message</button>
                     <% end %>
                   </td>
                 </tr>
