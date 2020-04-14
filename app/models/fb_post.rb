@@ -1,6 +1,7 @@
 class FbPost < ApplicationRecord
 
   validates :post_id, :product_name, :product_code, presence: true, length: {maximum: 255}
+  validates_uniqueness_of :post_id
 
   has_many :fb_comments
 
