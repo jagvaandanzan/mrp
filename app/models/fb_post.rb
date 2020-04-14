@@ -8,6 +8,10 @@ class FbPost < ApplicationRecord
     order(created_at: :desc)
   }
 
+  scope :by_post_id, ->(post_id) {
+    order(post_id: post_id)
+  }
+
   scope :search, ->(name, code) {
     items = order_date
     items = items.where('product_name LIKE :value', value: "%#{name}%") if name.present?

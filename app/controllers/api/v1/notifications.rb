@@ -35,12 +35,20 @@ module API
                 if obj[:item] == "comment"
                   if from_id != ENV['FB_PAGE_ID']
                     post_comment_ids = obj[:comment_id].split('_')
-                    FbComment.create(message: obj[:message],
-                                     post_id: post_comment_ids[0],
-                                     comment_id: post_comment_ids[1],
-                                     user_id: from_id,
-                                     user_name: obj[:from][:name],
-                                     date: Time.at(obj[:created_time]))
+                    post_id = post_comment_ids[0]
+
+                    fb_post = FbPost.by_post_id(post_id)
+
+                    if fb_post.present?
+                      FbComment.create(fb_post: fb_post.first,
+                                       message: obj[:message],
+                                       post_id: post_id,
+                                       comment_id: post_comment_ids[1],
+                                       user_id: from_id,
+                                       user_name: obj[:from][:name],
+                                       date: Time.at(obj[:created_time]))
+                    end
+
                   else
                     parent_ids = obj[:parent_id].split('_')
                     fb_comments = FbComment.by_post_id(parent_ids[0])
