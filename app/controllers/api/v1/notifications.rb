@@ -31,7 +31,7 @@ module API
               from_id = obj[:from][:id]
 
               # Өөрийн бичсэн үзэгдэлүүдийг алгасах
-              if from_id != '0' && from_id != ENV['FB_PAGE_ID']
+              if from_id != '0'
                 if obj[:item] == "comment"
                   Rails.logger.info(entry)
                   Rails.logger.info(obj[:message])

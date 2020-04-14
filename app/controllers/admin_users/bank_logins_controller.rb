@@ -74,15 +74,17 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
           prod_group = AliFilterGroup.by_name(group_name).order_by
           name_mn = nil
           mn_change = false
+          mn_prod = false
           if prod_group.present?
             fg = prod_group.first
             if fg.name_mn.present?
               name_mn = fg.name_mn
             end
             mn_change = fg.mn_change
+            mn_prod = fg.prod
           end
 
-          filter_group = AliFilterGroup.new(ali_category: category, name: group_name, name_mn: name_mn, mn_change: mn_change)
+          filter_group = AliFilterGroup.new(ali_category: category, name: group_name, name_mn: name_mn, mn_change: mn_change, prod: mn_prod)
 
           ul = fl.find("ul.inner-item", match: :first)
           ul.all('li').each {|li|
@@ -99,6 +101,7 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
                   filter.name_mn = ff.name_mn
                 end
                 filter.mn_change = ff.mn_change
+                filter.prod = ff.prod
               end
 
               filter.name = filter_name

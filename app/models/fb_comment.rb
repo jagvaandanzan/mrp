@@ -1,0 +1,2 @@
+class FbComment < ApplicationRecord
+end
