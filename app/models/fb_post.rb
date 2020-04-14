@@ -9,7 +9,7 @@ class FbPost < ApplicationRecord
   }
 
   scope :by_post_id, ->(post_id) {
-    order(post_id: post_id)
+    where(post_id: post_id)
   }
 
   scope :search, ->(name, code) {
