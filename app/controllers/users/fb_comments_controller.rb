@@ -9,7 +9,7 @@ class Users::FbCommentsController < Users::BaseController
     @date = if params[:date].present?
               params[:date].to_time
             else
-              Time.now
+              Time.now.beginning_of_day
             end
     @fb_comments = FbComment.search(@fb_post_id, @user_name, @message, @date).page(params[:page])
     cookies[:fb_comment_page_number] = params[:page]
