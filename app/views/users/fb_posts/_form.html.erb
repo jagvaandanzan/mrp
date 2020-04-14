@@ -7,6 +7,13 @@
       <%= form_for :fb_post, url: @fb_post.persisted? ? users_fb_post_path : users_fb_posts_path, method: @fb_post.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
           <div class="form-group">
+            <%= f.label :post_id, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@fb_post, :post_id) %>">
+              <%= field_errors(@fb_post, :post_id) %>
+              <%= f.text_field :post_id, class: 'form-control', placeholder: t('activerecord.attributes.fb_post.post_id') %>
+            </div>
+          </div>
+          <div class="form-group">
             <%= f.label :product_code, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@fb_post, :product_code) %>">
               <%= field_errors(@fb_post, :product_code) %>
@@ -18,20 +25,6 @@
             <div class="col-sm-9 <%= get_error_class(@fb_post, :product_name) %>">
               <%= field_errors(@fb_post, :product_name) %>
               <%= f.text_field :product_name, class: 'form-control', placeholder: t('activerecord.attributes.fb_post.product_name') %>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :content, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-9 ">
-              <%= text_area_tag :content, '',{class: 'form-control', placeholder: t('activerecord.attributes.fb_post.content')} %>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :image, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-9 ">
-              <%= file_field_tag :image, {accept: "image/*", class: 'image-file'} %>
             </div>
           </div>
 
