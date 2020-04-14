@@ -295,6 +295,12 @@ mn:
         category_filters: Шүүлтүүрүүд
       category_filter:
         name: Нэр
+      fb_comment:
+        message: Мессеж
+        post_id: Пост линк
+        user_name: Хэрэглэгч
+        date: Огноо
+        reply_text: Хариу мессеж
       ali_category:
         name_mn: Монгол
         name: Англи

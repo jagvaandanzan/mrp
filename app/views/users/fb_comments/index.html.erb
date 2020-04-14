@@ -1,0 +1,63 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<div class="content-wrapper">
+  <div class="col-md-12 m-t-10 m-b-10">
+      <%= form_with url: users_fb_comments_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+        <div class="col-md-3 search">
+          <%= text_field_tag :user_name, @user_name, {class: 'form-control search', placeholder: t('activerecord.attributes.fb_comment.user_name')} %>
+        </div>
+        <div class="col-md-3 search">
+          <%= text_field_tag :message, @message, {class: 'form-control search', placeholder: t('activerecord.attributes.fb_comment.message')} %>
+        </div>
+        <div class="col-md-3 search">
+          <div class="input-append date input-group date " data-provide="datepicker" style="width: 180px">
+            <%= text_field_tag :date,  @date.strftime('%F'), class: 'field form-control', placeholder: t('activerecord.attributes.fb_comment.date') %>
+            <div class="input-group-addon">
+              <i class="fa fa-calendar"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 search">
+          <%= submit_tag t('controls.button.searching') + " (" + @fb_comments.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
+        </div>
+      <% end %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <%= render 'layouts/flash_message' %>
+
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-hover table-bordered">
+              <tr>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.user_name') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.message') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.date') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.post_id') %></th>
+                <th class="th-center va-mid"></th>
+              </tr>
+              <% @fb_comments.each do |fb_comment| %>
+                <tr>
+                  <td class="td-center va-mid"><%= fb_comment.user_name %></td>
+                  <td class="td-center va-mid"><%= fb_comment.message %></td>
+                  <td class="td-center va-mid"><%= fb_comment.date.strftime('%F %R') %></td>
+                  <td class="td-center va-mid"><%= link_to 'fb post', "https://www.facebook.com/#{ENV['FB_PAGE_ID']}/posts/#{fb_comment.post_id}/", target: '_blank' %></td>
+                  <td class="td-center va-mid">
+                    <%= link_to edit_users_fb_comment_path(fb_comment) do %>
+                      <button type="button" class="btn btn-sm btn-info" disabled><%= t('controls.button.write_reply') %></button>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+        <%= paginate @fb_comments %>
+      </div>
+    </div>
+  </section>
+</div>

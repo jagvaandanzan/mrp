@@ -27,6 +27,13 @@
           <i class="fa fa-check"></i><span>Категри орчуулга</span>
         <% end %>
       <% end %>
+      <% if can? :read, FbComment %>
+        <%= content_tag :li, class: controller_name == 'fb_comments' ? 'active none' : 'none' do %>
+          <%= link_to users_fb_comments_path do %>
+            <i class="fa fa-comments"></i><span><%= t('titles.fb_comments') %></span>
+          <% end %>
+        <% end %>
+      <% end %>
       <% if (can? :read, Location) || (can? :read, Product) || (can? :read, ProductLocation) || (can? :read, Operator) || (can? :read, ProductSupplier) %>
         <%= content_tag :li, class: controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations' ||
             controller_name == 'product_categories' || controller_name == 'product_suppliers' ||

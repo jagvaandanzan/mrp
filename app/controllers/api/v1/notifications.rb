@@ -33,19 +33,32 @@ module API
               # Өөрийн бичсэн үзэгдэлүүдийг алгасах
               if from_id != '0'
                 if obj[:item] == "comment"
-                  Rails.logger.info(entry)
-                  Rails.logger.info(obj[:message])
-                  Rails.logger.info("post_id=" + obj[:post_id])
-                  Rails.logger.info("comment_id=" + obj[:comment_id])
-                  if obj[:parent_id].present?
-                    Rails.logger.info("parent_id=" + obj[:parent_id])
+                  if from_id != ENV['FB_PAGE_ID']
+                    post_comment_ids = obj[:comment_id].split('_')
+                    FbComment.create(message: obj[:message],
+                                     post_id: post_comment_ids[0],
+                                     comment_id: post_comment_ids[1],
+                                     user_id: from_id,
+                                     user_name: obj[:from][:name],
+                                     date: Time.at(obj[:created_time]))
+                  else
+                    parent_ids = obj[:parent_id].split('_')
+                    fb_comments = FbComment.by_post_id(parent_ids[0])
+                                      .by_comment_id(parent_ids[1])
+                    if fb_comments.present?
+                      fb_comments.destroy_all
+                    end
+
+                    # # Rails.logger.info(entry)
+                    # Rails.logger.info("post_id=" + obj[:post_id])
+                    # Rails.logger.info("comment_id=" + obj[:comment_id])
+                    # Rails.logger.info("parent_id=" + obj[:parent_id])
                   end
+
                 end
               end
 
             }
-            # Time.at(i)
-            # change
           }
 
           status 200

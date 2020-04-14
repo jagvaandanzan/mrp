@@ -24,6 +24,7 @@ mn:
       update: Өөрчлөх
       back: Буцах
       close: Хаах
+      write_reply: Хариу бичих
     select:
       none: Сонгох
       alert: " сонгоно уу!"
@@ -69,6 +70,7 @@ mn:
     product_income_items: Орлогын бараанууд
     product_sales: Борлуулалтууд
     product_sale_calls: Залгах
+    fb_comments: Файсбүүк коммент
   models:
     user:
       age: Нас
@@ -79,6 +81,7 @@ mn:
     deleted_successfully: Амжилттай устгагдсан
     info_updated: Мэдээлэл шинэчлэгдсэн
     removed_successfully: Амжилттай хасагдсан
+    send_successfully: Амжилттай илгээлээ
   are_you_sure: "Та устгахдаа итгэлтэй байна уу ?"
   are_you_update: "Хадгалах уу ?"
   are_sure_change: "Өөрчлөх үү ?"
