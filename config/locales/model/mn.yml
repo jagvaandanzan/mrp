@@ -85,6 +85,8 @@ mn:
       product_sale: Борлуулалт
       product_sale_call: Залгах
       category_filter_group: Категорын шүүлтүүр
+      fb_post: Файсбүүк пост
+      fb_comment: Файсбүүк коммент
     attributes:
       admin_user:
         email: Имэйл
@@ -295,7 +297,13 @@ mn:
         category_filters: Шүүлтүүрүүд
       category_filter:
         name: Нэр
+      fb_post:
+        post_id: FB Post ID
+        product_name: Барааны нэр
+        product_code: Барааны код
+        fb_comments: Комментууд
       fb_comment:
+        fb_post_id: Пост
         message: Мессеж
         post_id: Пост линк
         user_name: Хэрэглэгч

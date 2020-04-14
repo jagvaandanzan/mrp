@@ -70,7 +70,6 @@ mn:
     product_income_items: Орлогын бараанууд
     product_sales: Борлуулалтууд
     product_sale_calls: Залгах
-    fb_comments: Файсбүүк коммент
   models:
     user:
       age: Нас

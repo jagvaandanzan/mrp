@@ -1,4 +1,5 @@
 class AliCategory < ApplicationRecord
+  paginates_per 10
   belongs_to :ali_category, optional: true
 
   has_many :sub_categories, :class_name => "AliCategory", :foreign_key => "ali_category_id"

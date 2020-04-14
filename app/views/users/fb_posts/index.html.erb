@@ -1,0 +1,52 @@
+<div class="content-wrapper">
+  <div class="col-md-12 m-t-10 m-b-10">
+    <div class="row">
+      <%= form_with url: users_fb_posts_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+        <div class="col-md-4 search">
+          <%= text_field_tag :product_code, @product_code, {class: 'form-control search', placeholder: t('activerecord.attributes.fb_post.product_code')} %>
+        </div>
+        <div class="col-md-4 search">
+          <%= text_field_tag :product_name, @product_name, {class: 'form-control search', placeholder: t('activerecord.attributes.fb_post.product_name')} %>
+        </div>
+        <div class="col-md-4 search">
+          <%= submit_tag t('controls.button.searching') + " (" + @fb_posts.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
+
+          <% is_manage = can? :manage, FbPost %>
+          <% if is_manage %>
+            <%= link_to t('controls.button.create'), new_users_fb_post_path, class: 'btn btn-warning pull-right' %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <%= render 'layouts/flash_message' %>
+
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-hover">
+              <tr>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_post.post_id') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_post.product_code') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_post.product_name') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_post.fb_comments') %></th>
+              </tr>
+              <% @fb_posts.each do |fb_post| %>
+                <tr>
+                  <td class="va-mid underline"><%= link_to fb_post.post_id, users_fb_post_path(fb_post) %></td>
+                  <td class="va-mid"><%= fb_post.product_code %></td>
+                  <td class="va-mid"><%= fb_post.product_name %></td>
+                  <td class="th-center va-mid"><%= link_to fb_post.fb_comments.count, users_fb_comments_path(fb_post_id: fb_post.id) %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+        <%= paginate @fb_posts %>
+      </div>
+    </div>
+  </section>
+</div>

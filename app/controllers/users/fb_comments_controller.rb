@@ -3,14 +3,15 @@ class Users::FbCommentsController < Users::BaseController
   before_action :set_fb_comment, only: [:show, :edit, :update]
 
   def index
+    @fb_post_id = params[:fb_post_id]
     @user_name = params[:user_name]
     @message = params[:message]
-    @date = if params[:date]
+    @date = if params[:date].present?
               params[:date].to_time
             else
               Time.now
             end
-    @fb_comments = FbComment.search(@user_name, @message, @date).page(params[:page])
+    @fb_comments = FbComment.search(@fb_post_id, @user_name, @message, @date).page(params[:page])
     cookies[:fb_comment_page_number] = params[:page]
   end
 
@@ -30,6 +31,12 @@ class Users::FbCommentsController < Users::BaseController
     else
       render 'edit'
     end
+  end
+
+  def destroy
+    @fb_post.destroy!
+    flash[:success] = t('alert.deleted_successfully')
+    redirect_to action: :index
   end
 
   private

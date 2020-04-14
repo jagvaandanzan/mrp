@@ -19,6 +19,7 @@ class Ability
         can role, ProductFeature
         can role, CategoryFilterGroup
       when "operator"
+        can role, FbPost
         can role, FbComment
         can role, Operator
         can role, Salesman
