@@ -3,7 +3,7 @@ class FbComment < ApplicationRecord
 
   validates :reply_text, presence: true, on: :update
 
-  attr_accessor :reply_text
+  attr_accessor :reply_text, :reply_comment
 
   scope :by_fb_post, ->(fb_post) {
     where(fb_post_id: fb_post)
