@@ -28,12 +28,12 @@
         <% end %>
       <% end %>
       <% if can? :read, FbComment %>
-        <%= content_tag :li, class: controller_name == 'fb_posts none' ? 'active' : 'none' do %>
+        <%= content_tag :li, class: controller_name == 'fb_posts' ? 'active' : '' do %>
           <%= link_to users_fb_posts_path do %>
             <i class="fa fa-newspaper-o"></i><span><%= t('activerecord.models.fb_post') %></span>
           <% end %>
         <% end %>
-        <%= content_tag :li, class: controller_name == 'fb_comments' ? 'active none' : 'none' do %>
+        <%= content_tag :li, class: controller_name == 'fb_comments' ? 'active' : '' do %>
           <%= link_to users_fb_comments_path do %>
             <i class="fa fa-comments"></i><span><%= t('activerecord.models.fb_comment') %></span>
           <% end %>
