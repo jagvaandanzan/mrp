@@ -24,8 +24,26 @@ class Users::FbCommentsController < Users::BaseController
   def update
     @fb_comment.attributes = fb_comment_params
     if @fb_comment.valid?
-      flash[:success] = t('alert.send_successfully')
-      Rails.logger.info("#{@fb_comment.post_id}_#{@fb_comment.comment_id}==>" + @fb_comment.reply_text)
+      # response = ApplicationController.helpers.api_send("#{ENV['FB_API']}639996292999968_1118810478451878/comments?filter=stream&order=reverse_chronological&summary=total_count&access_token=#{ENV['FB_TOKEN']}", 'get')
+      param = {
+          "messaging_type": "RESPONSE",
+          "recipient": {
+              "comment_id": "#{@fb_comment.parent_id}_#{@fb_comment.comment_id}"
+          },
+          "message": {
+              "text": @fb_comment.reply_text
+          }
+      }
+      response = ApplicationController.helpers.api_send("#{ENV['FB_API']}me/messages?access_token=#{ENV['FB_TOKEN']}", 'post', param.to_json)
+
+      if response.code == 200
+        flash[:success] = t('alert.send_successfully')
+      else
+        json = JSON.parse(response.body)
+        # flash[:alert] = json[:json]
+        flash[:alert] = json.to_s
+      end
+
       # @fb_comment.destroy!
       redirect_to action: :index
     else

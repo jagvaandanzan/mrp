@@ -26,6 +26,26 @@ module ApiHelper
     }
   end
 
+  def api_send(url, method, params = nil)
+    Rails.logger.debug(url.to_s)
+    uri = URI.parse(url)
+    req = if method == 'post' || method == 'update'
+            Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+          elsif method == 'patch'
+            Net::HTTP::Patch.new(uri, 'Content-Type' => 'application/json')
+          elsif method == 'get'
+            Net::HTTP::Get.new(uri)
+          else
+            Net::HTTP::Delete.new(uri)
+          end
+    req.body = JSON.parse(params).to_json unless params.nil?
+
+    Net::HTTP.start(uri.hostname, uri.port,
+                    :use_ssl => uri.scheme == 'https') {|http|
+      http.request(req)
+    }
+  end
+
   private
 
   def get_headers
