@@ -1,6 +1,6 @@
 class Users::FbCommentsController < Users::BaseController
   load_and_authorize_resource
-  before_action :set_fb_comment, only: [:show, :edit, :update]
+  before_action :set_fb_comment, only: [:show, :edit, :update, :messages, :send_message]
 
   def index
     @fb_post_id = params[:fb_post_id]
@@ -27,7 +27,7 @@ class Users::FbCommentsController < Users::BaseController
       # response = ApplicationController.helpers.api_send("#{ENV['FB_API']}639996292999968_1118810478451878/comments?filter=stream&order=reverse_chronological&summary=total_count&access_token=#{ENV['FB_TOKEN']}", 'get')
 
       param = {
-          "message": @fb_comment.reply_comment
+          "message": @fb_comment.reply_text
       }
 
       response = ApplicationController.helpers.api_send("#{ENV['FB_API']}#{@fb_comment.post_id}_#{@fb_comment.comment_id}/comments?access_token=#{ENV['FB_TOKEN']}", 'post', param.to_json)
@@ -50,6 +50,9 @@ class Users::FbCommentsController < Users::BaseController
   end
 
   def messages
+  end
+
+  def send_message
     @fb_comment.attributes = fb_comment_params
     if @fb_comment.valid?
       param = {
