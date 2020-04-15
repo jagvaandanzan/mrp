@@ -64,8 +64,7 @@ Rails.application.routes.draw do
   end
 
   namespace :users, path: :user do
-    # root "base#root"
-    root "fb_comments#index"
+    root "base#root"
     get "panel", to: 'pages#panel'
 
     namespace :calc do

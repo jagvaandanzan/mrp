@@ -14,7 +14,8 @@ class Users::BaseController < ApplicationController
            elsif can? :read, Product
              users_products_path
            elsif can? :read, Operator
-             users_operators_path
+             # users_operators_path
+             users_fb_comments_path
            elsif can? :read, Location
              users_loc_districts_path
            elsif can? :read, ProductSupplier
