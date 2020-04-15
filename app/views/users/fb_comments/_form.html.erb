@@ -7,10 +7,10 @@
       <%= form_for :fb_comment, url: users_fb_comment_path, method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
           <div class="form-group">
-            <%= f.label :reply_text, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-9 <%= get_error_class(@fb_comment, :reply_text) %>">
-              <%= field_errors(@fb_comment, :reply_text) %>
-              <%= f.text_area :reply_text, class: 'form-control', placeholder: t('activerecord.attributes.fb_comment.reply_text') %>
+            <%= f.label :reply_comment, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@fb_comment, :reply_comment) %>">
+              <%= field_errors(@fb_comment, :reply_comment) %>
+              <%= f.text_area :reply_comment, class: 'form-control', placeholder: t('activerecord.attributes.fb_comment.reply_comment') %>
             </div>
           </div>
 

@@ -31,10 +31,17 @@
           <div class="col-data"><%= @fb_comment.date.strftime('%F %R') %></div>
         </div>
         <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.fb_comment.reply_text') %> :</div>
+          <div class="align-left"><%= t('activerecord.attributes.fb_comment.reply_comment') %> :</div>
           <div class="col-data">
             <%= link_to edit_users_fb_comment_path(@fb_comment) do %>
-              <button type="button" class="btn btn-sm btn-info" disabled><%= t('controls.button.write_reply') %></button>
+              <button type="button" class="btn btn-sm btn-info">Reply comment</button>
+            <% end %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.fb_comment.reply_text') %> :</div>
+          <div class="col-data">
+            <%= link_to messages_users_fb_comments_path(id: @fb_comment.id) do %>
+              <button type="button" class="btn btn-sm btn-info">Send message</button>
             <% end %></div>
         </div>
       </div>

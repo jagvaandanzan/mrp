@@ -308,6 +308,7 @@ mn:
         post_id: Пост линк
         user_name: Хэрэглэгч
         date: Огноо
+        reply_comment: Коммент бичих
         reply_text: Хариу мессеж
       ali_category:
         name_mn: Монгол

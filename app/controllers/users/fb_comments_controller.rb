@@ -25,6 +25,33 @@ class Users::FbCommentsController < Users::BaseController
     @fb_comment.attributes = fb_comment_params
     if @fb_comment.valid?
       # response = ApplicationController.helpers.api_send("#{ENV['FB_API']}639996292999968_1118810478451878/comments?filter=stream&order=reverse_chronological&summary=total_count&access_token=#{ENV['FB_TOKEN']}", 'get')
+
+      param = {
+          "message": @fb_comment.reply_comment
+      }
+
+      response = ApplicationController.helpers.api_send("#{ENV['FB_API']}#{@fb_comment.post_id}_#{@fb_comment.comment_id}/comments?access_token=#{ENV['FB_TOKEN']}", 'post', param.to_json)
+
+      Rails.logger.info(response.code.to_i)
+
+      if response.code.to_i == 200
+        flash[:success] = t('alert.send_successfully')
+      else
+        json = JSON.parse(response.body)
+        # flash[:alert] = json[:json]
+        flash[:alert] = json.to_s
+      end
+
+      # @fb_comment.destroy!
+      redirect_to action: :index
+    else
+      render 'edit'
+    end
+  end
+
+  def messages
+    @fb_comment.attributes = fb_comment_params
+    if @fb_comment.valid?
       param = {
           "messaging_type": "RESPONSE",
           "recipient": {
