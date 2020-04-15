@@ -36,7 +36,9 @@ class Users::FbCommentsController < Users::BaseController
       }
       response = ApplicationController.helpers.api_send("#{ENV['FB_API']}me/messages?access_token=#{ENV['FB_TOKEN']}", 'post', param.to_json)
 
-      if response.code == 200
+      Rails.logger.info(response.code.to_i)
+
+      if response.code.to_i == 200
         flash[:success] = t('alert.send_successfully')
       else
         json = JSON.parse(response.body)
