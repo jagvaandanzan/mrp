@@ -31,9 +31,9 @@ module API
               from_id = obj[:from][:id]
 
               # Өөрийн бичсэн үзэгдэлүүдийг алгасах
+              Rails.logger.info(entry)
               if from_id != '0'
                 if obj[:item] == "comment"
-                  Rails.logger.info(entry)
                   if from_id != ENV['FB_PAGE_ID']
                     post_comment_ids = obj[:comment_id].split('_')
                     post_id = post_comment_ids[0]
