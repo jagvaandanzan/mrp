@@ -28,7 +28,7 @@ class Users::FbCommentsController < Users::BaseController
       param = {
           "messaging_type": "RESPONSE",
           "recipient": {
-              "comment_id": "#{@fb_comment.parent_id}_#{@fb_comment.comment_id}"
+              "comment_id": "#{@fb_comment.post_id}_#{@fb_comment.comment_id}"
           },
           "message": {
               "text": @fb_comment.reply_text
