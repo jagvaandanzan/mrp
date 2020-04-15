@@ -7,6 +7,22 @@ class Users::FbPostsController < Users::BaseController
     @product_code = params[:product_code]
     @fb_posts = FbPost.search(@product_name, @product_code).page(params[:page])
     cookies[:fb_post_page_number] = params[:page]
+
+    # ali_categories = AliCategory.select(:link).group(:link).having("count(*) > 1")
+    # Rails.logger.info(ali_categories.count)
+    # ali_categories.each do |ali_category|
+    #
+    #   categories = AliCategory.by_link(ali_category.link)
+    #   len = categories.count
+    #   cc = 1
+    #   categories.reverse.each_with_index do |category, index|
+    #     Rails.logger.info("#{category.id} #{category.name} #{category.link}")
+    #     if !category.prod && cc < len
+    #       category.destroy!
+    #       cc += 1
+    #     end
+    #   end
+    # end
   end
 
   def new

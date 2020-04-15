@@ -302,8 +302,6 @@ mn:
         product_name: Барааны нэр
         product_code: Барааны код
         fb_comments: Комментууд
-        content: Агуулга
-        image: Зураг
       fb_comment:
         fb_post_id: Пост
         message: Мессеж

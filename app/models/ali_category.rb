@@ -2,7 +2,7 @@ class AliCategory < ApplicationRecord
   paginates_per 10
   belongs_to :ali_category, optional: true
 
-  has_many :sub_categories, :class_name => "AliCategory", :foreign_key => "ali_category_id"
+  has_many :sub_categories, :class_name => "AliCategory", :foreign_key => "ali_category_id", dependent: :destroy
   has_many :filter_groups, :class_name => "AliFilterGroup", :foreign_key => "ali_category_id"
 
   has_many :ali_filter_groups, dependent: :destroy
@@ -40,6 +40,16 @@ class AliCategory < ApplicationRecord
 
   scope :subs_not_check, ->() {
     sub_categories.none_check.count
+  }
+
+  scope :link_end, ->(qq) {
+    where('link LIKE :value', value: "%#{qq}")
+  }
+
+  scope :by_link, ->(link) {
+    where(link: link)
+        .order(checked: :desc)
+        .order(:id)
   }
 
   def check_status
@@ -88,7 +98,7 @@ class AliCategory < ApplicationRecord
   def prod_categories
     c_prod = deep_count(true)
     c_all = deep_count
-    ("<span class='label label-#{c_prod==c_all ? 'success':'warning'}'>#{c_prod} / #{c_all}</span>").html_safe
+    ("<span class='label label-#{c_prod == c_all ? 'success' : 'warning'}'>#{c_prod} / #{c_all}</span>").html_safe
   end
 
 
@@ -99,7 +109,7 @@ class AliCategory < ApplicationRecord
     filters = AliFilter.by_group_ids(group_ids).count
     p_filters = AliFilter.by_group_ids(group_ids).check_prod(true).count
 
-    ("<span class='label label-#{p_groups==groups ? 'success':'warning'}'>#{p_groups} / #{groups}</span>  <span class='label label-#{p_filters==filters ? 'success':'warning'}'>#{p_filters} / #{filters}</span>").html_safe
+    ("<span class='label label-#{p_groups == groups ? 'success' : 'warning'}'>#{p_groups} / #{groups}</span>  <span class='label label-#{p_filters == filters ? 'success' : 'warning'}'>#{p_filters} / #{filters}</span>").html_safe
 
   end
 
