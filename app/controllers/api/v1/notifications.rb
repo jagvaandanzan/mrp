@@ -31,7 +31,7 @@ module API
               from_id = obj[:from][:id]
 
               # Өөрийн бичсэн үзэгдэлүүдийг алгасах
-              Rails.logger.info(entry.to_s)
+              Rails.logger.info(entry.to_json)
               if from_id != '0'
                 if obj[:item] == "comment"
                   parent_ids = obj[:parent_id].split('_')
