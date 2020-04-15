@@ -5,6 +5,10 @@ class FbComment < ApplicationRecord
 
   attr_accessor :reply_text
 
+  scope :by_fb_post, ->(fb_post) {
+    where(fb_post_id: fb_post)
+  }
+
   scope :by_post_id, ->(post_id) {
     where(post_id: post_id)
   }
@@ -12,7 +16,9 @@ class FbComment < ApplicationRecord
   scope :by_comment_id, ->(comment_id) {
     where(comment_id: comment_id)
   }
-
+  scope :by_parent_id, ->(parent_id) {
+    where(parent_id: parent_id)
+  }
   scope :order_date, -> {
     order(:date)
   }

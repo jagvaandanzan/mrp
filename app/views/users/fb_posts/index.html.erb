@@ -39,7 +39,7 @@
                   <td class="va-mid underline"><%= link_to fb_post.post_id, users_fb_post_path(fb_post) %></td>
                   <td class="va-mid"><%= fb_post.product_code %></td>
                   <td class="va-mid"><%= fb_post.product_name %></td>
-                  <td class="th-center va-mid"><%= link_to fb_post.fb_comments.count, users_fb_comments_path(fb_post_id: fb_post.id) %></td>
+                  <td class="th-center va-mid"><%= link_to fb_post.fb_comments.by_fb_post(fb_post.id).count, users_fb_comments_path(fb_post_id: fb_post.id) %></td>
                 </tr>
               <% end %>
             </table>
