@@ -30,52 +30,43 @@ module API
               obj = change[:value]
               from_id = obj[:from][:id]
 
+              # Rails.logger.info(entry.to_json)
               # Өөрийн бичсэн үзэгдэлүүдийг алгасах
-              Rails.logger.info(entry.to_json)
-              if from_id != '0'
-                if obj[:item] == "comment"
-                  parent_ids = obj[:parent_id].split('_')
+              if from_id != '0' && obj[:item] == "comment"
+                Rails.logger.info(entry.to_json)
+                post_id = obj[:post_id].split('_')[1]
+                fb_post = FbPost.by_post_id(post_id)
 
-                  if from_id != ENV['FB_PAGE_ID']
-                    post_comment_ids = obj[:comment_id].split('_')
-                    post_id = post_comment_ids[0]
-
-                    fb_post = FbPost.by_post_id(post_id)
-
-                    if fb_post.present?
-                      FbComment.create(fb_post: fb_post.first,
-                                       message: obj[:message],
-                                       post_id: post_id,
-                                       comment_id: post_comment_ids[1],
-                                       parent_id: parent_ids[1],
-                                       user_id: from_id,
-                                       user_name: obj[:from][:name],
-                                       date: Time.at(obj[:created_time]))
-                    end
-
-                  else
-                    fb_comments = FbComment.by_post_id(parent_ids[0])
-                                      .by_comment_id(parent_ids[1])
-                    if fb_comments.present?
-                      fb_comments.destroy_all
-                    else
-                      fb_comment_replies = FbComment.by_post_id(parent_ids[0])
-                                               .by_parent_id(parent_ids[1])
-                      msg = obj[:message]
-                      fb_comment_replies.each {|com|
-                        if msg.present? && msg.start_with?(com.user_name)
-                          com.destroy!
-                        end
-                      }
-                    end
-
-                    # # Rails.logger.info(entry)
-                    # Rails.logger.info("post_id=" + obj[:post_id])
-                    # Rails.logger.info("comment_id=" + obj[:comment_id])
-                    # Rails.logger.info("parent_id=" + obj[:parent_id])
-                  end
-
+                if fb_post.present?
+                  FbComment.create(fb_post: fb_post.first,
+                                   channel: 0,
+                                   message: obj[:message],
+                                   comment_id: obj[:comment_id],
+                                   parent_id: obj[:parent_id],
+                                   user_id: from_id,
+                                   user_name: from_id != ENV['FB_PAGE_ID'] ? obj[:from][:name] : nil,
+                                   date: Time.at(obj[:created_time]))
                 end
+
+                # fb_comments = FbComment.by_post_id(parent_ids[0])
+                #                   .by_comment_id(parent_ids[1])
+                # if fb_comments.present?
+                #   fb_comments.destroy_all
+                # else
+                #   fb_comment_replies = FbComment.by_post_id(parent_ids[0])
+                #                            .by_parent_id(parent_ids[1])
+                #   msg = obj[:message]
+                #   fb_comment_replies.each {|com|
+                #     if msg.present? && msg.start_with?(com.user_name)
+                #       com.destroy!
+                #     end
+                #   }
+
+                # # Rails.logger.info(entry)
+                # Rails.logger.info("post_id=" + obj[:post_id])
+                # Rails.logger.info("comment_id=" + obj[:comment_id])
+                # Rails.logger.info("parent_id=" + obj[:parent_id])
+
               end
 
             }
