@@ -34,18 +34,31 @@ module API
               # Өөрийн бичсэн үзэгдэлүүдийг алгасах
               if from_id != '0' && obj[:item] == "comment"
                 Rails.logger.info(entry.to_json)
-                post_id = obj[:post_id].split('_')[1]
-                fb_post = FbPost.by_post_id(post_id)
+                if obj[:verb] == "add"
+                  post_id = obj[:post_id].split('_')[1]
+                  fb_post = FbPost.by_post_id(post_id)
 
-                if fb_post.present?
-                  FbComment.create(fb_post: fb_post.first,
-                                   channel: 0,
-                                   message: obj[:message],
-                                   comment_id: obj[:comment_id],
-                                   parent_id: obj[:parent_id],
-                                   user_id: from_id,
-                                   user_name: from_id != ENV['FB_PAGE_ID'] ? obj[:from][:name] : nil,
-                                   date: Time.at(obj[:created_time]))
+                  if fb_post.present?
+
+                    FbComment.create(fb_post: fb_post.first,
+                                     channel: 0,
+                                     message: obj[:message],
+                                     comment_id: obj[:comment_id],
+                                     parent_id: obj[:parent_id],
+                                     user_id: from_id,
+                                     user_name: from_id != ENV['FB_PAGE_ID'] ? obj[:from][:name] : nil,
+                                     date: Time.at(obj[:created_time]))
+                  end
+                else
+                  fb_comments = FbComment.by_comment_id(obj[:comment_id])
+                  if fb_comments.present?
+                    fb_comment = fb_comments.first
+                    if obj[:verb] == "hide"
+                      fb_comment.update(is_hide: true)
+                    elsif obj[:verb] == "edited"
+                      fb_comment.update(message: obj[:message])
+                    end
+                  end
                 end
 
                 # fb_comments = FbComment.by_post_id(parent_ids[0])
