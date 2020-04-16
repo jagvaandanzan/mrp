@@ -50,7 +50,7 @@
               <% @fb_comments.each do |fb_comment| %>
                 <tr>
                   <td class="va-mid underline"><%= fb_comment.fb_post.full_name %></td>
-                  <td class="va-mid underline"><%= link_to fb_comment.user_name, users_fb_comment_path(fb_comment) %></td>
+                  <td class="va-mid underline"><%= link_to fb_comment.user_name.presence || 'Market.mn', users_fb_comment_path(fb_comment) %></td>
                   <td class="va-mid"><%= fb_comment.message %></td>
                   <td class="td-center va-mid"><%= fb_comment.date.strftime('%F %R') %></td>
                   <td class="td-center va-mid"><%= link_to 'fb post', "https://www.facebook.com/#{ENV['FB_PAGE_ID']}/posts/#{fb_comment.fb_post.post_id}/", target: '_blank' %></td>

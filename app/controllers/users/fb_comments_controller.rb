@@ -30,7 +30,7 @@ class Users::FbCommentsController < Users::BaseController
           "message": @fb_comment.reply_text
       }
 
-      response = ApplicationController.helpers.api_send("#{ENV['FB_API']}#{@fb_comment.post_id}_#{@fb_comment.comment_id}/comments?access_token=#{ENV['FB_TOKEN']}", 'post', param.to_json)
+      response = ApplicationController.helpers.api_send("#{ENV['FB_API']}#{@fb_comment.comment_id}/comments?access_token=#{ENV['FB_TOKEN']}", 'post', param.to_json)
 
       Rails.logger.info(response.code.to_i)
 
@@ -58,7 +58,7 @@ class Users::FbCommentsController < Users::BaseController
       param = {
           "messaging_type": "RESPONSE",
           "recipient": {
-              "comment_id": "#{@fb_comment.post_id}_#{@fb_comment.comment_id}"
+              "comment_id": "#{@fb_comment.comment_id}"
           },
           "message": {
               "text": @fb_comment.reply_text
