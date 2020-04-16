@@ -1,7 +1,12 @@
 class FbComment < ApplicationRecord
   belongs_to :fb_post
+  belongs_to :fb_comment, optional: true
+
+  enum channel: {hook: 0, api: 1}
 
   validates :reply_text, presence: true, on: :update
+
+  validates_uniqueness_of :comment_id
 
   attr_accessor :reply_text, :reply_comment
 
@@ -18,6 +23,9 @@ class FbComment < ApplicationRecord
   }
   scope :by_parent_id, ->(parent_id) {
     where(parent_id: parent_id)
+  }
+  scope :by_user_id, ->(user_id, eq) {
+    where("user_id #{eq} ?", user_id)
   }
   scope :order_date, -> {
     order(:date)

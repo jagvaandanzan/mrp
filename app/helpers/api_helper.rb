@@ -6,11 +6,11 @@ module ApiHelper
   def api_request(url, method, params = nil)
     uri = URI.parse(ENV['SERVER_API'] + url)
     req = if method == 'post' || method == 'update'
-            Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+            Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json; charset=utf-8')
           elsif method == 'patch'
-            Net::HTTP::Patch.new(uri, 'Content-Type' => 'application/json')
+            Net::HTTP::Patch.new(uri, 'Content-Type' => 'application/json; charset=utf-8')
           elsif method == 'get'
-            Net::HTTP::Get.new(uri)
+            Net::HTTP::Get.new(uri, 'Content-Type' => 'application/json; charset=utf-8')
           else
             Net::HTTP::Delete.new(uri)
           end
@@ -27,14 +27,14 @@ module ApiHelper
   end
 
   def api_send(url, method, params = nil)
-    Rails.logger.debug(url.to_s)
+    puts url.to_s
     uri = URI.parse(url)
     req = if method == 'post' || method == 'update'
-            Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+            Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json; charset=utf-8')
           elsif method == 'patch'
-            Net::HTTP::Patch.new(uri, 'Content-Type' => 'application/json')
+            Net::HTTP::Patch.new(uri, 'Content-Type' => 'application/json; charset=utf-8')
           elsif method == 'get'
-            Net::HTTP::Get.new(uri)
+            Net::HTTP::Get.new(uri, 'Content-Type' => 'application/json; charset=utf-8')
           else
             Net::HTTP::Delete.new(uri)
           end

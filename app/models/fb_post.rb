@@ -9,6 +9,10 @@ class FbPost < ApplicationRecord
     order(created_at: :desc)
   }
 
+  scope :order_checked, -> {
+    order(:checked_at)
+  }
+
   scope :by_post_id, ->(post_id) {
     where(post_id: post_id)
   }

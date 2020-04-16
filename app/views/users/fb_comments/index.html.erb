@@ -53,7 +53,7 @@
                   <td class="va-mid underline"><%= link_to fb_comment.user_name, users_fb_comment_path(fb_comment) %></td>
                   <td class="va-mid"><%= fb_comment.message %></td>
                   <td class="td-center va-mid"><%= fb_comment.date.strftime('%F %R') %></td>
-                  <td class="td-center va-mid"><%= link_to 'fb post', "https://www.facebook.com/#{ENV['FB_PAGE_ID']}/posts/#{fb_comment.post_id}/", target: '_blank' %></td>
+                  <td class="td-center va-mid"><%= link_to 'fb post', "https://www.facebook.com/#{ENV['FB_PAGE_ID']}/posts/#{fb_comment.fb_post.post_id}/", target: '_blank' %></td>
                   <td class="td-center va-mid">
                     <%= link_to edit_users_fb_comment_path(fb_comment) do %>
                       <button type="button" class="btn btn-sm btn-info">Reply comment</button>

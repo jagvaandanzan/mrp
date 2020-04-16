@@ -22,4 +22,4 @@ end
 
 Capybara.default_driver = :chrome_headless
 Capybara.javascript_driver = :chrome_headless
-Capybara.app_host = 'https://www.aliexpress.com'
+Capybara.app_host = 'https://e.khanbank.com'
