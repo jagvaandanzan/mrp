@@ -43,7 +43,6 @@ module API
                       check_post_comments(fb_post, obj[:parent_id], obj[:comment_id], Time.at(obj[:created_time]))
                     else
                       FbComment.create(fb_post: fb_post.first,
-                                       channel: 0,
                                        message: obj[:message],
                                        comment_id: obj[:comment_id],
                                        parent_id: obj[:parent_id],
