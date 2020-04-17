@@ -33,8 +33,8 @@ class FbComment < ApplicationRecord
     items = items.where(fb_post_id: fb_post_id) if fb_post_id.present?
     items = items.where('user_name LIKE :value', value: "%#{user_name}%") if user_name.present?
     items = items.where('message LIKE :value', value: "%#{message}%") if message.present?
-    items = items.where('date >= ?', date) if date.present?
-    items = items.where('date < ?', date + 1.day) if date.present?
+    # items = items.where('date >= ?', date) if date.present?
+    # items = items.where('date < ?', date + 1.day) if date.present?
     items
   }
 
