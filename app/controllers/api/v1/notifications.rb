@@ -88,17 +88,16 @@ module API
 end
 
 def check_post_comments(fb_post, parent_id, comment_id, date)
-  comment_users = fb_post.fb_comments.by_replied(false)
+  comment_users = fb_post.fb_comments
   if comment_users.count > 0
     comments = comment_users.map {|c| [c.comment_id, c]}.to_h
 
     # маркет коммент эцэг нь хэрэглэгчийн коммент id бол шууд хариу нь болно
     comment = comments[parent_id]
-    if comment.present? && !comment.replied
+    if comment.present?
       apply_above_comments(comment_users, comment.parent_id, comment.user_id, comment.date)
-      # comment.update_attribute(:replied, true)
       # puts "parent match ========> " + comment.id.to_s
-      comment.destroy
+      comment.destroy!
       # коммент хариултын араас бичсэн асуултад хариулсан бол
     else
       tags = get_message_tags(comment_id)
@@ -114,10 +113,9 @@ end
 
 def apply_above_comments(comment_users, parent_id, user_id, date)
   comment_users.each do |comment|
-    if !comment.replied && comment.parent_id == parent_id && comment.user_id == user_id && comment.date < date
+    if comment.parent_id == parent_id && comment.user_id == user_id && comment.date < date
       # puts "apply_above_comments ========> " + comment.id.to_s
-      # comment.update_attribute(:replied, true)
-      comment.destroy
+      comment.destroy!
     end
   end
 end
