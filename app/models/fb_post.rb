@@ -9,8 +9,8 @@ class FbPost < ApplicationRecord
     order(created_at: :desc)
   }
 
-  scope :order_checked, -> {
-    order(:checked_at)
+  scope :order_updated, -> {
+    order(updated: :desc)
   }
 
   scope :by_post_id, ->(post_id) {

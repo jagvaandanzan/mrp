@@ -27,6 +27,12 @@ class FbComment < ApplicationRecord
   scope :by_user_id, ->(user_id, eq) {
     where("user_id #{eq} ?", user_id)
   }
+  scope :by_replied, ->(replied) {
+    where(replied: replied)
+  }
+  scope :by_is_hide, ->(is_hide) {
+    where(is_hide: is_hide)
+  }
   scope :order_date, -> {
     order(:date)
   }
@@ -36,9 +42,13 @@ class FbComment < ApplicationRecord
     items = items.where(fb_post_id: fb_post_id) if fb_post_id.present?
     items = items.where('user_name LIKE :value', value: "%#{user_name}%") if user_name.present?
     items = items.where('message LIKE :value', value: "%#{message}%") if message.present?
-    # items = items.where('date >= ?', date) if date.present?
-    # items = items.where('date < ?', date + 1.day) if date.present?
+    items = items.where('date >= ?', date) if date.present?
+    items = items.where('date < ?', date + 1.day) if date.present?
     items
   }
 
+  def sub_mgs
+    l = message.length > 30 ? 30 : message.length
+    message[0..l]
+  end
 end

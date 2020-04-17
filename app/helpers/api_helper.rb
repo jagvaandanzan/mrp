@@ -27,7 +27,7 @@ module ApiHelper
   end
 
   def api_send(url, method, params = nil)
-    puts url.to_s
+    # puts url.to_s
     uri = URI.parse(url)
     req = if method == 'post' || method == 'update'
             Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json; charset=utf-8')

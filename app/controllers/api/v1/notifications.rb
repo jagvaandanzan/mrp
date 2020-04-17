@@ -53,33 +53,28 @@ module API
                   fb_comments = FbComment.by_comment_id(obj[:comment_id])
                   if fb_comments.present?
                     fb_comment = fb_comments.first
-                    if obj[:verb] == "hide"
-                      fb_comment.update(is_hide: true)
+                    if obj[:verb] == "hide" && obj[:verb] == "remove"
+                      fb_comment.update_attribute(:is_hide, true)
                     elsif obj[:verb] == "edited"
-                      fb_comment.update(message: obj[:message])
+                      fb_comment.update_attribute(message, obj[:message])
                     end
                   end
                 end
 
-                # fb_comments = FbComment.by_post_id(parent_ids[0])
-                #                   .by_comment_id(parent_ids[1])
-                # if fb_comments.present?
-                #   fb_comments.destroy_all
-                # else
-                #   fb_comment_replies = FbComment.by_post_id(parent_ids[0])
-                #                            .by_parent_id(parent_ids[1])
-                #   msg = obj[:message]
-                #   fb_comment_replies.each {|com|
-                #     if msg.present? && msg.start_with?(com.user_name)
-                #       com.destroy!
-                #     end
-                #   }
-
-                # # Rails.logger.info(entry)
-                # Rails.logger.info("post_id=" + obj[:post_id])
-                # Rails.logger.info("comment_id=" + obj[:comment_id])
-                # Rails.logger.info("parent_id=" + obj[:parent_id])
-
+                # reaction, хэрэглэгчийн коммент дээр дарсан бол хариулсан гэж үзнэ
+              elsif obj[:item] == "reaction" && from_id == ENV['FB_PAGE_ID']
+                Rails.logger.info(entry.to_json)
+                # post_id = obj[:post_id].split('_')[1]
+                # fb_post = FbPost.by_post_id(post_id)
+                # if fb_post.present?
+                #   FbComment.create(fb_post: fb_post.first,
+                #                    channel: 0,
+                #                    message: obj[:reaction_type],
+                #                    parent_id: obj[:parent_id],
+                #                    user_id: from_id,
+                #                    user_name: from_id != ENV['FB_PAGE_ID'] ? obj[:from][:name] : nil,
+                #                    date: Time.at(obj[:created_time]))
+                # end
               end
 
             }
