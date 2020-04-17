@@ -148,21 +148,27 @@ def check_auto_reply(message, comment_id)
     Rails.logger.info("action_auto check " + ac.comment)
     if ac.condition == "contain"
       if message.include? ac.comment
-        is_auto = action_auto_reply(comment_id, ac)
+        action_auto_reply(comment_id, ac)
+        is_auto = true
+        return is_auto
       end
     elsif ac.condition == "start"
       if message.start_with? ac.comment
-        is_auto = action_auto_reply(comment_id, ac)
+        action_auto_reply(comment_id, ac)
+        is_auto = true
+        return is_auto
       end
     else
       #match
       if message == ac.comment
-        is_auto = action_auto_reply(comment_id, ac)
+        action_auto_reply(comment_id, ac)
+        is_auto = true
+        return is_auto
       end
     end
 
     if is_auto
-      return true
+      return is_auto
     end
   end
 
@@ -173,19 +179,16 @@ def action_auto_reply(comment_id, fb_comment_action)
   if fb_comment_action.action_type == "reply"
 
     Rails.logger.info("action_auto reply: #{comment_id}==>#{fb_comment_action.reply_txt}")
-    alert, msg = ApplicationController.helpers.fb_reply_comment(comment_id, fb_comment_action.reply_txt)
-    alert == :success
+    ApplicationController.helpers.fb_reply_comment(comment_id, fb_comment_action.reply_txt)
   elsif fb_comment_action.action_type == "message"
 
     Rails.logger.info("action_auto message: #{comment_id}==>#{fb_comment_action.reply_txt}")
-    alert, msg = ApplicationController.helpers.fb_send_message(comment_id, fb_comment_action.reply_txt)
-    alert == :success
+    ApplicationController.helpers.fb_send_message(comment_id, fb_comment_action.reply_txt)
   else
     #is_delete
 
     Rails.logger.info("action_auto delete: #{comment_id}")
-    alert, msg = ApplicationController.helpers.fb_delete_comment(comment_id)
-    alert == :success
+    ApplicationController.helpers.fb_delete_comment(comment_id)
   end
 
   false
