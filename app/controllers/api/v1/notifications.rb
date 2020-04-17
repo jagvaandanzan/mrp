@@ -25,66 +25,66 @@ module API
           # object = params[:object]
           entries = params[:entry]
 
-          # entries.each {|entry|
-          #   entry[:changes].each {|change|
-          #     obj = change[:value]
-          #     from_id = obj[:from][:id]
-          #
-          #     # Rails.logger.info(entry.to_json)
-          #     # Өөрийн бичсэн үзэгдэлүүдийг алгасах
-          #     if from_id != '0' && obj[:item] == "comment"
-          #       Rails.logger.info(entry.to_json)
-          #       if obj[:verb] == "add"
-          #         post_id = obj[:post_id].split('_')[1]
-          #         fb_posts = FbPost.by_post_id(post_id)
-          #
-          #         if fb_posts.present?
-          #           fb_post = fb_posts.first
-          #           if from_id == ENV['FB_PAGE_ID']
-          #             check_post_comments(fb_post, obj[:parent_id], obj[:comment_id], Time.at(obj[:created_time]))
-          #           else
-          #             unless check_auto_reply(obj[:message], obj[:comment_id])
-          #               FbComment.create(fb_post: fb_post,
-          #                                message: obj[:message],
-          #                                comment_id: obj[:comment_id],
-          #                                parent_id: obj[:parent_id],
-          #                                user_id: from_id,
-          #                                user_name: obj[:from][:name],
-          #                                date: Time.at(obj[:created_time]))
-          #             end
-          #
-          #           end
-          #         end
-          #       else
-          #         fb_comments = FbComment.by_comment_id(obj[:comment_id])
-          #         if fb_comments.present?
-          #           fb_comment = fb_comments.first
-          #           if obj[:verb] == "hide" || obj[:verb] == "remove"
-          #             # fb_comment.update_attribute(:is_hide, true)
-          #             fb_comment.destroy!
-          #           elsif obj[:verb] == "edited"
-          #             fb_comment.update_attribute(message, obj[:message])
-          #           end
-          #         end
-          #       end
-          #
-          #       # reaction, хэрэглэгчийн коммент дээр дарсан бол хариулсан гэж үзнэ
-          #     elsif obj[:item] == "reaction" && from_id == ENV['FB_PAGE_ID'] && obj[:comment_id].present?
-          #       Rails.logger.info(entry.to_json)
-          #       post_id = obj[:post_id].split('_')[1]
-          #       fb_posts = FbPost.by_post_id(post_id)
-          #       if fb_posts.present?
-          #         fb_post = fb_posts.first
-          #         fb_comments = fb_post.fb_comments.by_comment_id(obj[:comment_id])
-          #         if fb_comments.present?
-          #           fb_comment = fb_comments.first
-          #           fb_comment.destroy!
-          #         end
-          #       end
-          #     end
-          #
-          #   }
-          # }
+          entries.each {|entry|
+            entry[:changes].each {|change|
+              obj = change[:value]
+              from_id = obj[:from][:id]
+
+              # Rails.logger.info(entry.to_json)
+              # Өөрийн бичсэн үзэгдэлүүдийг алгасах
+              if from_id != '0' && obj[:item] == "comment"
+                Rails.logger.info(entry.to_json)
+                if obj[:verb] == "add"
+                  post_id = obj[:post_id].split('_')[1]
+                  fb_posts = FbPost.by_post_id(post_id)
+
+                  if fb_posts.present?
+                    fb_post = fb_posts.first
+                    if from_id == ENV['FB_PAGE_ID']
+                      check_post_comments(fb_post, obj[:parent_id], obj[:comment_id], Time.at(obj[:created_time]))
+                    else
+                      unless check_auto_reply(obj[:message], obj[:comment_id])
+                        FbComment.create(fb_post: fb_post,
+                                         message: obj[:message],
+                                         comment_id: obj[:comment_id],
+                                         parent_id: obj[:parent_id],
+                                         user_id: from_id,
+                                         user_name: obj[:from][:name],
+                                         date: Time.at(obj[:created_time]))
+                      end
+
+                    end
+                  end
+                else
+                  fb_comments = FbComment.by_comment_id(obj[:comment_id])
+                  if fb_comments.present?
+                    fb_comment = fb_comments.first
+                    if obj[:verb] == "hide" || obj[:verb] == "remove"
+                      # fb_comment.update_attribute(:is_hide, true)
+                      fb_comment.destroy!
+                    elsif obj[:verb] == "edited"
+                      fb_comment.update_attribute(message, obj[:message])
+                    end
+                  end
+                end
+
+                # reaction, хэрэглэгчийн коммент дээр дарсан бол хариулсан гэж үзнэ
+              elsif obj[:item] == "reaction" && from_id == ENV['FB_PAGE_ID'] && obj[:comment_id].present?
+                Rails.logger.info(entry.to_json)
+                post_id = obj[:post_id].split('_')[1]
+                fb_posts = FbPost.by_post_id(post_id)
+                if fb_posts.present?
+                  fb_post = fb_posts.first
+                  fb_comments = fb_post.fb_comments.by_comment_id(obj[:comment_id])
+                  if fb_comments.present?
+                    fb_comment = fb_comments.first
+                    fb_comment.destroy!
+                  end
+                end
+              end
+
+            }
+          }
 
           status 200
         end
