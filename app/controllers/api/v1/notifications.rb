@@ -59,7 +59,7 @@ module API
                   fb_comments = FbComment.by_comment_id(obj[:comment_id])
                   if fb_comments.present?
                     fb_comment = fb_comments.first
-                    if obj[:verb] == "hide" && obj[:verb] == "remove"
+                    if obj[:verb] == "hide" || obj[:verb] == "remove"
                       # fb_comment.update_attribute(:is_hide, true)
                       fb_comment.destroy!
                     elsif obj[:verb] == "edited"
@@ -143,25 +143,30 @@ end
 
 def check_auto_reply(message, comment_id)
   fb_comment_actions = FbCommentAction.by_is_active(true)
+  is_auto = false
   fb_comment_actions.each do |ac|
     Rails.logger.info("action_auto check " + ac.comment)
     if ac.condition == "contain"
       if message.include? ac.comment
-        return action_auto_reply(comment_id, ac)
+        is_auto = action_auto_reply(comment_id, ac)
       end
     elsif ac.condition == "start"
       if message.start_with? ac.comment
-        return action_auto_reply(comment_id, ac)
+        is_auto = action_auto_reply(comment_id, ac)
       end
     else
       #match
       if message == ac.comment
-        return action_auto_reply(comment_id, ac)
+        is_auto = action_auto_reply(comment_id, ac)
       end
+    end
+
+    if is_auto
+      return true
     end
   end
 
-  false
+  is_auto
 end
 
 def action_auto_reply(comment_id, fb_comment_action)
