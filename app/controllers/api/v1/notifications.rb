@@ -39,22 +39,26 @@ module API
                   fb_post = FbPost.by_post_id(post_id)
 
                   if fb_post.present?
-
-                    FbComment.create(fb_post: fb_post.first,
-                                     channel: 0,
-                                     message: obj[:message],
-                                     comment_id: obj[:comment_id],
-                                     parent_id: obj[:parent_id],
-                                     user_id: from_id,
-                                     user_name: from_id != ENV['FB_PAGE_ID'] ? obj[:from][:name] : nil,
-                                     date: Time.at(obj[:created_time]))
+                    if from_id == ENV['FB_PAGE_ID']
+                      check_post_comments(fb_post, obj[:parent_id], obj[:comment_id], Time.at(obj[:created_time]))
+                    else
+                      FbComment.create(fb_post: fb_post.first,
+                                       channel: 0,
+                                       message: obj[:message],
+                                       comment_id: obj[:comment_id],
+                                       parent_id: obj[:parent_id],
+                                       user_id: from_id,
+                                       user_name: obj[:from][:name],
+                                       date: Time.at(obj[:created_time]))
+                    end
                   end
                 else
                   fb_comments = FbComment.by_comment_id(obj[:comment_id])
                   if fb_comments.present?
                     fb_comment = fb_comments.first
                     if obj[:verb] == "hide" && obj[:verb] == "remove"
-                      fb_comment.update_attribute(:is_hide, true)
+                      # fb_comment.update_attribute(:is_hide, true)
+                      fb_comment.destroy!
                     elsif obj[:verb] == "edited"
                       fb_comment.update_attribute(message, obj[:message])
                     end
@@ -62,19 +66,16 @@ module API
                 end
 
                 # reaction, хэрэглэгчийн коммент дээр дарсан бол хариулсан гэж үзнэ
-              elsif obj[:item] == "reaction" && from_id == ENV['FB_PAGE_ID']
+              elsif obj[:item] == "reaction" && from_id == ENV['FB_PAGE_ID'] && obj[:comment_id].present?
                 Rails.logger.info(entry.to_json)
-                # post_id = obj[:post_id].split('_')[1]
-                # fb_post = FbPost.by_post_id(post_id)
-                # if fb_post.present?
-                #   FbComment.create(fb_post: fb_post.first,
-                #                    channel: 0,
-                #                    message: obj[:reaction_type],
-                #                    parent_id: obj[:parent_id],
-                #                    user_id: from_id,
-                #                    user_name: from_id != ENV['FB_PAGE_ID'] ? obj[:from][:name] : nil,
-                #                    date: Time.at(obj[:created_time]))
-                # end
+                post_id = obj[:post_id].split('_')[1]
+                fb_post = FbPost.by_post_id(post_id)
+                if fb_post.present?
+                  fb_comment = fb_post.fb_comments.by_comment_id(obj[:comment_id])
+                  if fb_comment.present?
+                    fb_comment.destroy!
+                  end
+                end
               end
 
             }
@@ -85,4 +86,55 @@ module API
       end
     end
   end
+end
+
+def check_post_comments(fb_post, parent_id, comment_id, date)
+  comment_users = fb_post.fb_comments.by_replied(false)
+  if comment_users.count > 0
+    comments = comment_users.map {|c| [c.comment_id, c]}.to_h
+
+    # маркет коммент эцэг нь хэрэглэгчийн коммент id бол шууд хариу нь болно
+    comment = comments[parent_id]
+    if comment.present? && !comment.replied
+      apply_above_comments(comment_users, comment.parent_id, comment.user_id, comment.date)
+      # comment.update_attribute(:replied, true)
+      # puts "parent match ========> " + comment.id.to_s
+      comment.destroy
+      # коммент хариултын араас бичсэн асуултад хариулсан бол
+    else
+      tags = get_message_tags(comment_id)
+      if tags.size > 0
+        # puts "tags ========> " + tags[0].to_s
+        apply_above_comments(comment_users, parent_id, tags[0], date)
+      end
+    end
+
+  end
+
+end
+
+def apply_above_comments(comment_users, parent_id, user_id, date)
+  comment_users.each do |comment|
+    if !comment.replied && comment.parent_id == parent_id && comment.user_id == user_id && comment.date < date
+      # puts "apply_above_comments ========> " + comment.id.to_s
+      # comment.update_attribute(:replied, true)
+      comment.destroy
+    end
+  end
+end
+
+def get_message_tags(comment_id)
+  # puts "get_message_tags==>#{comment_id}"
+  user_ids = []
+  response = ApplicationController.helpers.api_send("#{ENV['FB_API']}#{comment_id}?fields=message_tags.fields(id)&access_token=#{ENV['FB_TOKEN']}", 'get', nil)
+  if response.code.to_i == 200
+    json = JSON.parse(response.body)
+    if json['message_tags'].present?
+      json['message_tags'].each do |tags|
+        user_ids << tags['id']
+      end
+    end
+  end
+
+  user_ids
 end

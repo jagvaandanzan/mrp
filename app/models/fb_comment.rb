@@ -1,8 +1,5 @@
 class FbComment < ApplicationRecord
   belongs_to :fb_post
-  belongs_to :fb_comment, optional: true
-
-  enum channel: {hook: 0, api: 1}
 
   validates :reply_text, presence: true, on: :update
 
@@ -47,8 +44,4 @@ class FbComment < ApplicationRecord
     items
   }
 
-  def sub_mgs
-    l = message.length > 30 ? 30 : message.length
-    message[0..l]
-  end
 end

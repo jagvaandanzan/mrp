@@ -1,6 +1,10 @@
 class AddTagsToFbComments < ActiveRecord::Migration[5.2]
   def change
-  #   add_column :fb_comments, :replied, :boolean, default: 0, after: 'fb_post_id'
-    add_column :fb_comments, :is_hide, :boolean, default: 0, after: 'fb_post_id'
+    remove_column :fb_comments, :replied, :boolean
+    remove_column :fb_comments, :is_hide, :boolean
+    remove_column :fb_comments, :fb_comment_id, :references
+    remove_column :fb_comments, :reply_id, :references
+    remove_column :fb_comments, :channel, :integer
+    remove_column :fb_comments, :tags, :string
   end
 end

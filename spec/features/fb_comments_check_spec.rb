@@ -19,19 +19,21 @@ def check_post_comments(fb_post)
       comment = comments[market.parent_id]
       if comment.present? && !comment.replied
         apply_above_comments(comment_users, comment.parent_id, comment.user_id, comment.date)
-        comment.update_attribute(:replied, true)
-        puts "parent match ========> " + comment.id.to_s
+        # comment.update_attribute(:replied, true)
+        # puts "parent match ========> " + comment.id.to_s
+        comment.destroy
         # коммент хариултын араас бичсэн асуултад хариулсан бол
       else
         tags = get_message_tags(market.comment_id)
         if tags.size > 0
-          puts "tags ========> " + tags[0].to_s
+          # puts "tags ========> " + tags[0].to_s
           apply_above_comments(comment_users, market.parent_id, tags[0], market.date)
         end
       end
 
-      puts "market ========> " + market.id.to_s
-      market.update_attribute(:replied, true)
+      # puts "market ========> " + market.id.to_s
+      # market.update_attribute(:replied, true)
+      market.destroy
     end
   end
 
@@ -40,14 +42,15 @@ end
 def apply_above_comments(comment_users, parent_id, user_id, date)
   comment_users.each do |comment|
     if !comment.replied && comment.parent_id == parent_id && comment.user_id == user_id && comment.date < date
-      puts "apply_above_comments ========> " + comment.id.to_s
-      comment.update_attribute(:replied, true)
+      # puts "apply_above_comments ========> " + comment.id.to_s
+      # comment.update_attribute(:replied, true)
+      comment.destroy
     end
   end
 end
 
 def get_message_tags(comment_id)
-  puts "get_message_tags==>#{comment_id}"
+  # puts "get_message_tags==>#{comment_id}"
   user_ids = []
   response = ApplicationController.helpers.api_send("#{ENV['FB_API']}#{comment_id}?fields=message_tags.fields(id)&access_token=#{ENV['FB_TOKEN']}", 'get', nil)
   if response.code.to_i == 200
