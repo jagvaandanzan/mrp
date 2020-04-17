@@ -35,7 +35,7 @@ module FacebookHelper
   end
 
   def fb_delete_comment(comment_id)
-    response = api_send("#{ENV['FB_API']}#{comment_id}/comments?access_token=#{ENV['FB_TOKEN']}", 'delete', nil)
+    response = api_send("#{ENV['FB_API']}#{comment_id}?access_token=#{ENV['FB_TOKEN']}", 'delete', nil)
     if response.code.to_i == 200
       [:success, t('alert.send_successfully')]
     else
