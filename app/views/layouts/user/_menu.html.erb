@@ -27,18 +27,40 @@
           <i class="fa fa-check"></i><span>Категри орчуулга</span>
         <% end %>
       <% end %>
-      <% if can? :read, FbComment %>
-        <%= content_tag :li, class: controller_name == 'fb_posts' ? 'active' : '' do %>
-          <%= link_to users_fb_posts_path do %>
-            <i class="fa fa-newspaper-o"></i><span><%= t('activerecord.models.fb_post') %></span>
+      <% if (can? :read, FbPost) || (can? :read, FbComment) || (can? :read, FbCommentAction) %>
+        <%= content_tag :li, class: (controller_name == 'fb_posts' || controller_name == 'fb_comments' || controller_name == 'fb_comment_actions') ? 'treeview active' : 'treeview' do %>
+          <%= link_to "#" do %>
+            <i class="fa fa-facebook"></i><span><%= t('titles.facebook') %></span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
           <% end %>
-        <% end %>
-        <%= content_tag :li, class: controller_name == 'fb_comments' ? 'active' : '' do %>
-          <%= link_to users_fb_comments_path do %>
-            <i class="fa fa-comments"></i><span><%= t('activerecord.models.fb_comment') %></span>
+          <%= content_tag :ul, class: 'treeview-menu' do %>
+            <% if can? :read, FbPost %>
+              <%= content_tag :li, class: controller_name == 'fb_posts' ? 'active' : '' do %>
+                <%= link_to users_fb_posts_path do %>
+                  <i class="fa fa-newspaper-o"></i><span><%= t('activerecord.models.fb_post') %></span>
+                <% end %>
+              <% end %>
+            <% end %>
+            <% if can? :read, FbComment %>
+              <%= content_tag :li, class: controller_name == 'fb_comments' ? 'active' : '' do %>
+                <%= link_to users_fb_comments_path do %>
+                  <i class="fa fa-comments"></i><span><%= t('activerecord.models.fb_comment') %></span>
+                <% end %>
+              <% end %>
+            <% end %>
+            <% if can? :read, FbCommentAction %>
+              <%= content_tag :li, class: controller_name == 'fb_comment_actions' ? 'active' : '' do %>
+                <%= link_to users_fb_comment_actions_path do %>
+                  <i class="fa fa-cogs"></i><span><%= t('activerecord.models.fb_comment_action') %></span>
+                <% end %>
+              <% end %>
+            <% end %>
           <% end %>
         <% end %>
       <% end %>
+
       <% if (can? :read, Location) || (can? :read, Product) || (can? :read, ProductLocation) || (can? :read, Operator) || (can? :read, ProductSupplier) %>
         <%= content_tag :li, class: controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations' ||
             controller_name == 'product_categories' || controller_name == 'product_suppliers' ||

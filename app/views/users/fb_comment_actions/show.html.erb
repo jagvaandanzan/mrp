@@ -1,0 +1,42 @@
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('activerecord.models.fb_comment_action') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <% if can? :manage, FbCommentAction %>
+      <%= link_to t('controls.button.edit'), edit_users_fb_comment_action_path(@fb_comment_action), class: 'btn btn-info' %>
+      <%= link_to t('controls.button.delete'), users_fb_comment_action_path(@fb_comment_action), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <% end %>
+    <%= link_to t('titles.back_to_list'), users_fb_comment_actions_path(page: cookies[:fb_comment_action_page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body table-responsive no-padding">
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.fb_comment_action.is_active') %> :</div>
+          <div class="col-data"><%= @fb_comment_action.active_stat %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.fb_comment_action.comment') %> :</div>
+          <div class="col-data"><%= @fb_comment_action.comment %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.fb_comment_action.condition') %> :</div>
+          <div class="col-data"><%= @fb_comment_action.condition_i18n %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.fb_comment_action.action_type') %> :</div>
+          <div class="col-data"><%= @fb_comment_action.action_type_i18n %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.fb_comment_action.reply_txt') %> :</div>
+          <div class="col-data"><%= @fb_comment_action.reply_txt.presence || :'---' %></div>
+        </div>
+
+      </div>
+    </div>
+  <% end %>
+</div>

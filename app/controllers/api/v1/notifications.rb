@@ -36,19 +36,23 @@ module API
                 Rails.logger.info(entry.to_json)
                 if obj[:verb] == "add"
                   post_id = obj[:post_id].split('_')[1]
-                  fb_post = FbPost.by_post_id(post_id)
+                  fb_posts = FbPost.by_post_id(post_id)
 
-                  if fb_post.present?
+                  if fb_posts.present?
+                    fb_post = fb_posts.first
                     if from_id == ENV['FB_PAGE_ID']
                       check_post_comments(fb_post, obj[:parent_id], obj[:comment_id], Time.at(obj[:created_time]))
                     else
-                      FbComment.create(fb_post: fb_post.first,
-                                       message: obj[:message],
-                                       comment_id: obj[:comment_id],
-                                       parent_id: obj[:parent_id],
-                                       user_id: from_id,
-                                       user_name: obj[:from][:name],
-                                       date: Time.at(obj[:created_time]))
+                      unless check_auto_reply(obj[:message], obj[:comment_id])
+                        FbComment.create(fb_post: fb_post,
+                                         message: obj[:message],
+                                         comment_id: obj[:comment_id],
+                                         parent_id: obj[:parent_id],
+                                         user_id: from_id,
+                                         user_name: obj[:from][:name],
+                                         date: Time.at(obj[:created_time]))
+                      end
+
                     end
                   end
                 else
@@ -68,8 +72,9 @@ module API
               elsif obj[:item] == "reaction" && from_id == ENV['FB_PAGE_ID'] && obj[:comment_id].present?
                 Rails.logger.info(entry.to_json)
                 post_id = obj[:post_id].split('_')[1]
-                fb_post = FbPost.by_post_id(post_id)
-                if fb_post.present?
+                fb_posts = FbPost.by_post_id(post_id)
+                if fb_posts.present?
+                  fb_post = fb_posts.first
                   fb_comment = fb_post.fb_comments.by_comment_id(obj[:comment_id])
                   if fb_comment.present?
                     fb_comment.destroy!
@@ -134,4 +139,49 @@ def get_message_tags(comment_id)
   end
 
   user_ids
+end
+
+def check_auto_reply(message, comment_id)
+  fb_comment_actions = FbCommentAction.by_is_active(true)
+  fb_comment_actions.each do |ac|
+    logger.info("action_auto check " + ac.comment)
+    if ac.condition == "contain"
+      if message.include? ac.comment
+        return action_auto_reply(comment_id, ac)
+      end
+    elsif ac.condition == "start"
+      if message.start_with? ac.comment
+        return action_auto_reply(comment_id, ac)
+      end
+    else
+      #match
+      if message == ac.comment
+        return action_auto_reply(comment_id, ac)
+      end
+    end
+  end
+
+  false
+end
+
+def action_auto_reply(comment_id, fb_comment_action)
+  if fb_comment_action.action_type == "reply"
+
+    logger.info("action_auto reply: #{comment_id}==>#{fb_comment_action.reply_txt}")
+    alert, msg = ApplicationController.helpers.fb_reply_comment(comment_id, fb_comment_action.reply_txt)
+    alert == :success
+  elsif fb_comment_action.action_type == "message"
+
+    logger.info("action_auto message: #{comment_id}==>#{fb_comment_action.reply_txt}")
+    alert, msg = ApplicationController.helpers.fb_send_message(comment_id, fb_comment_action.reply_txt)
+    alert == :success
+  else
+    #is_delete
+
+    logger.info("action_auto delete: #{comment_id}")
+    alert, msg = ApplicationController.helpers.fb_delete_comment(comment_id)
+    alert == :success
+  end
+
+  false
 end

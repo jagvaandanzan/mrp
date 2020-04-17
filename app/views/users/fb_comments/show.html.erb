@@ -34,14 +34,14 @@
           <div class="align-left"><%= t('activerecord.attributes.fb_comment.reply_comment') %> :</div>
           <div class="col-data">
             <%= link_to edit_users_fb_comment_path(@fb_comment) do %>
-              <button type="button" class="btn btn-sm btn-info">Reply comment</button>
+              <button type="button" class="btn btn-sm btn-info"><%= t('activerecord.attributes.fb_comment.reply_comment') %></button>
             <% end %></div>
         </div>
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.fb_comment.reply_text') %> :</div>
           <div class="col-data">
             <%= link_to messages_users_fb_comments_path(id: @fb_comment.id) do %>
-              <button type="button" class="btn btn-sm btn-info">Send message</button>
+              <button type="button" class="btn btn-sm btn-info"><%= t('activerecord.attributes.fb_comment.reply_text') %></button>
             <% end %></div>
         </div>
       </div>

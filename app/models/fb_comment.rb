@@ -24,12 +24,6 @@ class FbComment < ApplicationRecord
   scope :by_user_id, ->(user_id, eq) {
     where("user_id #{eq} ?", user_id)
   }
-  scope :by_replied, ->(replied) {
-    where(replied: replied)
-  }
-  scope :by_is_hide, ->(is_hide) {
-    where(is_hide: is_hide)
-  }
   scope :order_date, -> {
     order(:date)
   }

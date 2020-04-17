@@ -63,6 +63,15 @@ mn:
       gender:
         male: Эрэгтэй
         female: Эмэгтэй
+    fb_comment_action:
+      action_type:
+        reply: Коммент бичих
+        message: Мессеж илгээх
+        is_delete: Устгах
+      condition:
+        match: Тэнцүү
+        start: Эхэлсэн
+        contain: Агуулсан
   activerecord:
     models:
       admin_user: Админ
@@ -85,8 +94,9 @@ mn:
       product_sale: Борлуулалт
       product_sale_call: Залгах
       category_filter_group: Категорын шүүлтүүр
-      fb_post: Фэйсбүүк пост
-      fb_comment: Фэйсбүүк коммент
+      fb_post: Пост
+      fb_comment: Комментууд
+      fb_comment_action: Автомат хариу
     attributes:
       admin_user:
         email: Имэйл
@@ -310,6 +320,12 @@ mn:
         date: Огноо
         reply_comment: Коммент бичих
         reply_text: Хариу мессеж
+      fb_comment_action:
+        is_active: Идэвхтэй
+        action_type: Төрөл
+        condition: Нөхцөл
+        comment: Текст
+        reply_txt: Хариу
       ali_category:
         name_mn: Монгол
         name: Англи

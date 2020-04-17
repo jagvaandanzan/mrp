@@ -3,7 +3,7 @@ class FbPost < ApplicationRecord
   validates :post_id, :product_name, :product_code, presence: true, length: {maximum: 255}
   validates_uniqueness_of :post_id
 
-  has_many :fb_comments
+  has_many :fb_comments, dependent: :destroy
 
   scope :order_date, -> {
     order(created_at: :desc)

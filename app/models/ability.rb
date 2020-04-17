@@ -19,8 +19,6 @@ class Ability
         can role, ProductFeature
         can role, CategoryFilterGroup
       when "operator"
-        can role, FbPost
-        can role, FbComment
         can role, Operator
         can role, Salesman
       when "map_location"
@@ -31,6 +29,12 @@ class Ability
         can role, ProductSupplier
       when "product_location"
         can role, ProductLocation
+      when "fb_post"
+        can role, FbPost
+      when "fb_comment"
+        can role, FbComment
+      when "fb_comment_action"
+        can role, FbCommentAction
       else
         puts "it was something else"
       end
