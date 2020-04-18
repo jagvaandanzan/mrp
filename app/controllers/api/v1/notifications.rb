@@ -148,20 +148,20 @@ def check_auto_reply(message, comment_id)
   fb_comment_actions.each do |ac|
     Rails.logger.info("action_auto check " + ac.comment)
     if ac.condition == "contain"
-      if message.include? ac.comment
+      if message.downcase.include? ac.comment
         action_auto_reply(comment_id, ac)
         is_auto = true
         return is_auto
       end
     elsif ac.condition == "start"
-      if message.start_with? ac.comment
+      if message.downcase.start_with? ac.comment
         action_auto_reply(comment_id, ac)
         is_auto = true
         return is_auto
       end
     else
       #match
-      if message == ac.comment
+      if message.downcase == ac.comment
         action_auto_reply(comment_id, ac)
         is_auto = true
         return is_auto

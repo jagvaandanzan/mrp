@@ -3,6 +3,8 @@ class FbCommentAction < ApplicationRecord
   enum action_type: {reply: 0, message: 1, is_delete: 2}
   enum condition: {match: 0, start: 1, contain: 2}
 
+  before_save {comment.downcase!}
+
   validates :comment, presence: true, length: {maximum: 255}
   validates :action_type, :condition, presence: true
 
