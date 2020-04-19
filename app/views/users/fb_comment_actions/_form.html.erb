@@ -41,7 +41,7 @@
             <%= f.label :reply_txt, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@fb_comment_action, :reply_txt) %>">
               <%= field_errors(@fb_comment_action, :reply_txt) %>
-              <%= f.text_field :reply_txt, class: 'form-control', placeholder: t('activerecord.attributes.fb_comment_action.reply_txt') %>
+              <%= f.text_area :reply_txt, class: 'form-control', placeholder: t('activerecord.attributes.fb_comment_action.reply_txt') %>
             </div>
           </div>
 

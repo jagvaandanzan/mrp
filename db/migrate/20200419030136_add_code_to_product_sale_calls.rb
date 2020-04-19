@@ -1,5 +1,6 @@
 class AddCodeToProductSaleCalls < ActiveRecord::Migration[5.2]
   def change
-    add_column :product_sale_calls, :code, :string, after: 'product_id'
+    change_column :fb_comment_actions, :reply_txt, :text
+    add_column :product_sale_calls, :message, :text, after: 'quantity'
   end
 end

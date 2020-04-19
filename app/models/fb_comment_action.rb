@@ -1,7 +1,7 @@
 class FbCommentAction < ApplicationRecord
 
   enum action_type: {reply: 0, message: 1, is_delete: 2}
-  enum condition: {match: 0, start: 1, contain: 2}
+  enum condition: {match: 0, start: 1, contain: 2, phone: 3}
 
   before_save {comment.downcase!}
 

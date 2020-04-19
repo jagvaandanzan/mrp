@@ -40,17 +40,18 @@ module API
 
                   if fb_posts.present?
                     fb_post = fb_posts.first
+                    created_at = Time.at(obj[:created_time])
                     if from_id == ENV['FB_PAGE_ID']
-                      check_post_comments(fb_post, obj[:parent_id], obj[:comment_id], Time.at(obj[:created_time]))
+                      check_post_comments(fb_post, obj[:parent_id], obj[:comment_id], created_at)
                     else
-                      unless check_auto_reply(obj[:message], obj[:comment_id], obj[:parent_id], from_id)
+                      unless check_auto_reply(fb_post, obj[:message], obj[:comment_id], obj[:parent_id], from_id, created_at)
                         FbComment.create(fb_post: fb_post,
                                          message: obj[:message],
                                          comment_id: obj[:comment_id],
                                          parent_id: obj[:parent_id],
                                          user_id: from_id,
                                          user_name: obj[:from][:name],
-                                         date: Time.at(obj[:created_time]))
+                                         date: created_at)
                       end
 
                     end
@@ -94,6 +95,7 @@ module API
 end
 
 def check_post_comments(fb_post, parent_id, comment_id, date)
+  msg = ""
   comment_users = fb_post.fb_comments
   if comment_users.count > 0
     comments = comment_users.map {|c| [c.comment_id, c]}.to_h
@@ -101,7 +103,7 @@ def check_post_comments(fb_post, parent_id, comment_id, date)
     # маркет коммент эцэг нь хэрэглэгчийн коммент id бол шууд хариу нь болно
     comment = comments[parent_id]
     if comment.present?
-      apply_above_comments(comment_users, comment.parent_id, comment.user_id, comment.date)
+      msg = apply_above_comments(comment_users, comment.parent_id, comment.user_id, comment.date)
       # puts "parent match ========> " + comment.id.to_s
       comment.destroy!
       # коммент хариултын араас бичсэн асуултад хариулсан бол
@@ -109,21 +111,24 @@ def check_post_comments(fb_post, parent_id, comment_id, date)
       tags = get_message_tags(comment_id)
       if tags.size > 0
         # puts "tags ========> " + tags[0].to_s
-        apply_above_comments(comment_users, parent_id, tags[0], date)
+        msg = apply_above_comments(comment_users, parent_id, tags[0], date)
       end
     end
-
   end
 
+  msg
 end
 
 def apply_above_comments(comment_users, parent_id, user_id, date)
+  msg = ""
   comment_users.each do |comment|
     if comment.parent_id == parent_id && comment.user_id == user_id && comment.date < date
       # puts "apply_above_comments ========> " + comment.id.to_s
+      msg = msg + comment.message + ", "
       comment.destroy!
     end
   end
+  msg
 end
 
 def get_message_tags(comment_id)
@@ -142,12 +147,29 @@ def get_message_tags(comment_id)
   user_ids
 end
 
-def check_auto_reply(message, comment_id, parent_id, user_id)
+def check_auto_reply(fb_post, message, comment_id, parent_id, user_id, date)
+
   fb_comment_actions = FbCommentAction.by_is_active(true)
   is_auto = false
   fb_comment_actions.each do |ac|
     Rails.logger.info("action_auto check " + ac.comment)
-    if ac.condition == "contain"
+    if ac.condition == "phone"
+      phone = message.match(/[89]\d{7}/)
+      unless phone.nil?
+        action_auto_reply(comment_id, parent_id, user_id, ac)
+
+        msg = check_post_comments(fb_post, parent_id, comment_id, date)
+
+        product_sale_call = ProductSaleCall.new(code: fb_post.product_code,
+                                                quantity: 1,
+                                                message: msg + message,
+                                                phone: phone)
+        product_sale_call.save(validate: false)
+
+        is_auto = true
+        return is_auto
+      end
+    elsif ac.condition == "contain"
       if message.downcase.include? ac.comment
         action_auto_reply(comment_id, parent_id, user_id, ac)
         is_auto = true
