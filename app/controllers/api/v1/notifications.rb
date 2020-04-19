@@ -43,7 +43,7 @@ module API
                     if from_id == ENV['FB_PAGE_ID']
                       check_post_comments(fb_post, obj[:parent_id], obj[:comment_id], Time.at(obj[:created_time]))
                     else
-                      unless check_auto_reply(obj[:message], obj[:comment_id])
+                      unless check_auto_reply(obj[:message], obj[:comment_id], obj[:parent_id], from_id)
                         FbComment.create(fb_post: fb_post,
                                          message: obj[:message],
                                          comment_id: obj[:comment_id],
@@ -142,27 +142,27 @@ def get_message_tags(comment_id)
   user_ids
 end
 
-def check_auto_reply(message, comment_id)
+def check_auto_reply(message, comment_id, parent_id, user_id)
   fb_comment_actions = FbCommentAction.by_is_active(true)
   is_auto = false
   fb_comment_actions.each do |ac|
     Rails.logger.info("action_auto check " + ac.comment)
     if ac.condition == "contain"
       if message.downcase.include? ac.comment
-        action_auto_reply(comment_id, ac)
+        action_auto_reply(comment_id, parent_id, user_id, ac)
         is_auto = true
         return is_auto
       end
     elsif ac.condition == "start"
       if message.downcase.start_with? ac.comment
-        action_auto_reply(comment_id, ac)
+        action_auto_reply(comment_id, parent_id, user_id, ac)
         is_auto = true
         return is_auto
       end
     else
       #match
       if message.downcase == ac.comment
-        action_auto_reply(comment_id, ac)
+        action_auto_reply(comment_id, parent_id, user_id, ac)
         is_auto = true
         return is_auto
       end
@@ -176,11 +176,11 @@ def check_auto_reply(message, comment_id)
   is_auto
 end
 
-def action_auto_reply(comment_id, fb_comment_action)
+def action_auto_reply(comment_id, parent_id, user_id, fb_comment_action)
   if fb_comment_action.action_type == "reply"
 
     Rails.logger.info("action_auto reply: #{comment_id}==>#{fb_comment_action.reply_txt}")
-    ApplicationController.helpers.fb_reply_comment(comment_id, fb_comment_action.reply_txt)
+    ApplicationController.helpers.fb_reply_comment(comment_id, parent_id, user_id, fb_comment_action.reply_txt)
   elsif fb_comment_action.action_type == "message"
 
     Rails.logger.info("action_auto message: #{comment_id}==>#{fb_comment_action.reply_txt}")

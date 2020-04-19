@@ -48,7 +48,7 @@ class FbComment < ApplicationRecord
       phone = message.match(/[8-9]{1}[0-9]{7}/)
       unless phone.nil?
         product_sale_call = ProductSaleCall.new(code: fb_post.product_code,
-                                                quantity: 0,
+                                                quantity: 1,
                                                 phone: phone)
         product_sale_call.save(validate: false)
       end

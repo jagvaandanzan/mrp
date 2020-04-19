@@ -24,7 +24,7 @@ class Users::FbCommentsController < Users::BaseController
   def update
     @fb_comment.attributes = fb_comment_params
     if @fb_comment.valid?
-      alert, msg = ApplicationController.helpers.fb_reply_comment(@fb_comment.comment_id, @fb_comment.reply_text)
+      alert, msg = ApplicationController.helpers.fb_reply_comment(@fb_comment.comment_id, @fb_comment.parent_id, @fb_comment.user_id, @fb_comment.reply_text)
 
       flash[alert] = msg
 
