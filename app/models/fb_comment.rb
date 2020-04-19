@@ -1,6 +1,7 @@
 class FbComment < ApplicationRecord
   belongs_to :fb_post
 
+  after_create :check_phone
   validates :reply_text, presence: true, on: :update
 
   validates_uniqueness_of :comment_id
@@ -38,4 +39,19 @@ class FbComment < ApplicationRecord
     items
   }
 
+  private
+
+  def check_phone
+    if message.present?
+      # [8-9]{1}[0-9]{7}
+      # [89]\d{7}
+      phone = message.match(/[8-9]{1}[0-9]{7}/)
+      unless phone.nil?
+        product_sale_call = ProductSaleCall.new(code: fb_post.product_code,
+                                                quantity: 0,
+                                                phone: phone)
+        product_sale_call.save(validate: false)
+      end
+    end
+  end
 end

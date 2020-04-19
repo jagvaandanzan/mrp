@@ -40,6 +40,7 @@
               <tr>
                 <th><%= t('activerecord.attributes.product_sale_call.phone') %></th>
                 <th><%= t('activerecord.attributes.product_sale_call.product_id') %></th>
+                <th><%= t('activerecord.attributes.product_sale_call.code') %></th>
                 <th><%= t('activerecord.attributes.product_sale_call.quantity') %></th>
                 <th><%= t('activerecord.attributes.product_sale_call.created_at') %></th>
                 <th></th>
@@ -47,7 +48,8 @@
               <% @sale_calls.each do |p| %>
                 <tr>
                   <td class="va-mid"><%= p.phone %></td>
-                  <td class="va-mid"><%= p.product.name_with_code %></td>
+                  <td class="va-mid"><%= p.product.present? ? p.product.name_with_code : '' %></td>
+                  <td class="va-mid"><%= p.code %></td>
                   <td class="va-mid"><%= p.quantity %></td>
                   <td class="va-mid" style="white-space: nowrap"><%= p.created_at.strftime('%F %R') %></td>
                   <td>

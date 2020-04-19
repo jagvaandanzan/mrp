@@ -278,6 +278,7 @@ mn:
       product_sale_call:
         phone: Утас
         product_id: Бараа
+        code: Барааны код
         quantity: Тоо хэмжээ
         remainder: Үлдэгдэл
         created_at: Огноо

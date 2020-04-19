@@ -1,5 +1,5 @@
 class ProductSaleCall < ApplicationRecord
-  belongs_to :product
+  belongs_to :product, optional: true
   belongs_to :operator, optional: true
 
   before_validation :set_remainder
