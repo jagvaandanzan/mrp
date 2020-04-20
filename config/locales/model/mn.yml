@@ -73,6 +73,12 @@ mn:
         start: Эхэлсэн
         contain: Агуулсан
         phone: Утас
+    fb_comment_archive:
+      verb:
+        is_add: 'Энгийн'
+        is_hide: Нуусан
+        is_remove: Устгасан
+        is_reaction: Лайк
   activerecord:
     models:
       admin_user: Админ

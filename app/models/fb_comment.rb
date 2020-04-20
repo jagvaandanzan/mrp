@@ -6,7 +6,7 @@ class FbComment < ApplicationRecord
 
   validates_uniqueness_of :comment_id
 
-  attr_accessor :reply_text, :reply_comment
+  attr_accessor :reply_text, :reply_comment, :verb
 
   scope :by_fb_post, ->(fb_post) {
     where(fb_post_id: fb_post)
@@ -62,6 +62,7 @@ class FbComment < ApplicationRecord
   def to_archive
     FbCommentArchive.create(fb_post: fb_post,
                             message: message,
+                            verb: verb,
                             comment_id: comment_id,
                             parent_id: parent_id,
                             user_id: user_id,

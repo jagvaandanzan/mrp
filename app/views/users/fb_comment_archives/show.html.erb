@@ -9,6 +9,7 @@
               <div class="bg-yellow p-10"><%= @fb_comment_archive.user_name %></div>
             </td>
             <td class="va-mid"><%= @fb_comment_archive.message %></td>
+            <td class="va-mid"><%= @fb_comment_archive.verb_i18n %></td>
             <td class="va-mid nowrap"><%= @fb_comment_archive.date.strftime('%F %R') %></td>
           </tr>
 
@@ -18,6 +19,7 @@
                 <strong><%= comment.user_name.presence || :'Market.mn' %></strong>
               </td>
               <td class="va-mid"><%= comment.message %></td>
+              <td class="va-mid"><%= comment.verb_i18n %></td>
               <td class="va-mid nowrap"><%= comment.date.strftime('%F %R') %></td>
             </tr>
           <% } %>

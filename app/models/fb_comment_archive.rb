@@ -7,6 +7,8 @@ class FbCommentArchive < ApplicationRecord
 
   before_create :find_parent
 
+  enum verb: {is_add: 0, is_hide: 1, is_remove: 2, is_reaction: 3}
+
   scope :order_date, -> {
     order(:date)
   }

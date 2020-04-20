@@ -43,10 +43,10 @@ module API
                     if from_id == ENV['FB_PAGE_ID']
                       check_post_comments(fb_post, obj[:parent_id], obj[:comment_id], created_at)
                       FbCommentArchive.create(fb_post: fb_post,
-                                       message: obj[:message],
-                                       comment_id: obj[:comment_id],
-                                       parent_id: obj[:parent_id],
-                                       date: created_at)
+                                              message: obj[:message],
+                                              comment_id: obj[:comment_id],
+                                              parent_id: obj[:parent_id],
+                                              date: created_at)
                     else
                       unless check_auto_reply(fb_post, obj[:message], obj[:comment_id], obj[:parent_id], from_id, created_at)
                         FbComment.create(fb_post: fb_post,
@@ -65,6 +65,7 @@ module API
                   if fb_comment.present?
                     if obj[:verb] == "hide" || obj[:verb] == "remove"
                       # fb_comment.update_attribute(:is_hide, true)
+                      fb_comment.verb = "is_#{obj[:verb]}"
                       fb_comment.destroy!
                     elsif obj[:verb] == "edited"
                       fb_comment.update_attribute(:message, obj[:message])
@@ -81,6 +82,7 @@ module API
                   fb_comments = fb_post.fb_comments.by_comment_id(obj[:comment_id])
                   if fb_comments.present?
                     fb_comment = fb_comments.first
+                    fb_comment.verb = "is_reaction"
                     fb_comment.destroy!
                   end
                 end

@@ -42,6 +42,7 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.fb_post_id') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.user_name') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.message') %></th>
+                <th class="th-center va-mid"></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.date') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.post_id') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.reply') %></th>
@@ -51,6 +52,7 @@
                   <td class="va-mid underline"><%= fb_comment_archive.fb_post.full_name %></td>
                   <td class="va-mid"><%= fb_comment_archive.user_name.presence || 'Market.mn' %></td>
                   <td class="va-mid"><%= fb_comment_archive.message %></td>
+                  <td class="va-mid"><%= fb_comment_archive.verb_i18n %></td>
                   <td class="td-center va-mid"><%= fb_comment_archive.date.strftime('%F %R') %></td>
                   <td class="td-center va-mid"><%= link_to 'fb post', "https://www.facebook.com/#{ENV['FB_PAGE_ID']}/posts/#{fb_comment_archive.fb_post.post_id}/", target: '_blank' %></td>
                   <td class="td-center va-mid">
