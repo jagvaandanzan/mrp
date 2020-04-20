@@ -32,7 +32,7 @@ class FbCommentArchive < ApplicationRecord
 
   def find_parent
     unless parent_id.start_with? ENV['FB_PAGE_ID']
-      fb_comments = self.by_parent_id(parent_id)
+      fb_comments = FbCommentArchive.by_parent_id(parent_id)
       if fb_comments.present?
         self.archive = fb_comments.first
       end
