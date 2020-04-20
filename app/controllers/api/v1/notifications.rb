@@ -36,10 +36,9 @@ module API
                 Rails.logger.info(entry.to_json)
                 if obj[:verb] == "add"
                   post_id = obj[:post_id].split('_')[1]
-                  fb_posts = FbPost.by_post_id(post_id)
+                  fb_post = FbPost.find_by_post_id(post_id)
 
-                  if fb_posts.present?
-                    fb_post = fb_posts.first
+                  if fb_post.present?
                     created_at = Time.at(obj[:created_time])
                     if from_id == ENV['FB_PAGE_ID']
                       check_post_comments(fb_post, obj[:parent_id], obj[:comment_id], created_at)
@@ -62,9 +61,8 @@ module API
                     end
                   end
                 else
-                  fb_comments = FbComment.by_comment_id(obj[:comment_id])
-                  if fb_comments.present?
-                    fb_comment = fb_comments.first
+                  fb_comment = FbComment.find_by_comment_id(obj[:comment_id])
+                  if fb_comment.present?
                     if obj[:verb] == "hide" || obj[:verb] == "remove"
                       # fb_comment.update_attribute(:is_hide, true)
                       fb_comment.destroy!
@@ -78,9 +76,8 @@ module API
               elsif obj[:item] == "reaction" && from_id == ENV['FB_PAGE_ID'] && obj[:comment_id].present?
                 Rails.logger.info(entry.to_json)
                 post_id = obj[:post_id].split('_')[1]
-                fb_posts = FbPost.by_post_id(post_id)
-                if fb_posts.present?
-                  fb_post = fb_posts.first
+                fb_post = FbPost.find_by_post_id(post_id)
+                if fb_post.present?
                   fb_comments = fb_post.fb_comments.by_comment_id(obj[:comment_id])
                   if fb_comments.present?
                     fb_comment = fb_comments.first

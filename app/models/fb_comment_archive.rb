@@ -18,8 +18,9 @@ class FbCommentArchive < ApplicationRecord
     where(parent_id: parent_id)
   }
 
-  scope :search, ->(fb_post_id, user_name, message, date) {
+  scope :search, ->(comment_id, fb_post_id, user_name, message, date) {
     items = order_date
+    items = items.where(parent_id: comment_id) if comment_id.present?
     items = items.where(fb_post_id: fb_post_id) if fb_post_id.present?
     items = items.where('user_name LIKE :value', value: "%#{user_name}%") if user_name.present?
     items = items.where('message LIKE :value', value: "%#{message}%") if message.present?
@@ -32,9 +33,9 @@ class FbCommentArchive < ApplicationRecord
 
   def find_parent
     unless parent_id.start_with? ENV['FB_PAGE_ID']
-      fb_comments = FbCommentArchive.by_parent_id(parent_id)
-      if fb_comments.present?
-        self.archive = fb_comments.first
+      fb_comment = FbCommentArchive.find_by_comment_id(parent_id)
+      if fb_comment.present?
+        self.archive = fb_comment
       end
     end
   end

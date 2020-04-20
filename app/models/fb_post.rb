@@ -9,6 +9,9 @@ class FbPost < ApplicationRecord
   scope :order_date, -> {
     order(created_at: :desc)
   }
+  scope :order_code, -> {
+    order(:product_code)
+  }
 
   scope :order_updated, -> {
     order(updated: :desc)
