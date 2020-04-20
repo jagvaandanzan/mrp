@@ -69,7 +69,7 @@ module API
                       # fb_comment.update_attribute(:is_hide, true)
                       fb_comment.destroy!
                     elsif obj[:verb] == "edited"
-                      fb_comment.update_attribute(message, obj[:message])
+                      fb_comment.update_attribute(:message, obj[:message])
                     end
                   end
                 end
