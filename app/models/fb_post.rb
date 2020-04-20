@@ -1,4 +1,5 @@
 class FbPost < ApplicationRecord
+  acts_as_paranoid
 
   validates :post_id, :product_name, :product_code, presence: true, length: {maximum: 255}
   validates_uniqueness_of :post_id

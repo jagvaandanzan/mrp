@@ -1,7 +1,7 @@
 class FbComment < ApplicationRecord
   belongs_to :fb_post
 
-  after_create :check_phone
+  before_destroy :to_archive
   validates :reply_text, presence: true, on: :update
 
   validates_uniqueness_of :comment_id
@@ -53,5 +53,9 @@ class FbComment < ApplicationRecord
         product_sale_call.save(validate: false)
       end
     end
+  end
+
+  def to_archive
+
   end
 end

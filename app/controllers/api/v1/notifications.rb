@@ -43,6 +43,11 @@ module API
                     created_at = Time.at(obj[:created_time])
                     if from_id == ENV['FB_PAGE_ID']
                       check_post_comments(fb_post, obj[:parent_id], obj[:comment_id], created_at)
+                      FbCommentArchive.create(fb_post: fb_post,
+                                       message: obj[:message],
+                                       comment_id: obj[:comment_id],
+                                       parent_id: obj[:parent_id],
+                                       date: created_at)
                     else
                       unless check_auto_reply(fb_post, obj[:message], obj[:comment_id], obj[:parent_id], from_id, created_at)
                         FbComment.create(fb_post: fb_post,
