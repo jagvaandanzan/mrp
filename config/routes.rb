@@ -119,6 +119,7 @@ Rails.application.routes.draw do
     end
     resources :fb_posts
     resources :fb_comment_actions
+    resources :fb_comment_archives, only: [:index, :show]
 
     match "*any", to: "base#routing_error", via: :all
   end

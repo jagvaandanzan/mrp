@@ -4,7 +4,7 @@
 <% end %>
 <div class="content-wrapper">
   <div class="col-md-12 m-t-10 m-b-10">
-    <%= form_with url: users_fb_comments_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+    <%= form_with url: users_fb_comment_archives_path, method: "get", class: 'form-horizontal', local: true do |f| %>
       <div class="col-md-3 search">
         <%= f.collection_select :fb_post_id, FbPost.order_code, :id, :full_name,
                                 {:selected => @fb_post_id, :include_blank => t('controls.select.none')},
@@ -25,7 +25,7 @@
         </div>
       </div>
       <div class="col-md-2 search">
-        <%= submit_tag t('controls.button.searching') + " (" + @fb_comments.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
+        <%= submit_tag t('controls.button.searching') + " (" + @fb_comment_archives.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
       </div>
     <% end %>
   </div>
@@ -44,24 +44,21 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.message') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.date') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.post_id') %></th>
-                <th class="th-center va-mid"></th>
-                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.history') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.reply') %></th>
               </tr>
-              <% @fb_comments.each do |fb_comment| %>
+              <% @fb_comment_archives.each do |fb_comment_archive| %>
                 <tr>
-                  <td class="va-mid underline"><%= fb_comment.fb_post.full_name %></td>
-                  <td class="va-mid underline"><%= link_to fb_comment.user_name.presence || 'Market.mn', users_fb_comment_path(fb_comment) %></td>
-                  <td class="va-mid"><%= fb_comment.message %></td>
-                  <td class="td-center va-mid"><%= fb_comment.date.strftime('%F %R') %></td>
-                  <td class="td-center va-mid"><%= link_to 'fb post', "https://www.facebook.com/#{ENV['FB_PAGE_ID']}/posts/#{fb_comment.fb_post.post_id}/", target: '_blank' %></td>
+                  <td class="va-mid underline"><%= fb_comment_archive.fb_post.full_name %></td>
+                  <td class="va-mid"><%= fb_comment_archive.user_name.presence || 'Market.mn' %></td>
+                  <td class="va-mid"><%= fb_comment_archive.message %></td>
+                  <td class="td-center va-mid"><%= fb_comment_archive.date.strftime('%F %R') %></td>
+                  <td class="td-center va-mid"><%= link_to 'fb post', "https://www.facebook.com/#{ENV['FB_PAGE_ID']}/posts/#{fb_comment_archive.fb_post.post_id}/", target: '_blank' %></td>
                   <td class="td-center va-mid">
-                    <%= link_to edit_users_fb_comment_path(fb_comment) do %>
-                      <button type="button" class="btn btn-sm btn-info">Reply comment</button>
-                    <% end %>
-                  </td>
-                  <td class="td-center va-mid">
-                    <%= link_to users_fb_comment_archives_path(cid: fb_comment.comment_id) do %>
-                      <%= fb_comment.history %>
+                    <% replies = fb_comment_archive.replies.count %>
+                    <% if replies > 0 %>
+                      <%= link_to users_fb_comment_archive_path(fb_comment_archive) do %>
+                        <button type="button" class="btn btn-sm btn-info"><%= replies %></button>
+                      <% end %>
                     <% end %>
                   </td>
                 </tr>
@@ -69,7 +66,7 @@
             </table>
           </div>
         </div>
-        <%= paginate @fb_comments %>
+        <%= paginate @fb_comment_archives %>
       </div>
     </div>
   </section>

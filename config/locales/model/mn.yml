@@ -97,6 +97,7 @@ mn:
       category_filter_group: Категорын шүүлтүүр
       fb_post: Пост
       fb_comment: Комментууд
+      fb_comment_archive: Түүх
       fb_comment_action: Автомат хариу
     attributes:
       admin_user:
@@ -322,12 +323,15 @@ mn:
         date: Огноо
         reply_comment: Коммент бичих
         reply_text: Хариу мессеж
+        history: Түүх
       fb_comment_action:
         is_active: Идэвхтэй
         action_type: Төрөл
         condition: Нөхцөл
         comment: Текст
         reply_txt: Хариу
+      fb_comment_archive:
+        reply: Хариу
       ali_category:
         name_mn: Монгол
         name: Англи

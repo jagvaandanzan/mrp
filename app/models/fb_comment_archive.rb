@@ -3,6 +3,7 @@ class FbCommentArchive < ApplicationRecord
 
   belongs_to :fb_post
   belongs_to :archive, :class_name => "FbCommentArchive", optional: true
+  has_many :replies, :class_name => "FbCommentArchive", :foreign_key => "archive_id", dependent: :destroy
 
   before_create :find_parent
 
@@ -18,8 +19,17 @@ class FbCommentArchive < ApplicationRecord
     where(parent_id: parent_id)
   }
 
-  scope :search, ->(comment_id, fb_post_id, user_name, message, date) {
+  scope :is_archive, ->(is = "") {
+    where("archive_id IS#{is} ?", nil)
+  }
+
+  scope :search, ->(archive_id, comment_id, fb_post_id, user_name, message, date) {
     items = order_date
+    if archive_id.present?
+      items = items.where(archive_id: archive_id) if archive_id.present?
+    else
+      items = items.is_archive
+    end
     items = items.where(parent_id: comment_id) if comment_id.present?
     items = items.where(fb_post_id: fb_post_id) if fb_post_id.present?
     items = items.where('user_name LIKE :value', value: "%#{user_name}%") if user_name.present?

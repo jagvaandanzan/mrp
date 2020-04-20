@@ -19,6 +19,7 @@ class Users::FbCommentsController < Users::BaseController
   end
 
   def edit
+    @post_message, @comments = ApplicationController.helpers.fb_get_post(@fb_comment.fb_post.post_id, @fb_comment.parent_id)
   end
 
   def update
@@ -35,6 +36,7 @@ class Users::FbCommentsController < Users::BaseController
   end
 
   def messages
+    @post_message, @comments = ApplicationController.helpers.fb_get_post(@fb_comment.fb_post.post_id, @fb_comment.parent_id)
   end
 
   def send_message

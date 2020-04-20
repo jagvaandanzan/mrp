@@ -65,7 +65,7 @@ class FbComment < ApplicationRecord
                             comment_id: comment_id,
                             parent_id: parent_id,
                             user_id: user_id,
-                            user_name: created_at,
+                            user_name: user_name,
                             date: created_at)
   end
 end

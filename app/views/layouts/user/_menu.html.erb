@@ -28,7 +28,8 @@
         <% end %>
       <% end %>
       <% if (can? :read, FbPost) || (can? :read, FbComment) || (can? :read, FbCommentAction) %>
-        <%= content_tag :li, class: (controller_name == 'fb_posts' || controller_name == 'fb_comments' || controller_name == 'fb_comment_actions') ? 'treeview active' : 'treeview' do %>
+        <%= content_tag :li, class: (controller_name == 'fb_posts' || controller_name == 'fb_comments' || controller_name == 'fb_comment_archives' ||
+            controller_name == 'fb_comment_actions') ? 'treeview active' : 'treeview' do %>
           <%= link_to "#" do %>
             <i class="fa fa-facebook"></i><span><%= t('titles.facebook') %></span>
             <span class="pull-right-container">
@@ -47,6 +48,11 @@
               <%= content_tag :li, class: controller_name == 'fb_comments' ? 'active' : '' do %>
                 <%= link_to users_fb_comments_path do %>
                   <i class="fa fa-comments"></i><span><%= t('activerecord.models.fb_comment') %></span>
+                <% end %>
+              <% end %>
+              <%= content_tag :li, class: controller_name == 'fb_comment_archives' ? 'active' : '' do %>
+                <%= link_to users_fb_comment_archives_path do %>
+                  <i class="fa fa-history"></i><span><%= t('activerecord.models.fb_comment_archive') %></span>
                 <% end %>
               <% end %>
             <% end %>
