@@ -153,23 +153,24 @@ def check_auto_reply(fb_post, message, comment_id, parent_id, user_id, date)
   is_auto = false
   fb_comment_actions.each do |ac|
     Rails.logger.info("action_auto check " + ac.comment)
-    if ac.condition == "phone"
-      phone = message.match(/[89]\d{7}/)
-      unless phone.nil?
-        action_auto_reply(comment_id, parent_id, user_id, ac)
-
-        msg = check_post_comments(fb_post, parent_id, comment_id, date)
-
-        product_sale_call = ProductSaleCall.new(code: fb_post.product_code,
-                                                quantity: 1,
-                                                message: msg + message,
-                                                phone: phone)
-        product_sale_call.save(validate: false)
-
-        is_auto = true
-        return is_auto
-      end
-    elsif ac.condition == "contain"
+    # if ac.condition == "phone"
+    #   phone = message.match(/[89]\d{7}/)
+    #   unless phone.nil?
+    #     action_auto_reply(comment_id, parent_id, user_id, ac)
+    #
+    #     msg = check_post_comments(fb_post, parent_id, comment_id, date)
+    #
+    #     product_sale_call = ProductSaleCall.new(code: fb_post.product_code,
+    #                                             quantity: 1,
+    #                                             message: msg + message,
+    #                                             phone: phone)
+    #     product_sale_call.save(validate: false)
+    #
+    #     is_auto = true
+    #     return is_auto
+    #   end
+    # elsif ac.condition == "contain"
+    if ac.condition == "contain"
       if message.downcase.include? ac.comment
         action_auto_reply(comment_id, parent_id, user_id, ac)
         is_auto = true
