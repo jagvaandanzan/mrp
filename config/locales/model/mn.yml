@@ -75,7 +75,7 @@ mn:
         phone: Утас
     fb_comment_archive:
       verb:
-        is_add: 'Энгийн'
+        is_add: ''
         is_hide: Нуусан
         is_remove: Устгасан
         is_reaction: Лайк
