@@ -39,6 +39,10 @@ class FbComment < ApplicationRecord
     items
   }
 
+  def history
+    FbCommentArchive.by_parent_id(comment_id).count
+  end
+
   private
 
   def check_phone
@@ -56,6 +60,12 @@ class FbComment < ApplicationRecord
   end
 
   def to_archive
-
+    FbCommentArchive.create(fb_post: fb_post,
+                            message: message,
+                            comment_id: comment_id,
+                            parent_id: parent_id,
+                            user_id: user_id,
+                            user_name: created_at,
+                            date: created_at)
   end
 end
