@@ -1,11 +1,10 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-# ruby '2.6.3'
-ruby '>=2.6.3'
+ruby '2.6.3'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-# gem 'rails', '~> 5.2.3'
-gem 'rails', '~> 6.0.2', '>= 6.0.2.2'
+gem 'rails', '~> 5.2.3'
 # Use mysql as the database for Active Record
 gem 'mysql2', '0.5.2'
 # Use Puma as the app server
@@ -74,7 +73,7 @@ gem 'kaminari' # page
 gem 'grape'
 gem 'grape-jbuilder'
 gem 'grape-entity'
-# gem 'rufus-scheduler'
+gem 'google-cloud-translate'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
