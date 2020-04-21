@@ -2,7 +2,7 @@ module FacebookHelper
 
   def fb_reply_comment(comment_id, parent_id, user_id, message)
     unless parent_id.start_with? ENV['FB_PAGE_ID']
-      message = "@[{#{user_id}}] #{message}"
+      message = "@[#{user_id}] #{message}"
     end
     param = {
         "message": message
