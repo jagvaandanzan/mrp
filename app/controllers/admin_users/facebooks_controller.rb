@@ -39,16 +39,18 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
     data.each do |json|
       product_name = nil
       product_code = nil
-      json['message'].lines.each_with_index {|line, index|
-        if index == 0
-          product_name = line.squish
-        elsif line.start_with? "#Код:"
-          product_code = line.gsub('#Код:', '').gsub(' ', '').squish
-          break
+      if json['message'].present?
+        json['message'].lines.each_with_index {|line, index|
+          if index == 0
+            product_name = line.squish
+          elsif line.start_with? "#Код:"
+            product_code = line.gsub('#Код:', '').gsub(' ', '').squish
+            break
+          end
+        }
+        if !product_name.nil? && !product_code.nil?
+          FbPost.create(post_id: json['id'].gsub("#{ENV['FB_PAGE_ID']}_", ''), product_name: product_name, product_code: product_code)
         end
-      }
-      if !product_name.nil? && !product_code.nil?
-        FbPost.create(post_id: json['id'].gsub("#{ENV['FB_PAGE_ID']}_", ''), product_name: product_name, product_code: product_code)
       end
     end
   end
