@@ -32,6 +32,7 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_post.post_id') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_post.product_code') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_post.product_name') %></th>
+                <th></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_post.fb_comments') %></th>
               </tr>
               <% @fb_posts.each do |fb_post| %>
@@ -39,6 +40,7 @@
                   <td class="va-mid underline"><%= link_to fb_post.post_id, users_fb_post_path(fb_post) %></td>
                   <td class="va-mid"><%= fb_post.product_code %></td>
                   <td class="va-mid"><%= fb_post.product_name %></td>
+                  <td class="td-center va-mid"><%= link_to 'fb post', "https://www.facebook.com/#{ENV['FB_PAGE_ID']}/posts/#{fb_post.post_id}/", target: '_blank' %></td>
                   <td class="th-center va-mid"><%= link_to fb_post.fb_comments.by_fb_post(fb_post.id).count, users_fb_comments_path(fb_post_id: fb_post.id) %></td>
                 </tr>
               <% end %>
