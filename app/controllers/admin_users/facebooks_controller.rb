@@ -19,8 +19,12 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
       if response.code.to_i == 200
         json = JSON.parse(response.body)
         parse_post(json['data'])
-        prev_after = after
-        after = json['paging']['cursors']['after']
+        if json['paging'].present? && json['paging']['cursors'].present?
+          prev_after = after
+          after = json['paging']['cursors']['after']
+        else
+          after = prev_after
+        end
 
       else
         after = prev_after
@@ -32,6 +36,9 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
   end
 
   def get_posts(after = nil)
+    unless after.nil?
+      puts "#{after}"
+    end
     ApplicationController.helpers.api_send("#{ENV['FB_API']}#{ENV['FB_PAGE_ID']}/posts?access_token=#{ENV['FB_TOKEN']}&fields=id,message#{after.nil? ? '' : '&after=' + after}", 'get', nil)
   end
 
