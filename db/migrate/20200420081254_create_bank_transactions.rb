@@ -4,7 +4,7 @@ class CreateBankTransactions < ActiveRecord::Migration[5.2]
       t.datetime :date
       t.string :value
       t.float :first_balance
-      t.int :summary
+      t.integer :summary
       t.float :final_balance
       t.string :account
 
