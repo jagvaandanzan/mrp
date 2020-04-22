@@ -1,20 +1,15 @@
-<section class="content-header">
-  <div class="container-fluid">
-    <h1><%= t('titles.transfer_money') %> </h1>
-  </div>
-</section>
-
-<section class="content">
-  <div class="card">
-    <div class="card-body">
-      <table class="table">
-        <tr>
-          <td><%= @code %></td>
-        </tr>
-        <tr>
-          <td><%= @body.html_safe? %></td>
-        </tr>
-      </table>
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <h1><%= @code %></h1>
     </div>
-  </div>
-</section>
+  </section>
+
+  <section class="content">
+    <div class="card">
+      <div class="card-body">
+        <%= @body %>
+      </div>
+    </div>
+  </section>
+</div>

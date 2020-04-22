@@ -55,10 +55,13 @@ Rails.application.routes.draw do
     resources :administrators, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :users, only: [:index, :create, :new, :show, :edit, :update, :destroy]
 
-    # namespace :bank_logins do
-    #   get 'login'
-    #   get 'statement'
-    # end
+    namespace :bank_logins do
+      get 'login'
+    end
+
+    namespace :facebooks do
+      get 'posts'
+    end
 
     match "*any", to: "base#routing_error", via: :all
   end
@@ -78,12 +81,7 @@ Rails.application.routes.draw do
     resources :product_suppliers, only: [:index, :create, :new, :show, :edit, :update, :destroy]
     resources :product_features, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_feature_options, only: [:index, :create, :new, :edit, :update, :destroy]
-    resources :category_filter_groups, only: [:index, :create, :new, :show, :edit, :update, :destroy], path: "category/filters" do
-      collection do
-        get 'translate'
-        get 'translate_prod'
-      end
-    end
+    resources :category_filter_groups, only: [:index, :create, :new, :show, :edit, :update, :destroy], path: "category/filters"
     resources :products, only: [:index, :create, :new, :show, :edit, :update, :destroy] do
       collection do
         patch 'get_product_category_children'
