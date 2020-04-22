@@ -18,7 +18,7 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
       response = get_posts(after)
       if response.code.to_i == 200
         json = JSON.parse(response.body)
-
+        parse_post(json['data'])
         prev_after = after
         after = json['paging']['cursors']['after']
 
@@ -32,7 +32,7 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
   end
 
   def get_posts(after = nil)
-    ApplicationController.helpers.api_send("#{ENV['FB_API']}#{ENV['FB_PAGE_ID']}/published_posts?access_token=#{ENV['FB_TOKEN']}&fields=id,message&limit=2&summary=total_count#{after.nil? ? '' : '&after=' + after}", 'get', nil)
+    ApplicationController.helpers.api_send("#{ENV['FB_API']}#{ENV['FB_PAGE_ID']}/posts?access_token=#{ENV['FB_TOKEN']}&fields=id,message#{after.nil? ? '' : '&after=' + after}", 'get', nil)
   end
 
   def parse_post(data)
@@ -44,12 +44,11 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
           product_name = line.squish
         elsif line.start_with? "#Код:"
           product_code = line.gsub('#Код:', '').gsub(' ', '').squish
-        else
-          # return true
+          break
         end
       }
       if !product_name.nil? && !product_code.nil?
-        FbPost.create(post_id: json['id'], product_name: product_name, product_code: product_code)
+        FbPost.create(post_id: json['id'].gsub("#{ENV['FB_PAGE_ID']}_", ''), product_name: product_name, product_code: product_code)
       end
     end
   end
