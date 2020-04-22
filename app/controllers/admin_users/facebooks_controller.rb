@@ -37,7 +37,7 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
 
   def get_posts(after = nil)
     unless after.nil?
-      puts "#{after}"
+      logger.info("after=#{after}")
     end
     ApplicationController.helpers.api_send("#{ENV['FB_API']}#{ENV['FB_PAGE_ID']}/posts?access_token=#{ENV['FB_TOKEN']}&fields=id,message,created_time,is_published#{after.nil? ? '' : '&after=' + after}", 'get', nil)
   end
@@ -47,7 +47,7 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
       if json['is_published']
         product_name = nil
         product_code = nil
-        if json['message'].present?
+        if json['message'].present? && json['message'].include?("77779990")
           json['message'].lines.each_with_index {|line, index|
             if index == 0
               product_name = line.squish
@@ -56,9 +56,9 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
               break
             end
           }
-          if !product_name.nil? && !product_code.nil?
+          unless product_name.nil?
             data = DateTime.parse(json['created_time'])
-            FbPost.create(post_id: json['id'].gsub("#{ENV['FB_PAGE_ID']}_", ''), product_name: product_name, product_code: product_code, created_at: data, updated_at: data)
+            FbPost.create(post_id: json['id'].gsub("#{ENV['FB_PAGE_ID']}_", ''), product_name: product_name, product_code: product_code.nil? ? '000000' : product_code, created_at: data, updated_at: data)
           end
         end
       end
