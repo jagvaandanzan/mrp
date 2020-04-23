@@ -60,21 +60,15 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
           if message.present? && message.include?("77779990")
             message.lines.each {|line|
               if line.start_with? "#Үнэ"
-                price = (line.gsub(/[^0-9]/, '')).to_i
+                price = line.squish.gsub("#Үнэ", '')
+                price = start_det(price)
                 break
               end
             }
             if message.include?("#Бүтээгдэхүүний_тухай")
               feature = message[/#{str1_marker_string}(.*?)#{str2_marker_string}/m, 1]
-              if feature.start_with? " :"
-                feature[0] = ''
-              elsif feature.start_with? " :"
-                feature[0] = ''
-                feature[1] = ''
-              end
-              unless feature.nil?
-                feature = remove_empty_line(feature)
-              end
+              feature = start_det(feature)
+              feature = remove_empty_line(feature)
             end
             hash_post.price = price
             hash_post.feature = feature
@@ -89,7 +83,8 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
               if index == 0
                 product_name = line.squish
               elsif line.start_with? "#Үнэ"
-                price = (line.gsub(/[^0-9]/, '')).to_i
+                price = line.squish.gsub("#Үнэ", '')
+                price = start_det(price)
               elsif line.start_with? "#Код:"
                 product_code = line.gsub('#Код:', '').gsub(' ', '').squish
                 break
@@ -98,15 +93,8 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
             unless product_name.nil?
               if message.include?("#Бүтээгдэхүүний_тухай")
                 feature = message[/#{str1_marker_string}(.*?)#{str2_marker_string}/m, 1]
-                if feature.start_with? " :"
-                  feature[0] = ''
-                elsif feature.start_with? " :"
-                  feature[0] = ''
-                  feature[1] = ''
-                end
-                unless feature.nil?
-                  feature = remove_empty_line(feature)
-                end
+                feature = start_det(feature)
+                feature = remove_empty_line(feature)
               end
               data = DateTime.parse(json['created_time'])
               fb_post = FbPost.new(post_id: post_id, product_name: product_name, product_code: product_code.nil? ? '000000' : product_code, price: price, feature: feature, created_at: data, updated_at: data)
@@ -131,5 +119,12 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
     else
       txt
     end
+  end
+
+  def start_det(str)
+    if str.length > 3
+      str = str[0..3].gsub(':', '').gsub('.', '').gsub(' ', '') + str[4..str.length]
+    end
+    str
   end
 end

@@ -31,7 +31,7 @@
             <%= f.label :price, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@fb_post, :price) %>">
               <%= field_errors(@fb_post, :price) %>
-              <%= f.number_field :price, class: 'form-control', step: 100, placeholder: t('activerecord.attributes.fb_post.price') %>
+              <%= f.text_field :price, class: 'form-control', placeholder: t('activerecord.attributes.fb_post.price') %>
             </div>
           </div>
           <div class="form-group">
