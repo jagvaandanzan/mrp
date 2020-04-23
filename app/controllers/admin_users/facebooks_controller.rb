@@ -16,22 +16,22 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
       after = json['paging']['cursors']['after']
     end
 
-    # while after != prev_after
-    #   response = get_posts(after)
-    #   if response.code.to_i == 200
-    #     json = JSON.parse(response.body)
-    #     parse_post(json['data'])
-    #     if json['paging'].present? && json['paging']['cursors'].present?
-    #       prev_after = after
-    #       after = json['paging']['cursors']['after']
-    #     else
-    #       after = prev_after
-    #     end
-    #
-    #   else
-    #     after = prev_after
-    #   end
-    # end
+    while after != prev_after
+      response = get_posts(after)
+      if response.code.to_i == 200
+        json = JSON.parse(response.body)
+        parse_post(json['data'], hash_posts)
+        if json['paging'].present? && json['paging']['cursors'].present?
+          prev_after = after
+          after = json['paging']['cursors']['after']
+        else
+          after = prev_after
+        end
+
+      else
+        after = prev_after
+      end
+    end
 
     render 'admin_users/bank_logins/statement'
 
