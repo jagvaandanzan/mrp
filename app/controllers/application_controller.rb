@@ -2,7 +2,11 @@ class ApplicationController < ActionController::Base
   skip_before_action :verify_authenticity_token
 
   def current_ability
-    @current_ability ||= current_user ? Ability.new(current_user) : AdminAbility.new(current_admin_user)
+    @current_ability ||= if current_user
+                           AbilityUser.new(current_user)
+                         else
+                           @current_ability == current_operator ? AbilityOperator.new(current_operator) : AbilityAdmin.new(current_admin_user)
+                         end
   end
 
   rescue_from CanCan::AccessDenied do |exception|

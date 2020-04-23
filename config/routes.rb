@@ -109,13 +109,13 @@ Rails.application.routes.draw do
         patch 'update_filter'
       end
     end
+    resources :fb_posts
     resources :fb_comments, only: [:index, :show, :edit, :update] do
       collection do
         get 'messages'
         patch 'send_message'
       end
     end
-    resources :fb_posts
     resources :fb_comment_actions
     resources :fb_comment_archives, only: [:index, :show]
 
@@ -139,6 +139,15 @@ Rails.application.routes.draw do
         post 'get_prev_sales'
       end
     end
+
+    # resources :fb_comments, only: [:index, :show, :edit, :update] do
+    #   collection do
+    #     get 'messages'
+    #     patch 'send_message'
+    #   end
+    # end
+    # resources :fb_comment_actions
+    resources :fb_comment_archives, only: [:index, :show]
 
     resources :product_sale_calls, only: [:index, :create, :new, :edit, :update, :destroy] do
       collection do

@@ -35,6 +35,27 @@
           <div class="align-left"><%= t('activerecord.attributes.operator.phone') %> :</div>
           <div class="col-data"><%= @operator.phone.presence || :'---' %></div>
         </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.operator.operator_permission_rels') %> :</div>
+          <div class="col-data">
+            <table class="table table-bordered">
+              <thead>
+              <tr>
+                <th><%= t('activerecord.attributes.operator_permission_rel.operator_permission_id') %></th>
+                <th><%= t('activerecord.attributes.operator_permission_rel.role') %></th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @operator.operator_permission_rels.each do |r| %>
+                <tr>
+                  <td class="va-mid"><%= r.operator_permission.description %></td>
+                  <td class="va-mid"><%= r.role_i18n %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   <% end %>

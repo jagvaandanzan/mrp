@@ -59,6 +59,13 @@ mn:
         is_update: Өөрчлөх
         is_destroy: Устгах
         is_manage: Засах
+    operator_permission_rel:
+      role:
+        is_read: Харах
+        is_create: Үүсгэх
+        is_update: Өөрчлөх
+        is_destroy: Устгах
+        is_manage: Засах
     salesman:
       gender:
         male: Эрэгтэй
@@ -134,6 +141,7 @@ mn:
         surname: Овог
         gender: Хүйс
         phone: Утас
+        operator_permission_rels: Хандах эрхүүд
       location:
         name: Хаяг
         name_la: Хаяг латинаар
@@ -292,6 +300,9 @@ mn:
         created_at: Огноо
       user_permission_rel:
         user_permission_id: Хандах эрх
+        role: Үйлдэл
+      operator_permission_rel:
+        operator_permission_id: Хандах эрх
         role: Үйлдэл
       salesman:
         avatar: Зураг

@@ -38,8 +38,8 @@
               </tr>
               <% @operators.each do |operator| %>
                 <tr>
-                  <td class="td-center va-mid underline"><%= link_to operator.name, users_operator_path(operator) %></td>
-                  <td class="td-center va-mid"><%= operator.email %></td>
+                  <td class="va-mid underline"><%= link_to operator.name, users_operator_path(operator) %></td>
+                  <td class="va-mid"><%= operator.email %></td>
                   <td class="td-center va-mid"><%= operator.phone %></td>
                 </tr>
               <% end %>

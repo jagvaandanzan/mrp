@@ -47,6 +47,7 @@ class Users::OperatorsController < Users::BaseController
     flash[:success] = t('alert.deleted_successfully')
     redirect_to action: :index
   end
+
   #
   # def operator_sign_in
   #   sign_in :operator, @operator
@@ -60,6 +61,7 @@ class Users::OperatorsController < Users::BaseController
   end
 
   def operator_params
-    params.require(:operator).permit(:surname, :name, :gender, :email, :phone)
+    params.require(:operator).permit(:surname, :name, :gender, :email, :phone,
+                                     operator_permission_rels_attributes: [:id, :operator_permission_id, :role, :_destroy])
   end
 end

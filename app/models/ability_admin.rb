@@ -1,4 +1,4 @@
-class AdminAbility
+class AbilityAdmin
   include CanCan::Ability
 
   def initialize(current_admin)
@@ -6,7 +6,6 @@ class AdminAbility
     if current_admin.is_admin
       can :manage, :administrator
     end
-
 
     # load_and_authorize_resource модел бол
     # authorize_resource class: false модел биш бол
