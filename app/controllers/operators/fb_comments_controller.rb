@@ -1,4 +1,4 @@
-class Users::FbCommentsController < Users::BaseController
+class Operators::FbCommentsController < Operators::BaseController
   load_and_authorize_resource
   before_action :set_fb_comment, only: [:show, :edit, :update, :messages, :send_message]
 
@@ -13,17 +13,13 @@ class Users::FbCommentsController < Users::BaseController
             end
     @fb_comments = FbComment.search(@fb_post_id, @user_name, @message, @date).page(params[:page])
     cookies[:fb_comment_page_number] = params[:page]
-
-    render 'operators/fb_comments/index'
   end
 
   def show
-    render 'operators/fb_comments/show'
   end
 
   def edit
     @post_message, @comments = ApplicationController.helpers.fb_get_post(@fb_comment.fb_post.post_id, @fb_comment.parent_id)
-    render 'operators/fb_comments/edit'
   end
 
   def update
@@ -41,7 +37,6 @@ class Users::FbCommentsController < Users::BaseController
 
   def messages
     @post_message, @comments = ApplicationController.helpers.fb_get_post(@fb_comment.fb_post.post_id, @fb_comment.parent_id)
-    render 'operators/fb_comments/messages'
   end
 
   def send_message

@@ -116,7 +116,6 @@ Rails.application.routes.draw do
         patch 'send_message'
       end
     end
-    resources :fb_comment_actions
     resources :fb_comment_archives, only: [:index, :show]
 
     match "*any", to: "base#routing_error", via: :all
@@ -140,13 +139,13 @@ Rails.application.routes.draw do
       end
     end
 
-    # resources :fb_comments, only: [:index, :show, :edit, :update] do
-    #   collection do
-    #     get 'messages'
-    #     patch 'send_message'
-    #   end
-    # end
-    # resources :fb_comment_actions
+    resources :fb_comments, only: [:index, :show, :edit, :update] do
+      collection do
+        get 'messages'
+        patch 'send_message'
+      end
+    end
+    resources :fb_comment_actions
     resources :fb_comment_archives, only: [:index, :show]
 
     resources :product_sale_calls, only: [:index, :create, :new, :edit, :update, :destroy] do

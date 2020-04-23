@@ -7,9 +7,9 @@
 
   <div class="action-buttons">
     <% if can? :manage, FbComment %>
-      <%= link_to t('controls.button.delete'), users_fb_comment_path(@fb_comment), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+      <%= link_to t('controls.button.delete'), current_operator.present? ? operators_fb_comment_path(@fb_comment) : users_fb_comment_path(@fb_comment), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <% end %>
-    <%= link_to t('titles.back_to_list'), users_fb_comments_path(page: cookies[:fb_comment_page_number]), {class: "btn blck-btn"} %>
+    <%= link_to t('titles.back_to_list'), current_operator.present? ? operators_fb_comments_path(page: cookies[:fb_comment_page_number]) : users_fb_comments_path(page: cookies[:fb_comment_page_number]), {class: "btn blck-btn"} %>
   </div>
   <%= show_body do %>
     <div class="box">
@@ -33,14 +33,14 @@
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.fb_comment.reply_comment') %> :</div>
           <div class="col-data">
-            <%= link_to edit_users_fb_comment_path(@fb_comment) do %>
+            <%= link_to current_operator.present? ? edit_operators_fb_comment_path(@fb_comment) : edit_users_fb_comment_path(@fb_comment) do %>
               <button type="button" class="btn btn-sm btn-info"><%= t('activerecord.attributes.fb_comment.reply_comment') %></button>
             <% end %></div>
         </div>
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.fb_comment.reply_text') %> :</div>
           <div class="col-data">
-            <%= link_to messages_users_fb_comments_path(id: @fb_comment.id) do %>
+            <%= link_to current_operator.present? ? messages_operators_fb_comments_path(id: @fb_comment.id) : messages_users_fb_comments_path(id: @fb_comment.id) do %>
               <button type="button" class="btn btn-sm btn-info"><%= t('activerecord.attributes.fb_comment.reply_text') %></button>
             <% end %></div>
         </div>

@@ -13,7 +13,7 @@ class Users::FbCommentArchivesController < Users::BaseController
             end
     @fb_comment_archives = FbCommentArchive.search(params[:archive_id], params[:cid], @fb_post_id, @user_name, @message, @date).page(params[:page])
     cookies[:fb_comment_archive_page_number] = params[:page]
-
+    render 'operators/fb_comment_archives/index'
   end
 
   def show
@@ -24,6 +24,7 @@ class Users::FbCommentArchivesController < Users::BaseController
                     else
                       ""
                     end
+    render 'operators/fb_comment_archives/show'
   end
 
   private

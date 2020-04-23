@@ -7,10 +7,10 @@
 
   <div class="action-buttons">
     <% if can? :manage, FbCommentAction %>
-      <%= link_to t('controls.button.edit'), edit_users_fb_comment_action_path(@fb_comment_action), class: 'btn btn-info' %>
-      <%= link_to t('controls.button.delete'), users_fb_comment_action_path(@fb_comment_action), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+      <%= link_to t('controls.button.edit'), edit_operators_fb_comment_action_path(@fb_comment_action), class: 'btn btn-info' %>
+      <%= link_to t('controls.button.delete'), operators_fb_comment_action_path(@fb_comment_action), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <% end %>
-    <%= link_to t('titles.back_to_list'), users_fb_comment_actions_path(page: cookies[:fb_comment_action_page_number]), {class: "btn blck-btn"} %>
+    <%= link_to t('titles.back_to_list'), operators_fb_comment_actions_path(page: cookies[:fb_comment_action_page_number]), {class: "btn blck-btn"} %>
   </div>
   <%= show_body do %>
     <div class="box">

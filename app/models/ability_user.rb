@@ -34,8 +34,6 @@ class AbilityUser
       when "fb_comment"
         can role, FbComment
         can role, FbCommentArchive
-      when "fb_comment_action"
-        can role, FbCommentAction
       else
         puts "it was something else"
       end

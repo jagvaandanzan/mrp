@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
     @current_ability ||= if current_user
                            AbilityUser.new(current_user)
                          else
-                           @current_ability == current_operator ? AbilityOperator.new(current_operator) : AbilityAdmin.new(current_admin_user)
+                           current_operator ? AbilityOperator.new(current_operator) : AbilityAdmin.new(current_admin_user)
                          end
   end
 

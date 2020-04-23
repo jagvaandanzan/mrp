@@ -4,7 +4,7 @@
   </section>
   <section class="content">
     <div class="box box-info">
-      <%= form_for :fb_comment_action, url: @fb_comment_action.persisted? ? users_fb_comment_action_path : users_fb_comment_actions_path, method: @fb_comment_action.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+      <%= form_for :fb_comment_action, url: @fb_comment_action.persisted? ? operators_fb_comment_action_path : operators_fb_comment_actions_path, method: @fb_comment_action.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
           <div class="form-group">
             <%= f.label :is_active, class: 'col-sm-3 control-label' %>

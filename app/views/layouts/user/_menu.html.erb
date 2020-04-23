@@ -56,13 +56,6 @@
                 <% end %>
               <% end %>
             <% end %>
-            <% if can? :read, FbCommentAction %>
-              <%= content_tag :li, class: controller_name == 'fb_comment_actions' ? 'active' : '' do %>
-                <%= link_to users_fb_comment_actions_path do %>
-                  <i class="fa fa-cogs"></i><span><%= t('activerecord.models.fb_comment_action') %></span>
-                <% end %>
-              <% end %>
-            <% end %>
           <% end %>
         <% end %>
       <% end %>

@@ -1,4 +1,4 @@
-class Users::FbCommentActionsController < Users::BaseController
+class Operators::FbCommentActionsController < Operators::BaseController
   load_and_authorize_resource
   before_action :set_fb_comment_action, only: [:edit, :show, :update, :destroy]
 

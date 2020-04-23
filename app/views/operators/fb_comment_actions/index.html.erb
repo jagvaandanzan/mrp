@@ -1,7 +1,7 @@
 <div class="content-wrapper">
   <div class="col-md-12 m-t-10 m-b-10">
     <div class="row">
-      <%= form_with url: users_fb_comment_actions_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+      <%= form_with url: operators_fb_comment_actions_path, method: "get", class: 'form-horizontal', local: true do |f| %>
         <div class="col-md-2 search">
           <select name="is_active" class="form-control">
             <option value="true" <%= @is_active != 0 ? 'selected' : '' %>>Идэвхтэй</option>
@@ -24,7 +24,7 @@
 
           <% is_manage = can? :manage, FbCommentAction %>
           <% if is_manage %>
-            <%= link_to t('controls.button.create'), new_users_fb_comment_action_path, class: 'btn btn-warning pull-right' %>
+            <%= link_to t('controls.button.create'), new_operators_fb_comment_action_path, class: 'btn btn-warning pull-right' %>
           <% end %>
         </div>
       <% end %>
@@ -49,7 +49,7 @@
               <% @fb_comment_actions.each do |fb_comment_action| %>
                 <tr>
                   <td class="va-mid td-center"><%= fb_comment_action.active_stat %></td>
-                  <td class="va-mid underline"><%= link_to fb_comment_action.comment, users_fb_comment_action_path(fb_comment_action) %></td>
+                  <td class="va-mid underline"><%= link_to fb_comment_action.comment, operators_fb_comment_action_path(fb_comment_action) %></td>
                   <td class="va-mid td-center"><%= fb_comment_action.condition_i18n %></td>
                   <td class="va-mid td-center"><%= fb_comment_action.action_type_i18n %></td>
                   <td class="va-mid"><%= fb_comment_action.reply_txt %></td>

@@ -1,6 +1,9 @@
 <div class="content-wrapper">
-  <section class="content">
-    <div class="box box-primary p-15">
+  <div class="action-buttons">
+    <%= link_to t('titles.back_to_list'), current_operator.present? ? operators_fb_comment_archives_path(page: cookies[:fb_comment_page_number]) : users_fb_comment_archives_path(page: cookies[:fb_comment_page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <%= show_body do %>
+    <div class="box box-primary p-15" style="margin-bottom: 0">
       <%= simple_format(@post_message) %>
       <div class="box-body">
         <table class="table table-hover table-bordered">
@@ -24,11 +27,11 @@
         </table>
       </div>
     </div>
-  </section>
+  <% end %>
 
   <section class="content">
     <div class="box box-info">
-      <%= form_for :fb_comment, url: send_message_users_fb_comments_path(id: @fb_comment.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
+      <%= form_for :fb_comment, url: current_operator.present? ? send_message_operators_fb_comments_path(id: @fb_comment.id) : send_message_users_fb_comments_path(id: @fb_comment.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
           <div class="form-group">
             <%= f.label :reply_text, class: 'col-sm-3 control-label' %>
