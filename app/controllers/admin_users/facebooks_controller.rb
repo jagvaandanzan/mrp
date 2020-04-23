@@ -73,9 +73,9 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
                 j = message.index("#{str2_marker_string}")
                 j = message.length if j == 0
                 feature = message[21, j]
-                feature = start_det(feature)
-                feature = remove_empty_line(feature)
               end
+              feature = start_det(feature)
+              feature = remove_empty_line(feature)
             end
             hash_post.price = price
             hash_post.feature = feature
@@ -107,10 +107,9 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
                   j = message.length if j == 0
 
                   feature = message[21, j]
-
-                  feature = start_det(feature)
-                  feature = remove_empty_line(feature)
                 end
+                feature = start_det(feature)
+                feature = remove_empty_line(feature)
               end
               data = DateTime.parse(json['created_time'])
               fb_post = FbPost.new(post_id: post_id, product_name: product_name.length > 255 ? product_name[0.254] : product_name, product_code: product_code.nil? ? '000000' : product_code, price: price, feature: feature, created_at: data, updated_at: data)
