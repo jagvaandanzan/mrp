@@ -51,6 +51,7 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
     data.each do |json|
       if json['is_published']
         post_id = json['id'].gsub("#{ENV['FB_PAGE_ID']}_", '')
+        logger.info("post_id: #{post_id}")
         message = json['message']
         price = nil
         feature = nil
