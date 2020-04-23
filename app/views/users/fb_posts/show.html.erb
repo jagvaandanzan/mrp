@@ -27,6 +27,14 @@
           <div class="align-left"><%= t('activerecord.attributes.fb_post.product_name') %> :</div>
           <div class="col-data"><%= @fb_post.product_name %></div>
         </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.fb_post.price') %> :</div>
+          <div class="col-data"><%= @fb_post.price.present? ? get_currency_mn(@fb_post.price) : '---' %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.fb_post.feature') %> :</div>
+          <div class="col-data"><%= @fb_post.feature %></div>
+        </div>
       </div>
     </div>
   <% end %>

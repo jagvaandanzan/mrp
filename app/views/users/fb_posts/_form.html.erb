@@ -27,6 +27,20 @@
               <%= f.text_field :product_code, class: 'form-control', placeholder: t('activerecord.attributes.fb_post.product_code') %>
             </div>
           </div>
+          <div class="form-group">
+            <%= f.label :price, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@fb_post, :price) %>">
+              <%= field_errors(@fb_post, :price) %>
+              <%= f.number_field :price, class: 'form-control', step: 100, placeholder: t('activerecord.attributes.fb_post.price') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :feature, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@fb_post, :feature) %>">
+              <%= field_errors(@fb_post, :feature) %>
+              <%= f.text_area :feature, class: 'form-control', placeholder: t('activerecord.attributes.fb_post.feature') %>
+            </div>
+          </div>
 
           <div class="action-buttons">
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>

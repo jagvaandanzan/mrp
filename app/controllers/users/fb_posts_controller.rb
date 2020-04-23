@@ -53,6 +53,6 @@ class Users::FbPostsController < Users::BaseController
   end
 
   def fb_post_params
-    params.require(:fb_post).permit(:post_id, :product_name, :product_code)
+    params.require(:fb_post).permit(:post_id, :product_name, :product_code, :price, :feature)
   end
 end

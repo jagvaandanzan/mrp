@@ -332,6 +332,8 @@ mn:
         product_name: Барааны нэр
         product_code: Барааны код
         fb_comments: Комментууд
+        price: Үнэ
+        feature: Шинж чанар
       fb_comment:
         fb_post_id: Пост
         message: Мессеж
