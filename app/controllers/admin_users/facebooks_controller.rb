@@ -66,7 +66,12 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
               end
             }
             if message.include?("#Бүтээгдэхүүний_тухай")
-              feature = message[/#{str1_marker_string}(.*?)#{str2_marker_string}/m, 1]
+              i = message.index("#{str1_marker_string}")
+              message = message[i..message.length]
+              j = message.index("#{str2_marker_string}")
+              j = message.length if j == 0
+              # feature = message[/#{str1_marker_string}(.*?)#{str2_marker_string}/m, 1]
+              feature = message[21, j]
               feature = start_det(feature)
               feature = remove_empty_line(feature)
             end
@@ -92,7 +97,12 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
             }
             unless product_name.nil?
               if message.include?("#Бүтээгдэхүүний_тухай")
-                feature = message[/#{str1_marker_string}(.*?)#{str2_marker_string}/m, 1]
+                i = message.index("#{str1_marker_string}")
+                message = message[i..message.length]
+                j = message.index("#{str2_marker_string}")
+                j = message.length if j == 0
+                # feature = message[/#{str1_marker_string}(.*?)#{str2_marker_string}/m, 1]
+                feature = message[21, j]
                 feature = start_det(feature)
                 feature = remove_empty_line(feature)
               end
