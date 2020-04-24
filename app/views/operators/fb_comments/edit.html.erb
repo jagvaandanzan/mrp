@@ -1,6 +1,6 @@
 <div class="content-wrapper">
   <div class="action-buttons">
-    <%= link_to t('titles.back_to_list'),current_operator.present? ? operators_fb_comment_archives_path(page: cookies[:fb_comment_page_number]) : users_fb_comment_archives_path(page: cookies[:fb_comment_page_number]), {class: "btn blck-btn"} %>
+    <%= link_to t('titles.back_to_list'),current_operator.present? ? operators_fb_comments_path(page: cookies[:fb_comment_page_number]) : users_fb_comments_path(page: cookies[:fb_comment_page_number]), {class: "btn blck-btn"} %>
   </div>
   <%= show_body do %>
     <div class="box box-primary p-15" style="margin-bottom: 0">
