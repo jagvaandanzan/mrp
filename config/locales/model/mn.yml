@@ -344,6 +344,7 @@ mn:
         date: Огноо
         reply_comment: Коммент бичих
         reply_text: Хариу мессеж
+        hide: Нуух
         history: Түүх
       fb_comment_action:
         is_active: Идэвхтэй

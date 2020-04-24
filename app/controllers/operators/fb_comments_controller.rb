@@ -1,6 +1,6 @@
 class Operators::FbCommentsController < Operators::BaseController
   load_and_authorize_resource
-  before_action :set_fb_comment, only: [:show, :edit, :update, :messages, :send_message, :destroy]
+  before_action :set_fb_comment, only: [:show, :edit, :update, :messages, :send_message, :destroy, :hide]
 
   def index
     @fb_post_id = params[:fb_post_id]
@@ -51,6 +51,12 @@ class Operators::FbCommentsController < Operators::BaseController
     else
       render 'edit'
     end
+  end
+
+  def hide
+    alert, msg = ApplicationController.helpers.fb_hide_comment(@fb_comment.comment_id)
+    flash[alert] = msg
+    redirect_to action: :index
   end
 
   def destroy

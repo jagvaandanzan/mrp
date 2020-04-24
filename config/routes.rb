@@ -114,6 +114,7 @@ Rails.application.routes.draw do
       collection do
         get 'messages'
         patch 'send_message'
+        patch 'hide'
       end
     end
     resources :fb_comment_archives, only: [:index, :show, :new]
@@ -143,6 +144,7 @@ Rails.application.routes.draw do
       collection do
         get 'messages'
         patch 'send_message'
+        patch 'hide'
       end
     end
     resources :fb_comment_actions

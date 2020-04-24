@@ -79,6 +79,7 @@ mn:
   alert:
     saved_successfully: Амжилттай хадгаллаа
     deleted_successfully: Амжилттай устгагдсан
+    hide_successfully: Амжилттай нуулаа
     info_updated: Мэдээлэл шинэчлэгдсэн
     removed_successfully: Амжилттай хасагдсан
     send_successfully: Амжилттай илгээлээ

@@ -6,8 +6,10 @@ class FbCommentArchive < ApplicationRecord
   belongs_to :archive, :class_name => "FbCommentArchive", optional: true
   has_many :replies, :class_name => "FbCommentArchive", :foreign_key => "archive_id", dependent: :destroy
 
-  before_create :find_parent
+  validates_uniqueness_of :comment_id
 
+  before_create :find_parent
+  after_create :send_auto_reply
   enum verb: {is_add: 0, is_hide: 1, is_remove: 2, is_reaction: 3}
 
   scope :order_date, -> {
@@ -52,4 +54,41 @@ class FbCommentArchive < ApplicationRecord
       end
     end
   end
+
+  def send_auto_reply
+    if comment_action.present?
+      reply_txt = if comment_action.condition == "price"
+                    comment_action.reply_txt.gsub("{price}", fb_post.price)
+                  elsif comment_action.condition == "feature"
+                    comment_action.reply_txt.gsub("{feature}", fb_post.price)
+                  else
+                    comment_action.reply_txt
+                  end
+      action_type = comment_action.action_type
+
+      if action_type == "reply"
+        Rails.logger.info("action_auto reply: #{comment_id}==>#{reply_txt}")
+        ApplicationController.helpers.fb_reply_comment(comment_id, parent_id, user_id, reply_txt)
+      elsif action_type == "message"
+
+        Rails.logger.info("action_auto message: #{comment_id}==>#{reply_txt}")
+        ApplicationController.helpers.fb_send_message(comment_id, reply_txt)
+      else
+        #is_delete
+
+        Rails.logger.info("action_auto hide: #{comment_id}")
+        ApplicationController.helpers.fb_hide_comment(comment_id)
+      end
+
+      if comment_action.condition == "phone"
+        product_sale_call = ProductSaleCall.new(code: fb_post.product_code,
+                                                quantity: 1,
+                                                message: message,
+                                                phone: message.match(/[789]\d{7}/))
+        product_sale_call.save(validate: false)
+      end
+
+    end
+  end
+
 end

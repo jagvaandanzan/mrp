@@ -47,6 +47,15 @@ module FacebookHelper
     end
   end
 
+  def fb_hide_comment(comment_id)
+    response = api_send("#{ENV['FB_API']}#{comment_id}?access_token=#{ENV['FB_TOKEN']}", 'post', {"is_hidden": true}.to_json)
+    if response.code.to_i == 200
+      [:success, t('alert.hide_successfully')]
+    else
+      [:alert, response.body.to_s]
+    end
+  end
+
   def fb_get_post_message(post_id)
     api_send("#{ENV['FB_API']}#{ENV['FB_PAGE_ID']}_#{post_id}?access_token=#{ENV['FB_TOKEN']}", 'get', nil)
   end
