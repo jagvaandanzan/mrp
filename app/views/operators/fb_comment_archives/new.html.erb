@@ -16,14 +16,16 @@
             <td class="va-mid nowrap"><%= @fb_comment_archive.date.strftime('%F %R') %></td>
           </tr>
 
-          <tr>
-            <td class="va-mid">
-              <strong>Auto: <%= @fb_comment_archive.comment_action.action_type_i18n %></strong>
-            </td>
-            <td class="va-mid"><%= @fb_comment_archive.comment_action.reply_text %></td>
-            <td class="va-mid"></td>
-            <td class="va-mid nowrap"><%= comment.date.strftime('%F %R') %></td>
-          </tr>
+          <% @fb_comment_archive.replies.order_date.each {|comment| %>
+            <tr>
+              <td class="va-mid">
+                <strong><%= comment.user_name.presence || :'Market.mn' %></strong>
+              </td>
+              <td class="va-mid"><%= comment.message %></td>
+              <td class="va-mid"><%= comment.verb_i18n %></td>
+              <td class="va-mid nowrap"><%= comment.date.strftime('%F %R') %></td>
+            </tr>
+          <% } %>
         </table>
       </div>
     </div>

@@ -48,7 +48,8 @@ module API
                                               parent_id: obj[:parent_id],
                                               date: created_at)
                     else
-                      unless check_auto_reply(fb_post, obj[:message], obj[:comment_id], obj[:parent_id], from_id, created_at)
+                      fb_comment_action = check_auto_reply(fb_post, obj[:message], obj[:comment_id], obj[:parent_id], from_id, created_at)
+                      if fb_comment_action.nil?
                         FbComment.create(fb_post: fb_post,
                                          message: obj[:message],
                                          comment_id: obj[:comment_id],
@@ -56,6 +57,15 @@ module API
                                          user_id: from_id,
                                          user_name: obj[:from][:name],
                                          date: created_at)
+                      else
+                        FbCommentArchive.create(fb_post: fb_post,
+                                                message: obj[:message],
+                                                comment_id: obj[:comment_id],
+                                                parent_id: obj[:parent_id],
+                                                user_id: from_id,
+                                                user_name: obj[:from][:name],
+                                                comment_action: fb_comment_action,
+                                                date: created_at)
                       end
 
                     end
@@ -154,11 +164,11 @@ end
 def check_auto_reply(fb_post, message, comment_id, parent_id, user_id, date)
 
   fb_comment_actions = FbCommentAction.by_is_active(true)
-  is_auto = false
+  fb_comment_action = nil
   fb_comment_actions.each do |ac|
-    Rails.logger.info("action_auto check " + ac.comment)
+    # Rails.logger.info("action_auto check " + ac.comment)
     if ac.condition == "phone"
-      phone = message.match(/[897]\d{7}/)
+      phone = message.match(/[789]\d{7}/)
       unless phone.nil?
         action_auto_reply(comment_id, parent_id, user_id, ac.action_type, ac.reply_txt)
 
@@ -170,44 +180,44 @@ def check_auto_reply(fb_post, message, comment_id, parent_id, user_id, date)
                                                 phone: phone)
         product_sale_call.save(validate: false)
 
-        is_auto = true
+        fb_comment_action = ac
       end
     elsif ac.condition == "contain"
       if message.downcase.match?(/#{ac.comment}/)
         action_auto_reply(comment_id, parent_id, user_id, ac.action_type, ac.reply_txt)
-        is_auto = true
+        fb_comment_action = ac
       end
     elsif ac.condition == "price"
       if fb_post.price.present? && message.downcase.match?(/#{ac.comment}/)
         reply_txt = ac.reply_txt.gsub("{price}", fb_post.price)
         action_auto_reply(comment_id, parent_id, user_id, ac.action_type, reply_txt)
-        is_auto = true
+        fb_comment_action = ac
       end
     elsif ac.condition == "feature"
       if fb_post.feature.present? && message.downcase.match?(/#{ac.comment}/)
         reply_txt = ac.reply_txt.gsub("{feature}", fb_post.feature)
         action_auto_reply(comment_id, parent_id, user_id, ac.action_type, reply_txt)
-        is_auto = true
+        fb_comment_action = ac
       end
     elsif ac.condition == "match"
       if message.downcase == ac.comment
         action_auto_reply(comment_id, parent_id, user_id, ac.action_type, ac.reply_txt)
-        is_auto = true
+        fb_comment_action = ac
       end
     else
       #start
       if message.downcase.start_with? ac.comment
         action_auto_reply(comment_id, parent_id, user_id, ac.action_type, ac.reply_txt)
-        is_auto = true
+        fb_comment_action = ac
       end
     end
 
-    if is_auto
+    unless fb_comment_action.nil?
       break
     end
   end
 
-  is_auto
+  fb_comment_action
 end
 
 def action_auto_reply(comment_id, parent_id, user_id, action_type, reply_txt)
