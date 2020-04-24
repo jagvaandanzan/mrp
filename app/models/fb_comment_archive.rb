@@ -13,7 +13,7 @@ class FbCommentArchive < ApplicationRecord
   enum verb: {is_add: 0, is_hide: 1, is_remove: 2, is_reaction: 3}
 
   scope :order_date, -> {
-    order(:date)
+    order(date: :desc)
   }
 
   scope :by_fb_post, ->(fb_post) {
