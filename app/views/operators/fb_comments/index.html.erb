@@ -44,7 +44,6 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.message') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.date') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.post_id') %></th>
-                <th class="th-center va-mid"></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.history') %></th>
               </tr>
               <% @fb_comments.each do |fb_comment| %>
@@ -54,11 +53,6 @@
                   <td class="va-mid"><%= fb_comment.message %></td>
                   <td class="td-center va-mid"><%= fb_comment.date.strftime('%F %R') %></td>
                   <td class="td-center va-mid"><%= link_to 'fb post', "https://www.facebook.com/#{ENV['FB_PAGE_ID']}/posts/#{fb_comment.fb_post.post_id}/", target: '_blank' %></td>
-                  <td class="td-center va-mid">
-                    <%= link_to current_operator.present? ? edit_operators_fb_comment_path(fb_comment) : edit_users_fb_comment_path(fb_comment) do %>
-                      <button type="button" class="btn btn-sm btn-info">Reply comment</button>
-                    <% end %>
-                  </td>
                   <td class="td-center va-mid">
                     <%= link_to current_operator.present? ? operators_fb_comment_archives_path(cid: fb_comment.comment_id) : users_fb_comment_archives_path(cid: fb_comment.comment_id) do %>
                       <%= fb_comment.history %>

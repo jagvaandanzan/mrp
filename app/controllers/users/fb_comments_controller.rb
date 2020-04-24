@@ -59,7 +59,7 @@ class Users::FbCommentsController < Users::BaseController
   end
 
   def destroy
-    @fb_post.destroy!
+    @fb_comment.destroy!
     flash[:success] = t('alert.deleted_successfully')
     redirect_to action: :index
   end
