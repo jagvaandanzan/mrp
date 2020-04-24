@@ -354,6 +354,7 @@ mn:
         reply_txt: Хариу
       fb_comment_archive:
         reply: Хариу
+        verb: Төрөл
       ali_category:
         name_mn: Монгол
         name: Англи

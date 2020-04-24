@@ -5,12 +5,12 @@
 <div class="content-wrapper">
   <div class="col-md-12 m-t-10 m-b-10">
     <%= form_with url: current_user.present? ? users_fb_comment_archives_path : operators_fb_comment_archives_path, method: "get", class: 'form-horizontal', local: true do |f| %>
-      <div class="col-md-3 search">
+      <div class="col-md-2 search">
         <%= f.collection_select :fb_post_id, FbPost.order_code, :id, :full_name,
                                 {:selected => @fb_post_id, :include_blank => t('controls.select.none')},
                                 {class: 'form-control selectpicker', "data-live-search": "true"} %>
       </div>
-      <div class="col-md-3 search">
+      <div class="col-md-2 search">
         <%= text_field_tag :message, @message, {class: 'form-control search', placeholder: t('activerecord.attributes.fb_comment.message')} %>
       </div>
       <div class="col-md-2 search">
@@ -23,6 +23,11 @@
             <i class="fa fa-calendar"></i>
           </div>
         </div>
+      </div>
+      <div class="col-md-2 search">
+        <%= f.select :verb, FbCommentArchive.verbs_i18n.keys.map {|k| [FbCommentArchive.verbs_i18n[k], k]},
+                     {:prompt => t('activerecord.attributes.fb_comment_archive.verb'), :selected => @verb}, {class: 'form-control'} %>
+
       </div>
       <div class="col-md-2 search">
         <%= submit_tag t('controls.button.searching') + " (" + @fb_comment_archives.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>

@@ -3,6 +3,7 @@ class Operators::FbCommentArchivesController < Operators::BaseController
   before_action :set_fb_comment_archive, only: [:show, :new]
 
   def index
+    @verb = params[:verb]
     @fb_post_id = params[:fb_post_id]
     @user_name = params[:user_name]
     @message = params[:message]
@@ -11,7 +12,7 @@ class Operators::FbCommentArchivesController < Operators::BaseController
             else
               Time.now.beginning_of_day
             end
-    @fb_comment_archives = FbCommentArchive.search(params[:archive_id], params[:cid], @fb_post_id, @user_name, @message, @date).page(params[:page])
+    @fb_comment_archives = FbCommentArchive.search(params[:archive_id], params[:cid], @fb_post_id, @user_name, @message, @date, @verb).page(params[:page])
     cookies[:fb_comment_archive_page_number] = params[:page]
 
   end
