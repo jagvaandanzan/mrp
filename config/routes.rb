@@ -110,7 +110,7 @@ Rails.application.routes.draw do
       end
     end
     resources :fb_posts
-    resources :fb_comments, only: [:index, :show, :edit, :update] do
+    resources :fb_comments, only: [:index, :show, :edit, :update, :destroy] do
       collection do
         get 'messages'
         patch 'send_message'
@@ -139,7 +139,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :fb_comments, only: [:index, :show, :edit, :update] do
+    resources :fb_comments, only: [:index, :show, :edit, :update, :destroy] do
       collection do
         get 'messages'
         patch 'send_message'

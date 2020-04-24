@@ -1,6 +1,6 @@
 class Users::FbCommentsController < Users::BaseController
   load_and_authorize_resource
-  before_action :set_fb_comment, only: [:show, :edit, :update, :messages, :send_message]
+  before_action :set_fb_comment, only: [:show, :edit, :update, :messages, :send_message, :destroy]
 
   def index
     @fb_post_id = params[:fb_post_id]
