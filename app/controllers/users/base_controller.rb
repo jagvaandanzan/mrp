@@ -21,6 +21,8 @@ class Users::BaseController < ApplicationController
              users_product_suppliers_path
            elsif can? :read, ProductLocation
              users_product_locations_path
+           elsif can? :read, FbPost
+             users_fb_posts_path
            else
              users_panel_path
            end
