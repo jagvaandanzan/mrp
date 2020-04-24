@@ -1,7 +1,7 @@
 class FbCommentAction < ApplicationRecord
 
   enum action_type: {reply: 0, message: 1, is_delete: 2}
-  enum condition: {match: 0, start: 1, contain: 2, phone: 3}
+  enum condition: {match: 0, start: 1, contain: 2, phone: 3, price: 4, feature: 5}
 
   before_save {comment.downcase!}
 
@@ -19,9 +19,12 @@ class FbCommentAction < ApplicationRecord
   scope :order_comment, -> {
     order(:comment)
   }
+  scope :order_condition, -> {
+    order(:condition)
+  }
 
   scope :search, ->(is_active, action_type, condition, comment) {
-    items = order_comment
+    items = order_condition
     items = items.where(is_active: is_active) if is_active.present?
     items = items.where(action_type: action_type) if action_type.present?
     items = items.where(condition: condition) if condition.present?

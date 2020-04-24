@@ -80,6 +80,8 @@ mn:
         start: Эхэлсэн
         contain: Агуулсан
         phone: Утас
+        price: Үнэ
+        feature: Шинж чанар
     fb_comment_archive:
       verb:
         is_add: ''

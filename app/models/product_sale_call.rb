@@ -4,6 +4,7 @@ class ProductSaleCall < ApplicationRecord
 
   before_validation :set_remainder
   attr_accessor :remainder
+  after_create :sent_itoms
 
   validates :phone, :product, :quantity, presence: true
   validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
@@ -26,5 +27,18 @@ class ProductSaleCall < ApplicationRecord
 
   def set_remainder
     self.remainder = ProductBalance.balance(product_id) if product_id.present?
+  end
+
+  def sent_itoms
+    param = {
+        "phone": phone.to_i,
+        itemcode: code
+    }
+    response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/newenquiresocial", 'post', param.to_json)
+
+    if response.code.to_i != 200
+      json = JSON.parse(response.body)
+      Rails.logger.info("sent_itoms: #{json.to_s}")
+    end
   end
 end

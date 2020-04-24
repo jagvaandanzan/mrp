@@ -46,6 +46,26 @@ module ApiHelper
     }
   end
 
+  def sent_itoms(url, method, params = nil)
+    uri = URI.parse(url)
+    req = if method == 'post' || method == 'update'
+            Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json; charset=utf-8')
+          elsif method == 'patch'
+            Net::HTTP::Patch.new(uri, 'Content-Type' => 'application/json; charset=utf-8')
+          elsif method == 'get'
+            Net::HTTP::Get.new(uri, 'Content-Type' => 'application/json; charset=utf-8')
+          else
+            Net::HTTP::Delete.new(uri)
+          end
+    req['Authorization'] = "Basic YXJpd2lzZWxsYzpNeVByb3RlY3RlZFBhc3N3b3JkMDUxNSo="
+    req.body = JSON.parse(params).to_json unless params.nil?
+
+    Net::HTTP.start(uri.hostname, uri.port,
+                    :use_ssl => uri.scheme == 'https') {|http|
+      http.request(req)
+    }
+  end
+
   private
 
   def get_headers

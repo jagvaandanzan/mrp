@@ -157,61 +157,68 @@ def check_auto_reply(fb_post, message, comment_id, parent_id, user_id, date)
   is_auto = false
   fb_comment_actions.each do |ac|
     Rails.logger.info("action_auto check " + ac.comment)
-    # if ac.condition == "phone"
-    #   phone = message.match(/[89]\d{7}/)
-    #   unless phone.nil?
-    #     action_auto_reply(comment_id, parent_id, user_id, ac)
-    #
-    #     msg = check_post_comments(fb_post, parent_id, comment_id, date)
-    #
-    #     product_sale_call = ProductSaleCall.new(code: fb_post.product_code,
-    #                                             quantity: 1,
-    #                                             message: msg + message,
-    #                                             phone: phone)
-    #     product_sale_call.save(validate: false)
-    #
-    #     is_auto = true
-    #     return is_auto
-    #   end
-    # elsif ac.condition == "contain"
-    if ac.condition == "contain"
-      if message.downcase.include? ac.comment
-        action_auto_reply(comment_id, parent_id, user_id, ac)
+    if ac.condition == "phone"
+      phone = message.match(/[897]\d{7}/)
+      unless phone.nil?
+        action_auto_reply(comment_id, parent_id, user_id, ac.action_type, ac.reply_txt)
+
+        msg = check_post_comments(fb_post, parent_id, comment_id, date)
+
+        product_sale_call = ProductSaleCall.new(code: fb_post.product_code,
+                                                quantity: 1,
+                                                message: msg + message,
+                                                phone: phone)
+        product_sale_call.save(validate: false)
+
         is_auto = true
-        return is_auto
       end
-    elsif ac.condition == "start"
-      if message.downcase.start_with? ac.comment
-        action_auto_reply(comment_id, parent_id, user_id, ac)
+    elsif ac.condition == "contain"
+      if message.downcase.match?(/#{ac.comment}/)
+        action_auto_reply(comment_id, parent_id, user_id, ac.action_type, ac.reply_txt)
         is_auto = true
-        return is_auto
+      end
+    elsif ac.condition == "price"
+      if fb_post.price.present? && message.downcase.match?(/#{ac.comment}/)
+        reply_txt = ac.reply_txt.gsub("{price}", fb_post.price)
+        action_auto_reply(comment_id, parent_id, user_id, ac.action_type, reply_txt)
+        is_auto = true
+      end
+    elsif ac.condition == "feature"
+      if fb_post.feature.present? && message.downcase.match?(/#{ac.comment}/)
+        reply_txt = ac.reply_txt.gsub("{feature}", fb_post.feature)
+        action_auto_reply(comment_id, parent_id, user_id, ac.action_type, reply_txt)
+        is_auto = true
+      end
+    elsif ac.condition == "match"
+      if message.downcase == ac.comment
+        action_auto_reply(comment_id, parent_id, user_id, ac.action_type, ac.reply_txt)
+        is_auto = true
       end
     else
-      #match
-      if message.downcase == ac.comment
-        action_auto_reply(comment_id, parent_id, user_id, ac)
+      #start
+      if message.downcase.start_with? ac.comment
+        action_auto_reply(comment_id, parent_id, user_id, ac.action_type, ac.reply_txt)
         is_auto = true
-        return is_auto
       end
     end
 
     if is_auto
-      return is_auto
+      break
     end
   end
 
   is_auto
 end
 
-def action_auto_reply(comment_id, parent_id, user_id, fb_comment_action)
-  if fb_comment_action.action_type == "reply"
+def action_auto_reply(comment_id, parent_id, user_id, action_type, reply_txt)
+  if action_type == "reply"
 
-    Rails.logger.info("action_auto reply: #{comment_id}==>#{fb_comment_action.reply_txt}")
-    ApplicationController.helpers.fb_reply_comment(comment_id, parent_id, user_id, fb_comment_action.reply_txt)
-  elsif fb_comment_action.action_type == "message"
+    Rails.logger.info("action_auto reply: #{comment_id}==>#{reply_txt}")
+    ApplicationController.helpers.fb_reply_comment(comment_id, parent_id, user_id, reply_txt)
+  elsif action_type == "message"
 
-    Rails.logger.info("action_auto message: #{comment_id}==>#{fb_comment_action.reply_txt}")
-    ApplicationController.helpers.fb_send_message(comment_id, fb_comment_action.reply_txt)
+    Rails.logger.info("action_auto message: #{comment_id}==>#{reply_txt}")
+    ApplicationController.helpers.fb_send_message(comment_id, reply_txt)
   else
     #is_delete
 
