@@ -2,6 +2,7 @@ class FbCommentArchive < ApplicationRecord
   acts_as_paranoid
 
   belongs_to :fb_post
+  belongs_to :comment_action, :class_name => "FbCommentAction", optional: true
   belongs_to :archive, :class_name => "FbCommentArchive", optional: true
   has_many :replies, :class_name => "FbCommentArchive", :foreign_key => "archive_id", dependent: :destroy
 
