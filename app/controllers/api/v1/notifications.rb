@@ -163,7 +163,7 @@ end
 
 def check_auto_reply(fb_post, message, comment_id, parent_id, user_id, date)
 
-  fb_comment_actions = FbCommentAction.by_is_active(true)
+  fb_comment_actions = FbCommentAction.by_is_active(true).order_queue
   fb_comment_action = nil
   fb_comment_actions.each do |ac|
     # Rails.logger.info("action_auto check " + ac.comment)

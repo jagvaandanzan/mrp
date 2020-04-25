@@ -23,8 +23,12 @@ class FbCommentAction < ApplicationRecord
     order(:condition)
   }
 
+  scope :order_queue, -> {
+    order(:queue)
+  }
+
   scope :search, ->(is_active, action_type, condition, comment) {
-    items = order_condition
+    items = order_queue
     items = items.where(is_active: is_active) if is_active.present?
     items = items.where(action_type: action_type) if action_type.present?
     items = items.where(condition: condition) if condition.present?
