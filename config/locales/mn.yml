@@ -72,11 +72,8 @@ mn:
     product_sale_calls: Залгах
     facebook: Фэйсбүүк
     bank_transactions: Банкны хуулга
-  models:
-    user:
-      age: Нас
-  app_name: “Агуулахын систем”
-  app_short_name: АС
+  app_name: MPR
+  app_short_name: M
   alert:
     saved_successfully: Амжилттай хадгаллаа
     deleted_successfully: Амжилттай устгагдсан
