@@ -18,7 +18,7 @@ class Users::SalesmenController < Users::BaseController
     @salesman = Salesman.new(salesman_params)
 
     if @salesman.save
-      @salesman.send_first_password_instructions
+      # @salesman.send_first_password_instructions
       flash[:success] = t('alert.saved_successfully')
       redirect_to action: :index
     else
