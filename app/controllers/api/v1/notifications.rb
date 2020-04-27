@@ -178,11 +178,11 @@ def check_auto_reply(fb_post, message, comment_id, parent_id, user_id, date)
         fb_comment_action = ac
       end
     when "price"
-      if fb_post.price.present? && message.downcase.match?(/#{ac.comment}/)
+      if fb_post.price.present? && fb_post.price.length > 0 && message.downcase.match?(/#{ac.comment}/)
         fb_comment_action = ac
       end
     when "feature"
-      if fb_post.feature.present? && message.downcase.match?(/#{ac.comment}/)
+      if fb_post.feature.present? && fb_post.feature.length > 0 && message.downcase.match?(/#{ac.comment}/)
         fb_comment_action = ac
       end
     when "match"

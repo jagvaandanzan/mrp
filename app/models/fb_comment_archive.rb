@@ -61,7 +61,7 @@ class FbCommentArchive < ApplicationRecord
       reply_txt = if comment_action.condition == "price"
                     comment_action.reply_txt.gsub("{price}", fb_post.price)
                   elsif comment_action.condition == "feature"
-                    comment_action.reply_txt.gsub("{feature}", fb_post.price)
+                    comment_action.reply_txt.gsub("{feature}", fb_post.feature)
                   else
                     comment_action.reply_txt
                   end
