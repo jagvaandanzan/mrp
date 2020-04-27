@@ -6,6 +6,10 @@ module API
         expose :method, :id, :queue, :name, :description
       end
 
+      class BankTransaction < Grape::Entity
+        expose :date_time, :value, :summary, :account
+      end
+
     end
   end
 end

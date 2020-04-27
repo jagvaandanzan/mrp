@@ -72,7 +72,7 @@ mn:
     product_sale_calls: Залгах
     facebook: Фэйсбүүк
     bank_transactions: Банкны хуулга
-  app_name: MPR
+  app_name: “MPR”
   app_short_name: M
   alert:
     saved_successfully: Амжилттай хадгаллаа

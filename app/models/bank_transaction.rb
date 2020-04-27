@@ -2,6 +2,10 @@ class BankTransaction < ApplicationRecord
 
   attr_accessor :it_is_new
 
+  def date_time
+    date.strftime("%F %R")
+  end
+
   scope :by_day, ->(day) {
     where("date >= ?", day)
         .where("date < ?", day + 1.day)
@@ -15,8 +19,8 @@ class BankTransaction < ApplicationRecord
   scope :search, ->(phones, value, account, min, max, date) {
     if phones.present?
       items = (where("value REGEXP ?", phones.join("|"))
-                 .or(where("summary <= ?", 500000)))
-          .order_date
+                   .or(where("summary <= ?", 500000)))
+                  .order_date
     else
       items = order_date
     end

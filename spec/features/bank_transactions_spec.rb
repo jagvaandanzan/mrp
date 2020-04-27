@@ -88,5 +88,13 @@ describe "bank transaction check", type: :feature do
       end
 
     end
+    if is_created_new
+      check_payment(transactions)
+    end
   end
+end
+
+def check_payment(transactions)
+  # param = API::V1::Entities::BankTransaction.represent transactions
+  # ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/newenquiresocial", 'post', param.to_json)
 end
