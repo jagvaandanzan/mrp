@@ -12,7 +12,9 @@ class AbilityOperator
         can role, FbComment
         can role, FbCommentArchive
       when "fb_comment_action"
-        can role, FbCommentAction
+        can :read, FbCommentAction
+      when "bank_transactions"
+        can :read, BankTransaction
       else
         puts "it was something else"
       end

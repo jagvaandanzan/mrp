@@ -34,6 +34,8 @@ class AbilityUser
       when "fb_comment"
         can role, FbComment
         can role, FbCommentArchive
+      when "bank_transactions"
+        can :read, BankTransaction
       else
         puts "it was something else"
       end

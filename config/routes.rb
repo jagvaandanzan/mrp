@@ -118,6 +118,7 @@ Rails.application.routes.draw do
       end
     end
     resources :fb_comment_archives, only: [:index, :show, :new]
+    resources :bank_transactions, only: [:index]
 
     match "*any", to: "base#routing_error", via: :all
   end
@@ -155,6 +156,8 @@ Rails.application.routes.draw do
         post 'get_product_balance'
       end
     end
+
+    resources :bank_transactions, only: [:index]
 
     match "*any", to: "base#routing_error", via: :all
   end

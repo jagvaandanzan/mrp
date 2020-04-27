@@ -60,6 +60,12 @@
         <% end %>
       <% end %>
 
+      <%= content_tag :li, class: controller_name == 'bank_transactions' ? 'active' : '' do %>
+        <%= link_to users_bank_transactions_path do %>
+          <i class="fa fa-dollar"></i><span><%= t('titles.bank_transactions') %></span>
+        <% end %>
+      <% end %>
+
       <% if (can? :read, Location) || (can? :read, Product) || (can? :read, ProductLocation) || (can? :read, Operator) || (can? :read, ProductSupplier) %>
         <%= content_tag :li, class: controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations' ||
             controller_name == 'product_categories' || controller_name == 'product_suppliers' ||

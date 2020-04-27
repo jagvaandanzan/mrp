@@ -355,6 +355,13 @@ mn:
       fb_comment_archive:
         reply: Хариу
         verb: Төрөл
+      bank_transaction:
+        value: Гүйлгээний утга
+        account: Данс
+        min: Дүн(min)
+        max: Дүн(max)
+        summary: Дүн
+        date: Огноо
       ali_category:
         name_mn: Монгол
         name: Англи

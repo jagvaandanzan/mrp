@@ -61,7 +61,7 @@
             <%= f.label :phone, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@salesman, :phone) %>">
               <%= field_errors(@salesman, :phone) %>
-              <%= f.text_field :phone, class: 'form-control', placeholder: t('activerecord.attributes.salesman.phone') %>
+              <%= f.number_field :phone, class: 'form-control', step: 1, placeholder: t('activerecord.attributes.salesman.phone') %>
             </div>
           </div>
           <div class="form-group">

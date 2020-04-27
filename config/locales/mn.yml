@@ -71,6 +71,7 @@ mn:
     product_sales: Борлуулалтууд
     product_sale_calls: Залгах
     facebook: Фэйсбүүк
+    bank_transactions: Банкны хуулга
   models:
     user:
       age: Нас
