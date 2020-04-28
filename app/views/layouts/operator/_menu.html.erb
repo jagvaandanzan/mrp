@@ -47,9 +47,11 @@
         <% end %>
       <% end %>
 
-      <%= content_tag :li, class: controller_name == 'bank_transactions' ? 'active' : '' do %>
-        <%= link_to operators_bank_transactions_path do %>
-          <i class="fa fa-dollar"></i><span><%= t('titles.bank_transactions') %></span>
+      <% if can? :read, BankTransaction %>
+        <%= content_tag :li, class: controller_name == 'bank_transactions' ? 'active' : '' do %>
+          <%= link_to operators_bank_transactions_path do %>
+            <i class="fa fa-dollar"></i><span><%= t('titles.bank_transactions') %></span>
+          <% end %>
         <% end %>
       <% end %>
 
