@@ -105,26 +105,28 @@ def check_payment(transactions)
   ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/savebanktrans", 'post', param.to_json)
 
   transactions.each do |transaction|
-    if transaction.value.downcase.match(/[789]\d{7}/)
+    if transaction.value.downcase.match(/[wq][0-9]{8}/)
       if transaction.value.downcase.start_with?('qpay', 'mm:qpay')
         transaction_id = transaction.value.downcase.match(/[q]\d+[0-9]/).to_s
-        transaction_id = transaction_id[1..transaction_id.length]
         param = {
             amount: transaction.summary,
             type: "QPAY",
-            transactionNumber: transaction_id,
+            transactionNumber: transaction_id[1..transaction_id.length],
             ibank_id: 0
         }
-        # logger.info("#{transaction.summary} == #{transaction_id}")
       else
+        transaction_id = transaction.value.downcase.match(/[w]\d+[0-9]/).to_s
         param = {
             amount: transaction.summary,
             type: "WEB",
-            transactionNumber: transaction.value,
+            transactionNumber: transaction_id[1..transaction_id.length],
             ibank_id: 0
         }
+        # response = ApplicationController.helpers.sent_market_web("https://market.mn/api/payments", 'post', param.to_json)
+        # Rails.logger.info(response.body.to_s)
       end
-      ApplicationController.helpers.sent_market_web("https://market.mn/api/payments", 'post', param.to_json)
+      response = ApplicationController.helpers.sent_market_web("https://market.mn/api/payments", 'post', param.to_json)
+      puts "market.mn/api/payments => #{response.code.to_s} => #{response.body.to_s}"
     end
   end
 
