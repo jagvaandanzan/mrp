@@ -73,6 +73,12 @@ describe "bank transaction check", type: :feature do
         # хэрэв өмнө нь гүйлгээ байсан үед, тэрийг олтолоо гүйнэ
         unless it_is_new
           # өмнөх гүйлгээтэй ижил эсэхийг шалгаж байна
+          unless transaction_last.nil?
+            puts "#{transaction_last.date.strftime('%F %R')} == #{transaction.date.strftime('%F %R')} == #{(transaction_last.date == transaction.date).to_s}"
+            puts "#{transaction_last.value} == #{transaction.value} == #{(transaction_last.value == transaction.value).to_s}"
+            puts "#{transaction_last.summary} == #{transaction.summary} == #{(transaction_last.summary == transaction.summary).to_s}"
+            puts "#{transaction_last.account} == #{transaction.account} == #{(transaction_last.account == transaction.account).to_s}"
+          end
           it_is_new = (!transaction_last.nil? &&
               transaction_last.date == transaction.date &&
               transaction_last.value == transaction.value &&
