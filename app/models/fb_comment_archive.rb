@@ -55,7 +55,7 @@ class FbCommentArchive < ApplicationRecord
       end
     end
   end
-
+  # 155, 269
   def send_auto_reply
     if comment_action.present?
       reply_txt = if comment_action.condition == "price"

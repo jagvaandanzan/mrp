@@ -103,4 +103,29 @@ end
 def check_payment(transactions)
   param = API::V1::Entities::BankTransaction.represent transactions
   ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/savebanktrans", 'post', param.to_json)
+
+  transactions.each do |transaction|
+    if transaction.value.downcase.match(/[789]\d{7}/)
+      if transaction.value.downcase.start_with?('qpay', 'mm:qpay')
+        transaction_id = transaction.value.downcase.match(/[q]\d+[0-9]/).to_s
+        transaction_id = transaction_id[1..transaction_id.length]
+        param = {
+            amount: transaction.summary,
+            type: "QPAY",
+            transactionNumber: transaction_id,
+            ibank_id: 0
+        }
+        # logger.info("#{transaction.summary} == #{transaction_id}")
+      else
+        param = {
+            amount: transaction.summary,
+            type: "WEB",
+            transactionNumber: transaction.value,
+            ibank_id: 0
+        }
+      end
+      ApplicationController.helpers.sent_market_web("https://market.mn/api/payments", 'post', param.to_json)
+    end
+  end
+
 end

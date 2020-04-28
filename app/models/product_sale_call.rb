@@ -40,14 +40,9 @@ class ProductSaleCall < ApplicationRecord
 
   def sent_itoms
     param = {
-        "phone": phone.to_i,
+        phone: phone.to_i,
         itemcode: code
     }
-    response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/newenquiresocial", 'post', param.to_json)
-
-    if response.code.to_i != 200
-      json = JSON.parse(response.body)
-      Rails.logger.info("sent_itoms: #{json.to_s}")
-    end
+    ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/newenquiresocial", 'post', param.to_json)
   end
 end
