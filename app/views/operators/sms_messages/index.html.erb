@@ -42,6 +42,7 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.sms_message.amount') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.sms_message.message') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.sms_message.created_at') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.sms_message.operator_id') %></th>
               </tr>
               <% @sms_messages.each do |sms_message| %>
                 <tr>
@@ -49,6 +50,7 @@
                   <td class="va-mid"><%= sms_message.amount %></td>
                   <td class="va-mid"><%= sms_message.full_message %></td>
                   <td class="td-center va-mid"><%= sms_message.created_at.strftime('%F %R') %></td>
+                  <td class="td-center va-mid"><%= sms_message.operator.name%></td>
                 </tr>
               <% end %>
             </table>

@@ -369,6 +369,7 @@ mn:
         message: Мессеж
         amount: Мөнгөн дүн
         created_at: Огноо
+        operator_id: Оператор
       ali_category:
         name_mn: Монгол
         name: Англи
