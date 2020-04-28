@@ -54,6 +54,13 @@
           <% end %>
         <% end %>
       <% end %>
+      <% if can? :read, SmsMessage %>
+        <%= content_tag :li, class: controller_name == 'sms_messages' ? 'active' : '' do %>
+          <%= link_to operators_sms_messages_path do %>
+            <i class="fa fa-send"></i><span><%= t('titles.sms_messages') %></span>
+          <% end %>
+        <% end %>
+      <% end %>
 
     </ul>
   </section>

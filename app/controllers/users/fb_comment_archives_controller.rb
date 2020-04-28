@@ -5,6 +5,7 @@ class Users::FbCommentArchivesController < Users::BaseController
   def index
     @verb = params[:verb]
     @fb_post_id = params[:fb_post_id]
+    @post_id = params[:post_id]
     @user_name = params[:user_name]
     @message = params[:message]
     @date = if params[:date].present?
@@ -12,7 +13,7 @@ class Users::FbCommentArchivesController < Users::BaseController
             else
               Time.now.beginning_of_day
             end
-    @fb_comment_archives = FbCommentArchive.search(params[:archive_id], params[:cid], @fb_post_id, @user_name, @message, @date, @verb).page(params[:page])
+    @fb_comment_archives = FbCommentArchive.search(params[:archive_id], params[:cid], @fb_post_id, @post_id, @user_name, @message, @date, @verb).page(params[:page])
     cookies[:fb_comment_archive_page_number] = params[:page]
     render 'operators/fb_comment_archives/index'
   end

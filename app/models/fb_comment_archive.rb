@@ -28,7 +28,7 @@ class FbCommentArchive < ApplicationRecord
     where("archive_id IS#{is} ?", nil)
   }
 
-  scope :search, ->(archive_id, comment_id, fb_post_id, user_name, message, date, verb) {
+  scope :search, ->(archive_id, comment_id, fb_post_id, post_id, user_name, message, date, verb) {
     items = order_date
     if archive_id.present?
       items = items.where(archive_id: archive_id) if archive_id.present?
@@ -38,6 +38,7 @@ class FbCommentArchive < ApplicationRecord
     items = items.where(verb: verb) if verb.present?
     items = items.where(parent_id: comment_id) if comment_id.present?
     items = items.where(fb_post_id: fb_post_id) if fb_post_id.present?
+    items = items.where(post_id: post_id) if post_id.present?
     items = items.where('user_name LIKE :value', value: "%#{user_name}%") if user_name.present?
     items = items.where('message LIKE :value', value: "%#{message}%") if message.present?
     items = items.where('date >= ?', date) if date.present?
@@ -55,6 +56,7 @@ class FbCommentArchive < ApplicationRecord
       end
     end
   end
+
   # 155, 269
   def send_auto_reply
     if comment_action.present?

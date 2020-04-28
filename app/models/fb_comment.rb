@@ -29,9 +29,10 @@ class FbComment < ApplicationRecord
     order(:date)
   }
 
-  scope :search, ->(fb_post_id, user_name, message, date) {
+  scope :search, ->(fb_post_id, post_id, user_name, message, date) {
     items = order_date
     items = items.where(fb_post_id: fb_post_id) if fb_post_id.present?
+    items = items.where(post_id: post_id) if post_id.present?
     items = items.where('user_name LIKE :value', value: "%#{user_name}%") if user_name.present?
     items = items.where('message LIKE :value', value: "%#{message}%") if message.present?
     items = items.where('date >= ?', date) if date.present?

@@ -72,6 +72,7 @@ mn:
     product_sale_calls: Залгах
     facebook: Фэйсбүүк
     bank_transactions: Банкны хуулга
+    sms_messages: SMS мессеж
   app_name: “MPR”
   app_short_name: M
   alert:
@@ -88,6 +89,8 @@ mn:
   currency: ₮
   currency_name: Төгрөг
   upload_file: Файл хуулах
+  sms:
+    to_customer: "Khanbank: 5111373200-Ayursuren Tulbur %{amount}MNT Ta tulburuu shiljuuleed 77779990 dugaart ergej medegdene uu.Guilgeenii utga hesegt utasni dugaaraa bichne uu"
   errors:
     format: "%{attribute}%{message}"
     messages:

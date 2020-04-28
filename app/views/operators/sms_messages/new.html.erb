@@ -1,0 +1,42 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1><%= t('activerecord.models.sms_message') + t(@sms_message.persisted? ? 'titles.edit' : 'titles.add') %></h1>
+  </section>
+
+  <section class="content">
+    <div class="box box-info">
+      <%= form_with model: @sms_message, url: @sms_message.persisted? ? operators_sms_message_path : operators_sms_messages_path,
+                    method: @sms_message.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <div class="form-group">
+            <%= f.label :recipient, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@sms_message, :recipient) %>">
+              <%= field_errors(@sms_message, :recipient) %>
+              <%= f.number_field :recipient, class: 'form-control', placeholder: t('activerecord.attributes.sms_message.recipient'), step: 1 %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :amount, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@sms_message, :amount) %>">
+              <%= field_errors(@sms_message, :amount) %>
+              <%= f.number_field :amount, class: 'form-control', placeholder: t('activerecord.attributes.sms_message.amount'), step: 1 %>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :message, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@sms_message, :message) %>">
+              <%= field_errors(@sms_message, :message) %>
+              <%= @sms_message.full_message %>
+            </div>
+          </div>
+
+
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>

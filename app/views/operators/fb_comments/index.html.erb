@@ -6,9 +6,7 @@
   <div class="col-md-12 m-t-10 m-b-10">
     <%= form_with url: current_operator.present? ? operators_fb_comments_path : users_fb_comments_path, method: "get", class: 'form-horizontal', local: true do |f| %>
       <div class="col-md-3 search">
-        <%= f.collection_select :fb_post_id, FbPost.order_code, :id, :full_name,
-                                {:selected => @fb_post_id, :include_blank => t('controls.select.none')},
-                                {class: 'form-control selectpicker', "data-live-search": "true"} %>
+        <%= text_field_tag :post_id, @post_id, {class: 'form-control search', placeholder: t('activerecord.attributes.fb_comment.post_id')} %>
       </div>
       <div class="col-md-3 search">
         <%= text_field_tag :message, @message, {class: 'form-control search', placeholder: t('activerecord.attributes.fb_comment.message')} %>
@@ -43,7 +41,7 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.user_name') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.message') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.date') %></th>
-                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.post_id') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.post_link') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.history') %></th>
               </tr>
               <% @fb_comments.each do |fb_comment| %>

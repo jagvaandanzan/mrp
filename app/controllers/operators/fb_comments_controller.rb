@@ -4,6 +4,7 @@ class Operators::FbCommentsController < Operators::BaseController
 
   def index
     @fb_post_id = params[:fb_post_id]
+    @post_id = params[:post_id]
     @user_name = params[:user_name]
     @message = params[:message]
     @date = if params[:date].present?
@@ -11,7 +12,7 @@ class Operators::FbCommentsController < Operators::BaseController
             else
               Time.now.beginning_of_day
             end
-    @fb_comments = FbComment.search(@fb_post_id, @user_name, @message, @date).page(params[:page])
+    @fb_comments = FbComment.search(@fb_post_id, @post_id, @user_name, @message, @date).page(params[:page])
     cookies[:fb_comment_page_number] = params[:page]
   end
 

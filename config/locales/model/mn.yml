@@ -114,6 +114,7 @@ mn:
       fb_comment: Комментууд
       fb_comment_archive: Түүх
       fb_comment_action: Автомат хариу
+      sms_message: SMS мессеж
     attributes:
       admin_user:
         email: Имэйл
@@ -339,7 +340,8 @@ mn:
       fb_comment:
         fb_post_id: Пост
         message: Мессеж
-        post_id: Пост линк
+        post_id: Пост ID
+        post_link: Пост линк
         user_name: Хэрэглэгч
         date: Огноо
         reply_comment: Коммент бичих
@@ -362,6 +364,11 @@ mn:
         max: Дүн(max)
         summary: Дүн
         date: Огноо
+      sms_message:
+        recipient: Дугаар
+        message: Мессеж
+        amount: Мөнгөн дүн
+        created_at: Огноо
       ali_category:
         name_mn: Монгол
         name: Англи

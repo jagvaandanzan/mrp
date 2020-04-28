@@ -15,6 +15,8 @@ class AbilityOperator
         can :read, FbCommentAction
       when "bank_transactions"
         can :read, BankTransaction
+      when "sms_message"
+        can role, SmsMessage
       else
         puts "it was something else"
       end
