@@ -48,7 +48,7 @@ module API
                                               parent_id: obj[:parent_id],
                                               date: created_at)
                     else
-                      fb_comment_action = check_auto_reply(fb_post, obj[:message], obj[:comment_id], obj[:parent_id], from_id, created_at)
+                      fb_comment_action = check_auto_reply(fb_post, obj[:message])
                       if fb_comment_action.nil?
                         FbComment.create(fb_post: fb_post,
                                          message: obj[:message],
@@ -161,7 +161,7 @@ def get_message_tags(comment_id)
   user_ids
 end
 
-def check_auto_reply(fb_post, message, comment_id, parent_id, user_id, date)
+def check_auto_reply(fb_post, message)
 
   fb_comment_actions = FbCommentAction.by_is_active(true).order_queue
   fb_comment_action = nil
@@ -171,7 +171,7 @@ def check_auto_reply(fb_post, message, comment_id, parent_id, user_id, date)
     when "phone"
       phone = message.match(/[789]\d{7}/)
       unless phone.nil?
-        Rails.logger.debug("phone #{phone} ==>#{phone.length}")
+        Rails.logger.debug("phone #{phone} ==>#{phone.to_s.length}")
         fb_comment_action = ac
       end
     when "contain"

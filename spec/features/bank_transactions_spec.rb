@@ -79,8 +79,9 @@ describe "bank transaction check", type: :feature do
           #   puts "#{transaction_last.summary} == #{transaction.summary} == #{(transaction_last.summary == transaction.summary).to_s}"
           #   puts "#{transaction_last.account} == #{transaction.account} == #{(transaction_last.account == transaction.account).to_s}"
           # end
+          time_now = Time.current
           it_is_new = (!transaction_last.nil? &&
-              transaction_last.date == transaction.date &&
+              (transaction_last.date == transaction.date || time_now.hour < 6) &&
               transaction_last.value == transaction.value &&
               transaction_last.summary == transaction.summary &&
               transaction_last.account == transaction.account)
