@@ -40,7 +40,7 @@ class ProductSaleCall < ApplicationRecord
 
   def sent_itoms
     param = {
-        phone: phone.to_i,
+        phone: phone,
         itemcode: code
     }
     response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/newenquiresocial", 'post', param.to_json)
