@@ -102,7 +102,9 @@ end
 
 def check_payment(transactions)
   param = API::V1::Entities::BankTransaction.represent transactions
-  ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/savebanktrans", 'post', param.to_json)
+  response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/savebanktrans", 'post', param.to_json)
+  Rails.logger.debug("43.231.114.241:8882/api/savebanktrans => #{param.to_json}")
+  Rails.logger.debug("43.231.114.241:8882/api/savebanktrans => #{response.code.to_s} => #{response.body.to_s}")
 
   transactions.each do |transaction|
     if transaction.value.downcase.match(/[wq][0-9]{8}/)
@@ -126,7 +128,8 @@ def check_payment(transactions)
         # Rails.logger.info(response.body.to_s)
       end
       response = ApplicationController.helpers.sent_market_web("https://market.mn/api/payments", 'post', param.to_json)
-      puts "market.mn/api/payments => #{response.code.to_s} => #{response.body.to_s}"
+      Rails.logger.debug("market.mn/api/payments => #{param.to_json}")
+      Rails.logger.debug("market.mn/api/payments => #{response.code.to_s} => #{response.body.to_s}")
     end
   end
 
