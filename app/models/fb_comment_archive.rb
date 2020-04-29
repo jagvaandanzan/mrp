@@ -84,10 +84,11 @@ class FbCommentArchive < ApplicationRecord
       end
 
       if comment_action.condition == "phone"
+        phone = message.match(/[789]\d{7}/).to_s
         ProductSaleCall.create(code: fb_post.product_code,
                                quantity: 1,
                                message: message,
-                               phone: message.match(/[789]\d{7}/).to_i)
+                               phone: phone.to_i)
       end
 
     end
