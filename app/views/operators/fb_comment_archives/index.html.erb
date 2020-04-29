@@ -63,13 +63,17 @@
                     <% replies = fb_comment_archive.replies.count %>
                     <% if replies > 0 %>
                       <%= link_to current_user.present? ? new_users_fb_comment_archive_path(id: fb_comment_archive.id) : new_operators_fb_comment_archive_path(id: fb_comment_archive.id) do %>
-                        <button type="button" class="btn btn-sm btn-warning"><%= replies %></button>
+                        <% if fb_comment_archive.comment_action.present? %>
+                          <button type="button" class="btn btn-sm btn-info">Auto (<%= replies %>)</button>
+                        <% else %>
+                          <button type="button" class="btn btn-sm btn-warning"><%= replies %></button>
+                        <% end %>
                       <% end %>
                     <% elsif fb_comment_archive.comment_action.present? %>
                       <%= link_to current_user.present? ? users_fb_comment_archive_path(fb_comment_archive) : operators_fb_comment_archive_path(fb_comment_archive) do %>
                         <button type="button" class="btn btn-sm btn-info">Auto</button>
                       <% end %>
-                  <% end %>
+                    <% end %>
                   </td>
                 </tr>
               <% end %>

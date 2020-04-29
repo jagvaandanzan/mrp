@@ -170,7 +170,7 @@ def check_auto_reply(fb_post, message)
     case ac.condition
     when "phone"
       phone = message.match(/[789]\d{7}/)
-      if phone.nil? && phone.to_s.length == 8
+      if !phone.nil? && phone.to_s.length == 8
         fb_comment_action = ac
       end
     when "contain"
