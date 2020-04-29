@@ -73,7 +73,7 @@ mn:
     facebook: Фэйсбүүк
     bank_transactions: Банкны хуулга
     sms_messages: SMS мессеж
-  app_name: “MPR”
+  app_name: “MRP”
   app_short_name: M
   alert:
     saved_successfully: Амжилттай хадгаллаа
