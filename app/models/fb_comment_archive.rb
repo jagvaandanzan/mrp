@@ -28,7 +28,7 @@ class FbCommentArchive < ApplicationRecord
     where("archive_id IS#{is} ?", nil)
   }
 
-  scope :search, ->(archive_id, comment_id, fb_post_id, post_id, user_name, message, date, verb) {
+  scope :search, ->(archive_id, comment_id, fb_post_id, post_id, user_name, message, start, finish, verb) {
     items = order_date
     if archive_id.present?
       items = items.where(archive_id: archive_id) if archive_id.present?
@@ -42,8 +42,7 @@ class FbCommentArchive < ApplicationRecord
                 .where("fb_posts.post_id=?", post_id) if post_id.present?
     items = items.where('user_name LIKE :value', value: "%#{user_name}%") if user_name.present?
     items = items.where('message LIKE :value', value: "%#{message}%") if message.present?
-    items = items.where('date >= ?', date) if date.present?
-    items = items.where('date < ?', date + 1.day) if date.present?
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items
   }
 

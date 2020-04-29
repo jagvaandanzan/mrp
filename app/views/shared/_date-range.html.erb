@@ -3,7 +3,7 @@
         let startDate = $('input#<%= start_id %>');
         let endDate = $('input#<%= finish_id %>');
 
-        $('#<%= search_field_id %> span').html(startDate.val() + '-' + endDate.val());
+        $('#<%= search_field_id %> span').html(startDate.val() + ' - ' + endDate.val());
 
         $('#<%= search_field_id %>').daterangepicker({
                 ranges: {
