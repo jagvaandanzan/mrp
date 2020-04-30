@@ -112,7 +112,7 @@ def check_payment(transactions)
       if transaction.value.downcase.start_with?('qpay', 'mm:qpay')
         transaction_id = transaction.value.downcase.match(/[q]\d+[0-9]/).to_s
         param = {
-            amount: transaction.summary,
+            amount: transaction.summary / 99 *100,
             type: "QPAY",
             transactionNumber: transaction_id[1..transaction_id.length],
             ibank_id: 0
