@@ -30,6 +30,8 @@ mn:
       alert: " сонгоно уу!"
     link:
       forget_password: Нууц үгээ мартсан
+      facebook: fb post
+      photo: Зураг линк
   titles:
     resetting_a_password: Нууц үг шинэчлэлт
     reset_password: Нууц үг сэргээх

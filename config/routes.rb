@@ -117,7 +117,7 @@ Rails.application.routes.draw do
         patch 'hide'
       end
     end
-    resources :fb_comment_archives, only: [:index, :show, :new]
+    resources :fb_comment_archives, only: [:index, :show]
     resources :bank_transactions, only: [:index]
 
     match "*any", to: "base#routing_error", via: :all
@@ -149,7 +149,7 @@ Rails.application.routes.draw do
       end
     end
     resources :fb_comment_actions
-    resources :fb_comment_archives, only: [:index, :show, :new]
+    resources :fb_comment_archives, only: [:index, :show]
 
     resources :product_sale_calls, only: [:index, :create, :new, :edit, :update, :destroy] do
       collection do

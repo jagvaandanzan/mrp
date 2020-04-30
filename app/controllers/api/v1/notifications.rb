@@ -37,21 +37,28 @@ module API
                 if obj[:verb] == "add"
                   post_id = obj[:post_id].split('_')[1]
                   fb_post = FbPost.find_by_post_id(post_id)
-
                   if fb_post.present?
+                    message = obj[:message]
                     created_at = Time.at(obj[:created_time])
+
                     if from_id == ENV['FB_PAGE_ID']
                       check_post_comments(fb_post, obj[:parent_id], obj[:comment_id], created_at)
                       FbCommentArchive.create(fb_post: fb_post,
-                                              message: obj[:message],
+                                              message: message,
+                                              photo: obj[:photo],
                                               comment_id: obj[:comment_id],
                                               parent_id: obj[:parent_id],
                                               date: created_at)
                     else
-                      fb_comment_action = check_auto_reply(fb_post, obj[:message])
+                      fb_comment_action = if message.present?
+                                            check_auto_reply(fb_post, message)
+                                          else
+                                            nil
+                                          end
                       if fb_comment_action.nil?
                         FbComment.create(fb_post: fb_post,
-                                         message: obj[:message],
+                                         message: message,
+                                         photo: obj[:photo],
                                          comment_id: obj[:comment_id],
                                          parent_id: obj[:parent_id],
                                          user_id: from_id,
@@ -59,7 +66,8 @@ module API
                                          date: created_at)
                       else
                         FbCommentArchive.create(fb_post: fb_post,
-                                                message: obj[:message],
+                                                message: message,
+                                                photo: obj[:photo],
                                                 comment_id: obj[:comment_id],
                                                 parent_id: obj[:parent_id],
                                                 user_id: from_id,

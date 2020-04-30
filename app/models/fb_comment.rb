@@ -63,6 +63,7 @@ class FbComment < ApplicationRecord
   def to_archive
     FbCommentArchive.create(fb_post: fb_post,
                             message: message,
+                            photo: photo,
                             verb: verb,
                             comment_id: comment_id,
                             parent_id: parent_id,

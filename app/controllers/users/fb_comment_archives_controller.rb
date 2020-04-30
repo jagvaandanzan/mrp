@@ -1,6 +1,6 @@
 class Users::FbCommentArchivesController < Users::BaseController
   load_and_authorize_resource
-  before_action :set_fb_comment_archive, only: [:show, :new]
+  before_action :set_fb_comment_archive, only: [:show]
 
   def index
     @verb = params[:verb]
@@ -30,17 +30,6 @@ class Users::FbCommentArchivesController < Users::BaseController
                       ""
                     end
     render 'operators/fb_comment_archives/show'
-  end
-
-  def new
-    response = ApplicationController.helpers.fb_get_post_message(@fb_comment_archive.fb_post.post_id)
-    @post_message = if response.code.to_i == 200
-                      json = JSON.parse(response.body)
-                      json['message']
-                    else
-                      ""
-                    end
-    render 'operators/fb_comment_archives/new'
   end
 
   private
