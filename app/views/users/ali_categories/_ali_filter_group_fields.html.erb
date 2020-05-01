@@ -3,7 +3,7 @@
     <%= field_errors f.object, :name %>
     <%= f.text_field :name, class: 'form-control field name', style: 'color: blue', placeholder: t('activerecord.attributes.ali_category.name'), readonly: true %>
   </td>
-  <% if current_user.id == 1 || current_user.id == 5 || current_user.id == 9 %>
+  <% if  current_user.id == 1 || current_user.id == 5 || current_user.id == 9 || current_user.id == 12 %>
     <td class="va-mid text-center">
       <% if !f.object.mn_change && !f.object.prod %>
         <button type="button" class="btn btn-warning btn-xs" onclick="set_name_as($(this))" ftype="group">Бүгдийг өөрчил
