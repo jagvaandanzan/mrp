@@ -20,7 +20,8 @@ class Operators::FbCommentsController < Operators::BaseController
   end
 
   def edit
-    @post_message, @comments = ApplicationController.helpers.fb_get_post(@fb_comment.fb_post.post_id, @fb_comment.parent_id)
+    ApplicationController.helpers.set_fb_content(@fb_comment.fb_post)
+    @comments = ApplicationController.helpers.fb_get_post_comments(@fb_comment.parent_id)
   end
 
   def update
@@ -37,7 +38,8 @@ class Operators::FbCommentsController < Operators::BaseController
   end
 
   def messages
-    @post_message, @comments = ApplicationController.helpers.fb_get_post(@fb_comment.fb_post.post_id, @fb_comment.parent_id)
+    ApplicationController.helpers.set_fb_content(@fb_comment.fb_post)
+    @comments = ApplicationController.helpers.fb_get_post_comments(@fb_comment.parent_id)
   end
 
   def send_message

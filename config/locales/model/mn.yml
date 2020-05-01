@@ -334,6 +334,7 @@ mn:
         post_id: FB Post ID
         product_name: Барааны нэр
         product_code: Барааны код
+        content: Агуулга
         fb_comments: Комментууд
         price: Үнэ
         feature: Шинж чанар

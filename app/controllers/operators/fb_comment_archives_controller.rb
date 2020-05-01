@@ -22,13 +22,7 @@ class Operators::FbCommentArchivesController < Operators::BaseController
   end
 
   def show
-    response = ApplicationController.helpers.fb_get_post_message(@fb_comment_archive.fb_post.post_id)
-    @post_message = if response.code.to_i == 200
-                      json = JSON.parse(response.body)
-                      json['message']
-                    else
-                      ""
-                    end
+    ApplicationController.helpers.set_fb_content(@fb_comment_archive.fb_post)
   end
 
   private

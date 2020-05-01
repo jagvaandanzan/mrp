@@ -28,6 +28,10 @@
           <div class="col-data"><%= @fb_post.product_name %></div>
         </div>
         <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.fb_post.content') %> :</div>
+          <div class="col-data"><%= @fb_post.content.present? ? simple_format(@fb_post.content) : '---' %></div>
+        </div>
+        <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.fb_post.price') %> :</div>
           <div class="col-data"><%= @fb_post.price.presence || :'---' %></div>
         </div>

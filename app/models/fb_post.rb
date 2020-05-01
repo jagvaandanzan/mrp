@@ -1,7 +1,8 @@
 class FbPost < ApplicationRecord
   acts_as_paranoid
 
-  validates :post_id, :product_name, :product_code,:price, presence: true, length: {maximum: 255}
+  validates :post_id, :product_name, :product_code, :price, presence: true, length: {maximum: 255}
+  validates :content, presence: true
   validates_uniqueness_of :post_id
 
   has_many :fb_comments, dependent: :destroy
@@ -21,8 +22,9 @@ class FbPost < ApplicationRecord
     where(post_id: post_id)
   }
 
-  scope :search, ->(name, code) {
+  scope :search, ->(post_id, name, code) {
     items = order_date
+    items = items.where(post_id: post_id) if post_id.present?
     items = items.where('product_name LIKE :value', value: "%#{name}%") if name.present?
     items = items.where('product_code LIKE :value', value: "%#{code}%") if code.present?
     items

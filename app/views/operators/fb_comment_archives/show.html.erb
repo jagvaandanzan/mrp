@@ -4,7 +4,7 @@
   </div>
   <%= show_body do %>
     <div class="box box-primary p-15">
-      <%= simple_format(@post_message) %>
+      <%= simple_format(@fb_comment_archive.fb_post.content) %>
       <div class="box-body">
         <table class="table table-hover table-bordered">
           <tr>

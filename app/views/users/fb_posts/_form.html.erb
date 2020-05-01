@@ -28,6 +28,13 @@
             </div>
           </div>
           <div class="form-group">
+            <%= f.label :content, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@fb_post, :content) %>">
+              <%= field_errors(@fb_post, :content) %>
+              <%= f.text_area :content, {class: 'form-control', placeholder: t('activerecord.attributes.fb_post.content'), style:'height: 300px'} %>
+            </div>
+          </div>
+          <div class="form-group">
             <%= f.label :price, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@fb_post, :price) %>">
               <%= field_errors(@fb_post, :price) %>

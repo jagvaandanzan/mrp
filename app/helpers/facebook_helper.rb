@@ -60,20 +60,21 @@ module FacebookHelper
     api_send("#{ENV['FB_API']}#{ENV['FB_PAGE_ID']}_#{post_id}?access_token=#{ENV['FB_TOKEN']}", 'get', nil)
   end
 
-  def fb_get_post(post_id, parent_id)
-    response = fb_get_post_message(post_id)
-    if response.code.to_i == 200
-      json = JSON.parse(response.body)
-      comments =
-          if parent_id.start_with? ENV['FB_PAGE_ID']
-            []
-          else
-            FbCommentArchive.by_parent_id(parent_id).order_date
-          end
-
-      [json['message'], comments]
+  def fb_get_post_comments(parent_id)
+    if parent_id.start_with? ENV['FB_PAGE_ID']
+      []
     else
-      ["", []]
+      FbCommentArchive.by_parent_id(parent_id).order_date
+    end
+  end
+
+  def set_fb_content(fb_post)
+    unless fb_post.content.present?
+      response = fb_get_post_message(fb_post.post_id)
+      if response.code.to_i == 200
+        json = JSON.parse(response.body)
+        fb_post.update_attribute(:content, json['message'])
+      end
     end
   end
 end

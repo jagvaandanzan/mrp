@@ -2,13 +2,16 @@
   <div class="col-md-12 m-t-10 m-b-10">
     <div class="row">
       <%= form_with url: users_fb_posts_path, method: "get", class: 'form-horizontal', local: true do |f| %>
-        <div class="col-md-4 search">
+        <div class="col-md-3 search">
+          <%= text_field_tag :post_id, @post_id, {class: 'form-control search', placeholder: t('activerecord.attributes.fb_post.post_id')} %>
+        </div>
+        <div class="col-md-3 search">
           <%= text_field_tag :product_code, @product_code, {class: 'form-control search', placeholder: t('activerecord.attributes.fb_post.product_code')} %>
         </div>
-        <div class="col-md-4 search">
+        <div class="col-md-3 search">
           <%= text_field_tag :product_name, @product_name, {class: 'form-control search', placeholder: t('activerecord.attributes.fb_post.product_name')} %>
         </div>
-        <div class="col-md-4 search">
+        <div class="col-md-3 search">
           <%= submit_tag t('controls.button.searching') + " (" + @fb_posts.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
 
           <% is_manage = can? :manage, FbPost %>

@@ -3,9 +3,10 @@ class Users::FbPostsController < Users::BaseController
   before_action :set_fb_post, only: [:show, :edit, :update, :destroy]
 
   def index
+    @post_id = params[:post_id]
     @product_name = params[:product_name]
     @product_code = params[:product_code]
-    @fb_posts = FbPost.search(@product_name, @product_code).page(params[:page])
+    @fb_posts = FbPost.search(@post_id, @product_name, @product_code).page(params[:page])
     cookies[:fb_post_page_number] = params[:page]
   end
 
@@ -25,6 +26,7 @@ class Users::FbPostsController < Users::BaseController
   end
 
   def show
+    ApplicationController.helpers.set_fb_content(@fb_post)
   end
 
   def edit
@@ -53,6 +55,6 @@ class Users::FbPostsController < Users::BaseController
   end
 
   def fb_post_params
-    params.require(:fb_post).permit(:post_id, :product_name, :product_code, :price, :feature)
+    params.require(:fb_post).permit(:post_id, :product_name, :product_code, :content, :price, :feature)
   end
 end
