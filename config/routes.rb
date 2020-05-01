@@ -119,6 +119,7 @@ Rails.application.routes.draw do
     end
     resources :fb_comment_archives, only: [:index, :show]
     resources :bank_transactions, only: [:index]
+    resources :sms_messages, only: [:index, :create, :new]
 
     match "*any", to: "base#routing_error", via: :all
   end

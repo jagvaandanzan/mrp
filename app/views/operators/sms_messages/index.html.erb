@@ -4,7 +4,7 @@
 <% end %>
 <div class="content-wrapper">
   <div class="col-md-12 m-t-10 m-b-10">
-    <%= form_with url: operators_sms_messages_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+    <%= form_with url: current_operator.present? ? operators_sms_messages_path : users_sms_messages_path, method: "get", class: 'form-horizontal', local: true do |f| %>
       <div class="col-md-3 search">
         <%= number_field_tag :recipient, @recipient, {class: 'form-control search', step: 1, placeholder: t('activerecord.attributes.sms_message.recipient')} %>
       </div>
@@ -23,7 +23,7 @@
         <%= submit_tag t('controls.button.searching') + " (" + @sms_messages.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
 
         <% if can? :manage, SmsMessage %>
-          <%= link_to t('controls.button.create'), new_operators_sms_message_path, class: 'btn btn-warning pull-right' %>
+          <%= link_to t('controls.button.create'), current_operator.present? ? new_operators_sms_message_path : new_users_sms_message_path, class: 'btn btn-warning pull-right' %>
         <% end %>
       </div>
     <% end %>
@@ -42,7 +42,7 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.sms_message.amount') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.sms_message.message') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.sms_message.created_at') %></th>
-                <th class="th-center va-mid"><%= t('activerecord.attributes.sms_message.operator_id') %></th>
+                <th class="th-center va-mid"><%= current_operator.present? ? t('activerecord.attributes.sms_message.operator_id') : t('activerecord.models.user') %></th>
               </tr>
               <% @sms_messages.each do |sms_message| %>
                 <tr>
@@ -50,7 +50,7 @@
                   <td class="va-mid"><%= sms_message.amount %></td>
                   <td class="va-mid"><%= sms_message.full_message %></td>
                   <td class="td-center va-mid"><%= sms_message.created_at.strftime('%F %R') %></td>
-                  <td class="td-center va-mid"><%= sms_message.operator.name%></td>
+                  <td class="td-center va-mid"><%= sms_message.operator.present? ? sms_message.operator.name : sms_message.user.name %></td>
                 </tr>
               <% end %>
             </table>

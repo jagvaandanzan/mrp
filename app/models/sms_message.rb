@@ -1,5 +1,6 @@
 class SmsMessage < ApplicationRecord
-  belongs_to :operator
+  belongs_to :operator, optional: true
+  belongs_to :user, optional: true
 
   # validates :message, presence: true, length: {maximum: 160}
   validates :amount, presence: true, numericality: {greater_than: 100, only_integer: true, message: :invalid}

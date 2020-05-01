@@ -36,6 +36,8 @@ class AbilityUser
         can role, FbCommentArchive
       when "bank_transactions"
         can :read, BankTransaction
+      when "sms_message"
+        can role, SmsMessage
       else
         puts "it was something else"
       end
