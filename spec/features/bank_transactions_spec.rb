@@ -57,7 +57,7 @@ describe "bank transaction check", type: :feature do
             transaction.first_balance = num.to_f.round(1)
           when 3
             num = data.gsub(',', '')
-            transaction.summary = num.to_i
+            transaction.summary = num.to_f.round(1)
           when 4
             num = data.gsub(',', '')
             transaction.final_balance = num.to_f.round(1)
@@ -73,18 +73,19 @@ describe "bank transaction check", type: :feature do
         # хэрэв өмнө нь гүйлгээ байсан үед, тэрийг олтолоо гүйнэ
         unless it_is_new
           # өмнөх гүйлгээтэй ижил эсэхийг шалгаж байна
-          # unless transaction_last.nil?
-          #   puts "#{transaction_last.date.strftime('%F %R')} == #{transaction.date.strftime('%F %R')} == #{(transaction_last.date == transaction.date).to_s}"
-          #   puts "#{transaction_last.value} == #{transaction.value} == #{(transaction_last.value == transaction.value).to_s}"
-          #   puts "#{transaction_last.summary} == #{transaction.summary} == #{(transaction_last.summary == transaction.summary).to_s}"
-          #   puts "#{transaction_last.account} == #{transaction.account} == #{(transaction_last.account == transaction.account).to_s}"
-          # end
           time_now = Time.current
           it_is_new = (!transaction_last.nil? &&
               (transaction_last.date == transaction.date || time_now.hour < 6) &&
               transaction_last.value == transaction.value &&
               transaction_last.summary == transaction.summary &&
               transaction_last.account == transaction.account)
+
+          unless transaction_last.nil?
+            Rails.logger.debug("#{transaction_last.date.strftime('%F %R')} == #{transaction.date.strftime('%F %R')} == #{(transaction_last.date == transaction.date).to_s} ==> #{time_now.hour}")
+            Rails.logger.debug("#{transaction_last.value} == #{transaction.value} == #{(transaction_last.value == transaction.value).to_s}")
+            Rails.logger.debug("#{transaction_last.summary} == #{transaction.summary} == #{(transaction_last.summary == transaction.summary).to_s}")
+            Rails.logger.debug("#{transaction_last.account} == #{transaction.account} == #{(transaction_last.account == transaction.account).to_s}")
+          end
         end
         # шинэ гүйлгээ тул хадгална
         if transaction.it_is_new
@@ -112,7 +113,7 @@ def check_payment(transactions)
       if transaction.value.downcase.start_with?('qpay', 'mm:qpay')
         transaction_id = transaction.value.downcase.match(/[q]\d+[0-9]/).to_s
         param = {
-            amount: transaction.summary / 99 *100,
+            amount: transaction.summary / 99 * 100,
             type: "QPAY",
             transactionNumber: transaction_id[1..transaction_id.length],
             ibank_id: 0
@@ -125,8 +126,6 @@ def check_payment(transactions)
             transactionNumber: transaction_id[1..transaction_id.length],
             ibank_id: 0
         }
-        # response = ApplicationController.helpers.sent_market_web("https://market.mn/api/payments", 'post', param.to_json)
-        # Rails.logger.info(response.body.to_s)
       end
       response = ApplicationController.helpers.sent_market_web("https://market.mn/api/payments", 'post', param.to_json)
       Rails.logger.debug("market.mn/api/payments => #{param.to_json}")
