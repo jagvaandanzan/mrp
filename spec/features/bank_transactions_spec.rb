@@ -71,6 +71,7 @@ describe "bank transaction check", type: :feature do
 
       if transaction.date.present? && transaction.summary > 0
         # хэрэв өмнө нь гүйлгээ байсан үед, тэрийг олтолоо гүйнэ
+        Rails.logger.debug("it_is_new_1=#{it_is_new}")
         unless it_is_new
           # өмнөх гүйлгээтэй ижил эсэхийг шалгаж байна
           time_now = Time.current
@@ -86,7 +87,9 @@ describe "bank transaction check", type: :feature do
             Rails.logger.debug("#{transaction_last.summary} == #{transaction.summary} == #{(transaction_last.summary == transaction.summary).to_s}")
             Rails.logger.debug("#{transaction_last.account} == #{transaction.account} == #{(transaction_last.account == transaction.account).to_s}")
           end
+          Rails.logger.debug("it_is_new_2=#{it_is_new}")
         end
+        Rails.logger.debug("it_is_new_3=#{it_is_new}")
         # шинэ гүйлгээ тул хадгална
         if transaction.it_is_new
           transaction.save

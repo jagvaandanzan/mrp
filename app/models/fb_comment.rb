@@ -6,7 +6,7 @@ class FbComment < ApplicationRecord
 
   validates_uniqueness_of :comment_id
 
-  attr_accessor :reply_text, :reply_comment, :verb
+  attr_accessor :action_type, :reply_text, :reply_comment, :verb
 
   scope :by_fb_post, ->(fb_post) {
     where(fb_post_id: fb_post)

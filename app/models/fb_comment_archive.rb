@@ -13,6 +13,10 @@ class FbCommentArchive < ApplicationRecord
   enum verb: {is_add: 0, is_hide: 1, is_remove: 2, is_reaction: 3}
 
   scope :order_date, -> {
+    order(:date)
+  }
+
+  scope :order_date_desc, -> {
     order(date: :desc)
   }
 
@@ -29,7 +33,7 @@ class FbCommentArchive < ApplicationRecord
   }
 
   scope :search, ->(archive_id, comment_id, fb_post_id, post_id, user_name, message, start, finish, verb) {
-    items = order_date
+    items = order_date_desc
     if archive_id.present?
       items = items.where(archive_id: archive_id) if archive_id.present?
     else

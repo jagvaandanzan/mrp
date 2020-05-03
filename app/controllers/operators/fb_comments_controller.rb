@@ -1,25 +1,18 @@
 class Operators::FbCommentsController < Operators::BaseController
   load_and_authorize_resource
-  before_action :set_fb_comment, only: [:show, :edit, :update, :messages, :send_message, :destroy, :hide]
+  before_action :set_fb_comment, only: [:show, :update, :destroy, :hide]
 
   def index
     @fb_post_id = params[:fb_post_id]
     @post_id = params[:post_id]
     @user_name = params[:user_name]
     @message = params[:message]
-    @date = if params[:date].present?
-              params[:date].to_time
-            else
-              Time.now.beginning_of_day
-            end
+    @date = params[:date]
     @fb_comments = FbComment.search(@fb_post_id, @post_id, @user_name, @message, @date).page(params[:page])
     cookies[:fb_comment_page_number] = params[:page]
   end
 
   def show
-  end
-
-  def edit
     ApplicationController.helpers.set_fb_content(@fb_comment.fb_post)
     @comments = ApplicationController.helpers.fb_get_post_comments(@fb_comment.parent_id)
   end
@@ -27,32 +20,15 @@ class Operators::FbCommentsController < Operators::BaseController
   def update
     @fb_comment.attributes = fb_comment_params
     if @fb_comment.valid?
-      alert, msg = ApplicationController.helpers.fb_reply_comment(@fb_comment.comment_id, @fb_comment.parent_id, @fb_comment.user_id, @fb_comment.reply_text)
-
+      if @fb_comment.action_type == "reply"
+        alert, msg = ApplicationController.helpers.fb_reply_comment(@fb_comment.comment_id, @fb_comment.parent_id, @fb_comment.user_id, @fb_comment.reply_text)
+      else
+        alert, msg = ApplicationController.helpers.fb_send_message(@fb_comment.comment_id, @fb_comment.reply_text)
+      end
       flash[alert] = msg
-
       redirect_to action: :index
     else
-      render 'edit'
-    end
-  end
-
-  def messages
-    ApplicationController.helpers.set_fb_content(@fb_comment.fb_post)
-    @comments = ApplicationController.helpers.fb_get_post_comments(@fb_comment.parent_id)
-  end
-
-  def send_message
-    @fb_comment.attributes = fb_comment_params
-    if @fb_comment.valid?
-
-      alert, msg = ApplicationController.helpers.fb_send_message(@fb_comment.comment_id, @fb_comment.reply_text)
-
-      flash[alert] = msg
-
-      redirect_to action: :index
-    else
-      render 'edit'
+      render 'show'
     end
   end
 

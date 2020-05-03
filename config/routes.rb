@@ -112,8 +112,6 @@ Rails.application.routes.draw do
     resources :fb_posts
     resources :fb_comments, only: [:index, :show, :edit, :update, :destroy] do
       collection do
-        get 'messages'
-        patch 'send_message'
         patch 'hide'
       end
     end
@@ -144,8 +142,6 @@ Rails.application.routes.draw do
 
     resources :fb_comments, only: [:index, :show, :edit, :update, :destroy] do
       collection do
-        get 'messages'
-        patch 'send_message'
         patch 'hide'
       end
     end

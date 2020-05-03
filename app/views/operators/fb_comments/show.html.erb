@@ -7,53 +7,91 @@
 
   <div class="action-buttons">
     <% if can? :manage, FbComment %>
+      <%= link_to t('activerecord.attributes.fb_comment.hide'), current_operator.present? ? hide_operators_fb_comments_path(id: @fb_comment.id) : hide_users_fb_comments_path(id: @fb_comment.id), method: :patch, data: {confirm: t('are_you_sure_ok')}, class: 'btn  btn-warning' %>
       <%= link_to t('controls.button.delete'), current_operator.present? ? operators_fb_comment_path(@fb_comment) : users_fb_comment_path(@fb_comment), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <% end %>
     <%= link_to t('titles.back_to_list'), current_operator.present? ? operators_fb_comments_path(page: cookies[:fb_comment_page_number]) : users_fb_comments_path(page: cookies[:fb_comment_page_number]), {class: "btn blck-btn"} %>
   </div>
-  <%= show_body do %>
-    <div class="box">
-      <div class="box-body table-responsive no-padding">
-        <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.fb_comment.fb_post_id') %> :</div>
-          <div class="col-data"><%= @fb_comment.fb_post.full_name %></div>
-        </div>
-        <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.fb_comment.user_name') %> :</div>
-          <div class="col-data"><%= @fb_comment.user_name %></div>
-        </div>
-        <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.fb_comment.message') %> :</div>
-          <div class="col-data"><%= @fb_comment.message %></div>
-        </div>
-        <div class="m30">
-          <div class="align-left"><%= t('activerecord.attributes.fb_comment.date') %> :</div>
-          <div class="col-data"><%= @fb_comment.date.strftime('%F %R') %></div>
-        </div>
-        <% if can? :manage, FbComment %>
-          <div class="m30">
-            <div class="align-left"><%= t('activerecord.attributes.fb_comment.reply_comment') %> :</div>
-            <div class="col-data">
-              <%= link_to current_operator.present? ? edit_operators_fb_comment_path(@fb_comment) : edit_users_fb_comment_path(@fb_comment) do %>
-                <button type="button" class="btn btn-sm btn-info"><%= t('activerecord.attributes.fb_comment.reply_comment') %></button>
-              <% end %></div>
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12 col-md-12 col-lg-12">
+        <div class="box box-primary p-15">
+          <%= simple_format(@fb_comment.fb_post.content) %>
+          <div class="box-body">
+            <table class="table table-hover table-bordered">
+              <% @comments.each {|comment| %>
+                <tr>
+                  <td class="va-mid">
+                    <strong><%= comment.user_name.presence || :'Market.mn' %></strong>
+                  </td>
+                  <td class="va-mid"><%= comment.message %></td>
+                  <td class="va-mid"><%= comment.verb_i18n %></td>
+                  <td class="va-mid nowrap"><%= comment.date.strftime('%F %R') %></td>
+                </tr>
+              <% } %>
+              <tr>
+                <td>
+                  <div class="bg-yellow p-10"><%= @fb_comment.user_name %></div>
+                </td>
+                <td class="va-mid"><%= @fb_comment.message %></td>
+                <td class="va-mid nowrap"><%= @fb_comment.date.strftime('%F %R') %></td>
+              </tr>
+            </table>
           </div>
-          <div class="m30">
-            <div class="align-left"><%= t('activerecord.attributes.fb_comment.reply_text') %> :</div>
-            <div class="col-data">
-              <%= link_to current_operator.present? ? messages_operators_fb_comments_path(id: @fb_comment.id) : messages_users_fb_comments_path(id: @fb_comment.id) do %>
-                <button type="button" class="btn btn-sm btn-info"><%= t('activerecord.attributes.fb_comment.reply_text') %></button>
-              <% end %></div>
-          </div>
-          <div class="m30">
-            <div class="align-left"><%= t('activerecord.attributes.fb_comment.hide') %> :</div>
-            <div class="col-data">
-              <%= link_to current_operator.present? ? hide_operators_fb_comments_path(id: @fb_comment.id) : hide_users_fb_comments_path(id: @fb_comment.id), method: :patch, data: {confirm: t('are_you_sure_ok')} do %>
-                <button type="button" class="btn btn-sm btn-warning"><%= t('activerecord.attributes.fb_comment.hide') %></button>
-              <% end %></div>
-          </div>
-        <% end %>
+        </div>
       </div>
     </div>
-  <% end %>
+    <% if can? :manage, FbComment %>
+      <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+          <div class="box box-info">
+            <%= form_for :fb_comment, url: current_operator.present? ? operators_fb_comment_path : users_fb_comment_path, method: :patch,
+                         local: true, :html => {class: 'form-horizontal'}, data: {confirm: t('are_you_sure_ok')} do |f| %>
+              <%= form_body do %>
+                <%= f.hidden_field :action_type, {value: 'reply'} %>
+                <div class="form-group">
+                  <%= f.label :reply_comment, class: 'col-sm-2 control-label' %>
+                  <div class="col-sm-9 <%= get_error_class(@fb_comment, :reply_text) %>">
+                    <%= field_errors(@fb_comment, :reply_text) %>
+                    <%= f.text_area :reply_text, class: 'form-control', placeholder: t('activerecord.attributes.fb_comment.reply_comment') %>
+                  </div>
+                  <div class="col-sm-1">
+                    <%= f.submit t('controls.button.send'), class: 'btn btn-warning' %>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+          <div class="box box-info">
+            <%= form_for :fb_comment, url: current_operator.present? ? operators_fb_comment_path : users_fb_comment_path, method: :patch,
+                         local: true, :html => {class: 'form-horizontal'}, data: {confirm: t('are_you_sure_ok')} do |f| %>
+              <%= form_body do %>
+                <%= f.hidden_field :action_type, {value: 'message'} %>
+                <div class="form-group">
+                  <%= f.label :reply_text, class: 'col-sm-2 control-label' %>
+                  <div class="col-sm-9 <%= get_error_class(@fb_comment, :reply_text) %>">
+                    <%= field_errors(@fb_comment, :reply_text) %>
+                    <%= f.text_area :reply_text, class: 'form-control', placeholder: t('activerecord.attributes.fb_comment.reply_text') %>
+                  </div>
+                  <div class="col-sm-1">
+                    <%= f.submit t('controls.button.send'), class: 'btn btn-warning' %>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </section>
 </div>
+<style>
+  .box {
+    margin-bottom: 12px;
+  }
+</style>
