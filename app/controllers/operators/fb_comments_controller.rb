@@ -34,11 +34,12 @@ class Operators::FbCommentsController < Operators::BaseController
     @fb_comment.attributes = fb_comment_params
     if @fb_comment.valid?
       if @fb_comment.action_type == "reply"
-        fb_comment_answer = if @fb_comment.comment_answer_id.present?
-                              FbCommentAnswer.find(@fb_comment.comment_answer_id)
-                            else
-                              FbCommentAnswer.create(answer: @fb_comment.reply_text, operator: current_operator)
-                            end
+        if @fb_comment.comment_answer_id.present?
+          fb_comment_answer = FbCommentAnswer.find(@fb_comment.comment_answer_id)
+          fb_comment_answer.update_attribute(:used, fb_comment_answer.used + 1)
+        else
+          fb_comment_answer = FbCommentAnswer.create(answer: @fb_comment.reply_text, operator: current_operator)
+        end
         FbCommentQuestion.create(operator: current_operator,
                                  fb_comment_answer: fb_comment_answer,
                                  comment: @fb_comment.message,
