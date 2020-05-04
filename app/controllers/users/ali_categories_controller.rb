@@ -103,15 +103,17 @@ class Users::AliCategoriesController < Users::BaseController
   def set_name_as_filter
     name = params[:name]
     name_mn = params[:name_mn]
-
+    user = current_user
     if params[:ftype] == "group"
       ali_filters = AliFilterGroup
                         .mn_change(false)
                         .by_name(name)
+      user.update(ali_g: user.ali_g + 1)
     else
       ali_filters = AliFilter
                         .mn_change(false)
                         .by_name(name)
+      user.update(ali_f: user.ali_f + 1)
     end
     count = ali_filters.count
     ali_filters.update(name_mn: name_mn, mn_change: true, prod: true)
