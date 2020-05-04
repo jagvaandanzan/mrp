@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   root 'users/base#root'
 
   post 'search_product', to: 'application#search_product'
+  post 'search_fb_answer', to: 'application#search_fb_answer'
 
   devise_for :admin_users, path: :admin, controllers: {
       sessions: 'admin_users/sessions',

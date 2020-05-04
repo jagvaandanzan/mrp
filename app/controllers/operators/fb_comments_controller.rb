@@ -10,6 +10,17 @@ class Operators::FbCommentsController < Operators::BaseController
     @date = params[:date]
     @fb_comments = FbComment.search(@fb_post_id, @post_id, @user_name, @message, @date).page(params[:page])
     cookies[:fb_comment_page_number] = params[:page]
+    #check remove
+    FbCommentRemove.all.each do |cr|
+      fb_comment = FbComment.find_by_comment_id(cr.comment_id)
+      if cr.is_edit?
+        fb_comment.update_attribute(:message, cr.message)
+      else
+        fb_comment.verb = cr.verb
+        fb_comment.destroy!
+      end
+      cr.destroy!
+    end
   end
 
   def show
@@ -21,13 +32,28 @@ class Operators::FbCommentsController < Operators::BaseController
     @fb_comment.attributes = fb_comment_params
     if @fb_comment.valid?
       if @fb_comment.action_type == "reply"
+        fb_comment_answer = if @fb_comment.comment_answer_id.present?
+                              FbCommentAnswer.find(@fb_comment.comment_answer_id)
+                            else
+                              FbCommentAnswer.create(answer: @fb_comment.reply_text, operator: current_operator)
+                            end
+        FbCommentQuestion.create(operator: current_operator,
+                                 fb_comment_answer: fb_comment_answer,
+                                 comment: @fb_comment.message,
+                                 post_id: @fb_comment.fb_post.post_id,
+                                 fb_user_id: @fb_comment.user_id)
+
         alert, msg = ApplicationController.helpers.fb_reply_comment(@fb_comment.comment_id, @fb_comment.parent_id, @fb_comment.user_id, @fb_comment.reply_text)
+        if alert == :success
+          check_post_comments(@fb_comment.fb_post, @fb_comment, Time.current)
+        end
       else
         alert, msg = ApplicationController.helpers.fb_send_message(@fb_comment.comment_id, @fb_comment.reply_text)
       end
       flash[alert] = msg
       redirect_to action: :index
     else
+      @comments = ApplicationController.helpers.fb_get_post_comments(@fb_comment.parent_id)
       render 'show'
     end
   end
@@ -52,6 +78,37 @@ class Operators::FbCommentsController < Operators::BaseController
 
 
   def fb_comment_params
-    params.require(:fb_comment).permit(:reply_text)
+    params.require(:fb_comment).permit(:action_type, :reply_text, :comment_answer_id)
+  end
+
+  def check_post_comments(fb_post, fb_comment, date)
+    msg = ""
+    comment_users = fb_post.fb_comments
+    if comment_users.count > 0
+
+      # маркет коммент эцэг нь хэрэглэгчийн коммент id бол шууд хариу нь болно
+      if fb_comment.parent_id.start_with? ENV['FB_PAGE_ID']
+        msg = apply_above_comments(comment_users, fb_comment.parent_id, fb_comment.user_id, fb_comment.date)
+        # puts "parent match ========> " + fb_comment.id.to_s
+        fb_comment.destroy!
+        # коммент хариултын араас бичсэн асуултад хариулсан бол
+      else
+        msg = apply_above_comments(comment_users, fb_comment.parent_id, fb_comment.user_id, date)
+      end
+    end
+
+    msg
+  end
+
+  def apply_above_comments(comment_users, parent_id, user_id, date)
+    msg = ""
+    comment_users.each do |comment|
+      if comment.parent_id == parent_id && comment.user_id == user_id && comment.date < date
+        # puts "apply_above_comments ========> " + comment.id.to_s
+        msg = msg + comment.message + ", " if comment.message.present?
+        comment.destroy!
+      end
+    end
+    msg
   end
 end

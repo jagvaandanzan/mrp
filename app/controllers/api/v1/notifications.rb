@@ -42,7 +42,8 @@ module API
                     created_at = Time.at(obj[:created_time])
 
                     if from_id == ENV['FB_PAGE_ID']
-                      check_post_comments(fb_post, obj[:parent_id], obj[:comment_id], created_at)
+                      # mrp с хийж байгаа тул
+                      # check_post_comments(fb_post, obj[:parent_id], obj[:comment_id], created_at)
                       FbCommentArchive.create(fb_post: fb_post,
                                               message: message,
                                               photo: obj[:photo],
@@ -82,12 +83,13 @@ module API
                   fb_comment = FbComment.find_by_comment_id(obj[:comment_id])
                   if fb_comment.present?
                     if obj[:verb] == "hide" || obj[:verb] == "remove"
-                      # fb_comment.update_attribute(:is_hide, true)
                       fb_comment.verb = "is_#{obj[:verb]}"
                       fb_comment.destroy!
                     elsif obj[:verb] == "edited"
                       fb_comment.update_attribute(:message, obj[:message])
                     end
+                  else
+                    FbCommentRemove.create(comment_id: obj[:comment_id], verb: "is_#{obj[:verb]}", message: obj[:message])
                   end
                 end
 

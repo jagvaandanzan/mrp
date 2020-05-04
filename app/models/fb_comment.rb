@@ -2,11 +2,14 @@ class FbComment < ApplicationRecord
   belongs_to :fb_post
 
   before_destroy :to_archive
-  validates :reply_text, presence: true, on: :update
 
   validates_uniqueness_of :comment_id
 
-  attr_accessor :action_type, :reply_text, :reply_comment, :verb
+  with_options :unless => Proc.new {|m| m.comment_answer_id.present?} do
+    validates :reply_text, presence: true, on: :update
+  end
+
+  attr_accessor :action_type, :reply_text, :comment_answer_id, :verb
 
   scope :by_fb_post, ->(fb_post) {
     where(fb_post_id: fb_post)

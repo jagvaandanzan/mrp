@@ -32,7 +32,7 @@ class AbilityUser
       when "fb_post"
         can role, FbPost
       when "fb_comment"
-        can role, FbComment
+        can :read, FbComment
         can role, FbCommentArchive
       when "bank_transactions"
         can :read, BankTransaction

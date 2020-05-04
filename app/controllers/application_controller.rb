@@ -22,4 +22,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def search_fb_answer
+    @search_text = params[:text]
+    if @search_text.length > 1
+      @list = FbCommentAnswer.search(@search_text)
+    end
+    respond_to do |format|
+      format.js {render 'shared/search_fb_answer'}
+    end
+  end
+
 end

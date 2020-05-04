@@ -1,0 +1,11 @@
+var sel = $('select#fb_comment_comment_answer_id');
+var inp = $('input#fb_comment_reply_text');
+<% if @list.present? %>
+inp.val("").addClass('none');
+sel.html("<%= escape_javascript options_for_select @list.all.collect{|l| [l.answer, l.id]}.insert(0, [t('controls.select.none'),""])  %>").selectpicker("refresh");
+sel.parent().removeClass('none-force');
+<% else %>
+inp.val("<%=@search_text %>").removeClass('none');
+sel.parent().addClass('none-force');
+sel.html("<option value><%=t('activerecord.attributes.fb_comment.reply_comment') %></option>").selectpicker("refresh");
+<% end %>

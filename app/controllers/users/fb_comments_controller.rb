@@ -10,7 +10,17 @@ class Users::FbCommentsController < Users::BaseController
     @date = params[:date]
     @fb_comments = FbComment.search(@fb_post_id, @post_id, @user_name, @message, @date).page(params[:page])
     cookies[:fb_comment_page_number] = params[:page]
-
+    #check remove
+    FbCommentRemove.all.each do |cr|
+      fb_comment = FbComment.find_by_comment_id(cr.comment_id)
+      if cr.is_edit?
+        fb_comment.update_attribute(:message, cr.message)
+      else
+        fb_comment.verb = cr.verb
+        fb_comment.destroy!
+      end
+      cr.destroy!
+    end
     render 'operators/fb_comments/index'
   end
 
