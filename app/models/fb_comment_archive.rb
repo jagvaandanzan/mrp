@@ -57,6 +57,9 @@ class FbCommentArchive < ApplicationRecord
       fb_comment = FbCommentArchive.find_by_comment_id(parent_id)
       if fb_comment.present?
         self.archive = fb_comment
+      else
+        fb_comment = FbCommentArchive.by_parent_id(parent_id).is_archive
+        self.archive = fb_comment if fb_comment.present?
       end
     end
   end
