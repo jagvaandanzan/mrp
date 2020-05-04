@@ -13,11 +13,13 @@ class Users::FbCommentsController < Users::BaseController
     #check remove
     FbCommentRemove.all.each do |cr|
       fb_comment = FbComment.find_by_comment_id(cr.comment_id)
-      if cr.is_edit?
-        fb_comment.update_attribute(:message, cr.message)
-      else
-        fb_comment.verb = cr.verb
-        fb_comment.destroy!
+      if fb_comment.present?
+        if cr.is_edit?
+          fb_comment.update_attribute(:message, cr.message)
+        else
+          fb_comment.verb = cr.verb
+          fb_comment.destroy!
+        end
       end
       cr.destroy!
     end
