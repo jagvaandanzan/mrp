@@ -45,7 +45,7 @@ class Operators::FbCommentsController < Operators::BaseController
                                  post_id: @fb_comment.fb_post.post_id,
                                  fb_user_id: @fb_comment.user_id)
 
-        alert, msg = ApplicationController.helpers.fb_reply_comment(@fb_comment.comment_id, @fb_comment.parent_id, @fb_comment.user_id, @fb_comment.reply_text)
+        alert, msg = ApplicationController.helpers.fb_reply_comment(@fb_comment.comment_id, @fb_comment.parent_id, @fb_comment.user_id, fb_comment_answer.answer)
         if alert == :success
           check_post_comments(@fb_comment.fb_post, @fb_comment, Time.current)
         end
