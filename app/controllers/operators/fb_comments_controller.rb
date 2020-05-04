@@ -43,6 +43,7 @@ class Operators::FbCommentsController < Operators::BaseController
                                  fb_comment_answer: fb_comment_answer,
                                  comment: @fb_comment.message,
                                  post_id: @fb_comment.fb_post.post_id,
+                                 is_selected: @fb_comment.comment_answer_id.present?,
                                  fb_user_id: @fb_comment.user_id)
 
         alert, msg = ApplicationController.helpers.fb_reply_comment(@fb_comment.comment_id, @fb_comment.parent_id, @fb_comment.user_id, fb_comment_answer.answer)
