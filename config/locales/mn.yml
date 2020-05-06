@@ -25,6 +25,7 @@ mn:
       back: Буцах
       close: Хаах
       write_reply: Хариу бичих
+      to_archive: Түүхрүү шилжүүлэх
     select:
       none: Сонгох
       alert: " сонгоно уу!"
@@ -84,6 +85,7 @@ mn:
     info_updated: Мэдээлэл шинэчлэгдсэн
     removed_successfully: Амжилттай хасагдсан
     send_successfully: Амжилттай илгээлээ
+    to_archive: Амжилттай шилжлээ
   are_you_sure: "Та устгахдаа итгэлтэй байна уу ?"
   are_you_update: "Хадгалах уу ?"
   are_sure_change: "Өөрчлөх үү ?"

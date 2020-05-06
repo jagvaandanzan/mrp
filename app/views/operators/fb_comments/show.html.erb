@@ -8,7 +8,7 @@
   <div class="action-buttons">
     <% if can? :manage, FbComment %>
       <%= link_to t('activerecord.attributes.fb_comment.hide'), current_operator.present? ? hide_operators_fb_comments_path(id: @fb_comment.id) : hide_users_fb_comments_path(id: @fb_comment.id), method: :patch, data: {confirm: t('are_you_sure_ok')}, class: 'btn  btn-warning' %>
-      <%= link_to t('controls.button.delete'), current_operator.present? ? operators_fb_comment_path(@fb_comment) : users_fb_comment_path(@fb_comment), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+      <%= link_to t('controls.button.to_archive'), current_operator.present? ? operators_fb_comment_path(@fb_comment) : users_fb_comment_path(@fb_comment), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <% end %>
     <%= link_to t('titles.back_to_list'), current_operator.present? ? operators_fb_comments_path(page: cookies[:fb_comment_page_number]) : users_fb_comments_path(page: cookies[:fb_comment_page_number]), {class: "btn blck-btn"} %>
   </div>

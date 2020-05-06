@@ -70,7 +70,7 @@ class Operators::FbCommentsController < Operators::BaseController
 
   def destroy
     @fb_comment.destroy!
-    flash[:success] = t('alert.deleted_successfully')
+    flash[:success] = t('alert.to_archive')
     redirect_to action: :index
   end
 
