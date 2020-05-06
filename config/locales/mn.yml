@@ -90,6 +90,7 @@ mn:
   are_you_update: "Хадгалах уу ?"
   are_sure_change: "Өөрчлөх үү ?"
   are_you_sure_ok: "Та итгэлтэй байна уу ?"
+  are_you_sure_switch: "Шилжүүлэх үү ?"
   currency: ₮
   currency_name: Төгрөг
   upload_file: Файл хуулах
