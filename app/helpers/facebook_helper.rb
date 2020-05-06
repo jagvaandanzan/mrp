@@ -46,7 +46,7 @@ module FacebookHelper
             attachment: {
                 type: "image",
                 payload: {
-                    url: url,
+                    url: "#{ENV['DOMAIN_NAME']}#{url}",
                     is_reusable: true
                 }
             }
