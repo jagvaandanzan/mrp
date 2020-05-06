@@ -2,6 +2,11 @@ class Operators::FbCommentsController < Operators::BaseController
   load_and_authorize_resource
   before_action :set_fb_comment, only: [:show, :update, :destroy, :hide, :like]
 
+  rescue_from ActiveRecord::RecordNotFound do |exception|
+    flash[:alert] = 'Хасагдсан байна!'
+    redirect_to action: :index
+  end
+
   def index
     @fb_post_id = params[:fb_post_id]
     @post_id = params[:post_id]

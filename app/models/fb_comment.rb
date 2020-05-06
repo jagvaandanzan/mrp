@@ -35,9 +35,13 @@ class FbComment < ApplicationRecord
   scope :order_date, -> {
     order(:date)
   }
+  scope :is_visible, -> {
+    where(is_visible: true)
+  }
 
   scope :search, ->(fb_post_id, post_id, user_name, message, date) {
     items = order_date
+                .is_visible
     items = items.where(fb_post_id: fb_post_id) if fb_post_id.present?
     items = items.joins(:fb_post)
                 .where("fb_posts.post_id = ?", post_id) if post_id.present?
