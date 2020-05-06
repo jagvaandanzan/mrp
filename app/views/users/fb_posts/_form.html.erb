@@ -10,7 +10,7 @@
             <%= f.label :post_id, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@fb_post, :post_id) %>">
               <%= field_errors(@fb_post, :post_id) %>
-              <%= f.text_field :post_id, class: 'form-control', placeholder: t('activerecord.attributes.fb_post.post_id') %>
+              <%= f.text_field :post_id, class: 'form-control', placeholder: t('activerecord.attributes.fb_post.post_id'), disabled: true %>
             </div>
           </div>
           <div class="form-group">
