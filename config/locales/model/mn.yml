@@ -347,8 +347,10 @@ mn:
         date: Огноо
         reply_comment: Коммент бичих
         reply_text: Хариу мессеж
+        reply_image: Зураг илгээх
         hide: Нуух
         history: Түүх
+        like: Like
       fb_comment_action:
         is_active: Идэвхтэй
         action_type: Төрөл

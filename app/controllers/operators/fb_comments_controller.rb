@@ -1,6 +1,6 @@
 class Operators::FbCommentsController < Operators::BaseController
   load_and_authorize_resource
-  before_action :set_fb_comment, only: [:show, :update, :destroy, :hide]
+  before_action :set_fb_comment, only: [:show, :update, :destroy, :hide, :like]
 
   def index
     @fb_post_id = params[:fb_post_id]
@@ -51,6 +51,9 @@ class Operators::FbCommentsController < Operators::BaseController
         if alert == :success
           check_post_comments(@fb_comment.fb_post, @fb_comment, Time.current)
         end
+      elsif @fb_comment.action_type == "image"
+        upload = Upload.create(image: @fb_comment.reply_image)
+        alert, msg = ApplicationController.helpers.fb_send_file(@fb_comment.comment_id, upload.image.url)
       else
         alert, msg = ApplicationController.helpers.fb_send_message(@fb_comment.comment_id, @fb_comment.reply_text)
       end
@@ -62,9 +65,18 @@ class Operators::FbCommentsController < Operators::BaseController
     end
   end
 
+  def like
+    alert, msg = ApplicationController.helpers.fb_like_comment(@fb_comment.comment_id)
+    flash[alert] = msg
+    @fb_comment.verb = "is_reaction"
+    @fb_comment.destroy!
+    redirect_to action: :index
+  end
+
   def hide
     alert, msg = ApplicationController.helpers.fb_hide_comment(@fb_comment.comment_id)
     flash[alert] = msg
+    @fb_comment.update_attribute(:is_visible, false)
     redirect_to action: :index
   end
 
@@ -82,7 +94,7 @@ class Operators::FbCommentsController < Operators::BaseController
 
 
   def fb_comment_params
-    params.require(:fb_comment).permit(:action_type, :reply_text, :comment_answer_id)
+    params.require(:fb_comment).permit(:action_type, :reply_text, :reply_image, :comment_answer_id)
   end
 
   def check_post_comments(fb_post, fb_comment, date)

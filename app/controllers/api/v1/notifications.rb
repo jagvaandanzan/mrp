@@ -94,18 +94,18 @@ module API
                 end
 
                 # reaction, хэрэглэгчийн коммент дээр дарсан бол хариулсан гэж үзнэ
-              elsif obj[:item] == "reaction" && from_id == ENV['FB_PAGE_ID'] && obj[:comment_id].present?
-                Rails.logger.info(entry.to_json)
-                post_id = obj[:post_id].split('_')[1]
-                fb_post = FbPost.find_by_post_id(post_id)
-                if fb_post.present?
-                  fb_comments = fb_post.fb_comments.by_comment_id(obj[:comment_id])
-                  if fb_comments.present?
-                    fb_comment = fb_comments.first
-                    fb_comment.verb = "is_reaction"
-                    fb_comment.destroy!
-                  end
-                end
+              # elsif obj[:item] == "reaction" && from_id == ENV['FB_PAGE_ID'] && obj[:comment_id].present?
+              #   # Rails.logger.info(entry.to_json)
+              #   post_id = obj[:post_id].split('_')[1]
+              #   fb_post = FbPost.find_by_post_id(post_id)
+              #   if fb_post.present?
+              #     fb_comments = fb_post.fb_comments.by_comment_id(obj[:comment_id])
+              #     if fb_comments.present?
+              #       fb_comment = fb_comments.first
+              #       fb_comment.verb = "is_reaction"
+              #       fb_comment.destroy!
+              #     end
+              #   end
               end
 
             }

@@ -85,6 +85,7 @@ mn:
     saved_successfully: Амжилттай хадгаллаа
     deleted_successfully: Амжилттай устгагдсан
     hide_successfully: Амжилттай нуулаа
+    like_successfully: Амжилттай Лайк дарлаа
     info_updated: Мэдээлэл шинэчлэгдсэн
     removed_successfully: Амжилттай хасагдсан
     send_successfully: Амжилттай илгээлээ
@@ -98,6 +99,7 @@ mn:
   currency: ₮
   currency_name: Төгрөг
   upload_file: Файл хуулах
+  upload_image: Зураг хуулах
   sms:
     to_customer: "Khanbank: 5111373200-Ayursuren Tulbur %{amount}MNT Ta tulburuu shiljuuleed 77779990 dugaart ergej medegdene uu.Guilgeenii utga hesegt utasni dugaaraa bichne uu"
   errors:

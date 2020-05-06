@@ -8,6 +8,7 @@
   <div class="action-buttons">
     <% if can? :manage, FbComment %>
       <%= link_to t('activerecord.attributes.fb_comment.hide'), current_operator.present? ? hide_operators_fb_comments_path(id: @fb_comment.id) : hide_users_fb_comments_path(id: @fb_comment.id), method: :patch, data: {confirm: t('are_you_sure_ok')}, class: 'btn  btn-danger' %>
+      <%= link_to t('activerecord.attributes.fb_comment.like'), current_operator.present? ? like_operators_fb_comments_path(id: @fb_comment.id) : like_users_fb_comments_path(id: @fb_comment.id), method: :patch, data: {confirm: t('are_you_sure_ok')}, class: 'btn  btn-success' %>
       <%= link_to t('controls.button.to_archive'), current_operator.present? ? operators_fb_comment_path(@fb_comment) : users_fb_comment_path(@fb_comment), method: :delete, data: {confirm: t('are_you_sure_switch')}, class: 'btn btn-warning' %>
     <% end %>
     <%= link_to t('titles.back_to_list'), current_operator.present? ? operators_fb_comments_path(page: cookies[:fb_comment_page_number]) : users_fb_comments_path(page: cookies[:fb_comment_page_number]), {class: "btn blck-btn"} %>
@@ -74,6 +75,31 @@
             <%= form_for :fb_comment, url: current_operator.present? ? operators_fb_comment_path : users_fb_comment_path, method: :patch,
                          local: true, :html => {class: 'form-horizontal'}, data: {confirm: t('are_you_sure_ok')} do |f| %>
               <%= form_body do %>
+                <%= f.hidden_field :action_type, {value: 'image'} %>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="reply_image"><%= t('activerecord.attributes.fb_comment.reply_image') %></label>
+                  <div class="col-sm-9 <%= get_error_class(@fb_comment, :reply_image) %>">
+                    <%= f.file_field :reply_image, accept: "image/*", class: 'image-file none-force' %>
+                    <%= field_errors(@fb_comment, :reply_image) %>
+                    <div class="preview noselect">
+                      <span class="text"><%= t('upload_image') %></span>
+                    </div>
+                  </div>
+                  <div class="col-sm-1">
+                    <%= f.submit t('controls.button.send'), class: 'btn btn-warning' %>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+          <div class="box box-info">
+            <%= form_for :fb_comment, url: current_operator.present? ? operators_fb_comment_path : users_fb_comment_path, method: :patch,
+                         local: true, :html => {class: 'form-horizontal'}, data: {confirm: t('are_you_sure_ok')} do |f| %>
+              <%= form_body do %>
                 <%= f.hidden_field :action_type, {value: 'message'} %>
                 <div class="form-group">
                   <%= f.label :reply_text, class: 'col-sm-2 control-label' %>
@@ -123,6 +149,25 @@
                     console.log(data);
                 }
             });
+        }
+    }
+
+    $(document).ready(function () {
+        $('.preview').on('click', function () {
+            $(this).parent().find('input').click();
+        });
+        $('input.image-file').on('change', function () {
+            readURL(this, $(this).parent().parent().find('.preview:first'));
+        });
+    });
+
+    function readURL(input, div) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                div.html("<img class='preview-img' src='" + e.target.result + "'>");
+            };
+            reader.readAsDataURL(input.files[0]);
         }
     }
 </script>

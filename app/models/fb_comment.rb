@@ -5,11 +5,15 @@ class FbComment < ApplicationRecord
 
   validates_uniqueness_of :comment_id
 
-  with_options :unless => Proc.new {|m| m.comment_answer_id.present?} do
+  with_options :if => Proc.new {|m| !m.comment_answer_id.present? && !m.reply_image.present?} do
     validates :reply_text, presence: true, on: :update
   end
 
-  attr_accessor :action_type, :reply_text, :comment_answer_id, :verb
+  with_options :if => Proc.new {|m| !m.comment_answer_id.present? && !m.reply_text.present?} do
+    validates :reply_image, presence: true, on: :update
+  end
+
+  attr_accessor :action_type, :reply_text, :reply_image, :comment_answer_id, :verb
 
   scope :by_fb_post, ->(fb_post) {
     where(fb_post_id: fb_post)

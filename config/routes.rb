@@ -147,6 +147,7 @@ Rails.application.routes.draw do
 
     resources :fb_comments, only: [:index, :show, :edit, :update, :destroy] do
       collection do
+        patch 'like'
         patch 'hide'
       end
     end

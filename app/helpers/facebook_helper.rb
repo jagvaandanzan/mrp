@@ -37,6 +37,31 @@ module FacebookHelper
     end
   end
 
+  def fb_send_file(comment_id, url)
+    param = {
+        recipient: {
+            comment_id: "#{comment_id}"
+        },
+        message: {
+            attachment: {
+                type: "image",
+                payload: {
+                    url: url,
+                    is_reusable: true
+                }
+            }
+        }
+    }
+    Rails.logger.info(param.to_json)
+    response = api_send("#{ENV['FB_API']}me/messages?access_token=#{ENV['FB_TOKEN']}", 'post', param.to_json)
+    if response.code.to_i == 200
+      [:success, t('alert.send_successfully')]
+    else
+      json = JSON.parse(response.body)
+      [:alert, json.to_s]
+    end
+  end
+
   def fb_delete_comment(comment_id)
     response = api_send("#{ENV['FB_API']}#{comment_id}?access_token=#{ENV['FB_TOKEN']}", 'delete', nil)
     if response.code.to_i == 200
@@ -51,6 +76,15 @@ module FacebookHelper
     response = api_send("#{ENV['FB_API']}#{comment_id}?access_token=#{ENV['FB_TOKEN']}", 'post', {"is_hidden": true}.to_json)
     if response.code.to_i == 200
       [:success, t('alert.hide_successfully')]
+    else
+      [:alert, response.body.to_s]
+    end
+  end
+
+  def fb_like_comment(comment_id)
+    response = api_send("#{ENV['FB_API']}#{comment_id}/likes?access_token=#{ENV['FB_TOKEN']}", 'post', nil)
+    if response.code.to_i == 200
+      [:success, t('alert.like_successfully')]
     else
       [:alert, response.body.to_s]
     end
