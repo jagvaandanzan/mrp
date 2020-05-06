@@ -10,7 +10,7 @@ class FbCommentArchive < ApplicationRecord
 
   before_create :find_parent
   after_create :send_auto_reply
-  enum verb: {is_add: 0, is_hide: 1, is_remove: 2, is_reaction: 3}
+  enum verb: {is_add: 0, is_hide: 1, is_remove: 2, is_reaction: 3, is_send_image: 4}
 
   scope :order_date, -> {
     order(:date)

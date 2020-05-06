@@ -88,6 +88,7 @@ mn:
         is_hide: Нуусан
         is_remove: Устгасан
         is_reaction: Лайк
+        is_send_image: Зураг илгээсэн
   activerecord:
     models:
       admin_user: Админ
