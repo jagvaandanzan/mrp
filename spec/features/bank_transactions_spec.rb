@@ -71,12 +71,11 @@ describe "bank transaction check", type: :feature do
 
       if transaction.date.present? && transaction.summary > 0
         # хэрэв өмнө нь гүйлгээ байсан үед, тэрийг олтолоо гүйнэ
-        Rails.logger.debug("it_is_new_1=#{it_is_new}")
         unless it_is_new
           # өмнөх гүйлгээтэй ижил эсэхийг шалгаж байна
           time_now = Time.current
           it_is_new = (!transaction_last.nil? &&
-              (transaction_last.date == transaction.date || time_now.hour < 6) &&
+              (transaction_last.date == transaction.date || time_now.hour < 10) &&
               transaction_last.value == transaction.value &&
               transaction_last.summary == transaction.summary &&
               transaction_last.account == transaction.account)
