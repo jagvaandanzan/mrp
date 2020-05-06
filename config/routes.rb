@@ -110,7 +110,11 @@ Rails.application.routes.draw do
         patch 'update_filter'
       end
     end
-    resources :fb_posts
+    resources :fb_posts do
+      collection do
+        post 'download'
+      end
+    end
     resources :fb_comments, only: [:index, :show, :edit, :update, :destroy] do
       collection do
         patch 'hide'

@@ -3,6 +3,7 @@ class FbPost < ApplicationRecord
 
   validates :post_id, :product_name, :product_code, :price, presence: true, length: {maximum: 255}
   validates_uniqueness_of :post_id
+  validates :content, presence: true
 
   has_many :fb_comments, dependent: :destroy
 

@@ -28,7 +28,7 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
     page.has_selector?('a#cphMain_ctl00_ucAcnt_Menu1_acntJrnl')
     puts "Logged: " + Time.now.to_s
     visit('/pageMain?content=ucAcnt_Statement')
-    # fill_in 'ctl00$cphMain$ctl00$numBegDate', with: '2020.04.21'
+    # fill_in 'ctl00$cphMain$ctl00$numBegDate', with: '2020.01.09'
 
     find('#cphMain_ctl00_ddlAcntNo').find(:xpath, "option[@value='MNTD0000000#{ENV['ACCOUNT']}']").select_option
 
@@ -66,13 +66,13 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
             transaction.value = data
           when 2
             num = data.gsub(',', '')
-            transaction.first_balance = num.to_i
+            transaction.first_balance = num.to_f.round(1)
           when 3
             num = data.gsub(',', '')
-            transaction.summary = num.to_i
+            transaction.summary = num.to_f.round(1)
           when 4
             num = data.gsub(',', '')
-            transaction.final_balance = num.to_i
+            transaction.final_balance = num.to_f.round(1)
           else #5
             transaction.account = data
           end
@@ -82,15 +82,25 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
       transaction.it_is_new = it_is_new
 
       if transaction.date.present? && transaction.summary > 0
-        # хэрэв өмнө нь гүйлгээ байсан үед
+        # хэрэв өмнө нь гүйлгээ байсан үед, тэрийг олтолоо гүйнэ
         unless it_is_new
           # өмнөх гүйлгээтэй ижил эсэхийг шалгаж байна
+          time_now = Time.current
           it_is_new = (!transaction_last.nil? &&
-              transaction_last.date == transaction.date &&
+              (transaction_last.date == transaction.date || time_now.hour < 10) &&
               transaction_last.value == transaction.value &&
               transaction_last.summary == transaction.summary &&
               transaction_last.account == transaction.account)
+
+          unless transaction_last.nil?
+            Rails.logger.debug("#{transaction_last.date.strftime('%F %R')} == #{transaction.date.strftime('%F %R')} == #{(transaction_last.date == transaction.date).to_s} ==> #{time_now.hour}")
+            Rails.logger.debug("#{transaction_last.value} == #{transaction.value} == #{(transaction_last.value == transaction.value).to_s}")
+            Rails.logger.debug("#{transaction_last.summary} == #{transaction.summary} == #{(transaction_last.summary == transaction.summary).to_s}")
+            Rails.logger.debug("#{transaction_last.account} == #{transaction.account} == #{(transaction_last.account == transaction.account).to_s}")
+          end
+          Rails.logger.debug("it_is_new_2=#{it_is_new}")
         end
+        Rails.logger.debug("it_is_new_3=#{it_is_new}")
         # шинэ гүйлгээ тул хадгална
         if transaction.it_is_new
           transaction.save
@@ -103,7 +113,6 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
     if is_created_new
       check_payment(transactions)
     end
-
   end
 
   def check_payment(transactions)

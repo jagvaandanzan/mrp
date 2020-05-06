@@ -26,6 +26,7 @@ mn:
       close: Хаах
       write_reply: Хариу бичих
       to_archive: Түүхрүү шилжүүлэх
+      download: Татах
     select:
       none: Сонгох
       alert: " сонгоно уу!"
@@ -76,6 +77,8 @@ mn:
     facebook: Фэйсбүүк
     bank_transactions: Банкны хуулга
     sms_messages: SMS мессеж
+    hour_start: Эхлэх цаг
+    hour_end: Дуусах цаг
   app_name: “MRP”
   app_short_name: M
   alert:
@@ -86,6 +89,7 @@ mn:
     removed_successfully: Амжилттай хасагдсан
     send_successfully: Амжилттай илгээлээ
     to_archive: Амжилттай шилжлээ
+    downloaded_successfully: Амжилттай %{count} татагдлаа
   are_you_sure: "Та устгахдаа итгэлтэй байна уу ?"
   are_you_update: "Хадгалах уу ?"
   are_sure_change: "Өөрчлөх үү ?"

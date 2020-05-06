@@ -14,9 +14,8 @@
         <div class="col-md-3 search">
           <%= submit_tag t('controls.button.searching') + " (" + @fb_posts.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
 
-          <% is_manage = can? :manage, FbPost %>
-          <% if is_manage %>
-            <%= link_to t('controls.button.create'), new_users_fb_post_path, class: 'btn btn-warning pull-right' %>
+          <% if can? :manage, FbPost %>
+            <%= link_to t('controls.button.download'), new_users_fb_post_path, class: 'btn btn-warning pull-right' %>
           <% end %>
         </div>
       <% end %>
