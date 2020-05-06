@@ -19,7 +19,7 @@ class Operators::FbCommentsController < Operators::BaseController
     FbCommentRemove.all.each do |cr|
       fb_comment = FbComment.find_by_comment_id(cr.comment_id)
       if fb_comment.present?
-        if cr.is_edit?
+        if cr.is_edited?
           fb_comment.update_attribute(:message, cr.message)
         else
           fb_comment.verb = cr.verb
