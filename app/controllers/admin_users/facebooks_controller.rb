@@ -26,15 +26,16 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
             attach = sub_attachments['data']
             if attach.length > 1
               attach.each do |js|
-                FbPost.create(fb_post: fb_post,
-                              post_id: js['target']['id'],
-                              product_name: fb_post.product_name,
-                              product_code: fb_post.product_code,
-                              price: fb_post.price,
-                              feature: fb_post.feature,
-                              content: js['media']['image']['src'],
-                              created_at: fb_post.created_at,
-                              updated_at: fb_post.updated_at)
+                new_fb_post = FbPost.create(fb_post: fb_post,
+                                            post_id: js['target']['id'],
+                                            product_name: fb_post.product_name,
+                                            product_code: fb_post.product_code,
+                                            price: fb_post.price,
+                                            feature: fb_post.feature,
+                                            content: js['media']['image']['src'],
+                                            created_at: fb_post.created_at,
+                                            updated_at: fb_post.updated_at)
+                new_fb_post.save(validate: false)
               end
               count = count + 1
             end
