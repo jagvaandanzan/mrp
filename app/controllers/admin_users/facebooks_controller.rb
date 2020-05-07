@@ -28,10 +28,6 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
               attach.each do |js|
                 new_fb_post = FbPost.create(fb_post: fb_post,
                                             post_id: js['target']['id'],
-                                            product_name: fb_post.product_name,
-                                            product_code: fb_post.product_code,
-                                            price: fb_post.price,
-                                            feature: fb_post.feature,
                                             content: js['media']['image']['src'],
                                             created_at: fb_post.created_at,
                                             updated_at: fb_post.updated_at)

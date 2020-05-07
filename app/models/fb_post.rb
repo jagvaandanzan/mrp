@@ -58,10 +58,6 @@ class FbPost < ApplicationRecord
               attach.each do |js|
                 new_fb_post = FbPost.new(fb_post: self,
                                          post_id: js['target']['id'],
-                                         product_name: self.product_name,
-                                         product_code: self.product_code,
-                                         price: self.price,
-                                         feature: self.feature,
                                          content: js['media']['image']['src'],
                                          created_at: self.created_at,
                                          updated_at: self.updated_at)
