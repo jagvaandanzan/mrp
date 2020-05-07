@@ -15,32 +15,37 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
     count = 0
     FbPost.fb_post_is_null.each do |fb_post|
       Rails.logger.info("fb_post.post_id = #{fb_post.post_id}")
-      response = ApplicationController.helpers.api_send("#{ENV['FB_API']}#{ENV['FB_PAGE_ID']}_#{fb_post.post_id}/attachments?access_token=#{ENV['FB_TOKEN']}", 'get', nil)
-      if response.code.to_i == 200
-        @code = response.code.to_i
-        json = JSON.parse(response.body)
-        data = json['data'][0]
-        if data.present?
-          attach = data['subattachments']['data']
-          if attach.length > 1
-            attach.each do |js|
-              FbPost.create(fb_post: fb_post,
-                            post_id: js['target']['id'],
-                            product_name: fb_post.product_name,
-                            product_code: fb_post.product_code,
-                            price: fb_post.price,
-                            feature: fb_post.feature,
-                            content: js['media']['image']['src'],
-                            created_at: fb_post.created_at,
-                            updated_at: fb_post.updated_at)
-            end
-          end
-        end
-        count = count + 1
-      end
+      count = get_post_attachment(count)
     end
     @body = "posts: #{count}"
     render 'admin_users/bank_logins/statement'
+  end
+
+  def get_post_attachment(count)
+    response = ApplicationController.helpers.api_send("#{ENV['FB_API']}#{ENV['FB_PAGE_ID']}_#{fb_post.post_id}/attachments?access_token=#{ENV['FB_TOKEN']}", 'get', nil)
+    if response.code.to_i == 200
+      @code = response.code.to_i
+      json = JSON.parse(response.body)
+      data = json['data'][0]
+      if data.present?
+        attach = data['subattachments']['data']
+        if attach.length > 1
+          attach.each do |js|
+            FbPost.create(fb_post: fb_post,
+                          post_id: js['target']['id'],
+                          product_name: fb_post.product_name,
+                          product_code: fb_post.product_code,
+                          price: fb_post.price,
+                          feature: fb_post.feature,
+                          content: js['media']['image']['src'],
+                          created_at: fb_post.created_at,
+                          updated_at: fb_post.updated_at)
+          end
+        end
+      end
+      count = count + 1
+    end
+    count
   end
 
   def posts

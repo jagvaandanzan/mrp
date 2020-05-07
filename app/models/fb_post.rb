@@ -5,6 +5,7 @@ class FbPost < ApplicationRecord
   validates :post_id, :product_name, :product_code, :price, presence: true, length: {maximum: 255}
   validates_uniqueness_of :post_id
   validates :content, presence: true
+  after_create :get_post_attachment
 
   has_many :fb_comments, dependent: :destroy
 
@@ -38,5 +39,34 @@ class FbPost < ApplicationRecord
 
   def full_name
     "#{product_name}, #{product_code}"
+  end
+
+  private
+
+  def get_post_attachment
+    unless fb_post.present?
+      response = ApplicationController.helpers.api_send("#{ENV['FB_API']}#{ENV['FB_PAGE_ID']}_#{self.post_id}/attachments?access_token=#{ENV['FB_TOKEN']}", 'get', nil)
+      if response.code.to_i == 200
+        @code = response.code.to_i
+        json = JSON.parse(response.body)
+        data = json['data'][0]
+        if data.present?
+          attach = data['subattachments']['data']
+          if attach.length > 1
+            attach.each do |js|
+              FbPost.create(fb_post: self,
+                            post_id: js['target']['id'],
+                            product_name: self.product_name,
+                            product_code: self.product_code,
+                            price: self.price,
+                            feature: self.feature,
+                            content: js['media']['image']['src'],
+                            created_at: self.created_at,
+                            updated_at: self.updated_at)
+            end
+          end
+        end
+      end
+    end
   end
 end
