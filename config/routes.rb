@@ -62,6 +62,8 @@ Rails.application.routes.draw do
 
     namespace :facebooks do
       get 'posts'
+      get 'attachments'
+      get 'to_archives'
     end
 
     match "*any", to: "base#routing_error", via: :all

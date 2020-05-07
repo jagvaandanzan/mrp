@@ -1,6 +1,7 @@
 class FbPost < ApplicationRecord
   acts_as_paranoid
-
+  belongs_to :fb_post, :class_name => "FbPost", optional: true
+  has_many :fb_posts, :foreign_key => "fb_post_id", dependent: :destroy
   validates :post_id, :product_name, :product_code, :price, presence: true, length: {maximum: 255}
   validates_uniqueness_of :post_id
   validates :content, presence: true
@@ -22,8 +23,13 @@ class FbPost < ApplicationRecord
     where(post_id: post_id)
   }
 
+  scope :fb_post_is_null, -> {
+    where("fb_post_id IS ?", nil)
+  }
+
   scope :search, ->(post_id, name, code) {
-    items = order_date
+    items = fb_post_is_null
+                .order_date
     items = items.where(post_id: post_id) if post_id.present?
     items = items.where('product_name LIKE :value', value: "%#{name}%") if name.present?
     items = items.where('product_code LIKE :value', value: "%#{code}%") if code.present?

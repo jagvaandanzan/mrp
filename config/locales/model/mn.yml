@@ -339,6 +339,8 @@ mn:
         fb_comments: Комментууд
         price: Үнэ
         feature: Шинж чанар
+        fb_posts: Зурагнууд
+        photo: Зураг
       fb_comment:
         fb_post_id: Пост
         message: Мессеж
