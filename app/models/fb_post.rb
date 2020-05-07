@@ -38,7 +38,11 @@ class FbPost < ApplicationRecord
   }
 
   def full_name
-    "#{product_name}, #{product_code}"
+    if fb_post.present?
+      "#{fb_post.product_name}, #{fb_post.product_code}"
+    else
+      "#{product_name}, #{product_code}"
+    end
   end
 
   private
