@@ -59,9 +59,6 @@ group :test do
   gem 'rspec-rails', '~> 3.9'
 end
 
-group :production do
-  gem 'redis'
-end
 gem 'devise'
 gem 'devise_token_auth'
 gem 'hashie'
