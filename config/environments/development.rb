@@ -71,7 +71,7 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  config.web_socket_server_url = 'ws://operation.pmis.mn/cable'
-  Rails.application.config.action_cable.allowed_request_origins = ['http://operation.pmis.mn']
+  config.web_socket_server_url = 'ws://43.231.113.97cable'
+  Rails.application.config.action_cable.allowed_request_origins = ['http://43.231.113.97']
 
 end
