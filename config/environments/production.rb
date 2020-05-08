@@ -45,7 +45,7 @@ Rails.application.configure do
   # config.action_cable.mount_path = nil
   config.web_socket_server_url = 'wss://mrp.market.mn/cable'
   config.action_cable.url = 'wss://mrp.market.mn/cable'
-  config.action_cable.allowed_request_origins = [ 'http://mrp.market.mn' ]
+  config.action_cable.allowed_request_origins = [ 'https://mrp.market.mn' ]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
