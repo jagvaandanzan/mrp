@@ -23,7 +23,6 @@ class Users::FbCommentsController < Users::BaseController
       end
       cr.destroy!
     end
-    ActionCable.server.broadcast 'fb_comment_channel', content: '112'
 
     render 'operators/fb_comments/index'
   end
