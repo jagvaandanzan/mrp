@@ -84,6 +84,6 @@ class FbComment < ApplicationRecord
                             date: created_at)
   end
   def send_to_channel
-    ActionCable.server.broadcast 'fb_comment_channel', content: '112'
+    # ActionCable.server.broadcast 'fb_comment_channel', content: '112'
   end
 end

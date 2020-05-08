@@ -10,7 +10,6 @@ Rails.application.routes.draw do
       mount_devise_token_auth_for 'User', at: '/auth'
     end
   end
-  mount ActionCable.server, at: '/cable'
   mount API::Base => '/api'
 
   root 'users/base#root'
