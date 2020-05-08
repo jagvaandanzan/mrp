@@ -2,6 +2,7 @@ class FbComment < ApplicationRecord
   belongs_to :fb_post
 
   before_destroy :to_archive
+  after_create :send_to_channel
 
   validates_uniqueness_of :comment_id
 
@@ -81,5 +82,8 @@ class FbComment < ApplicationRecord
                             user_id: user_id,
                             user_name: user_name,
                             date: created_at)
+  end
+  def send_to_channel
+    ActionCable.server.broadcast 'fb_comment_channel', content: '112'
   end
 end
