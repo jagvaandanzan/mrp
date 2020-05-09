@@ -36,6 +36,7 @@
 
           <div class="box-body table-responsive no-padding">
             <table class="table table-hover table-bordered">
+              <thead>
               <tr>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.user_name') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.message') %></th>
@@ -43,21 +44,12 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.date') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.post_link') %></th>
               </tr>
+              </thead>
+              <tbody id="fb_comment_index">
               <% @fb_comments.each do |fb_comment| %>
-                <tr>
-                  <td class="va-mid underline"><%= link_to fb_comment.user_name.presence || 'Market.mn', current_operator.present? ? operators_fb_comment_path(fb_comment) : users_fb_comment_path(fb_comment) %></td>
-                  <td class="va-mid">
-                    <% if fb_comment.message.present? %>
-                      <%= fb_comment.message %>
-                    <% elsif fb_comment.photo.present? %>
-                      <%= link_to t('controls.link.photo'), fb_comment.photo, target: '_blank' %>
-                    <% end %>
-                  </td>
-                  <td class="va-mid underline"><%= fb_comment.fb_post.full_name %></td>
-                  <td class="td-center va-mid"><%= fb_comment.date.strftime('%F %R') %></td>
-                  <td class="td-center va-mid"><%= link_to t('controls.link.facebook'), "https://www.facebook.com/#{ENV['FB_PAGE_ID']}/posts/#{fb_comment.fb_post.post_id}/", target: '_blank' %></td>
-                </tr>
+                <%= render 'row_index', fb_comment: fb_comment %>
               <% end %>
+              </tbody>
             </table>
           </div>
         </div>
@@ -66,3 +58,18 @@
     </div>
   </section>
 </div>
+<script type="text/javascript" charset="utf-8">
+    App.order = App.cable.subscriptions.create("FbCommentChannel", {
+        connected: function () {
+        },
+        disconnected: function () {
+        },
+        received: function (data) {
+            var tbody = $('tbody#fb_comment_index');
+            if (tbody !== undefined) {
+                tbody.prepend(data['comment']);
+                tbody.scrollTop(0);
+            }
+        }
+    });
+</script>

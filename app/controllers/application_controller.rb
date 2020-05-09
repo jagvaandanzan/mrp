@@ -22,6 +22,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def fb_comment_path
+    if current_operator.present?
+      redirect_to operators_fb_comment_path(id: params[:id])
+    else
+      redirect_to users_fb_comment_path(id: params[:id])
+    end
+  end
+
   def search_fb_answer
     @search_text = params[:text]
     if @search_text.length > 1

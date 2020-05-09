@@ -2,7 +2,7 @@ class FbComment < ApplicationRecord
   belongs_to :fb_post
 
   before_destroy :to_archive
-  after_create :send_to_channel
+  after_create_commit { FbCommentJob.perform_later self }
 
   validates_uniqueness_of :comment_id
 
@@ -57,8 +57,15 @@ class FbComment < ApplicationRecord
     FbCommentArchive.by_parent_id(comment_id).count
   end
 
-  private
+  # def self.render_with_signed_in_user(*args)
+  #   ActionController::Renderer::RACK_KEY_TRANSLATION['warden'] ||= 'warden'
+  #   proxy = if self.oper
+  #       Warden::Proxy.new({}, Warden::Manager.new({})).tap{|i| i.set_user(user, scope: :user) }
+  #   renderer = self.renderer.new('warden' => proxy)
+  #   renderer.render(*args)
+  # end
 
+  private
   def check_phone
     if message.present?
       # [8-9]{1}[0-9]{7}
@@ -82,8 +89,5 @@ class FbComment < ApplicationRecord
                             user_id: user_id,
                             user_name: user_name,
                             date: created_at)
-  end
-  def send_to_channel
-    # ActionCable.server.broadcast 'fb_comment_channel', content: '112'
   end
 end

@@ -4,7 +4,6 @@ class Users::LocDistrictsController < Users::BaseController
 
   def index
     @loc_districts = LocDistrict.all.page(params[:page]).order(:name)
-    ActionCable.server.broadcast 'fb_comment_channel', content: '112'
   end
 
   def new

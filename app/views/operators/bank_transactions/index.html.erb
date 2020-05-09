@@ -39,20 +39,19 @@
 
           <div class="box-body table-responsive no-padding">
             <table class="table table-hover table-bordered">
+              <thead>
               <tr>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.date') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.value') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.summary') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.account') %></th>
               </tr>
+              </thead>
+              <tbody id="bank_transaction_index">
               <% @bank_transactions.each do |bank_transaction| %>
-                <tr>
-                  <td class="va-mid"><%= bank_transaction.date.strftime('%F %R') %></td>
-                  <td class="va-mid"><%= bank_transaction.value %></td>
-                  <td class="va-mid"><%= get_currency_mn(bank_transaction.summary) %></td>
-                  <td class="va-mid"><%= bank_transaction.account %></td>
-                </tr>
+                <%= render 'row_index', bank_transaction: bank_transaction %>
               <% end %>
+              </tbody>
             </table>
           </div>
         </div>
@@ -61,3 +60,18 @@
     </div>
   </section>
 </div>
+<script type="text/javascript" charset="utf-8">
+    App.order = App.cable.subscriptions.create("BankTransactionChannel", {
+        connected: function () {
+        },
+        disconnected: function () {
+        },
+        received: function (data) {
+            var tbody = $('tbody#bank_transaction_index');
+            if (tbody !== undefined) {
+                tbody.prepend(data['bank_transaction']);
+                tbody.scrollTop(0);
+            }
+        }
+    });
+</script>

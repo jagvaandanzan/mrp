@@ -43,6 +43,14 @@ class Operator < ApplicationRecord
     "#{surname} #{name}"
   end
 
+  def appear(flag)
+    UserCache.set(:operator, self, :online_flg, flag)
+    # UserChannel.broadcast_to(1, {uid: uid, online_flg: flag})
+    unless flag
+      UserCache.del(:operator, self, :online_flg)
+    end
+  end
+
   protected
 
   def devise_mailer

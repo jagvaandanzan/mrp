@@ -1,0 +1,6 @@
+<tr>
+  <td class="va-mid"><%= bank_transaction.date.strftime('%F %R') %></td>
+  <td class="va-mid"><%= bank_transaction.value %></td>
+  <td class="va-mid"><%= get_currency_mn(bank_transaction.summary) %></td>
+  <td class="va-mid"><%= bank_transaction.account %></td>
+</tr>

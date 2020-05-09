@@ -1,0 +1,13 @@
+<tr>
+  <td class="va-mid underline"><%= link_to fb_comment.user_name.presence || 'Market.mn', fb_comment_path_url(id: fb_comment.id) %></td>
+  <td class="va-mid">
+    <% if fb_comment.message.present? %>
+      <%= fb_comment.message %>
+    <% elsif fb_comment.photo.present? %>
+      <%= link_to t('controls.link.photo'), fb_comment.photo, target: '_blank' %>
+    <% end %>
+  </td>
+  <td class="va-mid underline"><%= fb_comment.fb_post.full_name %></td>
+  <td class="td-center va-mid"><%= fb_comment.date.strftime('%F %R') %></td>
+  <td class="td-center va-mid"><%= link_to t('controls.link.facebook'), "https://www.facebook.com/#{ENV['FB_PAGE_ID']}/posts/#{fb_comment.fb_post.post_id}/", target: '_blank' %></td>
+</tr>

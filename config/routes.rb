@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   mount ActionCable.server, at: '/cable'
   mount API::Base => '/api'
 
+  get 'fb_comment_path', to: 'application#fb_comment_path'
   root 'users/base#root'
 
   post 'search_product', to: 'application#search_product'
@@ -131,7 +132,7 @@ Rails.application.routes.draw do
   end
 
   namespace :operators, path: :operator do
-    root 'product_sales#index'
+    root "base#root"
 
     resources :product_sales, only: [:index, :create, :new, :show, :edit, :update, :destroy] do
       collection do
