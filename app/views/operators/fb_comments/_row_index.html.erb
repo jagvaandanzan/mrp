@@ -1,4 +1,4 @@
-<tr>
+<tr id="comment<%= fb_comment.id %>">
   <td class="va-mid underline"><%= link_to fb_comment.user_name.presence || 'Market.mn', fb_comment_path_url(id: fb_comment.id) %></td>
   <td class="va-mid">
     <% if fb_comment.message.present? %>

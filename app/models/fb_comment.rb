@@ -2,7 +2,8 @@ class FbComment < ApplicationRecord
   belongs_to :fb_post
 
   before_destroy :to_archive
-  after_create_commit { FbCommentJob.perform_later self }
+  after_create_commit {FbCommentJob.perform_later self}
+  after_destroy_commit {FbCommentDestroyJob.perform_later self}
 
   validates_uniqueness_of :comment_id
 
@@ -66,6 +67,7 @@ class FbComment < ApplicationRecord
   # end
 
   private
+
   def check_phone
     if message.present?
       # [8-9]{1}[0-9]{7}
