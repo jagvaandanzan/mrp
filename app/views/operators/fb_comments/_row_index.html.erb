@@ -8,6 +8,6 @@
     <% end %>
   </td>
   <td class="va-mid underline"><%= fb_comment.fb_post.full_name %></td>
-  <td class="td-center va-mid"><%= fb_comment.date.strftime('%F %R') %></td>
+  <td class="td-center va-mid nowrap"><%= fb_comment.date.strftime('%F %R') %></td>
   <td class="td-center va-mid"><%= link_to t('controls.link.facebook'), "https://www.facebook.com/#{ENV['FB_PAGE_ID']}/posts/#{fb_comment.fb_post.post_id}/", target: '_blank' %></td>
 </tr>

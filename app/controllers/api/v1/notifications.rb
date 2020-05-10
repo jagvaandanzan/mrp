@@ -41,6 +41,18 @@ module API
 
           status 200
         end
+
+        resource :bank do
+          desc "POST notifications/bank"
+          params do
+            requires :ids, type: Array[Integer]
+          end
+          post do
+            params[:ids].each {|id|
+              BankTransactionJob.perform_later BankTransaction.find(id)
+            }
+          end
+        end
       end
     end
   end

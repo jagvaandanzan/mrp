@@ -110,6 +110,7 @@ def check_payment(transactions)
   Rails.logger.debug("43.231.114.241:8882/api/savebanktrans => #{param.to_json}")
   Rails.logger.debug("43.231.114.241:8882/api/savebanktrans => #{response.code.to_s} => #{response.body.to_s}")
 
+  ids = []
   transactions.each do |transaction|
     if transaction.value.downcase.match(/[wq][0-9]{8}/)
       if transaction.value.downcase.start_with?('qpay', 'mm:qpay')
@@ -133,6 +134,10 @@ def check_payment(transactions)
       Rails.logger.debug("market.mn/api/payments => #{param.to_json}")
       Rails.logger.debug("market.mn/api/payments => #{response.code.to_s} => #{response.body.to_s}")
     end
+    ids << transaction.id
   end
+
+  ApplicationController.helpers.api_send("#{ENV['DOMAIN_NAME']}/api/v1/notifications/bank", 'post', {ids: ids}.to_json)
+
 
 end

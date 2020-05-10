@@ -1,7 +1,6 @@
 class BankTransaction < ApplicationRecord
 
   attr_accessor :it_is_new
-  after_create_commit { BankTransactionJob.perform_later self }
 
   def date_time
     date.strftime("%F %R")
