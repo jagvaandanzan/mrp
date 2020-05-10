@@ -27,4 +27,8 @@ module ApplicationHelper
   def get_minutes(date_s, date_f)
     (date_s - date_f) / 1.minutes
   end
+
+  def is_number? string
+    true if Float(string) rescue false
+  end
 end

@@ -141,7 +141,9 @@ class FbNotificationsJob < ApplicationJob
       case ac.condition
       when "phone"
         phone = message.match(/[789]\d{7}/)
-        if !phone.nil? && phone.to_s.length == 8
+        s_i = message.index("#{phone}")
+        if (s_i == 0 || !ApplicationController.helpers.is_number?(message[s_i - 1].to_s)) &&
+            (s_i + 7 > message.length || !ApplicationController.helpers.is_number?(message[s_i + 8].to_s))
           fb_comment_action = ac
         end
       when "contain"
