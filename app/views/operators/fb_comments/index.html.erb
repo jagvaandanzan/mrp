@@ -65,9 +65,6 @@
         disconnected: function () {
         },
         received: function (data) {
-            alert(data);
-            alert(data['destroy']);
-            alert(data['comment']);
             var tbody = $('tbody#fb_comment_index');
             if (tbody !== undefined) {
                 if (data['destroy'] !== undefined) {
