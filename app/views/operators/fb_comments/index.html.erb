@@ -59,5 +59,24 @@
   </section>
 </div>
 <script type="text/javascript" charset="utf-8">
-
+    App.order = App.cable.subscriptions.create("FbCommentChannel", {
+        connected: function () {
+        },
+        disconnected: function () {
+        },
+        received: function (data) {
+            alert(data);
+            alert(data['destroy']);
+            alert(data['comment']);
+            var tbody = $('tbody#fb_comment_index');
+            if (tbody !== undefined) {
+                if (data['destroy'] !== undefined) {
+                    tbody.find('tr#comment'+data['destroy']).remove();
+                } else {
+                    tbody.prepend(data['comment']);
+                    tbody.scrollTop(0);
+                }
+            }
+        }
+    });
 </script>

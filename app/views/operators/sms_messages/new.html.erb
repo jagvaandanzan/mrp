@@ -24,13 +24,21 @@
           </div>
 
           <div class="form-group">
+            <%= f.label :bank_account_id, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@sms_message, :bank_account_id) %>">
+              <%= field_errors(@sms_message, :bank_account_id) %>
+              <%= f.collection_select :bank_account_id, BankAccount.all, :id, :full_name,
+                                      {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+            </div>
+          </div>
+
+          <div class="form-group">
             <%= f.label :message, class: 'col-sm-3 control-label' %>
             <div class="col-sm-6 <%= get_error_class(@sms_message, :message) %>">
               <%= field_errors(@sms_message, :message) %>
               <%= @sms_message.full_message %>
             </div>
           </div>
-
 
           <div class="action-buttons">
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>

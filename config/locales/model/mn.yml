@@ -377,6 +377,7 @@ mn:
         amount: Мөнгөн дүн
         created_at: Огноо
         operator_id: Оператор
+        bank_account_id: Данс
       ali_category:
         name_mn: Монгол
         name: Англи

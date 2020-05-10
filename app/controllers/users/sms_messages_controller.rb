@@ -58,7 +58,7 @@ class Users::SmsMessagesController < Users::BaseController
   end
 
   def sms_message_params
-    params.require(:sms_message).permit(:recipient, :amount)
+    params.require(:sms_message).permit(:recipient, :amount, :bank_account_id)
         .merge(:user => current_user)
   end
 

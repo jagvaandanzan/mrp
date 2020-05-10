@@ -101,7 +101,7 @@ mn:
   upload_file: Файл хуулах
   upload_image: Зураг хуулах
   sms:
-    to_customer: "Khanbank: 5111373200-Ayursuren Tulbur %{amount}MNT Ta tulburuu shiljuuleed 77779990 dugaart ergej medegdene uu.Guilgeenii utga hesegt utasni dugaaraa bichne uu"
+    to_customer: "Khanbank: %{account}-%{name} Tulbur %{amount}MNT Ta tulburuu shiljuuleed 77779990 dugaart ergej medegdene uu.Guilgeenii utga hesegt utasni dugaaraa bichne uu"
   errors:
     format: "%{attribute}%{message}"
     messages:

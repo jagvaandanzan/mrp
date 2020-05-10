@@ -3,7 +3,9 @@ class FbComment < ApplicationRecord
 
   before_destroy :to_archive
   after_create_commit {FbCommentJob.perform_later self}
-  after_destroy_commit {FbCommentDestroyJob.perform_later self}
+  after_destroy_commit do
+    ActionCable.server.broadcast 'fb_comment_channel', destroy: self.id
+  end
 
   validates_uniqueness_of :comment_id
 
