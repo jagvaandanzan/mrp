@@ -23,7 +23,7 @@ class SmsMessage < ApplicationRecord
 
   def full_message
     if bank_account.present?
-      I18n.t('sms.to_customer', account: bank_account.account, name: bank_account.name_en, amount: amount)
+      I18n.t('sms.to_customer', account: bank_account.account, name: bank_account.name_en, amount: ApplicationController.helpers.get_currency(amount, '', 0))
     else
       I18n.t('sms.to_customer', account: '', name: '', amount: amount)
     end
