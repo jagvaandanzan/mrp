@@ -49,7 +49,7 @@
               </thead>
               <tbody id="bank_transaction_index">
               <% @bank_transactions.each do |bank_transaction| %>
-                <%= render 'row_index', bank_transaction: bank_transaction %>
+                <%= render 'operators/bank_transactions/row_index', bank_transaction: bank_transaction %>
               <% end %>
               </tbody>
             </table>

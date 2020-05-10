@@ -47,7 +47,7 @@
               </thead>
               <tbody id="fb_comment_index">
               <% @fb_comments.each do |fb_comment| %>
-                <%= render 'row_index', fb_comment: fb_comment %>
+                <%= render 'operators/fb_comments/row_index', fb_comment: fb_comment %>
               <% end %>
               </tbody>
             </table>
