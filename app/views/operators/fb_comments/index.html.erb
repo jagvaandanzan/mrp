@@ -70,8 +70,9 @@
                 if (data['destroy'] !== undefined) {
                     tbody.find('tr#comment'+data['destroy']).remove();
                 } else {
-                    tbody.prepend(data['comment']);
-                    tbody.scrollTop(0);
+                    tbody.append(data['comment']);
+                    $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+                    // tbody.animate({scrollTop: tbody.height()}, 100);
                 }
             }
         }
