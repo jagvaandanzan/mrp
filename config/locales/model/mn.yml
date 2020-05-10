@@ -89,6 +89,7 @@ mn:
         is_remove: Устгасан
         is_reaction: Лайк
         is_send_image: Зураг илгээсэн
+        is_send_text: Зурвас илгээсэн
   activerecord:
     models:
       admin_user: Админ

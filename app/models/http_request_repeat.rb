@@ -1,0 +1,2 @@
+class HttpRequestRepeat < ApplicationRecord
+end

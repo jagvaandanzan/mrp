@@ -65,6 +65,10 @@ class Operators::FbCommentsController < Operators::BaseController
         end
       else
         alert, msg = ApplicationController.helpers.fb_send_message(@fb_comment.comment_id, @fb_comment.reply_text)
+        if alert == :success
+          @fb_comment.verb = "is_send_text"
+          @fb_comment.destroy!
+        end
       end
       flash[alert] = msg
       redirect_to action: :index
