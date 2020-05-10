@@ -7,5 +7,5 @@ class CreateBankAccounts < ActiveRecord::Migration[5.2]
       t.timestamps
     end
   end
-  add_reference :sms_messages, :bank_account, foreign_key: true, after: 'id'
+  # add_reference :sms_messages, :bank_account, foreign_key: true, after: 'id'
 end
