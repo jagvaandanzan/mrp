@@ -143,7 +143,7 @@ class FbNotificationsJob < ApplicationJob
         phone = message.match(/[789]\d{7}/)
         unless phone.nil?
           s_i = message.index("#{phone}")
-          if phone(s_i == 0 || !ApplicationController.helpers.is_number?(message[s_i - 1].to_s)) &&
+          if (s_i == 0 || !ApplicationController.helpers.is_number?(message[s_i - 1].to_s)) &&
               (s_i + 7 > message.length || !ApplicationController.helpers.is_number?(message[s_i + 8].to_s))
             fb_comment_action = ac
           end
