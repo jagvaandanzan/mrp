@@ -64,13 +64,13 @@ class FbCommentArchive < ApplicationRecord
     end
   end
 
-  # 155, 269
   def send_auto_reply
     if comment_action.present?
+      fb_post_real = fb_post.fb_post.present? ? fb_post.fb_post : fb_post
       reply_txt = if comment_action.condition == "price"
-                    comment_action.reply_txt.gsub("{price}", fb_post.price)
+                    comment_action.reply_txt.gsub("{price}", fb_post_real.price)
                   elsif comment_action.condition == "feature"
-                    comment_action.reply_txt.gsub("{feature}", fb_post.feature)
+                    comment_action.reply_txt.gsub("{feature}", fb_post_real.feature)
                   else
                     comment_action.reply_txt
                   end
@@ -92,7 +92,7 @@ class FbCommentArchive < ApplicationRecord
 
       if comment_action.condition == "phone"
         phone = message.match(/[789]\d{7}/).to_s
-        ProductSaleCall.create(code: fb_post.product_code,
+        ProductSaleCall.create(code: fb_post_real.product_code,
                                quantity: 1,
                                message: message,
                                phone: phone.to_i)
