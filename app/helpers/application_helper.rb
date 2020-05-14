@@ -31,4 +31,25 @@ module ApplicationHelper
   def is_number? string
     true if Float(string) rescue false
   end
+
+  def greetings
+    now = Time.now
+    today = Date.today.to_time
+
+    morning = today.beginning_of_day
+    morning = morning.change(hour: 5)
+    noon = today.noon
+    evening = today.change(hour: 17)
+    night = today.change(hour: 22)
+
+    if (morning..noon).cover? now
+      I18n.t('dates.good_morning')
+    elsif (noon..evening).cover? now
+      I18n.t('dates.good_afternoon')
+    elsif (evening..night).cover? now
+      I18n.t('dates.good_evening')
+    else
+      I18n.t('dates.good_night')
+    end
+  end
 end

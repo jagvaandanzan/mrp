@@ -160,6 +160,10 @@ mn:
     quarter2: 2 дугаар улирал
     quarter3: 3 дугаар улирал
     quarter4: 4 дүгээр улирал
+    good_morning: Өглөөний мэнд
+    good_afternoon: Өдрийн мэнд
+    good_evening: Оройн мэнд
+    good_night: Үдшийн мэнд
   filters:
     by_date: Огноо сонгох
     status: Статус
