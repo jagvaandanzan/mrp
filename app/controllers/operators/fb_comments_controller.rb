@@ -60,13 +60,13 @@ class Operators::FbCommentsController < Operators::BaseController
         upload = Upload.create(image: @fb_comment.reply_image)
         alert_i, msg = ApplicationController.helpers.fb_send_file(@fb_comment.comment_id, upload.image.url)
 
-        alert, msg_2 = ApplicationController.helpers.fb_reply_comment(@fb_comment.comment_id, @fb_comment.parent_id, @fb_comment.user_id, @fb_comment.reply_text)
+        alert, msg_2 = ApplicationController.helpers.fb_reply_comment(@fb_comment.comment_id, @fb_comment.parent_id, @fb_comment.user_id, @fb_comment.reply_image_text)
         if alert_i == :success && alert == :success
           @fb_comment.verb = "is_send_image"
           @fb_comment.destroy!
         end
       else
-        alert, msg = ApplicationController.helpers.fb_send_message(@fb_comment.comment_id, @fb_comment.reply_text)
+        alert, msg = ApplicationController.helpers.fb_send_message(@fb_comment.comment_id, @fb_comment.reply_message)
         if alert == :success
           @fb_comment.verb = "is_send_text"
           @fb_comment.destroy!
@@ -109,7 +109,7 @@ class Operators::FbCommentsController < Operators::BaseController
 
 
   def fb_comment_params
-    params.require(:fb_comment).permit(:action_type, :reply_text, :reply_image, :comment_answer_id)
+    params.require(:fb_comment).permit(:action_type, :reply_text, :reply_image, :reply_image_text, :reply_message, :comment_answer_id)
   end
 
   def check_post_comments(fb_post, fb_comment, date)
