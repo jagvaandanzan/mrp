@@ -27,6 +27,8 @@ mn:
       write_reply: Хариу бичих
       to_archive: Түүхрүү шилжүүлэх
       download: Татах
+      to_equate: Адилтгах
+      watch: Үзэх
     select:
       none: Сонгох
       alert: " сонгоно уу!"
@@ -102,6 +104,12 @@ mn:
   upload_image: Зураг хуулах
   sms:
     to_customer: "Khanbank %{account}-%{name} dansaar %{amount} tug-g guilgeenii utga hesegt utasni dugaaraa bicheed shiljuulne uu. Tulbur orj irehed tanid zalgaj medegdene."
+  product_form:
+    basic: Үндсэн мэдээлэл
+    price: Үнэ, үлдэгдэл, хүргэлт
+    information: Дэлгэрэнгүй мэдээлэл
+    picture_video: Зураг, видео
+    package: Хүргэлт, баглаа боодол
   errors:
     format: "%{attribute}%{message}"
     messages:

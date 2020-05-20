@@ -63,12 +63,14 @@ class Operators::FbCommentsController < Operators::BaseController
         alert, msg_2 = ApplicationController.helpers.fb_reply_comment(@fb_comment.comment_id, @fb_comment.parent_id, @fb_comment.user_id, @fb_comment.reply_image_text)
         if alert_i == :success && alert == :success
           @fb_comment.verb = "is_send_image"
+          @fb_comment.operator_id = current_operator.id
           @fb_comment.destroy!
         end
       else
         alert, msg = ApplicationController.helpers.fb_send_message(@fb_comment.comment_id, @fb_comment.reply_message)
         if alert == :success
           @fb_comment.verb = "is_send_text"
+          @fb_comment.operator_id = current_operator.id
           @fb_comment.destroy!
         end
       end
@@ -84,6 +86,7 @@ class Operators::FbCommentsController < Operators::BaseController
     alert, msg = ApplicationController.helpers.fb_like_comment(@fb_comment.comment_id)
     flash[alert] = msg
     @fb_comment.verb = "is_reaction"
+    @fb_comment.operator_id = current_operator.id
     @fb_comment.destroy!
     redirect_to action: :index
   end
@@ -91,11 +94,13 @@ class Operators::FbCommentsController < Operators::BaseController
   def hide
     alert, msg = ApplicationController.helpers.fb_hide_comment(@fb_comment.comment_id)
     flash[alert] = msg
+    @fb_comment.operator_id = current_operator.id
     @fb_comment.update_attribute(:is_visible, false)
     redirect_to action: :index
   end
 
   def destroy
+    @fb_comment.operator_id = current_operator.id
     @fb_comment.destroy!
     flash[:success] = t('alert.to_archive')
     redirect_to action: :index
@@ -121,6 +126,7 @@ class Operators::FbCommentsController < Operators::BaseController
       if fb_comment.parent_id.start_with? ENV['FB_PAGE_ID']
         msg = apply_above_comments(comment_users, fb_comment.parent_id, fb_comment.user_id, fb_comment.date)
         # puts "parent match ========> " + fb_comment.id.to_s
+        fb_comment.operator_id = current_operator.id
         fb_comment.destroy!
         # коммент хариултын араас бичсэн асуултад хариулсан бол
       else
@@ -137,6 +143,7 @@ class Operators::FbCommentsController < Operators::BaseController
       if comment.parent_id == parent_id && comment.user_id == user_id && comment.date < date
         # puts "apply_above_comments ========> " + comment.id.to_s
         msg = msg + comment.message + ", " if comment.message.present?
+        comment.operator_id = current_operator.id
         comment.destroy!
       end
     end

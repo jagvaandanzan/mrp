@@ -21,7 +21,7 @@ class FbComment < ApplicationRecord
     validates :reply_message, presence: true, on: :update
   end
 
-  attr_accessor :action_type, :reply_text, :reply_image, :reply_image_text, :reply_message, :comment_answer_id, :verb
+  attr_accessor :action_type, :reply_text, :reply_image, :reply_image_text, :reply_message, :comment_answer_id, :verb, :operator_id
 
   scope :by_fb_post, ->(fb_post) {
     where(fb_post_id: fb_post)
@@ -89,6 +89,7 @@ class FbComment < ApplicationRecord
 
   def to_archive
     FbCommentArchive.create(fb_post: fb_post,
+                            operator_id: operator_id,
                             message: message,
                             photo: photo,
                             verb: verb,
@@ -96,6 +97,6 @@ class FbComment < ApplicationRecord
                             parent_id: parent_id,
                             user_id: user_id,
                             user_name: user_name,
-                            date: created_at)
+                            date: date)
   end
 end

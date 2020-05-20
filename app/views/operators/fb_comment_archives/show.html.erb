@@ -19,16 +19,18 @@
               <div class="bg-yellow p-10"><%= @fb_comment_archive.user_name %></div>
             </td>
             <td class="va-mid">
-              <% if @fb_comment_archive.message.present? %>
-                <%= @fb_comment_archive.message %>
-              <% elsif @fb_comment_archive.photo.present? %>
+              <% if @fb_comment_archive.photo.present? %>
                 <%= link_to @fb_comment_archive.photo, "data-lightbox": "roadtrip" do %>
                   <%= image_tag @fb_comment_archive.photo, class: 'tumb' %>
                 <% end %>
               <% end %>
+              <% if @fb_comment_archive.message.present? %>
+                <%= @fb_comment_archive.message %>
+              <% end %>
             </td>
             <td class="va-mid"><%= @fb_comment_archive.verb_i18n %></td>
             <td class="va-mid nowrap"><%= @fb_comment_archive.date.strftime('%F %R') %></td>
+            <td class="va-mid nowrap"><%= @fb_comment_archive.operator_name %></td>
           </tr>
 
           <% if @fb_comment_archive.replies.count == 0 %>
@@ -39,6 +41,7 @@
               <td class="va-mid"><%= @fb_comment_archive.comment_action.reply_txt %></td>
               <td class="va-mid"></td>
               <td class="va-mid nowrap"><%= @fb_comment_archive.date.strftime('%F %R') %></td>
+              <td class="va-mid nowrap"><%= @fb_comment_archive.operator_name %></td>
             </tr>
           <% else %>
             <% @fb_comment_archive.replies.order_date.each {|comment| %>
@@ -51,16 +54,18 @@
                     <%= comment.user_name.presence || :'Market.mn' %></strong>
                 </td>
                 <td class="va-mid">
-                  <% if comment.message.present? %>
-                    <%= comment.message %>
-                  <% elsif comment.photo.present? %>
+                  <% if comment.photo.present? %>
                     <%= link_to comment.photo, "data-lightbox": "roadtrip" do %>
                       <%= image_tag comment.photo, class: 'tumb' %>
                     <% end %>
                   <% end %>
+                  <% if comment.message.present? %>
+                    <%= comment.message %>
+                  <% end %>
                 </td>
                 <td class="va-mid"><%= comment.verb_i18n %></td>
                 <td class="va-mid nowrap"><%= comment.date.strftime('%F %R') %></td>
+                <td class="va-mid nowrap"><%= comment.operator_name %></td>
               </tr>
             <% } %>
           <% end %>

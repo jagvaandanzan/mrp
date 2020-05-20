@@ -6,7 +6,14 @@ class FbNotificationsJob < ApplicationJob
     if obj[:verb] == "add"
       post_id = obj[:post_id].split('_')[1]
       fb_post = FbPost.find_by_post_id(post_id)
-      if fb_post.present?
+      unless fb_post.present?
+        fb_post = FbPost.new(post_id: post_id,
+                             status: 0,
+                             product_name: "Татагдаагүй",
+                             product_code: '000000')
+        fb_post.save(validate: false)
+      end
+      if fb_post.present? && !fb_post.is_ignore?
         message = obj[:message]
         created_at = Time.at(obj[:created_time])
 

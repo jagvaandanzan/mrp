@@ -2,6 +2,7 @@ class FbCommentArchive < ApplicationRecord
   acts_as_paranoid
 
   belongs_to :fb_post
+  belongs_to :operator, optional: true
   belongs_to :comment_action, :class_name => "FbCommentAction", optional: true
   belongs_to :archive, :class_name => "FbCommentArchive", optional: true
   has_many :replies, :class_name => "FbCommentArchive", :foreign_key => "archive_id", dependent: :destroy
@@ -49,6 +50,14 @@ class FbCommentArchive < ApplicationRecord
     items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items
   }
+
+  def operator_name
+    if self.operator.present?
+      self.operator.name
+    else
+      ""
+    end
+  end
 
   private
 

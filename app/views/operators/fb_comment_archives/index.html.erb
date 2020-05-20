@@ -39,9 +39,9 @@
       <div class="col-xs-12">
         <div class="box">
           <%= render 'layouts/flash_message' %>
-<!--          1 649 379 422-->
-<!--          1c5a9m-->
-<!--          265 145 016-->
+          <!--          1 649 379 422-->
+          <!--          1c5a9m-->
+          <!--          265 145 016-->
           <div class="box-body table-responsive no-padding">
             <table class="table table-hover table-bordered">
               <tr>
@@ -52,6 +52,7 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.date') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment.post_id') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.reply') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.operator') %></th>
               </tr>
               <% @fb_comment_archives.each do |fb_comment_archive| %>
                 <tr>
@@ -60,7 +61,8 @@
                   <td class="va-mid">
                     <% if fb_comment_archive.message.present? %>
                       <%= fb_comment_archive.message %>
-                    <% elsif fb_comment_archive.photo.present? %>
+                    <% end %>
+                    <% if fb_comment_archive.photo.present? %>
                       <%= link_to t('controls.link.photo'), fb_comment_archive.photo, target: '_blank' %>
                     <% end %>
                   </td>
@@ -83,6 +85,7 @@
                       <% end %>
                     <% end %>
                   </td>
+                  <td class="td-center va-mid"><%= fb_comment_archive.operator_name %></td>
                 </tr>
               <% end %>
             </table>

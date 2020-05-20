@@ -3,7 +3,8 @@
   <td class="va-mid">
     <% if fb_comment.message.present? %>
       <%= fb_comment.message %>
-    <% elsif fb_comment.photo.present? %>
+    <% end %>
+    <% if fb_comment.photo.present? %>
       <%= link_to t('controls.link.photo'), fb_comment.photo, target: '_blank' %>
     <% end %>
   </td>
