@@ -136,7 +136,7 @@ class FbPost < ApplicationRecord
   end
 
   def get_post_attachment
-    unless fb_post.present?
+    if !is_ignore? && !fb_post.present?
       response = ApplicationController.helpers.api_send("#{ENV['FB_API']}#{ENV['FB_PAGE_ID']}_#{self.post_id}/attachments?access_token=#{ENV['FB_TOKEN']}", 'get', nil)
       if response.code.to_i == 200
         json = JSON.parse(response.body)
