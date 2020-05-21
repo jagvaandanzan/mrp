@@ -33,7 +33,7 @@ module API
               # Rails.logger.info(entry.to_json)
               # Өөрийн бичсэн үзэгдэлүүдийг алгасах
               if from_id != '0' && obj[:item] == "comment"
-                Rails.logger.info(entry.to_json)
+                # Rails.logger.info(entry.to_json)
                 FbNotificationsJob.perform_later obj
               end
             }

@@ -17,12 +17,10 @@
           </div>
 
           <div class="form-group">
-            <%= f.label :product_id, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@sale_call, :product_id) %>">
-              <%= field_errors(@sale_call, :product_id) %>
-              <%= f.collection_select :product_id, Product.search_by_id(f.object.product_id), :id, :full_name,
-                                      {:prompt => t('controls.select.none')},
-                                      {class: 'form-control selectpicker select_product', onchange: 'func_call_feature_rel(this)', "data-live-search": "true"} %>
+            <%= f.label :code, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@sale_call, :code) %>">
+              <%= field_errors(@sale_call, :code) %>
+              <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product_sale_call.code') %>
             </div>
           </div>
 
@@ -35,10 +33,10 @@
           </div>
 
           <div class="form-group">
-            <%= f.label :remainder, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@sale_call, :remainder) %>">
-              <%= field_errors(@sale_call, :remainder) %>
-              <%= f.number_field :remainder, class: 'form-control', value: @sale_call.remainder.presence || @sale_call.get_balance, readonly: true, placeholder: t('activerecord.attributes.product_sale_call.remainder') %>
+            <%= f.label :message, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@sale_call, :message) %>">
+              <%= field_errors(@sale_call, :message) %>
+              <%= f.text_field :message, class: 'form-control', placeholder: t('activerecord.attributes.product_sale_call.message') %>
             </div>
           </div>
 

@@ -2,12 +2,13 @@ class ProductSaleCall < ApplicationRecord
   belongs_to :product, optional: true
   belongs_to :operator, optional: true
 
-  before_validation :set_remainder
-  attr_accessor :remainder
+  # before_validation :set_remainder
+  # attr_accessor :remainder
   after_create :sent_itoms
 
   validates_uniqueness_of :code, if: :has_24_created
 
+  validates :code, presence: true, length: {is: 6}
   validates :phone, :quantity, presence: true
   validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
   validates :quantity, numericality: {greater_than: 0}

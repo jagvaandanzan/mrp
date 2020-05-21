@@ -12,6 +12,7 @@ class Operators::ProductSaleCallsController < Operators::BaseController
 
   def new
     @sale_call = ProductSaleCall.new
+    @sale_call.quantity = 1
   end
 
   def create
@@ -59,7 +60,7 @@ class Operators::ProductSaleCallsController < Operators::BaseController
 
   def sale_call_params
     params.require(:product_sale_call)
-        .permit(:phone, :product_id, :quantity, :remainder)
+        .permit(:phone, :code, :quantity, :message)
         .merge(operator: current_operator)
   end
 end
