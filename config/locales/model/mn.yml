@@ -210,6 +210,9 @@ mn:
         expiry_date: Дуусах хугацаа
         brand_id: Бренд
         manufacturer_id: Үйлдвэрлэсэн улс
+        product_instructions: Бараатай холбоотоай заавар
+        product_specifications: Техникийн үзүүлэлт
+        product_filters: Шүүлтүүр
       product_feature_option_rel:
         product_id: Бараа
         feature_id: Шинж чанар
@@ -232,7 +235,11 @@ mn:
       product_instruction:
         i_type: Төрөл
         description: Заавар
-        file: Зураг, видео
+        image: Зураг
+        video: Видео
+      product_specification:
+        technical_id: Төрөл
+        specification: Үзүүлэлт
       brand:
         name: Нэр
         logo: Лого
@@ -332,6 +339,7 @@ mn:
         quantity: Тоо хэмжээ
         remainder: Үлдэгдэл
         created_at: Огноо
+        message: Нэмэлт тайлбар
       user_permission_rel:
         user_permission_id: Хандах эрх
         role: Үйлдэл
