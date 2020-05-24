@@ -15,8 +15,9 @@ class Users::FbCommentArchivesController < Users::BaseController
       today = Time.now.beginning_of_day
       @start = @finish = today.strftime('%Y/%m/%d')
     end
+    @operator_id = params[:operator_id]
 
-    @fb_comment_archives = FbCommentArchive.search(params[:archive_id], params[:cid], @fb_post_id, @post_id, @user_name, @message, @start, @finish, @verb).page(params[:page])
+    @fb_comment_archives = FbCommentArchive.search(params[:archive_id], params[:cid], @fb_post_id, @post_id, @user_name, @message, @start, @finish, @verb, @operator_id).page(params[:page])
     cookies[:fb_comment_archive_page_number] = params[:page]
     render 'operators/fb_comment_archives/index'
   end

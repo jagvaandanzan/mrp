@@ -13,9 +13,6 @@
         <%= text_field_tag :message, @message, {class: 'form-control search', placeholder: t('activerecord.attributes.fb_comment.message')} %>
       </div>
       <div class="col-md-2 search">
-        <%= text_field_tag :user_name, @user_name, {class: 'form-control search', placeholder: t('activerecord.attributes.fb_comment.user_name')} %>
-      </div>
-      <div class="col-md-2 search">
         <div id="search-date" class="form-control search">
           <i class="fa fa-calendar fa-lg p-r-0"></i>
           <span><%= t("filters.by_date") %>...</span>
@@ -27,6 +24,9 @@
         <%= f.select :verb, FbCommentArchive.verbs_i18n.keys.map {|k| [FbCommentArchive.verbs_i18n[k], k]},
                      {:prompt => t('activerecord.attributes.fb_comment_archive.verb'), :selected => @verb}, {class: 'form-control'} %>
 
+      </div>
+      <div class="col-md-2 search">
+        <%= f.collection_select :operator_id, Operator.order_name, :id, :name, {:selected => @operator_id, :include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
       </div>
       <div class="col-md-2 search">
         <%= submit_tag t('controls.button.searching') + " (" + @fb_comment_archives.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
