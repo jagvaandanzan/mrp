@@ -100,6 +100,7 @@ mn:
   are_you_sure_ok: "Та итгэлтэй байна уу ?"
   are_you_sure_switch: "Шилжүүлэх үү ?"
   currency: ₮
+  minute: минут
   currency_name: Төгрөг
   upload_file: Файл хуулах
   upload_image: Зураг хуулах

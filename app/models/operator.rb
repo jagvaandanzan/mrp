@@ -16,6 +16,7 @@ class Operator < ApplicationRecord
 
   accepts_nested_attributes_for :operator_permission_rels, allow_destroy: true
 
+  attr_accessor :comment_minute, :comment_count, :comment_avg
   enum gender: {male: 0, female: 1}
 
   validates :surname, :name, :phone, presence: true, length: {maximum: 255}
@@ -33,6 +34,10 @@ class Operator < ApplicationRecord
 
   scope :created_at_desc, -> {
     order(created_at: :desc)
+  }
+
+  scope :order_name, -> {
+    order(:name)
   }
 
   def send_first_password_instructions

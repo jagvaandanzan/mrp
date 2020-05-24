@@ -131,7 +131,11 @@ Rails.application.routes.draw do
         patch 'hide'
       end
     end
-    resources :fb_comment_archives, only: [:index, :show]
+    resources :fb_comment_archives, only: [:index, :show] do
+      collection do
+        get 'report'
+      end
+    end
     resources :bank_transactions, only: [:index]
     resources :sms_messages, only: [:index, :create, :new]
 
@@ -163,7 +167,11 @@ Rails.application.routes.draw do
       end
     end
     resources :fb_comment_actions
-    resources :fb_comment_archives, only: [:index, :show]
+    resources :fb_comment_archives, only: [:index, :show] do
+      collection do
+        get 'report'
+      end
+    end
 
     resources :product_sale_calls, only: [:index, :create, :new, :edit, :update, :destroy] do
       collection do

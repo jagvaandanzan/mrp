@@ -132,6 +132,7 @@ mn:
       fb_comment: Комментууд
       fb_comment_archive: Түүх
       fb_comment_action: Автомат хариу
+      fb_comment_report: Тайлан
       sms_message: SMS мессеж
       brand: Бренд
       manufacturer: Үйлдэрлэгч
@@ -421,6 +422,9 @@ mn:
         reply: Хариу
         verb: Төрөл
         operator: Оператор
+        comments: Хариулсан коммент
+        comment_time: Зарцуулсан хугацаа
+        avg_time: Дундаж хугацаа
       bank_transaction:
         value: Гүйлгээний утга
         account: Данс

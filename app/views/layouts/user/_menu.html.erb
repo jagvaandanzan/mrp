@@ -50,9 +50,14 @@
                   <i class="fa fa-comments"></i><span><%= t('activerecord.models.fb_comment') %></span>
                 <% end %>
               <% end %>
-              <%= content_tag :li, class: controller_name == 'fb_comment_archives' ? 'active' : '' do %>
+              <%= content_tag :li, class: (controller_name == 'fb_comment_archives' && action_name != 'report') ? 'active' : '' do %>
                 <%= link_to users_fb_comment_archives_path do %>
                   <i class="fa fa-history"></i><span><%= t('activerecord.models.fb_comment_archive') %></span>
+                <% end %>
+              <% end %>
+              <%= content_tag :li, class: (controller_name == 'fb_comment_archives' && action_name == 'report') ? 'active' : '' do %>
+                <%= link_to report_users_fb_comment_archives_path do %>
+                  <i class="fa fa-bar-chart"></i><span><%= t('activerecord.models.fb_comment_report') %></span>
                 <% end %>
               <% end %>
             <% end %>

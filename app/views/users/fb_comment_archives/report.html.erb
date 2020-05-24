@@ -1,0 +1,101 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+  <%= stylesheet_link_tag "admin-lte/bower_components/morris.js/morris.css" %>
+<% end %>
+<div class="content-wrapper">
+  <div class="col-md-12 m-t-10 m-b-10">
+    <%= form_with url: current_user.present? ? report_users_fb_comment_archives_path : report_operators_fb_comment_archives_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+      <div class="col-md-4 search">
+
+        <%= f.collection_select :operator_id, @select_operators, :id, :name, {:selected => @operator_id, :include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
+      </div>
+      <div class="col-md-4 search">
+        <div id="search-date" class="form-control search">
+          <i class="fa fa-calendar fa-lg p-r-0"></i>
+          <span><%= t("filters.by_date") %>...</span>
+          <%= f.hidden_field :start, value: @start %>
+          <%= f.hidden_field :finish, value: @finish %>
+        </div>
+      </div>
+      <div class="col-md-4 search">
+        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
+
+        <%= link_to t('titles.back_to_list'), current_operator.present? ? operators_fb_comment_archives_path(page: cookies[:fb_comment_archive_page_number]) : users_fb_comment_archives_path(page: cookies[:fb_comment_archive_page_number]), {class: "btn blck-btn"} %>
+      </div>
+    <% end %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <div class="box-body table-responsive no-padding">
+
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="chart" id="comment-count" style="height: 300px;"></div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="chart" id="comment-avg" style="height: 300px;"></div>
+              </div>
+            </div>
+
+            <table class="table table-hover table-bordered">
+              <tr>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.operator') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.comments') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.comment_time') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.avg_time') %></th>
+              </tr>
+              <% @operators.each {|operator| %>
+                <tr>
+                  <td><%= operator.name %></td>
+                  <td><%= operator.comment_count %></td>
+                  <td><%= operator.comment_minute %></td>
+                  <td><%= operator.comment_avg %> <%= t('minute') %></td>
+                </tr>
+              <% } %>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'start', finish_id: 'finish' %>
+
+<% content_for :footer_js do -%>
+  <%= javascript_include_tag 'admin-lte/bower_components/raphael/raphael.min.js' %>
+  <%= javascript_include_tag 'admin-lte/bower_components/morris.js/morris.min.js' %>
+<% end %>
+<script>
+    $(function () {
+
+        new Morris.Donut({
+            element: 'comment-count',
+            resize: true,
+            data: <%= raw(@operator_count.to_json) %>,
+            hideHover: 'auto'
+        });
+
+        new Morris.Bar({
+            element: 'comment-avg',
+            resize: true,
+            data: <%= raw(@operator_avg.to_json) %>,
+            xkey: 'y',
+            ykeys: ['a'],
+            xLabelAngle: '45',
+            padding: 50,
+            yLabelFormat: function (a) {
+                return (a) + ' <%= t('minute') %>'
+            },
+            labels: ['<%= t('activerecord.attributes.fb_comment_archive.avg_time') %>'],
+            hideHover: 'auto'
+        });
+
+
+    });
+</script>

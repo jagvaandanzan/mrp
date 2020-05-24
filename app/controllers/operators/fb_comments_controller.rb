@@ -43,7 +43,12 @@ class Operators::FbCommentsController < Operators::BaseController
           fb_comment_answer = FbCommentAnswer.find(@fb_comment.comment_answer_id)
           fb_comment_answer.update_attribute(:used, fb_comment_answer.used + 1)
         else
-          fb_comment_answer = FbCommentAnswer.create(answer: @fb_comment.reply_text, operator: current_operator)
+          answers = FbCommentAnswer.by_answer(@fb_comment.reply_text)
+          if answers.present?
+            fb_comment_answer = answers.first
+          else
+            fb_comment_answer = FbCommentAnswer.create(answer: @fb_comment.reply_text, operator: current_operator)
+          end
         end
         FbCommentQuestion.create(operator: current_operator,
                                  fb_comment_answer: fb_comment_answer,

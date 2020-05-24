@@ -9,6 +9,10 @@ class FbCommentAnswer < ApplicationRecord
     order(:answer)
   }
 
+  scope :by_answer, ->(answer) {
+    where(answer: answer.downcase)
+  }
+
   scope :search, ->(sname) {
     items = order_by_name
     items = items.where('answer LIKE :value', value: "%#{sname}%") if sname.present?

@@ -51,6 +51,28 @@ class FbCommentArchive < ApplicationRecord
     items
   }
 
+  scope :operator_by_response, ->(start, finish) {
+    items = select('operators.id', 'operators.name')
+                .joins(:operator)
+                .group('operators.id')
+    items = items.where('? <= fb_comment_archives.date AND fb_comment_archives.date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items
+  }
+
+  scope :by_response_time, ->(operator_id, start, finish) {
+    items = joins(:operator)
+    items = items.where(operator_id: operator_id) if operator_id.present?
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items.sum("TIMESTAMPDIFF(MINUTE,fb_comment_archives.date,fb_comment_archives.created_at)")
+  }
+
+  scope :by_response_count, ->(operator_id, start, finish) {
+    items = joins(:operator)
+    items = items.where(operator_id: operator_id) if operator_id.present?
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items.count
+  }
+
   def operator_name
     if self.operator.present?
       self.operator.name
