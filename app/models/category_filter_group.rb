@@ -8,8 +8,11 @@ class CategoryFilterGroup < ApplicationRecord
   # validates_uniqueness_of :name
   # validates :name, presence: true
 
+  scope :order_name, ->() {
+    order(:name)
+  }
   scope :search, ->(name) {
-    items = order(:name)
+    items = order_name
     items = items.where('name LIKE :value', value: "%#{name}%") if name.present?
     items
   }

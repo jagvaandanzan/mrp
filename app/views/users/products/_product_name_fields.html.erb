@@ -1,0 +1,10 @@
+<div class="col-md-4 field_div">
+  <%= f.label :name, class: 'control-label' do %>
+    <%= ProductName.n_types_i18n[f.object.n_type] %>
+  <% end %>
+  <div class="<%= get_error_class(f.object, :name) %>">
+    <%= field_errors f.object, :name %>
+    <%= f.text_field :name, class: 'form-control field', placeholder: ProductName.n_types_i18n[f.object.n_type] %>
+    <%= f.hidden_field :n_type %>
+  </div>
+</div>

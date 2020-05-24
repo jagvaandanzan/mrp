@@ -29,20 +29,12 @@
               <tr>
                 <th><%= t('activerecord.attributes.product.name') %></th>
                 <th><%= t('activerecord.attributes.product.code') %></th>
-                <th><%= t('activerecord.attributes.product.main_code') %></th>
-                <th><%= t('activerecord.attributes.product.barcode') %></th>
-                <th><%= t('activerecord.attributes.product.measure') %></th>
-                <th><%= t('activerecord.attributes.product.ptype') %></th>
                 <th><%= t('activerecord.attributes.product.category') %></th>
               </tr>
               <% @products.each do |p| %>
                 <tr>
                   <td class="va-mid"><%= link_to p.name, users_product_path(p) %></td>
                   <td class="va-mid"><%= p.code %></td>
-                  <td class="va-mid"><%= p.main_code %></td>
-                  <td class="va-mid"><%= p.barcode %></td>
-                  <td class="va-mid"><%= p.measure_i18n %></td>
-                  <td class="va-mid"><%= p.ptype_i18n %></td>
                   <td class="va-mid"><%= get_name_recursive(p.category) %></td>
                 </tr>
               <% end %>

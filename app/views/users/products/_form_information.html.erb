@@ -1,0 +1,118 @@
+<% if @product.persisted? %>
+  <%= form_with model: @product, url: form_information_users_products_path(id: @product.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
+    <%= form_body do %>
+      <%= f.hidden_field :tab_index, {value: 2} %>
+      <div class="form-group">
+        <%= f.label :search_key, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 <%= get_error_class(@product, :search_key) %>">
+          <%= field_errors(@product, :search_key) %>
+          <%= f.text_area :search_key, class: 'form-control', placeholder: t('activerecord.attributes.product.search_key') %>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :description, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 <%= get_error_class(@product, :description) %>">
+          <%= field_errors(@product, :description) %>
+          <%= f.text_area :description, class: 'form-control', placeholder: t('activerecord.attributes.product.description') %>
+        </div>
+      </div>
+      <%= field_errors(@product, :product_filters) %>
+      <% @product.category.category_filter_groups.order_name.each {|group| %>
+        <div class="form-group">
+          <%= label_tag :product_filter_groups, class: 'col-sm-3 control-label' do %>
+            <%= group.name %>
+          <% end %>
+          <div class="col-sm-9" style="padding-left: 0">
+            <% group.category_filters.order_name.each {|filter| %>
+              <div class="col-md-2">
+                <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
+                  <%= label_tag :check_box, {style: 'font-size:13px'}  do %>
+                  <%= f.check_box(:filters, {:multiple => true}, filter.id.to_s, nil) %>
+                  <%= filter.name %>
+                  <% end %>
+                </div>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      <% } %>
+      <div class="form-group">
+        <%= f.label :product_instructions, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 cocoon-nested-form">
+          <div class="<%= get_error_class(@product, :product_instructions) %>">
+            <%= field_errors(@product, :product_instructions) %>
+            <table class="table table-bordered" id="tb_product_instructions">
+              <tr>
+                <th><%= t('activerecord.attributes.product_instruction.i_type') %></th>
+                <th><%= t('activerecord.attributes.product_instruction.description') %></th>
+                <th><%= t('activerecord.attributes.product_instruction.image') %></th>
+                <th><%= t('activerecord.attributes.product_instruction.video') %></th>
+                <th width="50px"></th>
+              </tr>
+              <%= f.fields_for :product_instructions do |m| %>
+                <%= render 'product_instruction_fields', :f => m %>
+              <% end %>
+            </table>
+          </div>
+          <div class="links" id="btn_product_instructions">
+            <%= link_to_add_association f, :product_instructions, data: {association_insertion_node: '#tb_product_instructions', association_insertion_method: :append} do %>
+              <%= nested_add_btn %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :product_specifications, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 cocoon-nested-form">
+          <div class="<%= get_error_class(@product, :product_specifications) %>">
+            <%= field_errors(@product, :product_specifications) %>
+            <table class="table table-bordered" id="tb_product_specifications">
+              <tr>
+                <th><%= t('activerecord.attributes.product_specification.technical_id') %></th>
+                <th><%= t('activerecord.attributes.product_specification.specification') %></th>
+                <th width="50px"></th>
+              </tr>
+              <%= f.fields_for :product_specifications do |m| %>
+                <%= render 'product_specification_fields', :f => m %>
+              <% end %>
+            </table>
+          </div>
+          <div class="links">
+            <%= link_to_add_association f, :product_specifications, data: {association_insertion_node: '#tb_product_specifications', association_insertion_method: :append} do %>
+              <%= nested_add_btn %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :brand_id, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 <%= get_error_class(@product, :brand_id) %>">
+          <%= field_errors(@product, :brand_id) %>
+          <%= f.collection_select :brand_id, Brand.order_name, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :manufacturer_id, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 <%= get_error_class(@product, :manufacturer_id) %>">
+          <%= field_errors(@product, :manufacturer_id) %>
+          <%= f.collection_select :manufacturer_id, Manufacturer.order_country, :id, :country, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :expiry_date, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 <%= get_error_class(@product, :expiry_date) %>">
+          <div class="input-append input-group date " data-provide="datepicker">
+            <%= f.text_field :expiry_date, value: @product.expiry_date.presence ? @product.expiry_date.strftime('%F') : "",
+                             class: 'field form-control', placeholder: t('activerecord.attributes.product.expiry_date'), readonly: true %>
+            <div class="input-group-addon">
+              <i class="fa fa-calendar"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="action-buttons m-t-10">
+        <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

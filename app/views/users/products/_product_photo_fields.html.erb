@@ -1,0 +1,23 @@
+<tr class="nested-fields">
+  <td class="va-mid">
+    <%= field_errors f.object, :photo %>
+    <%= f.file_field :photo, accept: "image/*", class: 'image-file none-force' %>
+    <div class="preview noselect">
+      <% if f.object.photo.present? %>
+        <%= image_tag f.object.photo.url(:tumb), class: 'preview-img' %>
+      <% else %>
+        <span class="text"><%= t('upload_image') %></span>
+      <% end %>
+    </div>
+  </td>
+  <td class="remove va-mid">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>
+<script>
+    $(document).ready(function () {
+        load_image_preview("#tb_product_photos .nested-fields:last");
+    })
+</script>

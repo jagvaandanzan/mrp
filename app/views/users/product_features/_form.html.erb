@@ -6,6 +6,15 @@
                     method: @product_feature.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
           <div class="form-group">
+            <%= f.label :feature_type, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product_feature, :feature_type) %>">
+              <%= field_errors(@product_feature, :feature_type) %>
+              <%= f.collection_radio_buttons :feature_type, ProductFeature.feature_types_i18n, :first, :second do |b| %>
+                <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
+              <% end %>
+            </div>
+          </div>
+          <div class="form-group">
             <%= f.label :queue, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@product_feature, :queue) %>">
               <%= field_errors(@product_feature, :queue) %>

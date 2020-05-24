@@ -1,0 +1,62 @@
+<div class="body-box">
+  <div class="row">
+    <div class="col-md-12">
+      <% @product.product_names.each {|product_name| %>
+        <div class="col-md-4 field_div">
+          <b><%= product_name.n_type_i18n %>:</b> <%= product_name.name %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-4 field_div">
+        <b><%= t('activerecord.attributes.product.category_id') %>:</b> <%= get_name_recursive(@product.category) %>
+      </div>
+      <% if @product.is_own != 1 && @product.customer.present? %>
+        <div class="col-md-2 field_div">
+          <b><%= t('activerecord.attributes.product.code') %>:</b> <%= @product.code %>
+        </div>
+        <div class="col-md-2 field_div">
+          <b><%= t('activerecord.attributes.product.is_own') %>:</b> <%= yes_no(@product.is_own == 1) %>
+        </div>
+        <div class="col-md-4 field_div">
+          <b><%= t('activerecord.attributes.product.customer_id') %>:</b> <%= @product.customer.name %>
+        </div>
+      <% else %>
+        <div class="col-md-4 field_div">
+          <b><%= t('activerecord.attributes.product.code') %>:</b> <%= @product.code %>
+        </div>
+        <div class="col-md-4 field_div">
+          <b><%= t('activerecord.attributes.product.is_own') %>:</b> <%= yes_no(@product.is_own == 1) %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-12 field_div">
+        <form action="" class="form-horizontal">
+          <%= field_errors(@product, :product_feature_option_rels) %>
+          <% ProductFeature.order_by_queue.each {|feature| %>
+            <div class="form-group">
+              <%= label_tag :product_feature_rel, class: 'col-sm-1 control-label' do %>
+                <%= feature.name %>
+              <% end %>
+              <div class="col-sm-11">
+                <% feature.options.order_queue.each {|option| %>
+                  <div class="col-md-2">
+                    <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
+                      <%= option.name %>
+                      <%= yes_no(@product.option_rels.include?(option.id.to_s)) %>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          <% } %>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

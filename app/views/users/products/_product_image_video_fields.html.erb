@@ -1,0 +1,37 @@
+<tr class="nested-fields">
+  <%= f.hidden_field :tab_index, {value: 3} %>
+  <td class="va-mid">
+    <%= field_errors f.object, :feature_item_id %>
+    <%= f.object.name %>
+  </td>
+  <td class="va-mid text-center">
+    <%= field_errors f.object, :image %>
+    <%= f.file_field :image, accept: "image/*", class: 'image-file none-force' %>
+    <div class="preview noselect height50">
+      <% if f.object.image.present? %>
+        <%= image_tag f.object.image.url(:tumb), class: 'preview-img height50' %>
+      <% else %>
+        <span class="text"><%= t('upload_image') %></span>
+      <% end %>
+    </div>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :video %>
+    <%= f.file_field :video, accept: "video/*" %>
+    <% if f.object.persisted? && f.object.video.present? %>
+      <%= link_to t('controls.button.watch'), f.object.video.url(:original, false) %>
+    <% end %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :same_item_id %>
+    <%= f.collection_select :same_item_id, @product.product_feature_items.order_is_feature, :id, :name, {:prompt => t('controls.select.none')},
+                            {class: 'form-control selectpicker', "data-live-search": true} %>
+  </td>
+</tr>
+<script>
+    $(document).ready(function () {
+        var last_tr = "#tb_product_image_videos .nested-fields:last";
+        $(last_tr).find('.selectpicker').selectpicker('refresh');
+        load_image_preview(last_tr);
+    })
+</script>

@@ -1,9 +1,14 @@
 class ProductFeatureOptionRel < ApplicationRecord
-  belongs_to :feature_rel, :class_name => "ProductFeatureRel", optional: true
+
+  belongs_to :product
   belongs_to :feature_option, :class_name => "ProductFeatureOption"
 
-  has_many :product_features, through: :feature_option
+  scope :by_feature_option_ids, ->(ids) {
+    where("feature_option_id IN (?)", ids)
+  }
 
-  validates :feature_option_id, presence: true
+  scope :by_feature_option_ids, ->(ids) {
+    where("feature_option_id IN (?)", ids)
+  }
 
 end

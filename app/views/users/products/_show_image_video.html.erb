@@ -1,0 +1,55 @@
+<div class="form-horizontal">
+  <%= form_body do %>
+    <div class="form-group">
+      <%= label_tag :product_feature_items, t('activerecord.attributes.product.product_feature_items'), class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9">
+        <table class="table table-bordered" id="tb_product_image_videos">
+          <tr>
+            <th><%= t('activerecord.attributes.product_feature_item.feature_item_id') %></th>
+            <th><%= t('activerecord.attributes.product_feature_item.image') %></th>
+            <th><%= t('activerecord.attributes.product_feature_item.video') %></th>
+          </tr>
+          <% @product.product_feature_items.each {|feature_item| %>
+            <tr class="field_div">
+              <td><%= feature_item.name %></td>
+              <td>
+                <% feature_item_img = feature_item.img %>
+                <% if feature_item_img.present? %>
+                  <%= link_to feature_item_img.url, "data-lightbox": "roadtrip" do %>
+                    <%= image_tag feature_item_img.url(:tumb), class: 'tumb' %>
+                  <% end %>
+                <% end %>
+              </td>
+              <td>
+                <% feature_item_vid = feature_item.vid %>
+                <% if feature_item_vid.present? %>
+                  <%= link_to t('titles.open'), feature_item_vid.url(:original, false) %>
+                <% end %>
+              </td>
+            </tr>
+          <% } %>
+        </table>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= label_tag :photo_web, t('activerecord.attributes.product.photo_web'), class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9">
+        <%= yes_no(@product.photo_web) %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= label_tag :product_photos, t('activerecord.attributes.product.product_photos'), class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9">
+        <% @product.product_photos.each {|photo| %>
+          <div class="col-sm-2 m-b-6">
+            <% if photo.photo.present? %>
+              <%= link_to photo.photo.url, "data-lightbox": "roadtrip" do %>
+                <%= image_tag photo.photo.url(:tumb), class: 'tumb' %>
+              <% end %>
+            <% end %>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  <% end %>
+</div>

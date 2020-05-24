@@ -11,11 +11,21 @@ class ProductFeatureOption < ApplicationRecord
 
   validates :queue, :name, presence: true
 
+  scope :order_queue, -> {
+    order(:queue)
+        .order(:name)
+  }
+
+  scope :by_is_feature_ids, ->(ids, is_feature) {
+    joins(:product_feature)
+        .where("product_features.feature_type=?", is_feature)
+        .where("product_feature_options.id IN (?)", ids)
+  }
+
   scope :search, ->(f_id, sname) {
     items = where(product_feature_id: f_id)
     items = items.where('name LIKE :value', value: "%#{sname}%") if sname.present?
-    items.order(:queue)
-        .order(:name)
+    items.order_queue
   }
 
   private

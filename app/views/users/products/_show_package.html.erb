@@ -1,0 +1,22 @@
+<%= form_body do %>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-6 field_div">
+        <b><%= t('activerecord.attributes.product.product_size') %>:</b> <%= @product.product_size %>
+      </div>
+      <div class="col-md-6 field_div">
+        <b><%= t('activerecord.attributes.product.package_size') %>:</b> <%= @product.package_size %>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-6 field_div">
+        <b><%= t('activerecord.attributes.product.weight') %>:</b> <%= @product.weight %>
+      </div>
+      <div class="col-md-6 field_div">
+        <b><%= t('activerecord.attributes.product.gift_wrap') %>:</b> <%= @product.gift_wrap_i18n %>
+      </div>
+    </div>
+  </div>
+<% end %>

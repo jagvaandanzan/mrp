@@ -1,0 +1,46 @@
+<tr class="nested-fields">
+  <td class="va-mid">
+    <%= field_errors f.object, :i_type %>
+    <%= f.select :i_type, ProductInstruction.i_types.keys.map {|k| [ProductInstruction.i_types_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :description %>
+    <%= f.text_field :description, class: 'form-control field', placeholder: t('activerecord.attributes.product_instruction.description') %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :image %>
+    <%= f.file_field :image, accept: "image/*", class: 'image-file none-force' %>
+    <div class="preview noselect">
+      <% if f.object.image.present? %>
+        <%= image_tag f.object.image.url(:tumb), class: 'preview-img' %>
+      <% else %>
+        <span class="text"><%= t('upload_image') %></span>
+      <% end %>
+    </div>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :video %>
+    <%= f.file_field :video, accept: "video/*" %>
+    <% if f.object.persisted? && f.object.video.present? %>
+      <%= link_to t('controls.button.watch'), f.object.video.url(:original, false) %>
+    <% end %>
+  </td>
+  <td class="remove va-mid">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>
+<script>
+    $(document).ready(function () {
+        $('#btn_product_instructions #btn-append').click(function () {
+            setTimeout(set_instructions_value, 200);
+        });
+    });
+
+    function set_instructions_value() {
+        var last_tr = "#tb_product_instructions .nested-fields:last";
+        $(last_tr).find('.selectpicker').selectpicker('refresh');
+        load_image_preview(last_tr);
+    }
+</script>

@@ -1,0 +1,45 @@
+<div class="body-box">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-4 field_div">
+        <b><%= t('activerecord.attributes.product.delivery_type') %>:</b> <%= @product.delivery_type_i18n %>
+      </div>
+      <div class="col-md-4 field_div">
+        <b><%= t('activerecord.attributes.product.size_img') %>:</b>
+        <% if @product.size_img.present? %>
+          <%= link_to @product.size_img.url, "data-lightbox": "roadtrip" do %>
+            <%= image_tag @product.size_img.url(:tumb), class: 'tumb' %>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="col-md-4 field_div">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 field_div">
+      <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+          <th></th>
+          <th class="text-center"><%= t('activerecord.attributes.product_feature_item.price') %></th>
+          <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
+          <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
+          <th class="text-center"><%= t('activerecord.attributes.product_feature_item.c_balance') %></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @product.product_feature_items.each {|item| %>
+          <tr class="field_div">
+            <td><%= item.name %></td>
+            <td><%= get_currency_mn(item.price) %></td>
+            <td><%= get_currency_mn item.p_6_8 %></td>
+            <td><%= get_currency_mn item.p_9_ %></td>
+            <td><%= item.c_balance %></td>
+          </tr>
+        <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

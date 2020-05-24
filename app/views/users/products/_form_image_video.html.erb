@@ -1,0 +1,57 @@
+<% if @product.persisted? %>
+  <%= form_with model: @product, url: form_image_video_users_products_path(id: @product.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
+    <%= form_body do %>
+      <%= f.hidden_field :tab_index, {value: 3} %>
+      <div class="form-group">
+        <%= f.label :product_feature_items, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 cocoon-nested-form">
+          <div class="<%= get_error_class(@product, :product_feature_items) %>">
+            <%= field_errors(@product, :product_feature_items) %>
+            <table class="table table-bordered" id="tb_product_image_videos">
+              <tr>
+                <th><%= t('activerecord.attributes.product_feature_item.feature_item_id') %></th>
+                <th><%= t('activerecord.attributes.product_feature_item.image') %></th>
+                <th><%= t('activerecord.attributes.product_feature_item.video') %></th>
+                <th><%= t('activerecord.attributes.product_feature_item.same_item_id') %></th>
+              </tr>
+              <%= f.fields_for :product_feature_items do |m| %>
+                <%= render 'product_image_video_fields', :f => m %>
+              <% end %>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :photo_web, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 <%= get_error_class(@product, :photo_web) %>">
+          <%= f.check_box :photo_web %>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :product_photos, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 cocoon-nested-form">
+          <div class="<%= get_error_class(@product, :product_photos) %>">
+            <%= field_errors(@product, :product_photos) %>
+            <table class="table table-bordered" id="tb_product_photos">
+              <tr>
+                <th><%= t('activerecord.attributes.product_photo.photo') %></th>
+                <th width="50px"></th>
+              </tr>
+              <%= f.fields_for :product_photos do |m| %>
+                <%= render 'product_photo_fields', :f => m %>
+              <% end %>
+            </table>
+          </div>
+          <div class="links">
+            <%= link_to_add_association f, :product_photos, data: {association_insertion_node: '#tb_product_photos', association_insertion_method: :append} do %>
+              <%= nested_add_btn %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="action-buttons m-t-10">
+        <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

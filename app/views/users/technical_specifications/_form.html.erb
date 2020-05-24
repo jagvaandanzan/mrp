@@ -1,0 +1,24 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1><%= t('activerecord.models.technical_specification') + t(@specification.persisted? ? 'titles.edit' : 'titles.add') %></h1>
+  </section>
+  <section class="content">
+    <div class="box box-info">
+      <%= form_for :specification, url: @specification.persisted? ? users_technical_specification_path : users_technical_specifications_path, method: @specification.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <div class="form-group">
+            <%= f.label :specification, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@specification, :specification) %>">
+              <%= field_errors(@specification, :specification) %>
+              <%= f.text_field :specification, class: 'form-control', placeholder: t('activerecord.attributes.technical_specification.specification') %>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>

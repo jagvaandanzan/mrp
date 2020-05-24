@@ -78,4 +78,8 @@ module FormHelper
     end
   end
 
+  def yes_no(checked)
+    ('<i class="fa fa' + (checked ? "-check text-success" : "-times text-danger") + '" style="font-size: 16px;"></i>').html_safe
+  end
+
 end

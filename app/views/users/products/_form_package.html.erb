@@ -1,0 +1,41 @@
+<% if @product.persisted? %>
+  <%= form_with model: @product, url: form_package_users_products_path(id: @product.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
+    <%= form_body do %>
+      <%= f.hidden_field :tab_index, {value: 4} %>
+
+      <div class="form-group">
+        <%= f.label :product_size, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 <%= get_error_class(@product, :product_size) %>">
+          <%= field_errors(@product, :product_size) %>
+          <%= f.text_field :product_size, class: 'form-control', placeholder: t('activerecord.attributes.product.product_size') %>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :package_size, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 <%= get_error_class(@product, :package_size) %>">
+          <%= field_errors(@product, :package_size) %>
+          <%= f.text_field :package_size, class: 'form-control', placeholder: t('activerecord.attributes.product.package_size') %>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :weight, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 <%= get_error_class(@product, :weight) %>">
+          <%= field_errors(@product, :weight) %>
+          <%= f.text_field :weight, class: 'form-control', placeholder: t('activerecord.attributes.product.weight') %>
+        </div>
+      </div>
+      <div class="form-group m-t-10">
+        <%= f.label :gift_wrap, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product, :gift_wrap) %>">
+          <%= field_errors(@product, :gift_wrap) %>
+          <%= f.collection_radio_buttons :gift_wrap, Product.gift_wraps_i18n, :first, :second do |b| %>
+            <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
+          <% end %>
+        </div>
+      </div>
+      <div class="action-buttons m-t-10">
+        <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

@@ -1,0 +1,22 @@
+<tr class="nested-fields">
+  <td class="va-mid">
+    <%= field_errors f.object, :technical_id %>
+    <%= f.collection_select :technical_id, TechnicalSpecification.order_specification, :id, :specification, {:prompt => t('controls.select.none')},
+                            {class: 'form-control selectpicker', "data-live-search": true} %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :specification %>
+    <%= f.text_field :specification, class: 'form-control field', placeholder: t('activerecord.attributes.product_specification.specification') %>
+  </td>
+  <td class="remove va-mid">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>
+<script>
+    $(document).ready(function () {
+        var last_tr = "#tb_product_specifications .nested-fields:last";
+        $(last_tr).find('.selectpicker').selectpicker('refresh');
+    })
+</script>

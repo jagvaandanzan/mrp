@@ -36,6 +36,9 @@ mn:
       delivery_type:
         is_own: Маркетаас хүргэлт хийлгэх
         is_customer: Харилцагчийн агуулхаас
+      gift_wrap:
+        wrap_have: Байгаа
+        wrap_not: Байхгүй
     product_instruction:
       i_type:
         using: Хэрэглэх заавар
@@ -213,6 +216,14 @@ mn:
         product_instructions: Бараатай холбоотоай заавар
         product_specifications: Техникийн үзүүлэлт
         product_filters: Шүүлтүүр
+        product_image_videos: Зураг, Видео
+        product_photos: Бодит зураг
+        photo_web: Бодит зургыг вебд харуулах
+        product_feature_items: Зураг, Видео
+        product_size: Барааны хэмжээс
+        package_size: Хайрцаг, боодлын хэмжээ
+        weight: Барааны жин
+        gift_wrap: Бэлгийн боолт
       product_feature_option_rel:
         product_id: Бараа
         feature_id: Шинж чанар
@@ -232,6 +243,10 @@ mn:
         p_6_8: 6-8 ширхэг үнэ
         p_9_: 9-с дээш үнэ
         c_balance: Харилцагчийн үлдэгдэл
+        feature_item_id: Шинж чанар
+        same_item_id: Адил шинж чанар
+        image: Зураг
+        video: Видео
       product_instruction:
         i_type: Төрөл
         description: Заавар
@@ -240,6 +255,8 @@ mn:
       product_specification:
         technical_id: Төрөл
         specification: Үзүүлэлт
+      product_photo:
+        photo: Бодит зураг
       brand:
         name: Нэр
         logo: Лого

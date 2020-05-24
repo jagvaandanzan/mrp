@@ -79,6 +79,7 @@
             controller_name == 'product_categories' || controller_name == 'product_suppliers' ||
             controller_name == 'product_features' || controller_name == 'product_feature_options' ||
             controller_name == 'product_locations' || controller_name == 'category_filter_groups' ||
+            controller_name == 'brands' || controller_name == 'manufacturers' || controller_name == 'technical_specifications' ||
             controller_name == 'operators' || controller_name == 'salesmen' ? 'treeview active' : 'treeview' do %>
           <%= link_to "#" do %>
             <i class="fa fa-cogs"></i><span><%= t('titles.settings') %></span>
@@ -109,6 +110,21 @@
               <%= content_tag :li, class: (controller_name == 'category_filter_groups') ? 'active' : '' do %>
                 <%= link_to users_category_filter_groups_path do %>
                   <i class="fa fa-filter"></i><span><%= t('titles.category_filter_groups') %></span>
+                <% end %>
+              <% end %>
+              <%= content_tag :li, class: (controller_name == 'brands') ? 'active' : '' do %>
+                <%= link_to users_brands_path do %>
+                  <i class="fa fa-adn"></i><span><%= t('activerecord.models.brand') %></span>
+                <% end %>
+              <% end %>
+              <%= content_tag :li, class: (controller_name == 'technical_specifications') ? 'active' : '' do %>
+                <%= link_to users_technical_specifications_path do %>
+                  <i class="fa fa-anchor"></i><span><%= t('activerecord.models.technical_specification') %></span>
+                <% end %>
+              <% end %>
+              <%= content_tag :li, class: (controller_name == 'manufacturers') ? 'active' : '' do %>
+                <%= link_to users_manufacturers_path do %>
+                  <i class="fa fa-flag"></i><span><%= t('activerecord.models.manufacturer') %></span>
                 <% end %>
               <% end %>
             <% end %>

@@ -569,11 +569,6 @@ div .breadcrumb-container .box .breadcrumb {
 .p-r-20 {padding-right:20px !important;}
 .p-r-30 {padding-right:30px !important;}
 
-.form-horizontal .col-sm-3,
-.form-horizontal .col-sm-4 {
-  font-weight: normal;
-  font-style: normal;
-}
 .cocoon-nested-form {
   margin-bottom: 0!important;
 }
@@ -665,4 +660,8 @@ div .breadcrumb-container .box .breadcrumb {
 img.tumb {
   width: 100px;
   height: 100px;
+}
+.height50 {
+  width: 50px!important;
+  height: 50px!important;
 }

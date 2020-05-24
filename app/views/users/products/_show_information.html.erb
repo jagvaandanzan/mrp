@@ -1,0 +1,106 @@
+<div class="form-horizontal">
+  <%= form_body do %>
+    <div class="form-group">
+      <%= label_tag :search_key, t('activerecord.attributes.product.search_key'), class: 'col-sm-3 control-label', style:'padding-top:0' %>
+      <div class="col-sm-9">
+        <%= @product.search_key %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= label_tag :description, t('activerecord.attributes.product.description'), class: 'col-sm-3 control-label', style:'padding-top:0' %>
+      <div class="col-sm-9">
+        <%= @product.description %>
+      </div>
+    </div>
+    <% @product.category.category_filter_groups.order_name.each {|group| %>
+      <div class="form-group">
+        <%= label_tag :product_filter_groups, class: 'col-sm-3 control-label' do %>
+          <%= group.name %>
+        <% end %>
+        <div class="col-sm-9" style="padding-left: 0">
+          <% group.category_filters.order_name.each {|filter| %>
+            <div class="col-md-2">
+              <div class="checkbox no-wrap" style="position: relative; display: block; overflow: hidden; height: 20px;">
+                <%= label_tag :check, {style: 'padding-left:0;font-size:13px'} do %>
+                  <%= filter.name %>
+                  <%= yes_no(@product.filters.include?(filter.id.to_s)) %>
+                <% end %>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    <% } %>
+    <div class="form-group">
+      <%= label_tag :product_instructions, t('activerecord.attributes.product.product_instructions'), class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9">
+        <table class="table table-hover table-bordered">
+          <tr>
+            <th><%= t('activerecord.attributes.product_instruction.i_type') %></th>
+            <th><%= t('activerecord.attributes.product_instruction.description') %></th>
+            <th><%= t('activerecord.attributes.product_instruction.image') %></th>
+            <th><%= t('activerecord.attributes.product_instruction.video') %></th>
+          </tr>
+          <% @product.product_instructions.each {|instruction| %>
+            <tr class="field_div">
+              <td><%= instruction.i_type_i18n %></td>
+              <td><%= instruction.description %></td>
+              <td>
+                <% if instruction.image.present? %>
+                  <%= link_to instruction.image.url, "data-lightbox": "roadtrip" do %>
+                    <%= image_tag instruction.image.url(:tumb), class: 'tumb' %>
+                  <% end %>
+                <% end %>
+              </td>
+              <td>
+                <% if instruction.video.present? %>
+                  <%= link_to t('titles.open'), instruction.video.url(:original, false) %>
+                <% end %>
+              </td>
+            </tr>
+          <% } %>
+        </table>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= label_tag :product_specifications, t('activerecord.attributes.product.product_specifications'), class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9">
+        <table class="table table-bordered" id="tb_product_specifications">
+          <tr>
+            <th><%= t('activerecord.attributes.product_specification.technical_id') %></th>
+            <th><%= t('activerecord.attributes.product_specification.specification') %></th>
+          </tr>
+          <% @product.product_specifications.each {|specification| %>
+            <tr>
+              <td><%= specification.technical.specification %></td>
+              <td><%= specification.specification %></td>
+            </tr>
+          <% } %>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-3"></div>
+        <div class="col-md-3 field_div">
+          <b><%= t('activerecord.attributes.product.brand_id') %>:</b>
+          <% if @product.brand.present? %>
+            <%= @product.brand.name %>
+          <% end %>
+        </div>
+        <div class="col-md-3 field_div">
+          <b><%= t('activerecord.attributes.product.manufacturer_id') %>:</b>
+          <% if @product.manufacturer.present? %>
+            <%= @product.manufacturer.country %>
+          <% end %>
+        </div>
+        <div class="col-md-3 field_div">
+          <b><%= t('activerecord.attributes.product.expiry_date') %>:</b>
+          <% if @product.expiry_date.present? %>
+            <%= @product.expiry_date.strftime('%F %R') %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

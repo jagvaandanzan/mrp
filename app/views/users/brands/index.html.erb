@@ -1,0 +1,66 @@
+<div class="content-wrapper">
+  <div class="col-md-12 m-t-10 m-b-10">
+    <div class="row">
+      <% is_manage = can? :manage, Brand %>
+      <%= form_with url: users_brands_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+        <div class="col-md-6 search">
+          <%= text_field_tag :name, @sname, {class: 'form-control search', placeholder: t('activerecord.attributes.brand.name')} %>
+        </div>
+        <div class="col-md-6 search">
+          <%= submit_tag t('controls.button.searching') + " (" + @brands.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
+          <% if is_manage %>
+            <%= link_to t('controls.button.create'), new_users_brand_path, class: 'btn btn-warning pull-right' %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <%= render 'layouts/flash_message' %>
+
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.brand.name') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.brand.logo') %></th>
+                <th></th>
+              </tr>
+              </thead>
+              <% @brands.each do |brand| %>
+                <tr>
+                  <td class="va-mid underline"><%= link_to brand.name, users_brand_path(brand) %></td>
+                  <td class="td-center va-mid">
+                    <% if brand.logo.present? %>
+                      <%= link_to brand.logo.url, "data-lightbox": "roadtrip" do %>
+                        <%= image_tag brand.logo.url(:tumb), class: 'tumb' %>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <% if is_manage %>
+                    <td class="th-center va-mid">
+                      <div class="btn-group">
+                        <%= link_to edit_users_brand_path(brand), class: 'no-underline m-r-10' do %>
+                          <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
+                        <% end %>
+
+                        <%= link_to users_brand_path(brand), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
+                          <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
+                        <% end %>
+                      </div>
+                    </td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+        <%= paginate @brands %>
+      </div>
+    </div>
+  </section>
+</div>

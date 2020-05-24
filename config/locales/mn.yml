@@ -81,6 +81,7 @@ mn:
     sms_messages: SMS мессеж
     hour_start: Эхлэх цаг
     hour_end: Дуусах цаг
+    open: Нээх
   app_name: “MRP”
   app_short_name: M
   alert:
@@ -108,7 +109,7 @@ mn:
     basic: Үндсэн мэдээлэл
     price: Үнэ, үлдэгдэл, хүргэлт
     information: Дэлгэрэнгүй мэдээлэл
-    picture_video: Зураг, видео
+    image_video: Зураг, видео
     package: Хүргэлт, баглаа боодол
   errors:
     format: "%{attribute}%{message}"

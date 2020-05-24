@@ -1,0 +1,148 @@
+<script>
+    var category_max_index = 0;
+</script>
+
+<%= form_with model: @product, url: @product.persisted? ? users_product_path(id: @product.id) : users_products_path,
+              method: @product.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+  <%= form_body do %>
+    <%= f.hidden_field :tab_index, {value: 0} %>
+    <div class="row">
+      <%= field_errors(@product, :name) %>
+      <%= f.fields_for :product_names do |m| %>
+        <%= render 'product_name_fields', :f => m %>
+      <% end %>
+    </div>
+    <div class="row">
+      <div class="col-md-4 field_div">
+        <%= f.label :category_id, class: 'control-label' %>
+        <div class="<%= get_error_class(@product, :category_id) %>" id="product_category">
+          <%= f.hidden_field :category_id %>
+          <%= field_errors(@product, :category_id) %>
+          <%= collection_select @product, :main_category_id, ProductCategory.top_level, :id, :name,
+                                {:prompt => t('controls.select.none'), selected: @headers.present? ? @headers.first.id : ""},
+                                {class: 'form-control selectpicker', id: "category-0", ind: 0, onchange: 'callChildren(this)'} %>
+
+          <% @headers.present? && @headers.each_with_index do |h, i| %>
+            <% if h != @headers.first %>
+              <div class="col-sm-12 sub_category" id="category-<%= i + 1 %>" style="padding: 10px 0 0 0;">
+                <select class='form-control selectpicker' onchange='callChildren(this)' ind=<%= i + 1 %>>
+                  <option value="<%= h.id %>"><%= h.name %></option>
+                </select>
+              </div>
+              <script type="text/javascript" charset="utf-8">
+                  category_max_index = <%= i + 1  %>;
+              </script>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      <div class="col-md-2 field_div">
+        <%= f.label :code, class: 'control-label' %>
+        <div class="<%= get_error_class(@product, :code) %>">
+          <%= field_errors(@product, :code) %>
+          <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product.code') %>
+        </div>
+      </div>
+      <div class="col-md-2 field_div">
+        <%= f.label :is_own, class: 'control-label' %>
+        <div class="<%= get_error_class(@product, :is_own) %>">
+          <%= f.check_box :is_own %>
+        </div>
+      </div>
+      <div class="col-md-4 field_div<%= @product.is_own == 1 ? ' none' : '' %>">
+        <%= f.label :customer_id, class: 'control-label' %>
+        <div class="<%= get_error_class(@product, :customer_id) %>">
+          <%= field_errors(@product, :customer_id) %>
+          <%= f.collection_select :customer_id, Customer.order_by_name, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 field_div m-t-20">
+        <%= field_errors(@product, :product_feature_option_rels) %>
+        <% ProductFeature.order_by_queue.each {|feature| %>
+          <div class="form-group">
+            <%= label_tag :product_feature_rel, class: 'col-sm-1 control-label' do %>
+              <%= feature.name %>
+            <% end %>
+            <div class="col-sm-11">
+              <% feature.options.order_queue.each {|option| %>
+                <div class="col-md-2">
+                  <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
+                    <%= label_tag do %>
+                      <%= f.check_box(:option_rels, {:multiple => true}, option.id.to_s, nil) %>
+                      <%= option.name %>
+                    <% end %>
+                  </div>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="action-buttons m-t-10">
+      <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+    </div>
+  <% end %>
+<% end %>
+<script>
+    function callChildren(select) {
+        let val = $(select).val();
+        let ind = parseInt($(select).attr('ind')) + 1;
+        for (let i = ind; i <= category_max_index; i++) {
+            $("#category-" + i).remove();
+        }
+
+        if (valid_id(val)) {
+            if (ind > category_max_index) {
+                category_max_index = ind;
+            }
+            Rails.ajax({
+                url: "<%= get_product_category_children_users_products_path %>",
+                type: "PATCH",
+                data: "parent_id=" + val,
+                success: function (data) {
+
+                    let childrens = data.childrens;
+                    if (childrens.length > 0) {
+                        $("#product_category_id").val("");
+                        var divSelect = "<div class='col-sm-12 sub_category' id=category-" + ind + " style='padding: 10px 0 0 0;'>" +
+                            "<select class='form-control' onchange='callChildren(this)' ind=" + ind + ">" +
+                            "<option value=''>Дэд ангилал сонгох</option>";
+
+                        for (var i = 0; i < childrens.length; i++) {
+                            divSelect += '<option value="' + childrens[i]["id"] + '">' + childrens[i]["name"] + '</option>';
+                        }
+                        divSelect += "</select>" + "</div>";
+
+                        $("#product_category").append(divSelect);
+                        $('#product_category select:last').selectpicker('refresh');
+                    } else {
+                        $("#product_category_id").val(val);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        } else {
+            $("#product_category_id").val("");
+        }
+    }
+
+    $(document).ready(function () {
+        $('.selectpicker').selectpicker('refresh');
+
+        $('#product_is_own').on('change', function () {
+            var product_customer_div = $('#product_customer_id').parent().parent().parent();
+            if ($(this).prop('checked')) {
+                product_customer_div.addClass('none');
+            } else {
+                product_customer_div.removeClass('none');
+            }
+        });
+    });
+
+</script>

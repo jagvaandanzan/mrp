@@ -90,6 +90,10 @@ Rails.application.routes.draw do
     resources :products, only: [:index, :create, :new, :show, :edit, :update, :destroy] do
       collection do
         patch 'get_product_category_children'
+        patch 'form_price'
+        patch 'form_information'
+        patch 'form_image_video'
+        patch 'form_package'
       end
     end
     resources :product_supply_orders, only: [:index, :create, :new, :edit, :show, :update, :destroy] do
@@ -114,6 +118,9 @@ Rails.application.routes.draw do
         patch 'update_filter'
       end
     end
+    resources :brands, only: [:index, :create, :new, :edit, :update, :destroy]
+    resources :manufacturers, only: [:index, :create, :new, :edit, :update, :destroy]
+    resources :technical_specifications, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :fb_posts do
       collection do
         post 'download'

@@ -1,0 +1,31 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1><%= t('activerecord.models.manufacturer') + t(@manufacturer.persisted? ? 'titles.edit' : 'titles.add') %></h1>
+  </section>
+  <section class="content">
+    <div class="box box-info">
+      <%= form_for :manufacturer, url: @manufacturer.persisted? ? users_manufacturer_path : users_manufacturers_path, method: @manufacturer.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <div class="form-group">
+            <%= f.label :queue, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@manufacturer, :queue) %>">
+              <%= field_errors(@manufacturer, :queue) %>
+              <%= f.number_field :queue, class: 'form-control', step: 1, placeholder: t('activerecord.attributes.manufacturer.queue') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :country, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@manufacturer, :country) %>">
+              <%= field_errors(@manufacturer, :country) %>
+              <%= f.text_field :country, class: 'form-control', placeholder: t('activerecord.attributes.manufacturer.country') %>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>

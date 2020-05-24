@@ -1,13 +1,50 @@
 class ProductFeatureItem < ApplicationRecord
   belongs_to :product
-  belongs_to :feature_rel, :class_name => "ProductFeatureRel"
-  belongs_to :feature1, :class_name => "ProductFeature"
   belongs_to :option1, :class_name => "ProductFeatureOption"
-  belongs_to :feature2, :class_name => "ProductFeature"
   belongs_to :option2, :class_name => "ProductFeatureOption"
+  belongs_to :same_item, :class_name => "ProductFeatureItem", optional: true
+
   has_many :product_sale_items, :class_name => "ProductSaleItem", :foreign_key => "feature_item_id"
   has_many :product_sales, through: :product_sale_items
   has_many :salesman_travel, through: :product_sales
+
+  has_attached_file :image, :path => ":rails_root/public/product_feature_items/image/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/product_feature_items/image/:id_partition/:style.:extension'
+  validates_attachment :image,
+                       content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
+
+  has_attached_file :video, :path => ":rails_root/public/product_feature_items/video/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/product_feature_items/video/:id_partition/:style.:extension'
+  validates_attachment :video,
+                       content_type: {content_type: ["video/mp4"], message: :content_type}, size: {less_than: 10.megabytes}
+
+  with_options :if => Proc.new {|m| m.product.is_customer?} do
+    validates :c_balance, numericality: {greater_than: 0, only_integer: true, message: :invalid}
+  end
+
+  validates :price, :p_6_8, :p_9_, presence: true, :numericality => true
+
+  with_options :if => Proc.new {|m| m.tab_index == 3} do
+    validates :feature_item_id, presence: true
+  end
+
+  with_options :if => Proc.new {|m| m.tab_index == 3 && !m.same_item.present? && !m.video.present?} do
+    validates :image, presence: true
+  end
+
+  with_options :if => Proc.new {|m| m.tab_index == 3 && !m.same_item.present? && !m.image.present?} do
+    validates :video, presence: true
+  end
+
+  attr_accessor :tab_index
+
+  scope :by_option_ids, ->(option_ids) {
+    where("option1_id IN (?)", option_ids)
+        .or(where("option2_id IN (?)", option_ids))
+  }
+
+  scope :order_is_feature, ->() {
+    joins(:option1)
+        .order("product_feature_options.queue")
+  }
 
 
   scope :search, ->(product_id) {
@@ -42,21 +79,23 @@ class ProductFeatureItem < ApplicationRecord
     if option1_id == option2_id
       option1.name.to_s
     else
-      if feature1.queue < feature2.queue
-        option1.name.to_s + " - " + option2.name.to_s
-      elsif feature1.queue > feature2.queue
-        option2.name.to_s + " - " + option1.name.to_s
-      else
-        if option2.queue < option1.queue
-          option2.name.to_s + " - " + option1.name.to_s
-        else
-          option1.name.to_s + " - " + option2.name.to_s
-        end
-      end
+      option1.name.to_s + " - " + option2.name.to_s
     end
   end
 
-  def price
-    self.feature_rel.discount_price
+  def img
+    if image.present?
+      image
+    elsif same_item.present?
+      same_item.image
+    end
+  end
+
+  def vid
+    if video.present?
+      video
+    elsif same_item.present?
+      same_item.video
+    end
   end
 end

@@ -1,0 +1,82 @@
+<% if @product.persisted? %>
+  <%= form_with model: @product, url: form_price_users_products_path(id: @product.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
+    <%= form_body do %>
+      <%= f.hidden_field :tab_index, {value: 1} %>
+      <div class="col-md-12 field_div cocoon-nested-form">
+        <table class="table table-hover table-bordered">
+          <thead>
+          <tr>
+            <th></th>
+            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.price') %></th>
+            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
+            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
+            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.c_balance') %></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="btn_actions">
+            <td></td>
+            <td class="text-center">
+              <button type="button" class="btn btn-default btn-xs" btype="price"><%= t('controls.button.to_equate') %></button>
+            </td>
+            <td class="text-center">
+              <button type="button" class="btn btn-default btn-xs" btype="p_6_8"><%= t('controls.button.to_equate') %></button>
+            </td>
+            <td class="text-center">
+              <button type="button" class="btn btn-default btn-xs" btype="p_9_"><%= t('controls.button.to_equate') %></button>
+            </td>
+            <td class="text-center">
+              <button type="button" class="btn btn-default btn-xs" btype="c_balance"><%= t('controls.button.to_equate') %></button>
+            </td>
+          </tr>
+          <%= f.fields_for :product_feature_items do |m| %>
+            <%= render 'product_feature_item_fields', :f => m %>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="form-group m-t-10">
+        <%= f.label :delivery_type, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product, :delivery_type) %>">
+          <%= field_errors(@product, :delivery_type) %>
+          <%= f.collection_radio_buttons :delivery_type, Product.delivery_types_i18n, :first, :second do |b| %>
+            <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
+          <% end %>
+        </div>
+      </div>
+      <div class="form-group" id="size_img">
+        <%= f.label :size_img, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 <%= get_error_class(@product, :size_img) %>">
+          <%= f.file_field :size_img, accept: "image/*", class: 'image-file none-force' %>
+          <%= field_errors(@product, :size_img) %>
+          <div class="preview noselect">
+            <% if @product.size_img.present? %>
+              <%= image_tag @product.size_img.url(:tumb), class: 'preview-img' %>
+            <% else %>
+              <span class="text"><%= t('upload_image') %></span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-buttons m-t-10">
+        <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+      </div>
+    <% end %>
+  <% end %>
+  <script>
+      $(document).ready(function () {
+          load_image_preview('.content-wrapper');
+          $('.btn_actions button').on('click', function () {
+              var v = '';
+              $('.nested-fields input.' + $(this).attr('btype')).each(function (index) {
+                  if (index === 0) {
+                      v = $(this).val();
+                  } else {
+                      $(this).val(v);
+                  }
+              });
+          });
+      });
+  </script>
+<% end %>

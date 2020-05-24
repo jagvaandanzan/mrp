@@ -25,4 +25,5 @@
 //= require cocoon
 //= require consts/bootstrap-select-i18
 //= require cable
+//= require common
 
