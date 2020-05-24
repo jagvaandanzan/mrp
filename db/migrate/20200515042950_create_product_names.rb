@@ -1,4 +1,4 @@
-class CreateProductNames < ActiveRecord::Migration[6.0]
+class CreateProductNames < ActiveRecord::Migration[5.2]
   def change
     create_table :product_names do |t|
       t.references :product, null: false, foreign_key: true

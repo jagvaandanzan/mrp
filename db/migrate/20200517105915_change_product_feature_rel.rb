@@ -1,4 +1,4 @@
-class ChangeProductFeatureRel < ActiveRecord::Migration[6.0]
+class ChangeProductFeatureRel < ActiveRecord::Migration[5.2]
   def change
     remove_column :product_warehouse_locs, :feature_rel_id, :references
     remove_column :product_income_items, :feature_rel_id, :references
