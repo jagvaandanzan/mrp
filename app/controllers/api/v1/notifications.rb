@@ -30,7 +30,7 @@ module API
               obj = change[:value]
               from_id = obj[:from][:id]
 
-              # Rails.logger.info(entry.to_json)
+              Rails.logger.info(entry.to_json)
               # Өөрийн бичсэн үзэгдэлүүдийг алгасах
               if from_id != '0' && obj[:item] == "comment"
                 # Rails.logger.info(entry.to_json)
