@@ -10,7 +10,7 @@ class FbCommentAnswer < ApplicationRecord
   }
 
   scope :by_answer, ->(answer) {
-    where(answer: answer.downcase)
+    where('LOWER(answer) LIKE :value', value: "%#{answer.downcase}%") if answer.present?
   }
 
   scope :search, ->(sname) {

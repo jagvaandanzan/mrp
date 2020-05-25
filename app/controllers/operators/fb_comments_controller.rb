@@ -43,9 +43,17 @@ class Operators::FbCommentsController < Operators::BaseController
           fb_comment_answer = FbCommentAnswer.find(@fb_comment.comment_answer_id)
           fb_comment_answer.update_attribute(:used, fb_comment_answer.used + 1)
         else
-          answers = FbCommentAnswer.by_answer(@fb_comment.reply_text)
+          answer = @fb_comment.reply_text
+          answer = answer.gsub('Оройн мэнд. ', '')
+                       .gsub('Оройн мэнд, ', '')
+                       .gsub('Өдрийн мэнд. ', '')
+                       .gsub('Өдрийн мэнд, ', '')
+                       .gsub('Өглөөний мэнд. ', '')
+                       .gsub('Өглөөний мэнд, ', '')
+          answers = FbCommentAnswer.by_answer(answer)
           if answers.present?
             fb_comment_answer = answers.first
+            Rails.logger.info("greeting_answer: #{fb_comment_answer.id} => #{answer}")
           else
             fb_comment_answer = FbCommentAnswer.create(answer: @fb_comment.reply_text, operator: current_operator)
           end
