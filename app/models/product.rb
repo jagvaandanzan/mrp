@@ -11,6 +11,7 @@ class Product < ApplicationRecord
   has_many :product_feature_items
   has_many :product_instructions
   has_many :product_specifications
+  has_many :product_size_instructions
   has_many :product_filter_groups
   has_many :product_filters
   has_many :product_photos
@@ -24,14 +25,11 @@ class Product < ApplicationRecord
   accepts_nested_attributes_for :product_feature_items, allow_destroy: true
   accepts_nested_attributes_for :product_instructions, allow_destroy: true
   accepts_nested_attributes_for :product_specifications, allow_destroy: true
+  accepts_nested_attributes_for :product_size_instructions, allow_destroy: true
   accepts_nested_attributes_for :product_photos, allow_destroy: true
 
   enum delivery_type: {is_own: 0, is_customer: 1}
   enum gift_wrap: {wrap_not: 0, wrap_have: 1}
-
-  has_attached_file :size_img, :path => ":rails_root/public/products/size_img/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/products/size_img/:id_partition/:style.:extension'
-  validates_attachment :size_img,
-                       content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
 
   # after_create -> {sync_web('post')}
   # after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}

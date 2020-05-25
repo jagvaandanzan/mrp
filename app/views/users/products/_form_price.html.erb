@@ -44,21 +44,29 @@
           <% end %>
         </div>
       </div>
-      <div class="form-group" id="size_img">
-        <%= f.label :size_img, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9 <%= get_error_class(@product, :size_img) %>">
-          <%= f.file_field :size_img, accept: "image/*", class: 'image-file none-force' %>
-          <%= field_errors(@product, :size_img) %>
-          <div class="preview noselect">
-            <% if @product.size_img.present? %>
-              <%= image_tag @product.size_img.url(:tumb), class: 'preview-img' %>
-            <% else %>
-              <span class="text"><%= t('upload_image') %></span>
+      <div class="form-group">
+        <%= f.label :product_size_instructions, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 cocoon-nested-form">
+          <div class="<%= get_error_class(@product, :product_size_instructions) %>">
+            <%= field_errors(@product, :product_size_instructions) %>
+            <table class="table table-bordered" id="tb_product_size_instructions">
+              <tr>
+                <th><%= t('activerecord.attributes.product_size_instruction.size_instruction_id') %></th>
+                <th><%= t('activerecord.attributes.product_size_instruction.instruction') %></th>
+                <th width="50px"></th>
+              </tr>
+              <%= f.fields_for :product_size_instructions do |m| %>
+                <%= render 'product_size_instruction_fields', :f => m %>
+              <% end %>
+            </table>
+          </div>
+          <div class="links">
+            <%= link_to_add_association f, :product_size_instructions, data: {association_insertion_node: '#tb_product_size_instructions', association_insertion_method: :append} do %>
+              <%= nested_add_btn %>
             <% end %>
           </div>
         </div>
       </div>
-
       <div class="action-buttons m-t-10">
         <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
       </div>

@@ -1,0 +1,60 @@
+<div class="content-wrapper">
+  <div class="col-md-12 m-t-10 m-b-10">
+    <div class="row">
+      <% is_manage = can? :manage, SizeInstruction %>
+      <%= form_with url: users_size_instructions_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+        <div class="col-md-6 search">
+          <%= text_field_tag :size_instruction, @size_instruction, {class: 'form-control search', placeholder: t('activerecord.attributes.size_instruction.instruction')} %>
+        </div>
+        <div class="col-md-6 search">
+          <%= submit_tag t('controls.button.searching') + " (" + @size_instructions.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
+          <% if is_manage %>
+            <%= link_to t('controls.button.create'), new_users_size_instruction_path, class: 'btn btn-warning pull-right' %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <%= render 'layouts/flash_message' %>
+
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.size_instruction.queue') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.size_instruction.instruction') %></th>
+                <th></th>
+              </tr>
+              </thead>
+              <% @size_instructions.each do |size_instruction| %>
+                <tr>
+                  <td class="va-mid"><%= size_instruction.queue %></td>
+                  <td class="va-mid underline"><%= link_to size_instruction.instruction, users_size_instruction_path(size_instruction) %></td>
+                  <% if is_manage %>
+                    <td class="th-center va-mid">
+                      <div class="btn-group">
+                        <%= link_to edit_users_size_instruction_path(size_instruction), class: 'no-underline m-r-10' do %>
+                          <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
+                        <% end %>
+
+                        <%= link_to users_size_instruction_path(size_instruction), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
+                          <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
+                        <% end %>
+                      </div>
+                    </td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+        <%= paginate @size_instructions %>
+      </div>
+    </div>
+  </section>
+</div>

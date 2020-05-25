@@ -20,6 +20,7 @@ class AbilityUser
         can role, CategoryFilterGroup
         can role, Brand
         can role, TechnicalSpecification
+        can role, SizeInstruction
         can role, Manufacturer
       when "operator"
         can role, Operator

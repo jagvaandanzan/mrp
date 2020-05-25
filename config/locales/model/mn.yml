@@ -137,6 +137,7 @@ mn:
       brand: Бренд
       manufacturer: Үйлдэрлэгч
       technical_specification: Техникийн үзүүлэлт
+      size_instruction: Хэмжээний заавар
     attributes:
       admin_user:
         email: Имэйл
@@ -208,7 +209,6 @@ mn:
         is_own: Өөрийн бараа
         customer_id: Харилцагч
         delivery_type: Хүргэлтийн нөхцөл
-        size_img: Хэмжээний заавар
         search_key: Хайлтын үг
         description: Дэлгэрэнгүй мэдээлэл
         expiry_date: Дуусах хугацаа
@@ -225,6 +225,7 @@ mn:
         package_size: Хайрцаг, боодлын хэмжээ
         weight: Барааны жин
         gift_wrap: Бэлгийн боолт
+        product_size_instructions: Хэмжээний заавар
       product_feature_option_rel:
         product_id: Бараа
         feature_id: Шинж чанар
@@ -256,6 +257,9 @@ mn:
       product_specification:
         technical_id: Төрөл
         specification: Үзүүлэлт
+      product_size_instruction:
+        size_instruction_id: Стандарт хэмжээ
+        instruction: Хэмжээ
       product_photo:
         photo: Бодит зураг
       brand:
@@ -263,6 +267,9 @@ mn:
         logo: Лого
       technical_specification:
         specification: Үзүүлэлт
+      size_instruction:
+        queue: Харагдах дараалал
+        instruction: Стандарт хэмжээсний нэр
       manufacturer:
         queue: Дараалал
         country: Улс

@@ -121,6 +121,7 @@ Rails.application.routes.draw do
     resources :brands, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :manufacturers, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :technical_specifications, only: [:index, :create, :new, :edit, :update, :destroy]
+    resources :size_instructions, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :fb_posts do
       collection do
         post 'download'
