@@ -35,12 +35,14 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.operator.name') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.operator.email') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.operator.phone') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.operator.order_sys_name') %></th>
               </tr>
               <% @operators.each do |operator| %>
                 <tr>
                   <td class="va-mid underline"><%= link_to operator.name, users_operator_path(operator) %></td>
                   <td class="va-mid"><%= operator.email %></td>
                   <td class="td-center va-mid"><%= operator.phone %></td>
+                  <td class="va-mid"><%= operator.order_sys_name %></td>
                 </tr>
               <% end %>
             </table>

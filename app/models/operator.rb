@@ -19,7 +19,7 @@ class Operator < ApplicationRecord
   attr_accessor :comment_minute, :comment_count, :comment_avg
   enum gender: {male: 0, female: 1}
 
-  validates :surname, :name, :phone, presence: true, length: {maximum: 255}
+  validates :surname, :name, :phone, :order_sys_name, presence: true, length: {maximum: 255}
   validates :gender, presence: true
   validates :email, uniqueness: {conditions: -> {with_deleted}}
 

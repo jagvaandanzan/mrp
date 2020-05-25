@@ -43,7 +43,8 @@ class ProductSaleCall < ApplicationRecord
     param = {
         phone: phone,
         itemcode: code,
-        description: message.gsub(phone.to_s, '')
+        description: message.gsub(phone.to_s, ''),
+        operator: operator.present? && operator.order_sys_name.present? ? operator.order_sys_name : ''
     }
     response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/newenquiresocial", 'post', param.to_json)
     Rails.logger.debug("43.231.114.241:8882/api/newenquiresocial => #{response.code.to_s} => #{response.body.to_s}")

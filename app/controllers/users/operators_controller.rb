@@ -61,7 +61,7 @@ class Users::OperatorsController < Users::BaseController
   end
 
   def operator_params
-    params.require(:operator).permit(:surname, :name, :gender, :email, :phone,
+    params.require(:operator).permit(:surname, :name, :gender, :email, :phone, :order_sys_name,
                                      operator_permission_rels_attributes: [:id, :operator_permission_id, :role, :_destroy])
   end
 end

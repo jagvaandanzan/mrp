@@ -168,6 +168,7 @@ mn:
         gender: Хүйс
         phone: Утас
         operator_permission_rels: Хандах эрхүүд
+        order_sys_name: Захиалгын сис.нэр
       location:
         name: Хаяг
         name_la: Хаяг латинаар
