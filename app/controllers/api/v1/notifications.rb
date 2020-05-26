@@ -30,11 +30,22 @@ module API
               obj = change[:value]
               from_id = obj[:from][:id]
 
-              Rails.logger.info(entry.to_json)
+              # Rails.logger.info(entry.to_json)
               # Өөрийн бичсэн үзэгдэлүүдийг алгасах
-              if from_id != '0' && obj[:item] == "comment"
-                # Rails.logger.info(entry.to_json)
-                FbNotificationsJob.perform_later obj
+              if from_id != '0'
+                if obj[:item] == "comment"
+                  # Rails.logger.info(entry.to_json)
+                  FbNotificationsJob.perform_later(obj, from_id)
+                elsif obj[:item] == "reaction"
+                  Rails.logger.info(entry.to_json)
+                  reaction_type = obj[:reaction_type]
+                  if reaction_type == "like" || reaction_type == "love" || reaction_type == "wow" ||
+                      reaction_type == "care" || reaction_type == "support"
+                    FbCommentReaction.create(post_id: obj[:post_id].split('_')[1],
+                                             user_id: from_id,
+                                             reaction: reaction_type)
+                  end
+                end
               end
             }
           }

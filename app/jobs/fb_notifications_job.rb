@@ -1,8 +1,7 @@
 class FbNotificationsJob < ApplicationJob
   queue_as :default
 
-  def perform(obj)
-    from_id = obj[:from][:id]
+  def perform(obj, from_id)
     if obj[:verb] == "add"
       post_id = obj[:post_id].split('_')[1]
       fb_post = FbPost.find_by_post_id(post_id)
@@ -52,7 +51,10 @@ class FbNotificationsJob < ApplicationJob
                                     comment_action: fb_comment_action,
                                     date: created_at)
           end
-
+          FbCommentReaction.create(fb_post: fb_post,
+                                   post_id: post_id,
+                                   user_id: from_id,
+                                   reaction: 0)
         end
       end
     else
