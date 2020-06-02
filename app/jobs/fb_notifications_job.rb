@@ -26,7 +26,7 @@ class FbNotificationsJob < ApplicationJob
                                   parent_id: obj[:parent_id],
                                   date: created_at)
         else
-          fb_comment_action = if message.present? && fb_post.product_code != "000000"
+          fb_comment_action = if message.present? && fb_post.product_code.present? && fb_post.product_code != "" && fb_post.product_code != "000000"
                                 check_auto_reply(fb_post, message)
                               else
                                 nil
