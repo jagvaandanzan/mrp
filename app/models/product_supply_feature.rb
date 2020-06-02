@@ -39,23 +39,17 @@ class ProductSupplyFeature < ApplicationRecord
 
   def set_sum_price
     self.sum_price = price * quantity
-    exchange_value = if order_item.product_supply_order.present?
-                       order_item.product_supply_order.exchange_value
-                     else
-                       order_item.product_sample.exchange_value
-                     end
-    self.sum_tug = self.sum_price * exchange_value
+    self.sum_tug = self.sum_price * get_model.exchange_value
   end
 
   def set_product_balance
     if product_income_balance.present?
       self.product_income_balance.update(
-          product: product,
-          user_supply: get_user,
           quantity: quantity
       )
     else
-      self.product_income_balance = ProductIncomeBalance.create(product: product,
+      self.product_income_balance = ProductIncomeBalance.create(product: order_item.product,
+                                                                feature_item: feature_item,
                                                                 user_supply: get_user,
                                                                 quantity: quantity)
     end

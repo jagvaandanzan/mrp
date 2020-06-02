@@ -17,6 +17,20 @@ class ProductSupplyOrderItem < ApplicationRecord
     validates :link, presence: true
   end
 
+
+  def get_currency(value)
+    ApplicationController.helpers.get_currency(value, Const::CURRENCY[get_model.exchange_before_type_cast.to_i], 0)
+  end
+
+  scope :search_by_sample, ->(start, finish, supply_code, product_name) {
+    items = joins(:product_sample)
+    items = items.where('? <= product_samples.ordered_date AND product_samples.ordered_date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items = items.where('product_samples.code LIKE :value', value: "%#{supply_code}%") if supply_code.present?
+    items = items.joins(:product).where('products.code LIKE :value OR products.name LIKE :value', value: "%#{product_name}%") if product_name.present?
+    items.order("product_samples.ordered_date": :desc)
+    items
+  }
+
   scope :search, ->(start, finish, supply_code, product_name) {
     items = joins(:product_supply_order)
     items = items.where('? <= product_supply_orders.ordered_date AND product_supply_orders.ordered_date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
@@ -28,6 +42,25 @@ class ProductSupplyOrderItem < ApplicationRecord
 
   def product_name_with_code
     "#{self.product.code} - #{self.product.name}"
+  end
+
+  def set_sum_price
+    sum = 0
+    supply_features.each do |feature|
+      sum += feature.quantity * feature.price
+    end
+
+    self.update_attributes(sum_price: sum, sum_tug: sum * get_model.exchange_value)
+  end
+
+  private
+
+  def get_model
+    if product_supply_order.present?
+      product_supply_order
+    else
+      product_sample
+    end
   end
 
 end

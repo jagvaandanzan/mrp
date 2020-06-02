@@ -8,7 +8,7 @@ class Users::ProductSamplesController < Users::BaseController
     @by_code = params[:by_code]
     @by_product_name = params[:by_product_name]
 
-    @product_sample_items = ProductSampleItem.search(@by_start, @by_end, @by_code, @by_product_name).page(params[:page])
+    @product_supply_order_items = ProductSupplyOrderItem.search_by_sample(@by_start, @by_end, @by_code, @by_product_name).page(params[:page])
   end
 
   def new
@@ -41,13 +41,18 @@ class Users::ProductSamplesController < Users::BaseController
   end
 
   def show
+    @product_sample.tab_index = params[:tab_index] if params[:tab_index].present?
   end
 
   def update
     @product_sample.attributes = product_sample_params
     if @product_sample.save
       flash[:success] = t('alert.info_updated')
-      redirect_to action: 'index'
+      if product_sample.product_supply_order_items.count > 0
+        redirect_to action: :edit, id: params[:id], tab_index: 1
+      else
+        redirect_to action: 'index'
+      end
     else
       render 'edit'
     end
@@ -57,6 +62,8 @@ class Users::ProductSamplesController < Users::BaseController
     @order_item = ProductSupplyOrderItem.find(params[:item_id])
     @order_item.attributes = form_feature_params
     if @order_item.save
+      @order_item.set_sum_price
+
       flash[:success] = t('alert.info_updated')
       product_sample = @order_item.product_sample
       if product_sample.product_supply_order_items.count == @order_item.tab_index.to_i
@@ -89,7 +96,7 @@ class Users::ProductSamplesController < Users::BaseController
 
   def form_feature_params
     params.require(:product_supply_order_item).permit(:tab_index,
-                                                      supply_features_attributes: [:id, :quantity, :price, :note, :_destroy])
+                                                      supply_features_attributes: [:id, :quantity, :price, :note, :is_create, :_destroy])
   end
 
 end

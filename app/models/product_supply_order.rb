@@ -7,8 +7,6 @@ class ProductSupplyOrder < ApplicationRecord
 
   accepts_nested_attributes_for :product_supply_order_items, allow_destroy: true
 
-  before_save :set_sum_price
-
   validates :supplier_id, :code, :payment, :exchange, :exchange_value, presence: true
   validates :code, uniqueness: true
 
@@ -42,18 +40,6 @@ class ProductSupplyOrder < ApplicationRecord
 
   def code_with_info
     "Захиалга - #{self.code}"
-  end
-
-  private
-
-  def set_sum_price
-    sum = 0
-    product_supply_order_items.each do |item|
-      sum += item.quantity * item.price
-    end
-    self.sum_price = sum * self.exchange_value
-
-    self.closed_date = Time.current unless closed_date.present? && is_closed=='_no'
   end
 
 end

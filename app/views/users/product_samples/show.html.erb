@@ -9,7 +9,7 @@
 
   <div class="action-buttons">
     <% if can? :update, ProductSample %>
-      <%= link_to t('controls.button.edit'), edit_users_product_sample_path(@product_sample), class: 'btn btn-info' %>
+      <%= link_to t('controls.button.edit'), edit_users_product_sample_path(id: @product_sample.id, tab_index: @product_sample.tab_index), class: 'btn btn-info' %>
     <% end %>
     <%= link_to t('titles.back_to_list'), users_product_samples_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
     <% if can? :destroy, ProductSample %>
@@ -19,22 +19,24 @@
   <%= show_body do %>
     <div class="nav-tabs-custom">
       <ul class="nav nav-tabs">
-        <li class="active"><a href="#basic" data-toggle="tab"><%= t('product_form.basic') %></a></li>
+        <li class="<%= !@product_sample.tab_index.present? || @product_sample.tab_index.to_i == 0 ? 'active' : '' %>">
+          <a href="#basic" data-toggle="tab"><%= t('product_form.basic') %></a></li>
         <% @product_sample.product_supply_order_items.each_with_index {|item, index|
           product = item.product
           if product.persisted? %>
-            <li><a href="#product<%= product.id %>" data-toggle="tab"><%= product.name %></a></li>
+            <li class="<%= @product_sample.tab_index.to_i == index + 1 ? 'active' : '' %>">
+              <a href="#product<%= product.id %>" data-toggle="tab"><%= product.name %></a></li>
           <% end %>
         <% } %>
       </ul>
       <div class="tab-content">
-        <div class="active tab-pane" id="basic">
+        <div class="<%= !@product_sample.tab_index.present? || @product_sample.tab_index.to_i == 0 ? 'active ' : '' %>tab-pane" id="basic">
           <%= render 'show_basic' %>
         </div>
         <% @product_sample.product_supply_order_items.each_with_index {|item, index|
           product = item.product
           if product.persisted? %>
-            <div class="tab-pane" id="product<%= product.id %>">
+            <div class="<%= @product_sample.tab_index.to_i == index + 1 ? 'active ' : '' %>tab-pane" id="product<%= product.id %>">
               <%= render 'show_product', order_item: item %>
             </div>
           <% end %>
