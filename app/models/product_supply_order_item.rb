@@ -1,15 +1,21 @@
 class ProductSupplyOrderItem < ApplicationRecord
-
-  belongs_to :product_supply_order
+  belongs_to :product_supply_order, optional: true
+  belongs_to :product_sample, optional: true
   belongs_to :product, -> {with_deleted}
   has_many :income_items, :class_name => "ProductIncomeItem", :foreign_key => "supply_order_item_id", dependent: :destroy
+  has_many :supply_features, :class_name => "ProductSupplyFeature", :foreign_key => "order_item_id", dependent: :destroy
+  accepts_nested_attributes_for :supply_features, allow_destroy: true
 
-  has_one :product_income_balance, :class_name => "ProductIncomeBalance", :foreign_key => "supply_order_item_id", dependent: :destroy
+  has_attached_file :image, :path => ":rails_root/public/product_supply_order_items/image/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/product_supply_order_items/image/:id_partition/:style.:extension'
+  validates_attachment :image,
+                       content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
+  attr_accessor :tab_index
 
-  before_save :set_product_balance
-  before_save :set_sum_price
+  validates :product_id, presence: true
 
-  validates :product_id, :quantity, :price, presence: true
+  with_options :if => Proc.new {|m| m.product_sample.present?} do
+    validates :link, presence: true
+  end
 
   scope :search, ->(start, finish, supply_code, product_name) {
     items = joins(:product_supply_order)
@@ -20,39 +26,8 @@ class ProductSupplyOrderItem < ApplicationRecord
     items
   }
 
-
   def product_name_with_code
     "#{self.product.code} - #{self.product.name}"
   end
 
-  def price
-    ApplicationController.helpers.get_f(self[:price])
-  end
-
-  def get_currency(value)
-    ApplicationController.helpers.get_currency(value, Const::CURRENCY[product_supply_order.exchange_before_type_cast.to_i], 0)
-  end
-
-  private
-
-  def set_sum_price
-    self.sum_price = price * quantity
-    self.sum_price += shuudan if shuudan.present?
-
-    self.sum_tug = self.sum_price * product_supply_order.exchange_value
-  end
-
-  def set_product_balance
-    if product_income_balance.present?
-      self.product_income_balance.update(
-          product: product,
-          user_supply: product_supply_order.user,
-          quantity: quantity
-      )
-    else
-      self.product_income_balance = ProductIncomeBalance.create(product: product,
-                                                                user_supply: product_supply_order.user,
-                                                                quantity: quantity)
-    end
-  end
 end

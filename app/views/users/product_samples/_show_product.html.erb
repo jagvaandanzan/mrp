@@ -1,0 +1,26 @@
+<div class="body-box">
+  <div class="row">
+    <div class="col-md-12 field_div cocoon-nested-form">
+      <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+          <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.feature_item_id') %></th>
+          <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.quantity') %></th>
+          <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.price') %></th>
+          <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.note') %></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% order_item.supply_features.each {|feature| %>
+          <tr class="field_div">
+            <td><%= feature.feature_item.name %></td>
+            <td><%= feature.quantity %></td>
+            <td><%= feature.get_currency(feature.price) %></td>
+            <td><%= feature.note %></td>
+          </tr>
+        <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

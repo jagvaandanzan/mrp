@@ -1,0 +1,52 @@
+<% if product.persisted? %>
+  <%= form_with model: order_item, url: form_feature_users_product_samples_path(id: id, item_id: order_item.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
+    <%= form_body do %>
+      <%= f.hidden_field :tab_index, {value: index} %>
+      <div class="col-md-12 field_div cocoon-nested-form">
+        <table class="table table-hover table-bordered">
+          <thead>
+          <tr>
+            <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.feature_item_id') %></th>
+            <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.quantity') %></th>
+            <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.price') %></th>
+            <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.note') %></th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="btn_actions">
+            <td></td>
+            <td class="text-center">
+              <button type="button" class="btn btn-default btn-xs" btype="quantity<%= product.id %>"><%= t('controls.button.to_equate') %></button>
+            </td>
+            <td class="text-center">
+              <button type="button" class="btn btn-default btn-xs" btype="price<%= product.id %>"><%= t('controls.button.to_equate') %></button>
+            </td>
+            <td></td>
+          </tr>
+          <%= f.fields_for :supply_features do |m| %>
+            <%= render 'product_supply_feature_fields', :f => m, pid: product.id %>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="action-buttons m-t-10">
+        <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+      </div>
+    <% end %>
+  <% end %>
+  <script>
+      $(document).ready(function () {
+          $('.btn_actions button').on('click', function () {
+              var v = '';
+              $('.nested-fields input.' + $(this).attr('btype')).each(function (index) {
+                  if (index === 0) {
+                      v = $(this).val();
+                  } else {
+                      $(this).val(v);
+                  }
+              });
+          });
+      });
+  </script>
+<% end %>

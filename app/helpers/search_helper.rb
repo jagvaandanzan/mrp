@@ -1,10 +1,10 @@
 module SearchHelper
   def get_search_criteria(*args)
-    search_fields = args.reject { |value, label| value.blank? }.map { |value, label| "#{label}: #{value}" }
+    search_fields = args.reject {|value, label| value.blank?}.map {|value, label| "#{label}: #{value}"}
     if search_fields.size > 0
       content_tag :div, class: 'box-header' do
         content_tag :i, class: 'fa fa fa-search' do
-          content_tag :h3, class: 'box-title p-l-10', style:'font-size: 14px' do
+          content_tag :h3, class: 'box-title p-l-10', style: 'font-size: 14px' do
             "#{t('controls.button.search')} (#{search_fields.join('・')})"
           end
         end
@@ -22,9 +22,8 @@ module SearchHelper
   end
 
   def get_code(obj)
-    code = ""
     if obj.present?
-      code = (100000+obj.id+1).to_s
+      code = (100000 + obj.id + 1).to_s
     else
       code = (100001).to_s
     end
@@ -37,6 +36,7 @@ module SearchHelper
     @loc_arr
   end
 end
+
 def get_index(index)
   (index + 1).to_s + ". "
 end
@@ -50,37 +50,37 @@ end
 
 def get_search_recursive(obj, type)
 
-    header_li = content_tag :li do # first header
-      link_to( type=="category" ? "Ангилалууд" : "Байршлууд" ,
-               type=="category" ? users_product_categories_path(parent_id: nil) : users_product_locations_path(parent_id: nil))
-    end
+  header_li = content_tag :li do # first header
+    link_to(type == "category" ? "Ангилалууд" : "Байршлууд",
+            type == "category" ? users_product_categories_path(parent_id: nil) : users_product_locations_path(parent_id: nil))
+  end
 
-    main_ol = content_tag :ol, class: 'breadcrumb' do
-      concat header_li
+  main_ol = content_tag :ol, class: 'breadcrumb' do
+    concat header_li
 
-      if obj.presence
-        @headers = []
-        get_recursive_header(obj)
+    if obj.presence
+      @headers = []
+      get_recursive_header(obj)
 
-        @headers.reverse().each do |item|
-          unless item.nil?
-            li = content_tag :li, class: item == @headers.first ? "active" : "" do
-              link_to(item.name, type=="category" ? users_product_categories_path(parent_id: item.id)
-                                     : users_product_locations_path(parent_id: item.id) )
-            end
-            concat li
-          end # item is null check
-        end # headers loop end
-      end # obj presence check
-    end # ol .breadcrumb
+      @headers.reverse().each do |item|
+        unless item.nil?
+          li = content_tag :li, class: item == @headers.first ? "active" : "" do
+            link_to(item.name, type == "category" ? users_product_categories_path(parent_id: item.id)
+                                   : users_product_locations_path(parent_id: item.id))
+          end
+          concat li
+        end # item is null check
+      end # headers loop end
+    end # obj presence check
+  end # ol .breadcrumb
 
-    content_tag :div, class: 'row breadcrumb-container' do
-      content_tag :div, class: 'col-xs-12 col-sm-12 col-md-12' do
-        content_tag :div, class: 'box box-solid' do
-          concat main_ol
-        end #div .box box-solid
-      end #div .col-xs-12
-    end #div .row breadcrumb-container
+  content_tag :div, class: 'row breadcrumb-container' do
+    content_tag :div, class: 'col-xs-12 col-sm-12 col-md-12' do
+      content_tag :div, class: 'box box-solid' do
+        concat main_ol
+      end #div .box box-solid
+    end #div .col-xs-12
+  end #div .row breadcrumb-container
 end
 
 def get_name_recursive(obj)
@@ -94,7 +94,7 @@ def get_name_recursive(obj)
           i = content_tag :i do
             # concat link_to(item.name, users_product_categories_path(parent_id: item.id))
             concat item.name
-            concat ( item == @headers.first ? "" : " >> ")
+            concat (item == @headers.first ? "" : " >> ")
           end
           concat i
         end # item is null check

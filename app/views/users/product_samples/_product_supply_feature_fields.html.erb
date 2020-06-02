@@ -1,0 +1,22 @@
+<tr class="nested-fields field_div">
+  <td>
+    <%= f.object.feature_item.name %>
+  </td>
+  <td>
+    <%= field_errors f.object, :quantity %>
+    <%= f.number_field :quantity, class: 'form-control field quantity' + pid.to_s, placeholder: t('activerecord.attributes.product_supply_feature.quantity') %>
+  </td>
+  <td>
+    <%= field_errors f.object, :price %>
+    <%= f.number_field :price, class: 'form-control field price' + pid.to_s, placeholder: t('activerecord.attributes.product_supply_feature.price') %>
+  </td>
+  <td>
+    <%= field_errors f.object, :note %>
+    <%= f.text_field :note, class: 'form-control field note', placeholder: t('activerecord.attributes.product_supply_feature.note') %>
+  </td>
+  <td class="va-mid remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>

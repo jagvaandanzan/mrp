@@ -9,9 +9,28 @@
         <% end %>
       <% end %>
       <% if can? :read, ProductSupplyOrder %>
-        <%= content_tag :li, class: (controller_name == 'product_supply_orders' || controller_name == 'product_supply_order_items') ? 'active' : '' do %>
-          <%= link_to users_product_supply_orders_path do %>
+        <%= content_tag :li, class: (controller_name == 'product_samples' || controller_name == 'product_supply_orders') ? 'treeview active' : 'treeview' do %>
+          <%= link_to "#" do %>
             <i class="fa fa-truck"></i><span><%= t('titles.product_supply_orders') %></span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          <% end %>
+          <%= content_tag :ul, class: 'treeview-menu' do %>
+            <% if can? :read, ProductSample %>
+              <%= content_tag :li, class: controller_name == 'product_samples' ? 'active' : '' do %>
+                <%= link_to users_product_samples_path do %>
+                  <i class="fa fa-star"></i><span><%= t('activerecord.models.product_sample') %></span>
+                <% end %>
+              <% end %>
+            <% end %>
+            <% if can? :read, ProductSupplyOrder %>
+              <%= content_tag :li, class: controller_name == 'product_supply_orders' ? 'active' : '' do %>
+                <%= link_to users_product_supply_orders_path do %>
+                  <i class="fa fa-list"></i><span><%= t('activerecord.models.product_supply_order') %></span>
+                <% end %>
+              <% end %>
+            <% end %>
           <% end %>
         <% end %>
       <% end %>

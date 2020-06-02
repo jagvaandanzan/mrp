@@ -96,6 +96,11 @@ Rails.application.routes.draw do
         patch 'form_package'
       end
     end
+    resources :product_samples, only: [:index, :create, :new, :edit, :show, :update, :destroy] do
+      collection do
+        patch 'form_feature'
+      end
+    end
     resources :product_supply_orders, only: [:index, :create, :new, :edit, :show, :update, :destroy] do
       collection do
         post 'last_product_price'
