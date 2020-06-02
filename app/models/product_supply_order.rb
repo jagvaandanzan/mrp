@@ -4,8 +4,8 @@ class ProductSupplyOrder < ApplicationRecord
   belongs_to :user
 
   has_many :product_supply_order_items, dependent: :destroy
-
   accepts_nested_attributes_for :product_supply_order_items, allow_destroy: true
+  attr_accessor :tab_index
 
   validates :supplier_id, :code, :payment, :exchange, :exchange_value, presence: true
   validates :code, uniqueness: true

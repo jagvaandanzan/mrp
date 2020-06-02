@@ -31,18 +31,49 @@ class Users::ProductSupplyOrdersController < Users::BaseController
   end
 
   def edit
+    @product_supply_order.tab_index = params[:tab_index] if params[:tab_index].present?
+    @product_supply_order.product_supply_order_items.each do |item|
+      if item.supply_features.count == 0
+        item.product.product_feature_items.each {|feature_item|
+          item.supply_features << ProductSupplyFeature.new(feature_item: feature_item)
+        }
+      end
+    end
   end
 
   def show
+    @product_supply_order.tab_index = params[:tab_index] if params[:tab_index].present?
   end
 
   def update
     @product_supply_order.attributes = product_supply_order_params
     if @product_supply_order.save
       flash[:success] = t('alert.info_updated')
-      redirect_to action: 'index'
+      if @product_supply_order.product_supply_order_items.count > 0
+        redirect_to action: :edit, id: params[:id], tab_index: 1
+      else
+        redirect_to action: 'index'
+      end
     else
       render 'edit'
+    end
+  end
+
+  def form_feature
+    @order_item = ProductSupplyOrderItem.find(params[:item_id])
+    @order_item.attributes = form_feature_params
+    if @order_item.save
+      @order_item.set_sum_price
+
+      flash[:success] = t('alert.info_updated')
+      product_supply_order = @order_item.product_supply_order
+      if product_supply_order.product_supply_order_items.count == @order_item.tab_index.to_i
+        redirect_to action: 'index'
+      else
+        redirect_to action: :edit, id: params[:id], tab_index: @order_item.tab_index.to_i + 1
+      end
+    else
+      render 'edit', id: params[:id]
     end
   end
 
@@ -72,7 +103,12 @@ class Users::ProductSupplyOrdersController < Users::BaseController
 
   def product_supply_order_params
     params.require(:product_supply_order).permit(:code, :ordered_date, :supplier_id, :payment, :exchange, :exchange_value, :is_closed, :closed_date,
-                                                 product_supply_order_items_attributes: [:id, :product_id, :quantity, :price, :link, :shuudan, :note, :_destroy])
+                                                 product_supply_order_items_attributes: [:id, :product_id, :note, :_destroy])
         .merge(:user => current_user)
+  end
+
+  def form_feature_params
+    params.require(:product_supply_order_item).permit(:tab_index,
+                                                      supply_features_attributes: [:id, :quantity, :price, :note, :is_create, :_destroy])
   end
 end

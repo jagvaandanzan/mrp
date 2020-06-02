@@ -1,0 +1,30 @@
+<tr class="nested-fields field_div">
+  <td class="va-mid">
+    <% if f.object.feature_item.img.present? %>
+      <%= link_to f.object.feature_item.img.url, "data-lightbox": "roadtrip" do %>
+        <%= image_tag f.object.feature_item.img.url(:tumb), class: 'tumb' %>
+      <% end %>
+    <% end %>
+  </td>
+  <td class="va-mid">
+    <%= f.hidden_field :is_create, value: true %>
+    <%= f.object.feature_item.name %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :quantity %>
+    <%= f.number_field :quantity, class: 'form-control field quantity' + pid.to_s, placeholder: t('activerecord.attributes.product_supply_feature.quantity') %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :price %>
+    <%= f.number_field :price, class: 'form-control field price' + pid.to_s, placeholder: t('activerecord.attributes.product_supply_feature.price') %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :note %>
+    <%= f.text_field :note, class: 'form-control field note', placeholder: t('activerecord.attributes.product_supply_feature.note') %>
+  </td>
+  <td class="va-mid remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>

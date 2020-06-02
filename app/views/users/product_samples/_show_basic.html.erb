@@ -2,60 +2,92 @@
   <div class="row">
     <div class="col-md-12">
       <div class="col-md-4 field_div">
-        <b><%= t('activerecord.attributes.product_sample.code') %>:</b> <%= @product_sample.code %>
+        <b><%= t('activerecord.attributes.product_sample.code') %>:</b> <%= product_supply.code %>
       </div>
       <div class="col-md-4 field_div">
         <b><%= t('activerecord.attributes.product_sample.ordered_date') %>
-          :</b> <%= @product_sample.ordered_date.strftime('%F') %>
+          :</b> <%= product_supply.ordered_date.strftime('%F') %>
       </div>
       <div class="col-md-4 field_div">
-        <b><%= t('activerecord.attributes.product_sample.supplier_id') %>:</b> <%= @product_sample.supplier.name %>
+        <b><%= t('activerecord.attributes.product_sample.supplier_id') %>:</b> <%= product_supply.supplier.name %>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
       <div class="col-md-4 field_div">
-        <b><%= t('activerecord.attributes.product_sample.payment') %>:</b> <%= @product_sample.payment_i18n %>
+        <b><%= t('activerecord.attributes.product_sample.payment') %>:</b> <%= product_supply.payment_i18n %>
       </div>
       <div class="col-md-4 field_div">
-        <b><%= t('activerecord.attributes.product_sample.exchange') %>:</b> <%= @product_sample.exchange %>
+        <b><%= t('activerecord.attributes.product_sample.exchange') %>:</b> <%= product_supply.exchange %>
       </div>
       <div class="col-md-4 field_div">
-        <b><%= t('activerecord.attributes.product_sample.exchange_value') %>:</b> <%= @product_sample.exchange_value %>
+        <b><%= t('activerecord.attributes.product_sample.exchange_value') %>:</b> <%= product_supply.exchange_value %>
       </div>
     </div>
   </div>
+  <% if order_type == "order" %>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-4 field_div">
+          <b><%= t('activerecord.attributes.product_supply_order.is_closed') %>:</b> <%= yes_no(product_supply.is_closed==1) %>
+        </div>
+        <div class="col-md-4 field_div">
+          <b><%= t('activerecord.attributes.product_supply_order.closed_date') %>:</b> <%= product_supply.closed_date.present? ? product_supply.closed_date.strftime('%F') : ''  %>
+        </div>
+      </div>
+    </div>
+  <% end %>
   <div class="row">
     <div class="col-md-12">
       <div class="col-md-12 field_div">
-        <table class="table table-bordered" id="tb_product_supply_order_items">
-          <thead>
-          <tr>
-            <th><%= t('activerecord.attributes.product_supply_order_item.product_id') %></th>
-            <th><%= t('activerecord.attributes.product_supply_order_item.link') %></th>
-            <th><%= t('activerecord.attributes.product_supply_order_item.note') %></th>
-            <th><%= t('activerecord.attributes.product_supply_order_item.image') %></th>
-          </tr>
-          </thead>
-          <tbody>
-          <% @product_sample.product_supply_order_items.each {|order_item| %>
+        <% if order_type == "order" %>
+          <table class="table table-bordered" id="tb_product_supply_order_items">
+            <thead>
             <tr>
-              <td class="va-mid"><%= order_item.product.full_name %></td>
-              <td class="va-mid"><%= order_item.link %></td>
-              <td class="va-mid"><%= order_item.note %></td>
-              <td>
-                <% if order_item.image.present? %>
-                  <%= link_to order_item.image.url, "data-lightbox": "roadtrip" do %>
-                    <%= image_tag order_item.image.url(:tumb), class: 'tumb' %>
-                  <% end %>
-                <% end %>
-              </td>
+              <th><%= t('activerecord.attributes.product_supply_order_item.product_id') %></th>
+              <th><%= t('activerecord.attributes.product_supply_order_item.note') %></th>
             </tr>
-          <% } %>
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+            <% product_supply.product_supply_order_items.each {|order_item| %>
+              <tr>
+                <td class="va-mid"><%= order_item.product.full_name %></td>
+                <td class="va-mid"><%= order_item.note %></td>
+              </tr>
+            <% } %>
+            </tbody>
+          </table>
+        <% else %>
+          <table class="table table-bordered" id="tb_product_supply_order_items">
+            <thead>
+            <tr>
+              <th><%= t('activerecord.attributes.product_supply_order_item.product_id') %></th>
+              <th><%= t('activerecord.attributes.product_supply_order_item.note') %></th>
+              <th><%= t('activerecord.attributes.product_supply_order_item.link') %></th>
+              <th><%= t('activerecord.attributes.product_supply_order_item.note') %></th>
+              <th><%= t('activerecord.attributes.product_supply_order_item.image') %></th>
+            </tr>
+            </thead>
+            <tbody>
+            <% product_supply.product_supply_order_items.each {|order_item| %>
+              <tr>
+                <td class="va-mid"><%= order_item.product.full_name %></td>
+                <td class="va-mid"><%= order_item.link %></td>
+                <td class="va-mid"><%= order_item.note %></td>
+                <td>
+                  <% if order_item.image.present? %>
+                    <%= link_to order_item.image.url, "data-lightbox": "roadtrip" do %>
+                      <%= image_tag order_item.image.url(:tumb), class: 'tumb' %>
+                    <% end %>
+                  <% end %>
+                </td>
+              </tr>
+            <% } %>
+            </tbody>
+          </table>
+        <% end %>
+          </div>
     </div>
   </div>
 </div>

@@ -50,7 +50,7 @@ class ProductSupplyOrderItem < ApplicationRecord
       sum += feature.quantity * feature.price
     end
 
-    self.update_attributes(sum_price: sum, sum_tug: sum * get_model.exchange_value)
+    self.update_attributes(sum_price: sum.to_f.round(1), sum_tug: (sum * get_model.exchange_value).to_f.round(1))
   end
 
   private

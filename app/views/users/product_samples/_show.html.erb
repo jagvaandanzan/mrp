@@ -1,0 +1,57 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "show" %>
+<% end %>
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+  <section class="content-header align-left padding-15">
+    <h1><%= order_type == 'order' ? t('activerecord.models.product_supply_order') : t('activerecord.models.product_sample') %></h1>
+  </section>
+
+  <div class="action-buttons">
+    <% if order_type == "order" %>
+      <% if can? :update, ProductSupplyOrder %>
+        <%= link_to t('controls.button.edit'), edit_users_product_supply_order_path(id: product_supply.id, tab_index: product_supply.tab_index), class: 'btn btn-info' %>
+      <% end %>
+      <%= link_to t('titles.back_to_list'), users_product_supply_orders_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
+      <% if can? :destroy, ProductSupplyOrder %>
+        <%= link_to t('controls.button.delete'), users_product_supply_order_path(product_supply), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+      <% end %>
+    <% else %>
+      <% if can? :update, ProductSample %>
+        <%= link_to t('controls.button.edit'), edit_users_product_sample_path(id: product_supply.id, tab_index: product_supply.tab_index), class: 'btn btn-info' %>
+      <% end %>
+      <%= link_to t('titles.back_to_list'), users_product_samples_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
+      <% if can? :destroy, ProductSample %>
+        <%= link_to t('controls.button.delete'), users_product_sample_path(product_supply), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+      <% end %>
+    <% end %>
+  </div>
+  <%= show_body do %>
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="<%= !product_supply.tab_index.present? || product_supply.tab_index.to_i == 0 ? 'active' : '' %>">
+          <a href="#basic" data-toggle="tab"><%= t('product_form.basic') %></a></li>
+        <% product_supply.product_supply_order_items.each_with_index {|item, index|
+          product = item.product
+          if product.persisted? %>
+            <li class="<%= product_supply.tab_index.to_i == index + 1 ? 'active' : '' %>">
+              <a href="#product<%= product.id %>" data-toggle="tab"><%= product.name %></a></li>
+          <% end %>
+        <% } %>
+      </ul>
+      <div class="tab-content">
+        <div class="<%= !product_supply.tab_index.present? || product_supply.tab_index.to_i == 0 ? 'active ' : '' %>tab-pane" id="basic">
+          <%= render 'users/product_samples/show_basic', order_type: order_type, product_supply: product_supply %>
+        </div>
+        <% product_supply.product_supply_order_items.each_with_index {|item, index|
+          product = item.product
+          if product.persisted? %>
+            <div class="<%= product_supply.tab_index.to_i == index + 1 ? 'active ' : '' %>tab-pane" id="product<%= product.id %>">
+              <%= render 'users/product_samples/show_product', order_item: item, order_type: order_type %>
+            </div>
+          <% end %>
+        <% } %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -38,8 +38,8 @@ class ProductSupplyFeature < ApplicationRecord
 
 
   def set_sum_price
-    self.sum_price = price * quantity
-    self.sum_tug = self.sum_price * get_model.exchange_value
+    self.sum_price = (price * quantity).to_f.round(1)
+    self.sum_tug = (self.sum_price * get_model.exchange_value).to_f.round(1)
   end
 
   def set_product_balance

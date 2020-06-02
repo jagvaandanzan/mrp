@@ -48,7 +48,7 @@ class Users::ProductSamplesController < Users::BaseController
     @product_sample.attributes = product_sample_params
     if @product_sample.save
       flash[:success] = t('alert.info_updated')
-      if product_sample.product_supply_order_items.count > 0
+      if @product_sample.product_supply_order_items.count > 0
         redirect_to action: :edit, id: params[:id], tab_index: 1
       else
         redirect_to action: 'index'
