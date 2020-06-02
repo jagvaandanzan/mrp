@@ -9,7 +9,7 @@
           <a href="#basic" data-toggle="tab"><%= t('product_form.basic') %></a></li>
         <% @product_sample.product_supply_order_items.each_with_index {|item, index|
           product = item.product
-          if product.persisted? %>
+          if product.present? %>
             <li class="<%= @product_sample.tab_index.to_i == index + 1 ? 'active' : '' %>">
               <a href="#product<%= product.id %>" data-toggle="tab"><%= product.name %></a></li>
           <% end %>
@@ -21,7 +21,7 @@
         </div>
         <% @product_sample.product_supply_order_items.each_with_index {|item, index|
           product = item.product
-          if product.persisted? %>
+          if product.present? %>
             <div class="<%= @product_sample.tab_index.to_i == index + 1 ? 'active ' : '' %>tab-pane" id="product<%= product.id %>">
               <%= render 'form_product', id: @product_sample.id, order_item: item, product: product, index: index + 1 %>
             </div>
