@@ -16,15 +16,15 @@
         <tbody>
         <% order_item.supply_features.each {|feature| %>
           <tr class="field_div">
-            <td>
-              <% if order_type == "order" %>
+            <% if order_type == "order" %>
+              <td>
                 <% if feature.feature_item.img.present? %>
                   <%= link_to feature.feature_item.img.url, "data-lightbox": "roadtrip" do %>
                     <%= image_tag feature.feature_item.img.url(:tumb), class: 'tumb' %>
                   <% end %>
                 <% end %>
-              <% end %>
-            </td>
+              </td>
+            <% end %>
             <td class="va-mid"><%= feature.feature_item.name %></td>
             <td class="va-mid"><%= feature.quantity %></td>
             <td class="va-mid"><%= feature.get_currency(feature.price) %></td>
