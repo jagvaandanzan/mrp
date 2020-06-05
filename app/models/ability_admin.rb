@@ -5,6 +5,7 @@ class AbilityAdmin
 
     if current_admin.is_admin
       can :manage, :administrator
+      can :manage, Logistic
     end
 
     # load_and_authorize_resource модел бол

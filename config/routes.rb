@@ -52,11 +52,23 @@ Rails.application.routes.draw do
     patch 'operator/passwords', to: 'operators/registrations#update_password'
   end
 
+  devise_for :logistics, path: :logistic, controllers: {
+      registrations: 'logistics/registrations',
+      sessions: 'logistics/sessions',
+      passwords: 'logistics/passwords',
+  }
+
+  devise_scope :logistic do
+    get 'logistic/passwords/edit_password', to: 'logistics/registrations#edit_password'
+    patch 'logistic/passwords', to: 'logistics/registrations#update_password'
+  end
+
 
   namespace :admin_users, path: :admin do
     root 'users#index'
     resources :administrators, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :users, only: [:index, :create, :new, :show, :edit, :update, :destroy]
+    resources :logistics
 
     namespace :bank_logins do
       get 'login'
@@ -188,6 +200,12 @@ Rails.application.routes.draw do
 
     resources :bank_transactions, only: [:index]
     resources :sms_messages, only: [:index, :create, :new]
+
+    match "*any", to: "base#routing_error", via: :all
+  end
+
+  namespace :logistics, path: :logistic do
+    root "base#root"
 
     match "*any", to: "base#routing_error", via: :all
   end

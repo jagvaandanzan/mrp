@@ -10,6 +10,16 @@
   </div>
   <div class="row">
     <div class="col-md-12">
+      <div class="col-md-6 field_div">
+        <b><%= t('activerecord.attributes.product.name_en') %>:</b> <%= @product.name_en %>
+      </div>
+      <div class="col-md-6 field_div">
+        <b><%= t('activerecord.attributes.product.name_cn') %>:</b> <%= @product.name_cn %>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
       <div class="col-md-4 field_div">
         <b><%= t('activerecord.attributes.product.category_id') %>:</b> <%= get_name_recursive(@product.category) %>
       </div>

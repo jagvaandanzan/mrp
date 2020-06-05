@@ -123,7 +123,7 @@ class Users::ProductsController < Users::BaseController
   end
 
   def product_params
-    params.require(:product).permit(:tab_index, :category_id, :code, :is_own, :customer_id, option_rels: [],
+    params.require(:product).permit(:tab_index, :name_en, :name_cn, :category_id, :code, :is_own, :customer_id, option_rels: [],
                                     product_names_attributes: [:id, :name, :n_type, :_destroy])
   end
 

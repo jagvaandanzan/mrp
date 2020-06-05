@@ -1,6 +1,6 @@
 class SmsMessage < ApplicationRecord
-  belongs_to :operator, optional: true
-  belongs_to :user, optional: true
+  belongs_to :operator, -> { with_deleted }, optional: true
+  belongs_to :user, -> { with_deleted }, optional: true
   belongs_to :bank_account
 
   # validates :message, presence: true, length: {maximum: 160}

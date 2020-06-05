@@ -1,0 +1,54 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1><%= t('activerecord.models.logistic') + t(@logistic.persisted? ? 'titles.edit' : 'titles.add') %></h1>
+  </section>
+  <section class="content">
+    <div class="box box-info">
+      <%= form_with model: @logistic, url: @logistic.persisted? ? admin_users_logistic_path : admin_users_logistics_path, method: @logistic.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <div class="form-group">
+            <%= f.label :surname, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@logistic, :surname) %>">
+              <%= field_errors(@logistic, :surname) %>
+              <%= f.text_field :surname, class: 'form-control', placeholder: t('activerecord.attributes.logistic.surname') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :name, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@logistic, :name) %>">
+              <%= field_errors(@logistic, :name) %>
+              <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.logistic.name') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :gender, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@logistic, :gender) %>">
+              <%= field_errors(@logistic, :gender) %>
+              <%= f.collection_radio_buttons :gender, Operator.genders_i18n, :first, :second do |b| %>
+                <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
+              <% end %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :email, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@logistic, :email) %>">
+              <%= get_user_field_errors(@logistic, :email) %>
+              <%= f.email_field :email, class: 'form-control', placeholder: t('activerecord.attributes.logistic.email'), disabled: @logistic.persisted? %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :phone, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@logistic, :phone) %>">
+              <%= field_errors(@logistic, :phone) %>
+              <%= f.text_field :phone, class: 'form-control', placeholder: t('activerecord.attributes.logistic.phone') %>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>

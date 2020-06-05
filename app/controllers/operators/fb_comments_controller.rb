@@ -72,7 +72,7 @@ class Operators::FbCommentsController < Operators::BaseController
       elsif @fb_comment.action_type == "image"
         upload = Upload.create(image: @fb_comment.reply_image)
         alert_i, msg = ApplicationController.helpers.fb_send_file(@fb_comment.comment_id, upload.image.url)
-
+        Rails.logger.info("fb_send_file: #{alert_i} => #{msg}")
         alert, msg_2 = ApplicationController.helpers.fb_reply_comment(@fb_comment.comment_id, @fb_comment.parent_id, @fb_comment.user_id, @fb_comment.reply_image_text)
         if alert_i == :success && alert == :success
           @fb_comment.verb = "is_send_image"

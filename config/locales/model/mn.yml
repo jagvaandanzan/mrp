@@ -16,6 +16,10 @@ mn:
       gender:
         male: Эрэгтэй
         female: Эмэгтэй
+    logistic:
+      gender:
+        male: Эрэгтэй
+        female: Эмэгтэй
     admin_user:
       list: Администраторууд
       add: Администратор нэмэх
@@ -151,6 +155,7 @@ mn:
       manufacturer: Үйлдэрлэгч
       technical_specification: Техникийн үзүүлэлт
       size_instruction: Хэмжээний заавар
+      logistic: Хангамжийн ажилтан
     attributes:
       admin_user:
         email: Имэйл
@@ -182,6 +187,13 @@ mn:
         phone: Утас
         operator_permission_rels: Хандах эрхүүд
         order_sys_name: Захиалгын сис.нэр
+      logistic:
+        email: Имэйл
+        password: Нууц үг
+        name: Нэр
+        surname: Овог
+        gender: Хүйс
+        phone: Утас
       location:
         name: Хаяг
         name_la: Хаяг латинаар
@@ -240,6 +252,8 @@ mn:
         weight: Барааны жин
         gift_wrap: Бэлгийн боолт
         product_size_instructions: Хэмжээний заавар
+        name_en: Англи нэр
+        name_cn: Хятад нэр
       product_feature_option_rel:
         product_id: Бараа
         feature_id: Шинж чанар

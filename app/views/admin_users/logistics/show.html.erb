@@ -1,0 +1,41 @@
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('activerecord.models.logistic') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <% if can? :manage, Logistic %>
+      <%= link_to t('controls.button.edit'), edit_admin_users_logistic_path(@logistic), class: 'btn btn-info' %>
+      <%= link_to t('controls.button.delete'), admin_users_logistic_path(@logistic), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <% end %>
+    <%= link_to t('titles.back_to_list'), admin_users_logistics_path(page: cookies[:logistic_page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body table-responsive no-padding">
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.logistic.surname') %> :</div>
+          <div class="col-data"><%= @logistic.surname %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.logistic.name') %> :</div>
+          <div class="col-data"><%= @logistic.name %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.logistic.gender') %> :</div>
+          <div class="col-data"><%= @logistic.gender_i18n %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.logistic.email') %> :</div>
+          <div class="col-data"><%= @logistic.email %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.logistic.phone') %> :</div>
+          <div class="col-data"><%= @logistic.phone.presence || :'---' %></div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

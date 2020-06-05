@@ -4,9 +4,11 @@ class FbPost < ApplicationRecord
   has_many :fb_posts, :foreign_key => "fb_post_id", dependent: :destroy
 
   enum status: {unstrained: 0, downloaded: 1, is_ignore: 2}
-  validates :post_id, :product_name, :product_code, :price, presence: true, length: {maximum: 255}
+  validates :post_id, :product_name, :price, presence: true, length: {maximum: 255}
   validates_uniqueness_of :post_id
   validates :content, presence: true
+  validates :product_code, presence: true, length: {is: 6}
+
   after_create :get_post_attachment
   before_save :check_downloaded
   has_many :fb_comments, dependent: :destroy

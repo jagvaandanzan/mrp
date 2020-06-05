@@ -1,0 +1,24 @@
+<div class="login-box-body">
+  <p class="login-box-msg"><%= t('titles.reset_password') %></p>
+  <p class="login-box-msg">Бүртгүүлсэн имэйл хаягаа оруулна уу.</p>
+  <p class="login-box-msg">Бид таны нууц үгийг имэйлээр илгээнэ.</p>
+
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+    <%= devise_error_messages! %>
+
+    <div class="form-group has-feedback">
+      <%= f.label :email %><br/>
+      <%= f.email_field :email, autofocus: true, class: 'form-control', :placeholder => t("controls.input.please_enter") %>
+      <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-8">
+        <%= link_to t('controls.button.login'), new_logistic_session_path %>
+      </div>
+      <div class="col-xs-4">
+        <%= f.submit t('controls.button.send'), class: 'btn btn-primary btn-block btn-flat' %>
+      </div>
+    </div>
+  <% end %>
+</div>

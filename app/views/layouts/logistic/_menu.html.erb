@@ -14,13 +14,6 @@
         <% end %>
       <% end %>
 
-      <% if can? :manage, :administrator %>
-        <%= content_tag :li, class: controller_name == 'administrators' ? 'active' : '' do %>
-          <%= link_to admin_users_administrators_path do %>
-            <i class="fa fa-user"></i><span><%= t('titles.admins') %></span>
-          <% end %>
-        <% end %>
-      <% end %>
     </ul>
   </section>
 </aside>

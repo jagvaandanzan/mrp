@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= t('app_name') %></title>
-    <%= csrf_meta_tags %>
-    <%= favicon_link_tag asset_path('favicon.png') %>
+<head>
+  <title><%= t('app_name') %></title>
+  <%= csrf_meta_tags %>
+  <%= favicon_link_tag asset_path('favicon.png') %>
 
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <style type="text/css"><%= yield :stylesheets %></style>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-  </head>
-  <body class="hold-transition login-page">
-    <div class="login-box">
-      <div class="login-logo">
-        <%= t('app_name')%> <%= controller_path =~ /^admin/ ? t('activerecord.models.admin_user') :
-                                    (controller_path =~ /^operator/ ? t('activerecord.models.operator') : t('activerecord.models.user')) %>
-      </div>
-      <%= yield %>
-    </div>
-  </body>
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <style type="text/css"><%= yield :stylesheets %></style>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <%= t('app_name') %> <%= controller_path =~ /^operator/ ? t('activerecord.models.operator') :
+                                 (controller_path =~ /^user/ ? t('activerecord.models.user') :
+                                      (controller_path =~ /^logistic/ ? t('activerecord.models.logistic') : t('activerecord.models.admin_user'))) %>
+  </div>
+  <%= yield %>
+</div>
+</body>
 </html>
