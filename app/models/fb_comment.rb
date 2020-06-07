@@ -1,5 +1,6 @@
 class FbComment < ApplicationRecord
   belongs_to :fb_post
+  belongs_to :operator, optional: true
 
   before_destroy :to_archive
   after_create_commit {FbCommentJob.perform_later self}
@@ -21,7 +22,7 @@ class FbComment < ApplicationRecord
     validates :reply_message, presence: true, on: :update
   end
 
-  attr_accessor :action_type, :reply_text, :reply_image, :reply_image_text, :reply_message, :comment_answer_id, :verb, :operator_id
+  attr_accessor :action_type, :reply_text, :reply_image, :reply_image_text, :reply_message, :comment_answer_id, :verb
 
   scope :by_fb_post, ->(fb_post) {
     where(fb_post_id: fb_post)

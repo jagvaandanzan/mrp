@@ -61,13 +61,13 @@ class FbNotificationsJob < ApplicationJob
       fb_comment = FbComment.find_by_comment_id(obj[:comment_id])
       if fb_comment.present?
         if obj[:verb] == "hide" || obj[:verb] == "remove"
-          fb_comment.verb = "is_#{obj[:verb]}"
+          fb_comment.verb = "#{from_id == ENV['FB_PAGE_ID'] ? 'is' : 'user'}_#{obj[:verb]}"
           fb_comment.destroy!
         elsif obj[:verb] == "edited"
           fb_comment.update_attribute(:message, obj[:message])
         end
       else
-        FbCommentRemove.create(comment_id: obj[:comment_id], verb: "is_#{obj[:verb]}", message: obj[:message])
+        FbCommentRemove.create(comment_id: obj[:comment_id], verb: "#{from_id == ENV['FB_PAGE_ID'] ? 'is' : 'user'}_#{obj[:verb]}", message: obj[:message])
       end
     end
 

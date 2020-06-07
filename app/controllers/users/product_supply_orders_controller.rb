@@ -8,7 +8,7 @@ class Users::ProductSupplyOrdersController < Users::BaseController
     @by_code = params[:by_code]
     @by_product_name = params[:by_product_name]
 
-    @product_supply_order_items = ProductSupplyOrderItem.search(@by_start, @by_end, @by_code, @by_product_name).page(params[:page])
+    @product_supply_order_items = ProductSupplyOrderItem.search_by_order(@by_start, @by_end, @by_code, @by_product_name).page(params[:page])
   end
 
   def new

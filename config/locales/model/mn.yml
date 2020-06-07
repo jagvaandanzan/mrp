@@ -122,6 +122,8 @@ mn:
         is_reaction: Лайк
         is_send_image: Зураг илгээсэн
         is_send_text: Зурвас илгээсэн
+        user_hide: Хэрэглэгч нуусан
+        user_remove: Хэрэглэгч устгасан
   activerecord:
     models:
       admin_user: Админ

@@ -31,13 +31,33 @@ class ProductSupplyOrderItem < ApplicationRecord
     items
   }
 
-  scope :search, ->(start, finish, supply_code, product_name) {
+  scope :search_by_order, ->(start, finish, supply_code, product_name) {
     items = joins(:product_supply_order)
     items = items.where('? <= product_supply_orders.ordered_date AND product_supply_orders.ordered_date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items = items.where('product_supply_orders.code LIKE :value', value: "%#{supply_code}%") if supply_code.present?
     items = items.joins(:product).where('products.code LIKE :value OR products.name LIKE :value', value: "%#{product_name}%") if product_name.present?
     items.order("product_supply_orders.ordered_date": :desc)
     items
+  }
+
+  scope :created_at_desc, -> {
+    order(created_at: :desc)
+  }
+
+  scope :search, ->(start, finish, supply_code, product_name) {
+    items = left_joins(:product_sample)
+                .left_joins(:product_supply_order)
+    if start.present? && finish.present?
+      items = items.where('product_samples.id IS ? AND ? <= product_supply_orders.ordered_date AND product_supply_orders.ordered_date <= ?', nil, start.to_time, finish.to_time + 1.days)
+                  .or(where('product_supply_orders.id IS ? AND ? <= product_samples.ordered_date AND product_samples.ordered_date <= ?', nil, start.to_time, finish.to_time + 1.days))
+    end
+    if supply_code.present?
+      items = items.where('product_samples.id IS ? AND product_supply_orders.code LIKE :value', nil, value: "%#{supply_code}%")
+                  .or(where('product_supply_orders.id IS ? AND product_samples.code LIKE :value',nil, value: "%#{supply_code}%"))
+
+    end
+    items = items.joins(:product).where('products.code LIKE :value OR products.name LIKE :value', value: "%#{product_name}%") if product_name.present?
+    items.created_at_desc
   }
 
   def product_name_with_code
