@@ -27,7 +27,7 @@ module FacebookHelper
 
   def fb_reply_comment_img(comment_id, url)
     param = {
-        "attachment_url": url
+        "attachment_url": "#{ENV['DOMAIN_NAME']}#{url}"
     }
     fb_send_response("#{ENV['FB_API']}#{comment_id}/comments?access_token=#{ENV['FB_TOKEN']}",
                      'post', t('alert.send_successfully'), param.to_json)
