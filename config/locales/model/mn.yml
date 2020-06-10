@@ -456,6 +456,7 @@ mn:
         date: Огноо
         reply_comment: Коммент бичих
         reply_text: Хариу мессеж
+        reply_photo: Хариу зураг
         reply_image: Зураг илгээх
         reply_image_text: Коммент
         reply_message: Хариу мессеж

@@ -22,6 +22,10 @@ class FbComment < ApplicationRecord
     validates :reply_message, presence: true, on: :update
   end
 
+  with_options :if => Proc.new {|m| m.action_type == "reply_image"} do
+    validates :reply_image, presence: true, on: :update
+  end
+
   attr_accessor :action_type, :reply_text, :reply_image, :reply_image_text, :reply_message, :comment_answer_id, :verb
 
   scope :by_fb_post, ->(fb_post) {

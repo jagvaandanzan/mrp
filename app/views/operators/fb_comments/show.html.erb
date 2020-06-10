@@ -95,6 +95,30 @@
             <%= form_for :fb_comment, url: current_operator.present? ? operators_fb_comment_path : users_fb_comment_path, method: :patch,
                          local: true, :html => {class: 'form-horizontal'}, data: {confirm: t('are_you_sure_ok')} do |f| %>
               <%= form_body do %>
+                <%= f.hidden_field :action_type, {value: 'reply_image'} %>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="reply_image"><%= t('activerecord.attributes.fb_comment.reply_photo') %></label>
+                  <div class="col-sm-10 <%= get_error_class(@fb_comment, :reply_image) %>">
+                    <%= f.file_field :reply_image, accept: "image/*", class: 'image-file none-force' %>
+                    <%= field_errors(@fb_comment, :reply_image) %>
+                    <div class="preview noselect">
+                      <span class="text"><%= t('upload_image') %></span>
+                    </div>
+                    <%= f.submit t('controls.button.send'), class: 'btn btn-warning', style: "position: absolute;top: 65px;left: 160px" %>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+          <div class="box box-info">
+            <%= form_for :fb_comment, url: current_operator.present? ? operators_fb_comment_path : users_fb_comment_path, method: :patch,
+                         local: true, :html => {class: 'form-horizontal'}, data: {confirm: t('are_you_sure_ok')} do |f| %>
+              <%= form_body do %>
                 <%= f.hidden_field :action_type, {value: 'image'} %>
                 <div class="form-group">
                   <label class="col-sm-2 control-label" for="reply_image"><%= t('activerecord.attributes.fb_comment.reply_image') %></label>
