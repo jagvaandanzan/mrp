@@ -1,5 +1,6 @@
 <% content_for :stylesheets do -%>
   <%= stylesheet_link_tag "form" %>
+  <%= stylesheet_link_tag "summernote/dist/summernote-bs4" %>
 <% end %>
 <div class="content-wrapper">
   <section class="content">
@@ -31,3 +32,9 @@
     </div>
   </section>
 </div>
+
+<% content_for :footer_js do -%>
+  <%= javascript_include_tag 'summernote/dist/summernote-bs4' %>
+  <%= javascript_include_tag 'summernote/dist/lang/summernote-mn-MN.min' %>
+  <%= javascript_include_tag 'summernote_upload' %>
+<% end %>

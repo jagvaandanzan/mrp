@@ -128,9 +128,8 @@ class Users::ProductsController < Users::BaseController
   end
 
   def form_price_params
-    params.require(:product).permit(:tab_index, :delivery_type,
-                                    product_feature_items_attributes: [:id, :price, :p_6_8, :p_9_, :c_balance],
-                                    product_size_instructions_attributes: [:id, :size_instruction_id, :instruction, :_destroy])
+    params.require(:product).permit(:tab_index, :delivery_type, specification_id: [], specification_val: [],
+                                    product_feature_items_attributes: [:id, :price, :p_6_8, :p_9_, :c_balance])
   end
 
   def form_information_params

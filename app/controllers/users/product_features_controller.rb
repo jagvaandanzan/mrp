@@ -4,7 +4,7 @@ class Users::ProductFeaturesController < Users::BaseController
 
   def index
     @search_name = params[:feature_name]
-    @product_features = ProductFeature.search(@search_name).page(params[:page])
+    @product_features = ProductFeature.skip_no.search(@search_name).page(params[:page])
   end
 
   def new

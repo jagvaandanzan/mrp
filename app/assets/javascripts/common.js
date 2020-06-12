@@ -16,3 +16,7 @@ function readURL(input, div) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+});

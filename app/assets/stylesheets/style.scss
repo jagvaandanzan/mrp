@@ -1,4 +1,15 @@
-﻿
+﻿.ui-tooltip {
+  position: absolute;
+  z-index: 9999;
+  max-width: 300px;
+  background-color: black;
+  color: #fff;
+  padding: 6px;
+  border-radius: 6px;
+  min-width: 120px;
+  font-size: 12px;
+  text-align: justify;
+}
 .sidebar_fixed {
   position: fixed;
   position: -webkit-sticky;

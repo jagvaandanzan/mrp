@@ -15,6 +15,9 @@ class Product < ApplicationRecord
   has_many :product_filter_groups
   has_many :product_filters
   has_many :product_photos
+  has_many :product_images
+  has_many :product_videos
+  has_one :product_package
 
   has_many :supply_order_items, :class_name => "ProductSupplyOrderItem", :foreign_key => "product_id"
   has_many :product_sale_items
@@ -25,16 +28,20 @@ class Product < ApplicationRecord
   accepts_nested_attributes_for :product_feature_items, allow_destroy: true
   accepts_nested_attributes_for :product_instructions, allow_destroy: true
   accepts_nested_attributes_for :product_specifications, allow_destroy: true
-  accepts_nested_attributes_for :product_size_instructions, allow_destroy: true
   accepts_nested_attributes_for :product_photos, allow_destroy: true
+  accepts_nested_attributes_for :product_images, allow_destroy: true
+  accepts_nested_attributes_for :product_videos, allow_destroy: true
 
   enum delivery_type: {is_own: 0, is_customer: 1}
-  enum gift_wrap: {wrap_not: 0, wrap_have: 1}
 
   # after_create -> {sync_web('post')}
   # after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
   # after_destroy -> {sync_web('delete')}
-  attr_accessor :option_rels, :method_type, :tab_index, :filters
+  attr_accessor :option_rels, :method_type, :tab_index, :filters, :specification_id, :specification_val
+
+  has_attached_file :picture, :path => ":rails_root/public/products/picture/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/products/picture/:id_partition/:style.:extension'
+  validates_attachment :picture,
+                       content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 0} do
     before_validation :set_name
@@ -43,7 +50,6 @@ class Product < ApplicationRecord
 
     validates :name, :category_id, :code, :is_own, presence: true
     validates :product_names, :length => {:minimum => 1}
-    validate :valid_option_rels
     validates :code, uniqueness: true
     validate :valid_custom
   end
@@ -52,8 +58,16 @@ class Product < ApplicationRecord
     validates :customer_id, presence: true
   end
 
-  with_options :if => Proc.new {|m| m.tab_index.to_i == 1} do
+  with_options :if => Proc.new {|m| m.tab_index.to_i == 1 && m.is_customer?} do
     validates :delivery_type, presence: true
+  end
+
+  with_options :if => Proc.new {|m| m.tab_index.to_i == 1} do
+    before_validation :set_specifications
+  end
+
+  with_options :if => Proc.new {|m| m.tab_index.to_i == 1 && m.category.is_clothes} do
+    validates :product_size_instructions, :length => {:minimum => 1}
   end
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 2} do
@@ -118,6 +132,16 @@ class Product < ApplicationRecord
         .order_queue
   end
 
+  def get_specification(size_id, feature_id)
+    size_instructions = self.product_size_instructions.by_size_feature(size_id, feature_id)
+    if size_instructions.present?
+      size_instruction = size_instructions.first
+      ApplicationController.helpers.get_f(size_instruction.instruction)
+    else
+      ""
+    end
+  end
+
   private
 
   def valid_custom
@@ -133,6 +157,10 @@ class Product < ApplicationRecord
     if name.length > 0
       self.name = name[0..(name.length - 3)]
     end
+  end
+
+  def check_feature_no_select
+
   end
 
   def valid_option_rels
@@ -189,13 +217,30 @@ class Product < ApplicationRecord
           }
         end
       end
+    elsif product_feature_option_rels.count == 0
+      #   Өнгө размер сонгоогүй бол солголтгүй бараа үүсгэнэ
+      self.product_feature_option_rels << ProductFeatureOptionRel.new(feature_option: ProductFeatureOption.find(12))
+    end
+  end
+
+  def set_specifications
+    if specification_id.present?
+      self.product_size_instructions.destroy_all
+      specification_id.each_with_index do |id, index|
+        val = specification_val[index]
+        if val.present? && val != ""
+          self.product_size_instructions << ProductSizeInstruction.new(size_instruction_id: id.split('-')[0],
+                                                                       product_feature_option_id: id.split('-')[1],
+                                                                       instruction: val.to_f)
+        end
+      end
     end
   end
 
   def set_option_item_single
-    if product_feature_items.count == 0 && product_feature_option_rels.count == 1
-      product_feature_option = product_feature_option_rels.first
-      ProductFeatureItem.create(product: self, option1_id: product_feature_option.feature_option_id, option2_id: product_feature_option.feature_option_id)
+    if product_feature_items.count == 0 && self.product_feature_option_rels.count == 1
+      product_feature_option = self.product_feature_option_rels.first
+      ProductFeatureItem.create(tab_index: 1, product: self, option1_id: product_feature_option.feature_option_id, option2_id: product_feature_option.feature_option_id)
     end
   end
 

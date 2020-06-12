@@ -15,6 +15,10 @@ class ProductFeature < ApplicationRecord
     order(:queue).order(:name)
   }
 
+  scope :skip_no, -> {
+    where.not(id: 3)
+  }
+
   scope :search, ->(sname) {
     items = order_by_queue
     items = items.where('name LIKE :value', value: "%#{sname}%") if sname.present?

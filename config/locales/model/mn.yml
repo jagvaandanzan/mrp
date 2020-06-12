@@ -40,14 +40,21 @@ mn:
       delivery_type:
         is_own: Маркетаас хүргэлт хийлгэх
         is_customer: Харилцагчийн агуулхаас
-      gift_wrap:
-        wrap_have: Байгаа
-        wrap_not: Байхгүй
     product_instruction:
       i_type:
         using: Хэрэглэх заавар
         installation: Угсарах заавар
         washing: Угаас заавар
+    product_package:
+      gift_wrap:
+        wrap_have: Байгаа
+        wrap_not: Байхгүй
+      package_unit:
+        p_ce: См
+        p_m: М
+      weight_unit:
+        w_gr: Гр
+        w_kg: Кг
     product_sample:
       payment:
         belneer: Бэлнээр
@@ -249,13 +256,11 @@ mn:
         product_photos: Бодит зураг
         photo_web: Бодит зургыг вебд харуулах
         product_feature_items: Зураг, Видео
-        product_size: Барааны хэмжээс
-        package_size: Хайрцаг, боодлын хэмжээ
-        weight: Барааны жин
-        gift_wrap: Бэлгийн боолт
         product_size_instructions: Хэмжээний заавар
         name_en: Англи нэр
         name_cn: Хятад нэр
+        product_images: Дэлгэрэнгүй зураг
+        product_videos: Видео
       product_feature_option_rel:
         product_id: Бараа
         feature_id: Шинж чанар
@@ -278,12 +283,11 @@ mn:
         feature_item_id: Шинж чанар
         same_item_id: Адил шинж чанар
         image: Зураг
-        video: Видео
       product_instruction:
         i_type: Төрөл
         description: Заавар
-        image: Зураг
-        video: Видео
+        image: Заавар (зургаар)
+        video: Заавар (видеогоор)
       product_specification:
         technical_id: Төрөл
         specification: Үзүүлэлт
@@ -303,6 +307,19 @@ mn:
       manufacturer:
         queue: Дараалал
         country: Улс
+      product_video:
+        video: Видео
+      product_image:
+        image: Зураг
+      product_package:
+        product_size: Барааны хэмжээс
+        length: Урт
+        width: Өргөн
+        height: Өндөр
+        package_unit: Хэмжээний нэгж
+        weight_unit: Барааны нэгж
+        weight: Барааны жин
+        gift_wrap: Бэлгийн боолт
       product_sample:
         code: Код
         ordered_date: Огноо

@@ -76,7 +76,7 @@
     <div class="row">
       <div class="col-md-12 field_div m-t-20">
         <%= field_errors(@product, :product_feature_option_rels) %>
-        <% ProductFeature.order_by_queue.each {|feature| %>
+        <% ProductFeature.skip_no.order_by_queue.each {|feature| %>
           <div class="form-group">
             <%= label_tag :product_feature_rel, class: 'col-sm-1 control-label' do %>
               <%= feature.name %>

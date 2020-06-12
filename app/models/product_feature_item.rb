@@ -12,26 +12,20 @@ class ProductFeatureItem < ApplicationRecord
   validates_attachment :image,
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
 
-  has_attached_file :video, :path => ":rails_root/public/product_feature_items/video/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/product_feature_items/video/:id_partition/:style.:extension'
-  validates_attachment :video,
-                       content_type: {content_type: ["video/mp4"], message: :content_type}, size: {less_than: 10.megabytes}
-
   with_options :if => Proc.new {|m| m.product.is_customer?} do
     validates :c_balance, numericality: {greater_than: 0, only_integer: true, message: :invalid}
   end
 
-  validates :price, :p_6_8, :p_9_, presence: true, :numericality => true
+  with_options :unless => Proc.new {|m| m.tab_index.present?} do
+    validates :price, :p_6_8, :p_9_, presence: true, :numericality => true
+  end
 
   with_options :if => Proc.new {|m| m.tab_index == 3} do
     validates :feature_item_id, presence: true
   end
 
-  with_options :if => Proc.new {|m| m.tab_index == 3 && !m.same_item.present? && !m.video.present?} do
+  with_options :if => Proc.new {|m| m.tab_index == 3 && !m.same_item.present?} do
     validates :image, presence: true
-  end
-
-  with_options :if => Proc.new {|m| m.tab_index == 3 && !m.same_item.present? && !m.image.present?} do
-    validates :video, presence: true
   end
 
   attr_accessor :tab_index
@@ -91,11 +85,4 @@ class ProductFeatureItem < ApplicationRecord
     end
   end
 
-  def vid
-    if video.present?
-      video
-    elsif same_item.present?
-      same_item.video
-    end
-  end
 end

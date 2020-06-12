@@ -3,17 +3,23 @@
     <%= form_body do %>
       <%= f.hidden_field :tab_index, {value: 2} %>
       <div class="form-group">
-        <%= f.label :search_key, class: 'col-sm-3 control-label' %>
+        <%= f.label :search_key, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.search_key') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[0] %>"></i>
+        <% end %>
         <div class="col-sm-9 <%= get_error_class(@product, :search_key) %>">
           <%= field_errors(@product, :search_key) %>
           <%= f.text_area :search_key, class: 'form-control', placeholder: t('activerecord.attributes.product.search_key') %>
         </div>
       </div>
       <div class="form-group">
-        <%= f.label :description, class: 'col-sm-3 control-label' %>
+        <%= f.label :description, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.description') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[1] %>"></i>
+        <% end %>
         <div class="col-sm-9 <%= get_error_class(@product, :description) %>">
           <%= field_errors(@product, :description) %>
-          <%= f.text_area :description, class: 'form-control', placeholder: t('activerecord.attributes.product.description') %>
+          <%= f.text_area :description, 'data-provider': :summernote %>
         </div>
       </div>
       <%= field_errors(@product, :product_filters) %>
@@ -26,9 +32,9 @@
             <% group.category_filters.order_name.each {|filter| %>
               <div class="col-md-2">
                 <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
-                  <%= label_tag :check_box, {style: 'font-size:13px'}  do %>
-                  <%= f.check_box(:filters, {:multiple => true}, filter.id.to_s, nil) %>
-                  <%= filter.name %>
+                  <%= label_tag :check_box, {style: 'font-size:13px'} do %>
+                    <%= f.check_box(:filters, {:multiple => true}, filter.id.to_s, nil) %>
+                    <%= filter.name %>
                   <% end %>
                 </div>
               </div>

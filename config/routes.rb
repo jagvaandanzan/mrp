@@ -86,6 +86,7 @@ Rails.application.routes.draw do
   namespace :users, path: :user do
     root "base#root"
     get "panel", to: 'pages#panel'
+    post 'uploads' => 'uploads#create'
 
     namespace :calc do
       get 'vrptw'

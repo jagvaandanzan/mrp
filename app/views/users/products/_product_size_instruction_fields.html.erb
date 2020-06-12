@@ -4,10 +4,12 @@
     <%= f.collection_select :size_instruction_id, SizeInstruction.order_queue, :id, :instruction, {:prompt => t('controls.select.none')},
                             {class: 'form-control selectpicker', "data-live-search": true} %>
   </td>
-  <td class="va-mid">
-    <%= field_errors f.object, :instruction %>
-    <%= f.number_field :instruction, min: 0, step: 0.1, class: 'form-control field', placeholder: t('activerecord.attributes.product_size_instruction.instruction') %>
-  </td>
+  <% @feature_options.each {|feature_option| %>
+    <td class="va-mid">
+      <%= field_errors f.object, :instruction %>
+      <%= f.number_field :instruction, min: 0, step: 0.1, class: 'form-control field', placeholder: feature_option.name %>
+    </td>
+  <% } %>
   <td class="remove va-mid">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
       <%= nested_remove_btn %>

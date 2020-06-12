@@ -10,63 +10,90 @@
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.price') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
-            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.c_balance') %></th>
+            <% if @product.is_customer? %>
+              <th class="text-center"><%= t('activerecord.attributes.product_feature_item.c_balance') %></th>
+            <% end %>
           </tr>
           </thead>
           <tbody>
-          <tr class="btn_actions">
-            <td></td>
-            <td class="text-center">
-              <button type="button" class="btn btn-default btn-xs" btype="price"><%= t('controls.button.to_equate') %></button>
-            </td>
-            <td class="text-center">
-              <button type="button" class="btn btn-default btn-xs" btype="p_6_8"><%= t('controls.button.to_equate') %></button>
-            </td>
-            <td class="text-center">
-              <button type="button" class="btn btn-default btn-xs" btype="p_9_"><%= t('controls.button.to_equate') %></button>
-            </td>
-            <td class="text-center">
-              <button type="button" class="btn btn-default btn-xs" btype="c_balance"><%= t('controls.button.to_equate') %></button>
-            </td>
-          </tr>
+          <% if @product.product_feature_items.count > 1 %>
+            <tr class="btn_actions">
+              <td></td>
+              <td class="text-center">
+                <button type="button" class="btn btn-default btn-xs" btype="price"><%= t('controls.button.to_equate') %></button>
+              </td>
+              <td class="text-center">
+                <button type="button" class="btn btn-default btn-xs" btype="p_6_8"><%= t('controls.button.to_equate') %></button>
+              </td>
+              <td class="text-center">
+                <button type="button" class="btn btn-default btn-xs" btype="p_9_"><%= t('controls.button.to_equate') %></button>
+              </td>
+              <% if @product.is_customer? %>
+                <td class="text-center">
+                  <button type="button" class="btn btn-default btn-xs" btype="c_balance"><%= t('controls.button.to_equate') %></button>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
           <%= f.fields_for :product_feature_items do |m| %>
-            <%= render 'product_feature_item_fields', :f => m %>
+            <%= render 'product_feature_item_fields', :f => m, is_customer: @product.is_customer? %>
           <% end %>
           </tbody>
         </table>
       </div>
-      <div class="form-group m-t-10">
-        <%= f.label :delivery_type, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product, :delivery_type) %>">
-          <%= field_errors(@product, :delivery_type) %>
-          <%= f.collection_radio_buttons :delivery_type, Product.delivery_types_i18n, :first, :second do |b| %>
-            <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
-          <% end %>
-        </div>
-      </div>
-      <div class="form-group">
-        <%= f.label :product_size_instructions, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9 cocoon-nested-form">
-          <div class="<%= get_error_class(@product, :product_size_instructions) %>">
-            <%= field_errors(@product, :product_size_instructions) %>
-            <table class="table table-bordered" id="tb_product_size_instructions">
-              <tr>
-                <th><%= t('activerecord.attributes.product_size_instruction.size_instruction_id') %></th>
-                <th><%= t('activerecord.attributes.product_size_instruction.instruction') %></th>
-                <th width="50px"></th>
-              </tr>
-              <%= f.fields_for :product_size_instructions do |m| %>
-                <%= render 'product_size_instruction_fields', :f => m %>
-              <% end %>
-            </table>
-          </div>
-          <div class="links">
-            <%= link_to_add_association f, :product_size_instructions, data: {association_insertion_node: '#tb_product_size_instructions', association_insertion_method: :append} do %>
-              <%= nested_add_btn %>
+      <% if @product.is_customer? %>
+        <div class="form-group m-t-10">
+          <%= f.label :delivery_type, class: 'col-sm-3 control-label' %>
+          <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product, :delivery_type) %>">
+            <%= field_errors(@product, :delivery_type) %>
+            <%= f.collection_radio_buttons :delivery_type, Product.delivery_types_i18n, :first, :second do |b| %>
+              <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
             <% end %>
           </div>
         </div>
-      </div>
+      <% end %>
+      <% if @product.category.present? && @product.category.is_clothes %>
+        <div class="col-md-12 m-t-10">
+          <div class="form-group">
+            <%= f.label :product_size_instructions, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 cocoon-nested-form">
+              <div class="<%= get_error_class(@product, :product_size_instructions) %>">
+                <%= field_errors(@product, :product_size_instructions) %>
+                <% feature_options = @product.product_feature_option_rels.by_size_feature_option %>
+                <table class="table table-bordered" id="tb_product_size_instructions">
+                  <tr>
+                    <th><%= t('activerecord.attributes.product_size_instruction.size_instruction_id') %></th>
+                    <% feature_options.each {|feature_option| %>
+                      <th><%= feature_option.name %></th>
+                    <% } %>
+                  </tr>
+                  <tr class="btn_actions">
+                    <td></td>
+                    <% feature_options.each {|feature_option| %>
+                      <td class="text-center">
+                        <button type="button" class="btn btn-default btn-xs" btype="feature_option_<%= feature_option.id %>"><%= t('controls.button.to_equate') %></button>
+                      </td>
+                    <% } %>
+                  </tr>
+                  <% SizeInstruction.order_queue.each {|si| %>
+                    <tr class="nested-fields field_div">
+                      <td class="va-mid">
+                        <%= si.instruction %>
+                      </td>
+                      <% feature_options.each {|feature_option| %>
+                        <td>
+                          <%= hidden_field_tag "product[specification_id][]", "#{si.id}-#{feature_option.id}" %>
+                          <%= number_field_tag "product[specification_val][]", @product.get_specification(si.id, feature_option.id), {min: 0, step: 0.1, class: 'form-control field feature_option_' + feature_option.id.to_s, placeholder: feature_option.name} %>
+                        </td>
+                      <% } %>
+                    </tr>
+                  <% } %>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
       <div class="action-buttons m-t-10">
         <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
       </div>

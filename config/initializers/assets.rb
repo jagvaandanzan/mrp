@@ -14,4 +14,5 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 Rails.application.config.assets.precompile += %w( admin_users/administrators.js admin_users/common.js)
 Rails.application.config.assets.precompile += %w( search.scss form.scss show.scss list.scss)
 Rails.application.config.assets.precompile += %w( admin-lte/bower_components/raphael/raphael.min.js admin-lte/bower_components/morris.js/morris.min.js admin-lte/bower_components/morris.js/morris.css)
+Rails.application.config.assets.precompile += %w( summernote/dist/summernote-bs4.css summernote/dist/summernote-bs4.js summernote_upload.js summernote/dist/lang/summernote-mn-MN.min.js)
 
