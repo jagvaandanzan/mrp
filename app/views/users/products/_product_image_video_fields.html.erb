@@ -16,13 +16,6 @@
     </div>
   </td>
   <td class="va-mid">
-    <%= field_errors f.object, :video %>
-    <%= f.file_field :video, accept: "video/*" %>
-    <% if f.object.persisted? && f.object.video.present? %>
-      <%= link_to t('controls.button.watch'), f.object.video.url(:original, false) %>
-    <% end %>
-  </td>
-  <td class="va-mid">
     <%= field_errors f.object, :same_item_id %>
     <%= f.collection_select :same_item_id, @product.product_feature_items.order_is_feature, :id, :name, {:prompt => t('controls.select.none')},
                             {class: 'form-control selectpicker', "data-live-search": true} %>

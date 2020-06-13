@@ -261,6 +261,7 @@ mn:
         name_cn: Хятад нэр
         product_images: Дэлгэрэнгүй зураг
         product_videos: Видео
+        picture: Нүүр зураг
       product_feature_option_rel:
         product_id: Бараа
         feature_id: Шинж чанар

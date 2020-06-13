@@ -3,6 +3,21 @@
     <%= form_body do %>
       <%= f.hidden_field :tab_index, {value: 3} %>
       <div class="form-group">
+        <%= f.label :picture, class: 'col-sm-3 control-label va-mid' %>
+        <div class="col-sm-9 <%= get_error_class(@product, :picture) %>" id="product_picture_div">
+          <%= field_errors(@product, :picture) %>
+          <%= f.file_field :picture, accept: "image/*", class: 'image-file none-force' %>
+          <div class="preview noselect">
+            <% if @product.picture.present? %>
+              <%= image_tag f.object.picture.url(:tumb), class: 'preview-img' %>
+            <% else %>
+              <span class="text"><%= t('upload_image') %></span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
         <%= f.label :product_feature_items, class: 'col-sm-3 control-label' %>
         <div class="col-sm-9 cocoon-nested-form">
           <div class="<%= get_error_class(@product, :product_feature_items) %>">
@@ -11,13 +26,57 @@
               <tr>
                 <th><%= t('activerecord.attributes.product_feature_item.feature_item_id') %></th>
                 <th><%= t('activerecord.attributes.product_feature_item.image') %></th>
-                <th><%= t('activerecord.attributes.product_feature_item.video') %></th>
-                <th><%= t('activerecord.attributes.product_feature_item.same_item_id') %></th>
+                <th><%= t('activerecord.attributes.product_feature_item.same_item_id') %>
+                  <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[2] %>"></i></th>
               </tr>
               <%= f.fields_for :product_feature_items do |m| %>
                 <%= render 'product_image_video_fields', :f => m %>
               <% end %>
             </table>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :product_images, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 cocoon-nested-form">
+          <div class="<%= get_error_class(@product, :product_images) %>">
+            <%= field_errors(@product, :product_images) %>
+            <table class="table table-bordered" id="tb_product_images">
+              <tr>
+                <th><%= t('activerecord.attributes.product_image.image') %></th>
+                <th width="50px"></th>
+              </tr>
+              <%= f.fields_for :product_images do |m| %>
+                <%= render 'product_image_fields', :f => m %>
+              <% end %>
+            </table>
+          </div>
+          <div class="links">
+            <%= link_to_add_association f, :product_images, data: {association_insertion_node: '#tb_product_images', association_insertion_method: :append} do %>
+              <%= nested_add_btn %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :product_videos, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 cocoon-nested-form">
+          <div class="<%= get_error_class(@product, :product_videos) %>">
+            <%= field_errors(@product, :product_videos) %>
+            <table class="table table-bordered" id="tb_product_videos">
+              <tr>
+                <th><%= t('activerecord.attributes.product_video.video') %></th>
+                <th width="50px"></th>
+              </tr>
+              <%= f.fields_for :product_videos do |m| %>
+                <%= render 'product_video_fields', :f => m %>
+              <% end %>
+            </table>
+          </div>
+          <div class="links">
+            <%= link_to_add_association f, :product_videos, data: {association_insertion_node: '#tb_product_videos', association_insertion_method: :append} do %>
+              <%= nested_add_btn %>
+            <% end %>
           </div>
         </div>
       </div>

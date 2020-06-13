@@ -4,11 +4,11 @@ class CreateProductPackages < ActiveRecord::Migration[5.2]
       t.references :product, null: false, foreign_key: true
       t.string :product_size
       t.integer :package_unit
-      t.float :length
-      t.float :width
-      t.float :height
+      t.float :length, limit: 53
+      t.float :width, limit: 53
+      t.float :height, limit: 53
       t.integer :weight_unit
-      t.float :weight
+      t.float :weight, limit: 53
       t.integer :gift_wrap
 
       t.timestamps

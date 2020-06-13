@@ -38,3 +38,10 @@
   <%= javascript_include_tag 'summernote/dist/lang/summernote-mn-MN.min' %>
   <%= javascript_include_tag 'summernote_upload' %>
 <% end %>
+
+<script>
+    $(document).ready(function () {
+        load_image_preview("tr.nested-fields:not(:last)");
+        load_image_preview("#product_picture_div");
+    });
+</script>

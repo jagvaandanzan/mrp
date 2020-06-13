@@ -1,32 +1,13 @@
 <div class="form-horizontal">
   <div class="body-box">
-    <div class="form-group">
-      <%= label_tag :delivery_type, t('activerecord.attributes.product.delivery_type'), class: 'col-sm-3 control-label', style:'padding-top:0' %>
-      <div class="col-sm-9">
-        <%= @product.delivery_type_i18n %>
+    <% if @product.is_customer? %>
+      <div class="form-group">
+        <%= label_tag :delivery_type, t('activerecord.attributes.product.delivery_type'), class: 'col-sm-3 control-label', style: 'padding-top:0' %>
+        <div class="col-sm-9">
+          <%= @product.delivery_type_i18n %>
+        </div>
       </div>
-    </div>
-    <div class="form-group">
-      <%= label_tag :product_size_instructions, t('activerecord.attributes.product.product_size_instructions'), class: 'col-sm-3 control-label' %>
-      <div class="col-sm-9">
-        <table class="table table-hover table-bordered">
-          <thead>
-          <tr>
-            <th class="text-center"><%= t('activerecord.attributes.product_size_instruction.size_instruction_id') %></th>
-            <th class="text-center"><%= t('activerecord.attributes.product_size_instruction.instruction') %></th>
-          </tr>
-          </thead>
-          <tbody>
-          <% @product.product_size_instructions.each {|size_instruction| %>
-            <tr class="field_div">
-              <td><%= size_instruction.size_instruction.instruction %></td>
-              <td><%= size_instruction.instruction %></td>
-            </tr>
-          <% } %>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <% end %>
     <div class="form-group">
       <%= label_tag :product_feature_items, t('activerecord.attributes.product.product_feature_items'), class: 'col-sm-3 control-label' %>
       <div class="col-sm-9">
@@ -37,7 +18,9 @@
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.price') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
-            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.c_balance') %></th>
+            <% if @product.is_customer? %>
+              <th class="text-center"><%= t('activerecord.attributes.product_feature_item.c_balance') %></th>
+            <% end %>
           </tr>
           </thead>
           <tbody>
@@ -47,12 +30,45 @@
               <td><%= get_currency_mn(item.price) %></td>
               <td><%= get_currency_mn item.p_6_8 %></td>
               <td><%= get_currency_mn item.p_9_ %></td>
-              <td><%= item.c_balance %></td>
+              <% if @product.is_customer? %>
+                <td><%= item.c_balance %></td>
+              <% end %>
             </tr>
           <% } %>
           </tbody>
         </table>
       </div>
     </div>
+    <% feature_options = @product.product_feature_option_rels.by_size_feature_option%>
+    <% if feature_options.present? %>
+      <div class="form-group">
+        <%= label_tag :product_size_instructions, t('activerecord.attributes.product.product_size_instructions'), class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9">
+          <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+              <th class="text-center"><%= t('activerecord.attributes.product_size_instruction.size_instruction_id') %></th>
+              <% feature_options.each {|feature_option| %>
+                <th><%= feature_option.name %></th>
+              <% } %>
+            </tr>
+            </thead>
+            <tbody>
+            <% SizeInstruction.order_queue.each {|si| %>
+              <tr class="field_div">
+                <td class="va-mid">
+                  <%= si.instruction %>
+                </td>
+                <% feature_options.each {|feature_option| %>
+                  <td><%= @product.get_specification(si.id, feature_option.id) %></td>
+                <% } %>
+              </tr>
+            <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+
   </div>
 </div>

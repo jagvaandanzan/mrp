@@ -169,8 +169,8 @@ class Product < ApplicationRecord
 
   def valid_image_videos
     any_img = false
-    product_feature_items.each do |p_img_vid|
-      any_img = true if p_img_vid.image.present? || p_img_vid.video.present?
+    product_feature_items.each do |p_img|
+      any_img = true if p_img.image.present?
     end
 
     self.errors.add(:product_feature_items, :blank) unless any_img

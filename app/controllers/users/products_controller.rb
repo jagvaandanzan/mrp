@@ -35,6 +35,9 @@ class Users::ProductsController < Users::BaseController
 
   def edit
     category_headers
+    unless @product.product_package.present?
+      @product.product_package = ProductPackage.new
+    end
   end
 
   def update
@@ -98,8 +101,9 @@ class Users::ProductsController < Users::BaseController
   end
 
   def form_package
-    @product.attributes = form_package_params
-    if @product.save
+    @product.product_package.attributes = form_package_params
+    @product.tab_index = @product.product_package.tab_index
+    if @product.product_package.save
       flash[:success] = t('alert.info_updated')
       redirect_to action: 'index'
     else
@@ -139,12 +143,14 @@ class Users::ProductsController < Users::BaseController
   end
 
   def form_image_video_params
-    params.require(:product).permit(:tab_index, :photo_web,
-                                    product_feature_items_attributes: [:id, :same_item_id, :image, :video, :tab_index],
+    params.require(:product).permit(:tab_index, :picture, :photo_web,
+                                    product_feature_items_attributes: [:id, :same_item_id, :image, :tab_index],
+                                    product_images_attributes: [:id, :image, :_destroy],
+                                    product_videos_attributes: [:id, :video, :_destroy],
                                     product_photos_attributes: [:id, :photo, :_destroy])
   end
 
   def form_package_params
-    params.require(:product).permit(:tab_index, :product_size, :package_size, :weight, :gift_wrap)
+    params.require(:product_package).permit(:tab_index, :product_size, :package_unit, :width, :height, :length, :weight, :weight_unit, :gift_wrap)
   end
 end

@@ -1,34 +1,69 @@
 <% if @product.persisted? %>
-  <%= form_with model: @product, url: form_package_users_products_path(id: @product.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
+  <%= form_with model: @product.product_package, url: form_package_users_products_path(id: @product.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
     <%= form_body do %>
       <%= f.hidden_field :tab_index, {value: 4} %>
 
       <div class="form-group">
-        <%= f.label :product_size, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9 <%= get_error_class(@product, :product_size) %>">
-          <%= field_errors(@product, :product_size) %>
-          <%= f.text_field :product_size, class: 'form-control', placeholder: t('activerecord.attributes.product.product_size') %>
+        <%= f.label :product_size, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product_package.product_size') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[3] %>"></i>
+        <% end %>
+        <div class="col-sm-9 <%= get_error_class(@product.product_package, :product_size) %>">
+          <%= field_errors(@product.product_package, :product_size) %>
+          <%= f.text_field :product_size, class: 'form-control', placeholder: t('activerecord.attributes.product_package.product_size') %>
         </div>
       </div>
       <div class="form-group">
-        <%= f.label :package_size, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9 <%= get_error_class(@product, :package_size) %>">
-          <%= field_errors(@product, :package_size) %>
-          <%= f.text_field :package_size, class: 'form-control', placeholder: t('activerecord.attributes.product.package_size') %>
+        <%= f.label :length, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 <%= get_error_class(@product.product_package, :length) %>">
+          <%= field_errors(@product.product_package, :length) %>
+          <%= f.number_field :length, min: 0, step: 0.1, class: 'form-control', placeholder: t('activerecord.attributes.product_package.length') %>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :width, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 <%= get_error_class(@product.product_package, :width) %>">
+          <%= field_errors(@product.product_package, :width) %>
+          <%= f.number_field :width, min: 0, step: 0.1, class: 'form-control', placeholder: t('activerecord.attributes.product_package.width') %>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :height, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 <%= get_error_class(@product.product_package, :height) %>">
+          <%= field_errors(@product.product_package, :height) %>
+          <%= f.number_field :height, min: 0, step: 0.1, class: 'form-control', placeholder: t('activerecord.attributes.product_package.height') %>
+        </div>
+      </div>
+      <div class="form-group m-t-10">
+        <%= f.label :package_unit, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product.product_package, :package_unit) %>">
+          <%= field_errors(@product.product_package, :package_unit) %>
+          <%= f.collection_radio_buttons :package_unit, ProductPackage.package_units_i18n, :first, :second do |b| %>
+            <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
+          <% end %>
         </div>
       </div>
       <div class="form-group">
         <%= f.label :weight, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9 <%= get_error_class(@product, :weight) %>">
-          <%= field_errors(@product, :weight) %>
-          <%= f.text_field :weight, class: 'form-control', placeholder: t('activerecord.attributes.product.weight') %>
+        <div class="col-sm-9 <%= get_error_class(@product.product_package, :weight) %>">
+          <%= field_errors(@product.product_package, :weight) %>
+          <%= f.text_field :weight, class: 'form-control', placeholder: t('activerecord.attributes.product_package.weight') %>
+        </div>
+      </div>
+      <div class="form-group m-t-10">
+        <%= f.label :weight_unit, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product.product_package, :weight_unit) %>">
+          <%= field_errors(@product.product_package, :weight_unit) %>
+          <%= f.collection_radio_buttons :weight_unit, ProductPackage.weight_units_i18n, :first, :second do |b| %>
+            <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
+          <% end %>
         </div>
       </div>
       <div class="form-group m-t-10">
         <%= f.label :gift_wrap, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product, :gift_wrap) %>">
-          <%= field_errors(@product, :gift_wrap) %>
-          <%= f.collection_radio_buttons :gift_wrap, Product.gift_wraps_i18n, :first, :second do |b| %>
+        <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product.product_package, :gift_wrap) %>">
+          <%= field_errors(@product.product_package, :gift_wrap) %>
+          <%= f.collection_radio_buttons :gift_wrap, ProductPackage.gift_wraps_i18n, :first, :second do |b| %>
             <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
           <% end %>
         </div>

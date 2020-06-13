@@ -1,15 +1,15 @@
 <div class="form-horizontal">
   <%= form_body do %>
     <div class="form-group">
-      <%= label_tag :search_key, t('activerecord.attributes.product.search_key'), class: 'col-sm-3 control-label', style:'padding-top:0' %>
+      <%= label_tag :search_key, t('activerecord.attributes.product.search_key'), class: 'col-sm-3 control-label', style: 'padding-top:0' %>
       <div class="col-sm-9">
         <%= @product.search_key %>
       </div>
     </div>
     <div class="form-group">
-      <%= label_tag :description, t('activerecord.attributes.product.description'), class: 'col-sm-3 control-label', style:'padding-top:0' %>
+      <%= label_tag :description, t('activerecord.attributes.product.description'), class: 'col-sm-3 control-label', style: 'padding-top:0' %>
       <div class="col-sm-9">
-        <%= @product.description.html_safe %>
+        <%= @product.description.present? ? @product.description.html_safe : "" %>
       </div>
     </div>
     <% @product.category.category_filter_groups.order_name.each {|group| %>
