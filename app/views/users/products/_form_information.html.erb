@@ -68,25 +68,26 @@
         </div>
       </div>
       <div class="form-group">
+        <%= f.label :technical_specification_id, class: 'col-sm-3 control-label' %>
+        <div class="col-sm-9 <%= get_error_class(@product, :technical_specification_id) %>">
+          <%= field_errors(@product, :technical_specification_id) %>
+          <%= f.collection_select :technical_specification_id, TechnicalSpecification.order_specification_gr, :id, :specification_gr, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+        </div>
+      </div>
+      <div class="form-group">
         <%= f.label :product_specifications, class: 'col-sm-3 control-label' %>
         <div class="col-sm-9 cocoon-nested-form">
           <div class="<%= get_error_class(@product, :product_specifications) %>">
             <%= field_errors(@product, :product_specifications) %>
             <table class="table table-bordered" id="tb_product_specifications">
+              <thead>
               <tr>
                 <th><%= t('activerecord.attributes.product_specification.technical_id') %></th>
                 <th><%= t('activerecord.attributes.product_specification.specification') %></th>
-                <th width="50px"></th>
               </tr>
-              <%= f.fields_for :product_specifications do |m| %>
-                <%= render 'product_specification_fields', :f => m %>
-              <% end %>
+              </thead>
+              <tbody></tbody>
             </table>
-          </div>
-          <div class="links">
-            <%= link_to_add_association f, :product_specifications, data: {association_insertion_node: '#tb_product_specifications', association_insertion_method: :append} do %>
-              <%= nested_add_btn %>
-            <% end %>
           </div>
         </div>
       </div>

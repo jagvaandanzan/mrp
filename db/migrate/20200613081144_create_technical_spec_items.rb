@@ -9,5 +9,6 @@ class CreateTechnicalSpecItems < ActiveRecord::Migration[5.2]
     end
 
     rename_column :technical_specifications, :specification, :specification_gr
+    add_reference :products, :technical_specification, foreign_key: true, after: 'description'
   end
 end

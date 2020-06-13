@@ -251,6 +251,7 @@ mn:
         brand_id: Бренд
         manufacturer_id: Үйлдвэрлэсэн улс
         product_instructions: Бараатай холбоотоай заавар
+        technical_specification_id: Техникийн үзүүлэлт бүлэг
         product_specifications: Техникийн үзүүлэлт
         product_filters: Шүүлтүүр
         product_image_videos: Зураг, Видео
