@@ -4,13 +4,36 @@
   </section>
   <section class="content">
     <div class="box box-info">
-      <%= form_for :specification, url: @specification.persisted? ? users_technical_specification_path : users_technical_specifications_path, method: @specification.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+      <%= form_with model: @specification, url: @specification.persisted? ? users_technical_specification_path : users_technical_specifications_path, method: @specification.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
           <div class="form-group">
-            <%= f.label :specification, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-9 <%= get_error_class(@specification, :specification) %>">
-              <%= field_errors(@specification, :specification) %>
-              <%= f.text_field :specification, class: 'form-control', placeholder: t('activerecord.attributes.technical_specification.specification') %>
+            <%= f.label :specification_gr, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@specification, :specification_gr) %>">
+              <%= field_errors(@specification, :specification_gr) %>
+              <%= f.text_field :specification_gr, class: 'form-control', placeholder: t('activerecord.attributes.technical_specification.specification_gr') %>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :technical_spec_items, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 cocoon-nested-form">
+              <div class="<%= get_error_class(@specification, :technical_spec_items) %>">
+                <%= field_errors(@specification, :technical_spec_items) %>
+                <table class="table table-bordered" id="tb_technical_spec_items">
+                  <tr>
+                    <th><%= t('activerecord.attributes.technical_specification.technical_spec_items') %></th>
+                    <th width="50px"></th>
+                  </tr>
+                  <%= f.fields_for :technical_spec_items do |m| %>
+                    <%= render 'technical_spec_item_fields', :f => m %>
+                  <% end %>
+                </table>
+              </div>
+              <div class="links" id="btn_technical_spec_items">
+                <%= link_to_add_association f, :technical_spec_items, data: {association_insertion_node: '#tb_technical_spec_items', association_insertion_method: :append} do %>
+                  <%= nested_add_btn %>
+                <% end %>
+              </div>
             </div>
           </div>
 

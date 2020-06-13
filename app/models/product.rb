@@ -5,6 +5,7 @@ class Product < ApplicationRecord
   belongs_to :category, -> {with_deleted}, :class_name => "ProductCategory", optional: true
   belongs_to :brand, optional: true
   belongs_to :manufacturer, optional: true
+  belongs_to :technical_gr, :class_name => "TechnicalSpecificationGr", optional: true
 
   has_many :product_names
   has_many :product_feature_option_rels

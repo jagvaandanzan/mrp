@@ -3,8 +3,8 @@ class Users::TechnicalSpecificationsController < Users::BaseController
   before_action :set_specification, only: [:edit, :update, :destroy]
 
   def index
-    @specification = params[:specification]
-    @specifications = TechnicalSpecification.search(@specification).page(params[:page])
+    @name = params[:name]
+    @specifications = TechnicalSpecification.search(@name).page(params[:page])
     cookies[:specification_page_number] = params[:page]
   end
 
@@ -50,6 +50,6 @@ class Users::TechnicalSpecificationsController < Users::BaseController
   end
 
   def specification_params
-    params.require(:specification).permit(:specification)
+    params.require(:technical_specification).permit(:specification_gr, technical_spec_items_attributes: [:id, :specification, :_destroy])
   end
 end

@@ -163,6 +163,7 @@ mn:
       brand: Бренд
       manufacturer: Үйлдэрлэгч
       technical_specification: Техникийн үзүүлэлт
+      technical_spec_item: Техникийн үзүүлэлт
       size_instruction: Хэмжээний заавар
       logistic: Хангамжийн ажилтан
     attributes:
@@ -301,6 +302,9 @@ mn:
         name: Нэр
         logo: Лого
       technical_specification:
+        specification_gr: Бүлгийн нэр
+        technical_spec_items: Үзүүлэлтүүд
+      technical_spec_item:
         specification: Үзүүлэлт
       size_instruction:
         queue: Харагдах дараалал
