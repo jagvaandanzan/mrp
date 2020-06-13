@@ -86,7 +86,19 @@
                 <th><%= t('activerecord.attributes.product_specification.specification') %></th>
               </tr>
               </thead>
-              <tbody id="technical_spec_items"></tbody>
+              <tbody id="technical_spec_items">
+              <% if @product.technical_specification_id.present?
+                   TechnicalSpecItem.by_group_id(@product.technical_specification_id).order_specification.each {|spec| %>
+                  <tr>
+                    <td class="va-mid"><%= spec.specification %></td>
+                    <td class="va-mid">
+                      <%= hidden_field_tag "product[specification_id][]", spec.id %>
+                      <%= text_field_tag 'product[specification_val][]', @product.get_specification(spec.id ), {class: 'form-control field', placeholder: t('activerecord.attributes.product_specification.specification')} %>
+                    </td>
+                  </tr>
+                <% } %>
+              <% end %>
+              </tbody>
             </table>
           </div>
         </div>

@@ -28,7 +28,6 @@ class Product < ApplicationRecord
   accepts_nested_attributes_for :product_names, allow_destroy: true
   accepts_nested_attributes_for :product_feature_items, allow_destroy: true
   accepts_nested_attributes_for :product_instructions, allow_destroy: true
-  accepts_nested_attributes_for :product_specifications, allow_destroy: true
   accepts_nested_attributes_for :product_photos, allow_destroy: true
   accepts_nested_attributes_for :product_images, allow_destroy: true
   accepts_nested_attributes_for :product_videos, allow_destroy: true
@@ -38,7 +37,7 @@ class Product < ApplicationRecord
   # after_create -> {sync_web('post')}
   # after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
   # after_destroy -> {sync_web('delete')}
-  attr_accessor :option_rels, :method_type, :tab_index, :filters, :specification_id, :specification_val
+  attr_accessor :option_rels, :method_type, :tab_index, :filters, :instruction_id, :instruction_val, :specification_id, :specification_val
 
   has_attached_file :picture, :path => ":rails_root/public/products/picture/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/products/picture/:id_partition/:style.:extension'
   validates_attachment :picture,
@@ -64,7 +63,7 @@ class Product < ApplicationRecord
   end
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 1} do
-    before_validation :set_specifications
+    before_validation :set_instructions
   end
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 1 && m.category.is_clothes} do
@@ -72,6 +71,7 @@ class Product < ApplicationRecord
   end
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 2} do
+    before_save :set_specifications
     before_save :set_filters
     after_save :set_filter_groups
     validates :search_key, :description, presence: true
@@ -133,11 +133,21 @@ class Product < ApplicationRecord
         .order_queue
   end
 
-  def get_specification(size_id, feature_id)
+  def get_instruction(size_id, feature_id)
     size_instructions = self.product_size_instructions.by_size_feature(size_id, feature_id)
     if size_instructions.present?
       size_instruction = size_instructions.first
       ApplicationController.helpers.get_f(size_instruction.instruction)
+    else
+      ""
+    end
+  end
+
+  def get_specification(spec_item_id)
+    size_specifications = self.product_specifications.by_spec_item_id(spec_item_id)
+    if size_specifications.present?
+      size_specification = size_specifications.first
+      size_specification.specification
     else
       ""
     end
@@ -224,15 +234,27 @@ class Product < ApplicationRecord
     end
   end
 
-  def set_specifications
-    if specification_id.present?
+  def set_instructions
+    if instruction_id.present?
       self.product_size_instructions.destroy_all
-      specification_id.each_with_index do |id, index|
-        val = specification_val[index]
+      instruction_id.each_with_index do |id, index|
+        val = instruction_val[index]
         if val.present? && val != ""
           self.product_size_instructions << ProductSizeInstruction.new(size_instruction_id: id.split('-')[0],
                                                                        product_feature_option_id: id.split('-')[1],
                                                                        instruction: val.to_f)
+        end
+      end
+    end
+  end
+
+  def set_specifications
+    if specification_id.present?
+      self.product_specifications.destroy_all
+      specification_id.each_with_index do |id, index|
+        val = specification_val[index]
+        if val.present? && val != ""
+          self.product_specifications << ProductSpecification.new(spec_item_id: id, specification: val)
         end
       end
     end

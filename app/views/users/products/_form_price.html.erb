@@ -82,8 +82,8 @@
                       </td>
                       <% feature_options.each {|feature_option| %>
                         <td>
-                          <%= hidden_field_tag "product[specification_id][]", "#{si.id}-#{feature_option.id}" %>
-                          <%= number_field_tag "product[specification_val][]", @product.get_specification(si.id, feature_option.id), {min: 0, step: 0.1, class: 'form-control field feature_option_' + feature_option.id.to_s, placeholder: feature_option.name} %>
+                          <%= hidden_field_tag "product[instruction_id][]", "#{si.id}-#{feature_option.id}" %>
+                          <%= number_field_tag "product[instruction_val][]", @product.get_instruction(si.id, feature_option.id), {min: 0, step: 0.1, class: 'form-control field feature_option_' + feature_option.id.to_s, placeholder: feature_option.name} %>
                         </td>
                       <% } %>
                     </tr>

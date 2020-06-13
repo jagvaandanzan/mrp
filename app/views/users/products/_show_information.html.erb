@@ -70,10 +70,10 @@
             <th><%= t('activerecord.attributes.product_specification.technical_id') %></th>
             <th><%= t('activerecord.attributes.product_specification.specification') %></th>
           </tr>
-          <% @product.product_specifications.each {|specification| %>
+          <% @product.product_specifications.each {|spec| %>
             <tr>
-              <td><%= specification.technical.specification %></td>
-              <td><%= specification.specification %></td>
+              <td class="va-mid"><%= spec.spec_item.specification %></td>
+              <td class="va-mid"><%= spec.specification %></td>
             </tr>
           <% } %>
         </table>

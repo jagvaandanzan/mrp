@@ -139,14 +139,14 @@ class Users::ProductsController < Users::BaseController
   end
 
   def form_price_params
-    params.require(:product).permit(:tab_index, :delivery_type, specification_id: [], specification_val: [],
+    params.require(:product).permit(:tab_index, :delivery_type, instruction_id: [], instruction_val: [],
                                     product_feature_items_attributes: [:id, :price, :p_6_8, :p_9_, :c_balance])
   end
 
   def form_information_params
-    params.require(:product).permit(:tab_index, :search_key, :description, :brand_id, :manufacturer_id, :expiry_date, filters: [],
-                                    product_instructions_attributes: [:id, :i_type, :description, :image, :video, :_destroy],
-                                    product_specifications_attributes: [:id, :technical_id, :specification, :_destroy])
+    params.require(:product).permit(:tab_index, :search_key, :description, :brand_id, :manufacturer_id, :expiry_date, :technical_specification_id,
+                                    filters: [], specification_id: [], specification_val: [],
+                                    product_instructions_attributes: [:id, :i_type, :description, :image, :video, :_destroy])
   end
 
   def form_image_video_params

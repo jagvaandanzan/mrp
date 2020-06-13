@@ -2,7 +2,8 @@
   <tr>
     <td class="va-mid"><%= spec_item.specification %></td>
     <td class="va-mid">
-      <%= text_field_tag 'product_specification[specification]', @search_name, {class: 'form-control field', placeholder: t('activerecord.attributes.product_specification.specification')} %>
+      <%= hidden_field_tag "product[specification_id][]", spec_item.id %>
+      <%= text_field_tag 'product[specification_val][]', '', {class: 'form-control field', placeholder: t('activerecord.attributes.product_specification.specification')} %>
     </td>
   </tr>
 <% end %>

@@ -60,7 +60,7 @@
                   <%= si.instruction %>
                 </td>
                 <% feature_options.each {|feature_option| %>
-                  <td><%= @product.get_specification(si.id, feature_option.id) %></td>
+                  <td><%= @product.get_instruction(si.id, feature_option.id) %></td>
                 <% } %>
               </tr>
             <% } %>
