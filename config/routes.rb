@@ -107,6 +107,7 @@ Rails.application.routes.draw do
         patch 'form_information'
         patch 'form_image_video'
         patch 'form_package'
+        post 'technical_spec_items'
       end
     end
     resources :product_samples, only: [:index, :create, :new, :edit, :show, :update, :destroy] do

@@ -1,0 +1,3 @@
+<% if @technical_spec_items.present? %>
+  $('#technical_spec_items').html("<%= escape_javascript render(:partial => 'users/products/product_specification', :locals => { :technical_spec_items => @technical_spec_items }) %>");
+<% end %>

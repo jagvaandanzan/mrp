@@ -112,6 +112,13 @@ class Users::ProductsController < Users::BaseController
     end
   end
 
+  def technical_spec_items
+    @technical_spec_items = TechnicalSpecItem.by_group_id(params[:gr_id]).order_specification
+    respond_to do |format|
+      format.js {render 'technical_spec_item_ajax'}
+    end
+  end
+
   private
 
   def category_headers

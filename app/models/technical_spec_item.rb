@@ -8,4 +8,8 @@ class TechnicalSpecItem < ApplicationRecord
     order(:specification)
   }
 
+  scope :by_group_id, ->(gr_id) {
+    where(technical_specification_id: gr_id)
+  }
+
 end

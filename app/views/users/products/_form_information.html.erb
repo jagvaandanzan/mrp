@@ -86,7 +86,7 @@
                 <th><%= t('activerecord.attributes.product_specification.specification') %></th>
               </tr>
               </thead>
-              <tbody></tbody>
+              <tbody id="technical_spec_items"></tbody>
             </table>
           </div>
         </div>
@@ -123,3 +123,19 @@
     <% end %>
   <% end %>
 <% end %>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+        $('#product_technical_specification_id').on('change', function () {
+            if ($(this).val().length > 0) {
+                Rails.ajax({
+                    url: "<%= technical_spec_items_users_products_path %>",
+                    type: "POST",
+                    data: "gr_id=" + $(this).val(),
+                });
+            } else {
+                $("#technical_spec_items").html("");
+            }
+        });
+
+    });
+</script>
