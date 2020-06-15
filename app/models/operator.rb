@@ -16,12 +16,12 @@ class Operator < ApplicationRecord
 
   accepts_nested_attributes_for :operator_permission_rels, allow_destroy: true
 
-  attr_accessor :comment_minute, :comment_count, :comment_avg
+  attr_accessor :comment_minute, :comment_count, :comment_avg, :no_replied, :verb_count, :user_count, :like_count, :remove_count, :hide_count, :user_hide_count, :user_remove_count
   enum gender: {male: 0, female: 1}
 
   validates :surname, :name, :phone, :order_sys_name, presence: true, length: {maximum: 255}
   validates :gender, presence: true
-  validates :email, uniqueness: {conditions: -> {with_deleted}}
+  validates :email, uniqueness: {conditions: -> { with_deleted }}
 
 
   scope :search, ->(search_name, search_email, search_phone) {
@@ -77,7 +77,7 @@ class Operator < ApplicationRecord
   end
 
   def remove_unnecessary_error_messages
-    errors.messages.each {|key, val| val.uniq!}
+    errors.messages.each { |key, val| val.uniq! }
   end
 
 end

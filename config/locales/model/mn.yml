@@ -497,8 +497,16 @@ mn:
         verb: Төрөл
         operator: Оператор
         comments: Хариулсан коммент
+        no_replied: Хариулаагүй коммент
         comment_time: Зарцуулсан хугацаа
         avg_time: Дундаж хугацаа
+        like_count: Лайк
+        verb_count: Хариулсан комментын хувь
+        user_count: Харилцсан харилцагчийн тоо
+        hide_count: Нуусан
+        user_hide_count: Хэрэглэгч нуусан
+        remove_count: Устгасан
+        user_remove_count: Хэрэглэгч устгасан
       bank_transaction:
         value: Гүйлгээний утга
         account: Данс

@@ -40,24 +40,22 @@ class Users::FbCommentArchivesController < Users::BaseController
     @operator_count = []
     @operator_avg = []
     @select_operators = FbCommentArchive.operator_by_response(@start, @finish)
-    if params[:operator_id].present?
-      operator = Operator.find(params[:operator_id])
-      operator.comment_minute = FbCommentArchive.by_response_time(params[:operator_id], @start, @finish)
-      operator.comment_count = FbCommentArchive.by_response_count(params[:operator_id], @start, @finish)
+    @select_operators.each do |oper|
+      operator = Operator.find(oper.id)
+      operator.user_count = FbCommentArchive.by_user_count(oper.id, @start, @finish)
+      operator.comment_minute = FbCommentArchive.by_response_time(oper.id, @start, @finish)
+      operator.comment_count = FbCommentArchive.by_response_count(oper.id, @start, @finish)
+      operator.no_replied = FbCommentArchive.by_no_replied_count(oper.id, @start, @finish)
+      operator.verb_count = FbCommentArchive.by_verb_count(oper.id, @start, @finish)*100/operator.comment_count
+      operator.like_count = FbCommentArchive.by_like_count(oper.id, @start, @finish)
+      operator.remove_count = FbCommentArchive.by_remove_count(oper.id, @start, @finish)
+      operator.hide_count = FbCommentArchive.by_hide_count(oper.id, @start, @finish)
+      operator.user_hide_count = FbCommentArchive.by_user_hide_count(oper.id, @start, @finish)
+      operator.user_remove_count = FbCommentArchive.by_user_remove_count(oper.id, @start, @finish)
       operator.comment_avg = (operator.comment_minute.to_f / operator.comment_count).to_f.round(1)
       @operators << operator
       @operator_count.push({label: operator.name, value: operator.comment_count})
       @operator_avg.push({y: operator.name, a: operator.comment_avg})
-    else
-      @select_operators.each do |oper|
-        operator = Operator.find(oper.id)
-        operator.comment_minute = FbCommentArchive.by_response_time(oper.id, @start, @finish)
-        operator.comment_count = FbCommentArchive.by_response_count(oper.id, @start, @finish)
-        operator.comment_avg = (operator.comment_minute.to_f / operator.comment_count).to_f.round(1)
-        @operators << operator
-        @operator_count.push({label: operator.name, value: operator.comment_count})
-        @operator_avg.push({y: operator.name, a: operator.comment_avg})
-      end
     end
 
   end

@@ -74,6 +74,64 @@ class FbCommentArchive < ApplicationRecord
     items.count
   }
 
+  scope :by_no_replied_count, ->(operator_id, start, finish) {
+    items = joins("LEFT JOIN fb_comment_archives as replies ON fb_comment_archives.id = replies.archive_id")
+    items = items.where("replies.id IS ?", nil)
+    items = items.where("fb_comment_archives.verb = ?", 0)
+    items = items.where("fb_comment_archives.user_id IS NOT ?", nil)
+    items = items.where('? <= fb_comment_archives.date AND fb_comment_archives.date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items.count
+  }
+
+  scope :by_verb_count, ->(operator_id, start, finish) {
+    items = joins(:operator)
+    items = items.where(operator_id: operator_id) if operator_id.present?
+    items = items.where("verb = 0 OR verb = 4 OR verb = 5")
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items.count
+  }
+  scope :by_like_count, ->(operator_id, start, finish) {
+    items = joins(:operator)
+    items = items.where(operator_id: operator_id) if operator_id.present?
+    items = items.where("verb = ?", 3)
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items.count
+  }
+  scope :by_user_count, ->(operator_id, start, finish) {
+    items = joins(:operator)
+    items = items.where(operator_id: operator_id) if operator_id.present?
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items.pluck(:user_id).uniq.count
+  }
+  scope :by_remove_count, ->(operator_id, start, finish) {
+    items = joins(:operator)
+    items = items.where(operator_id: operator_id) if operator_id.present?
+    items = items.where("verb = ?", 2)
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items.count
+  }
+  scope :by_hide_count, ->(operator_id, start, finish) {
+    items = joins(:operator)
+    items = items.where(operator_id: operator_id) if operator_id.present?
+    items = items.where("verb = ?", 1)
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items.count
+  }
+  scope :by_user_hide_count, ->(operator_id, start, finish) {
+    items = joins(:operator)
+    items = items.where(operator_id: operator_id) if operator_id.present?
+    items = items.where("verb = ?", 6)
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items.count
+  }
+  scope :by_user_remove_count, ->(operator_id, start, finish) {
+    items = joins(:operator)
+    items = items.where(operator_id: operator_id) if operator_id.present?
+    items = items.where("verb = ?", 7)
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items.count
+  }
+
   def operator_name
     if self.operator.present?
       self.operator.name
