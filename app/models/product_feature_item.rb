@@ -77,7 +77,7 @@ class ProductFeatureItem < ApplicationRecord
     end
   end
 
-  def img
+    def img
     if image.present?
       image
     elsif same_item.present?

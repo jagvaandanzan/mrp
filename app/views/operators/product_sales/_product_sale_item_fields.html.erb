@@ -1,8 +1,8 @@
 <tr class="nested-fields">
   <th class="image">
-    <% if f.object.feature_rel_id.present? %>
-      <%= link_to f.object.feature_rel.image.url, "data-lightbox": "roadtrip" do %>
-        <%= image_tag f.object.feature_rel.image.url(:tumb), class: 'tumb' %>
+    <% if f.object.feature_item.present? %>
+      <%= link_to f.object.feature_item.img.url, "data-lightbox": "roadtrip" do %>
+        <%= image_tag f.object.feature_item.img.url(:tumb), class: 'tumb' %>
       <% end %>
     <% end %>
   </th>

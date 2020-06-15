@@ -124,7 +124,7 @@
               <table style="background: white;" class="table table-bordered">
                 <thead>
                 <tr>
-                  <th style="width: 100px"><%= t('activerecord.attributes.product_feature_rel.image') %></th>
+                  <th style="width: 100px"><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.to_see') %></th>
@@ -137,9 +137,10 @@
                 <% @product_sale.product_sale_items.each do |i| %>
                   <tr>
                     <td>
-                      <% if i.feature_rel.image.present? %>
-                        <%= link_to i.feature_rel.image.url, "data-lightbox": "roadtrip" do %>
-                          <%= image_tag i.feature_rel.image.url(:tumb), class: 'tumb' %>
+                      <% feature_item = i.feature_item
+                        if feature_item.img.present? %>
+                        <%= link_to feature_item.img.url, "data-lightbox": "roadtrip" do %>
+                          <%= image_tag feature_item.img.url(:tumb), class: 'tumb' %>
                         <% end %>
                       <% else %>
                         <%= image_tag 'no-image.png', class: 'tumb' %>
