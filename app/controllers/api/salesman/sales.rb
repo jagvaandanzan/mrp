@@ -55,7 +55,6 @@ module API
                                                   phone: params[:phone],
                                                   price: feature_item.price,
                                                   product: feature_item.product,
-                                                  feature_rel: feature_item.feature_rel,
                                                   feature_item: feature_item,
                                                   sale_item: product_sale_item,
                                                   quantity: params[:quantity])
