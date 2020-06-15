@@ -43,7 +43,7 @@ describe "bank transaction check", type: :feature do
       transaction = BankTransaction.new
       tr.all('td').each_with_index {|td, index|
         data = td.text
-        puts data
+        # puts data
         if td[:colspan].present?
           day = Date.strptime(td.find('strong').native.text, "%Y.%m.%d")
         else
