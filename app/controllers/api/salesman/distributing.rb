@@ -56,7 +56,6 @@ module API
                                                                              product: item.product,
                                                                              location: product_location,
                                                                              feature_item: item.feature_item,
-                                                                             feature_rel: item.feature_rel,
                                                                              quantity: item.quantity,
                                                                              queue: index)
                   }

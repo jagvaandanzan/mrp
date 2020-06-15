@@ -11,7 +11,6 @@ class Users::CalcController < Users::BaseController
                                    product: item.product,
                                    location: location,
                                    feature_item: item.feature_item,
-                                   feature_rel: item.feature_rel,
                                    quantity: item.quantity,
                                    queue: index)
       }
