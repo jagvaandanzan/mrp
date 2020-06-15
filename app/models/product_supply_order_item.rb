@@ -1,7 +1,7 @@
 class ProductSupplyOrderItem < ApplicationRecord
   belongs_to :product_supply_order, optional: true
   belongs_to :product_sample, optional: true
-  belongs_to :product, -> {with_deleted}
+  belongs_to :product, -> { with_deleted }
   has_many :income_items, :class_name => "ProductIncomeItem", :foreign_key => "supply_order_item_id", dependent: :destroy
   has_many :supply_features, :class_name => "ProductSupplyFeature", :foreign_key => "order_item_id", dependent: :destroy
   accepts_nested_attributes_for :supply_features, allow_destroy: true
@@ -11,10 +11,13 @@ class ProductSupplyOrderItem < ApplicationRecord
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
   attr_accessor :tab_index
 
-  validates :product_id, presence: true
+  with_options :if => Proc.new { |m| m.product_supply_order.present? } do
+    validates :product_id, presence: true
+  end
 
-  with_options :if => Proc.new {|m| m.product_sample.present?} do
+  with_options :if => Proc.new { |m| m.product_sample.present? } do
     validates :link, presence: true
+    validates :product_name, presence: true, length: {maximum: 255}
   end
 
 
@@ -53,7 +56,7 @@ class ProductSupplyOrderItem < ApplicationRecord
     end
     if supply_code.present?
       items = items.where('product_samples.id IS ? AND product_supply_orders.code LIKE :value', nil, value: "%#{supply_code}%")
-                  .or(where('product_supply_orders.id IS ? AND product_samples.code LIKE :value',nil, value: "%#{supply_code}%"))
+                  .or(where('product_supply_orders.id IS ? AND product_samples.code LIKE :value', nil, value: "%#{supply_code}%"))
 
     end
     items = items.joins(:product).where('products.code LIKE :value OR products.name LIKE :value', value: "%#{product_name}%") if product_name.present?

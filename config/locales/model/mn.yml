@@ -348,6 +348,7 @@ mn:
       product_supply_order_item:
         supply_order_id: Худалдан авалт
         product_id: Бараа
+        product_name: Барааны нэр
         link: Линк
         note: Тайлбар
         image: Зураг

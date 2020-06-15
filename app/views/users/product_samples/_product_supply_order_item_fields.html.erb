@@ -1,8 +1,7 @@
 <tr class="nested-fields">
   <td class="va-mid">
-    <%= field_errors f.object, :product_id %>
-    <%= f.collection_select :product_id, Product.search_by_id(f.object.product_id), :id, :full_name,
-                            {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
+    <%= field_errors f.object, :product_name %>
+    <%= f.text_field :product_name, class: 'form-control field', placeholder: t('activerecord.attributes.product_supply_order_item.product_name') %>
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :link %>
