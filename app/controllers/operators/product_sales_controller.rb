@@ -117,7 +117,7 @@ class Operators::ProductSalesController < Operators::BaseController
       feature_items = ProductFeatureItem.search(params[:product_id])
 
       feature_items.each do |item|
-        features.push({id: item.id, name: item.name, price: item.item.price, product: params[:product_id]})
+        features.push({id: item.id, name: item.name, price: item.price, product: params[:product_id]})
       end
     end
 
