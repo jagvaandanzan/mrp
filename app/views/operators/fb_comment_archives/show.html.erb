@@ -4,13 +4,17 @@
   </div>
   <%= show_body do %>
     <div class="box box-primary p-15">
-      <% if @fb_comment_archive.fb_post.content.start_with? 'https' %>
-        <% if @fb_comment_archive.fb_post.fb_post.present? %>
-          <%= simple_format(@fb_comment_archive.fb_post.fb_post.content) %>
+      <% if @fb_comment_archive.fb_post.content.present? %>
+        <% if @fb_comment_archive.fb_post.content.start_with? 'https' %>
+          <% if @fb_comment_archive.fb_post.fb_post.present? %>
+            <%= simple_format(@fb_comment_archive.fb_post.fb_post.content) %>
+          <% end %>
+          <%= image_tag @fb_comment_archive.fb_post.content, {style: "width:400px"} %>
+        <% else %>
+          <%= simple_format(@fb_comment_archive.fb_post.content) %>
         <% end %>
-        <%= image_tag @fb_comment_archive.fb_post.content, {style: "width:400px"} %>
       <% else %>
-        <%= simple_format(@fb_comment_archive.fb_post.content) %>
+        Татагдаагүй
       <% end %>
       <div class="box-body">
         <table class="table table-hover table-bordered">
