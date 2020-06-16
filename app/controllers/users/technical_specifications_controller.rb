@@ -1,5 +1,4 @@
 class Users::TechnicalSpecificationsController < Users::BaseController
-  load_and_authorize_resource
   before_action :set_specification, only: [:edit, :update, :destroy]
 
   def index
@@ -50,6 +49,7 @@ class Users::TechnicalSpecificationsController < Users::BaseController
   end
 
   def specification_params
-    params.require(:technical_specification).permit(:specification_gr, technical_spec_items_attributes: [:id, :specification, :_destroy])
+    params.require(:technical_specification).permit(:specification_gr,
+                                                    technical_spec_items_attributes: [:id, :specification, :_destroy])
   end
 end
