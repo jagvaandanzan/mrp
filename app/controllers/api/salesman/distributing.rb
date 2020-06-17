@@ -44,7 +44,7 @@ module API
                   travel_route.queue = i - 2
                   travel_route.distance = location_travel.distance
                   travel_route.duration = location_travel.duration
-                  travel_duration += location_travel.duration
+                  travel_duration = travel_duration + location_travel.duration
                   travel_route.salesman_travel = travel
                   travel_route.location = location
                   travel_route.product_sale = product_sale
