@@ -11,6 +11,11 @@
     <div class="inner-nested" style="width: 20%">
       <%= field_errors f.object, :img %>
       <%= f.file_field :img, accept: "image/*" %>
+      <% if f.object.img.present? %>
+        <div class="preview noselect">
+          <%= image_tag f.img.photo.url(:tumb), class: 'preview-img' %>
+        </div>
+      <% end %>
     </div>
     <div class="inner-nested" style="width: 8%;text-align: center;padding-top: 10px;" class="remove">
       <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
