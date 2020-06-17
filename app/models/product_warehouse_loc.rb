@@ -3,7 +3,6 @@ class ProductWarehouseLoc < ApplicationRecord
   belongs_to :product
   belongs_to :location, :class_name => "ProductLocation"
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
-  belongs_to :feature_rel, :class_name => "ProductFeatureRel"
 
   scope :by_travel, ->(travel_id, id = nil) {
     items = select("products.name as name,
@@ -28,7 +27,7 @@ class ProductWarehouseLoc < ApplicationRecord
   end
 
   def image
-    feature_rel.image_url
+    feature_item.img
   end
 
   def barcode
