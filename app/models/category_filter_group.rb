@@ -5,8 +5,8 @@ class CategoryFilterGroup < ApplicationRecord
 
   accepts_nested_attributes_for :category_filters, allow_destroy: true
 
-  # validates_uniqueness_of :name, scope: [:product_category_id]
-  # validates :name, presence: true
+  validates :name, presence: true
+  validates_uniqueness_of :name, scope: [:product_category_id]
 
   scope :order_name, ->() {
     order(:name)

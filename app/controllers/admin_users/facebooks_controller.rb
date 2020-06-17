@@ -4,17 +4,13 @@ class AdminUsers::FacebooksController < AdminUsers::BaseController
     count = 0
     @code = 200
 
-    AliCategory.all.each do |ali_cat|
-
-    end
-
     # FbComment.all.each do |fb_comment|
     #   fb_comment.destroy!
     #   count = count + 1
     # end
     #
-    # @body = "to_archives: #{count}"
-    # render 'admin_users/bank_logins/statement'
+    @body = "to_archives: #{count}"
+    render 'admin_users/bank_logins/statement'
   end
 
   def attachments

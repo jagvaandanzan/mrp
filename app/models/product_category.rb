@@ -22,6 +22,9 @@ class ProductCategory < ApplicationRecord
     items.order(:queue)
         .order(:name)
   }
+  scope :upd, ->() {
+    where("updated_at is ?", nil)
+  }
 
   scope :order_by, ->() {
     order(:queue)
