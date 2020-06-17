@@ -27,10 +27,14 @@ class SalesmanTravel < ApplicationRecord
   }
 
   scope :by_load_at, ->(loaded, date) {
-    items = where("load_at IS#{loaded ? " NOT" : ""} ?", nil)
-    items = items.where('load_at >= ?', date)
-                .where('load_at < ?', date + 1.days) if date.present?
-    items
+    if loaded
+      items = where("load_at IS#{loaded ? " NOT" : ""} ?", nil)
+      items = items.where('load_at >= ?', date)
+                  .where('load_at < ?', date + 1.days) if date.present?
+      items
+    else
+      where("load_at IS ?", nil)
+    end
   }
 
   def id_number
