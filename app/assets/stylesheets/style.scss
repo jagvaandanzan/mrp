@@ -676,3 +676,21 @@ img.tumb {
   width: 50px!important;
   height: 50px!important;
 }
+.inner-btn{
+  width: auto;
+  float: right;
+}
+.inner-nested-div input,
+.inner-nested-div select,
+.inner-nested-div span{
+  font-size: 11px!important;
+}
+.inner-nested{
+  display: inline-block;
+
+  margin-left: -1px;
+  margin-top: -1px;
+}
+.inner-nested input.form-control{
+  border: 1px solid #dee2e6!important;
+}

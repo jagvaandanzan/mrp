@@ -16,7 +16,6 @@ class ProductCategory < ApplicationRecord
 
   validates :queue, :name, :code, presence: true
   validates :code, uniqueness: true
-  validate :filter_should_be_uniq
 
   scope :search, ->(p_id) {
     items = where(parent_id: p_id)
@@ -48,13 +47,13 @@ class ProductCategory < ApplicationRecord
 
   private
 
-  def filter_should_be_uniq
-    uniq_by_filters = product_category_filters.uniq(&:category_filter_group_id)
-
-    if product_category_filters.length != uniq_by_filters.length
-      self.errors.add(:product_category_filters, :taken)
-    end
-  end
+  # def filter_should_be_uniq
+  #   uniq_by_filters = product_category_filters.uniq(&:category_filter_group_id)
+  #
+  #   if product_category_filters.length != uniq_by_filters.length
+  #     self.errors.add(:product_category_filters, :taken)
+  #   end
+  # end
 
   def sync_web(method)
     self.method_type = method

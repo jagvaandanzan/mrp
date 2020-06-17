@@ -1,14 +1,20 @@
 class AdminUsers::FacebooksController < AdminUsers::BaseController
+
   def to_archives
     count = 0
     @code = 200
-    FbComment.all.each do |fb_comment|
-      fb_comment.destroy!
-      count = count + 1
+
+    AliCategory.all.each do |ali_cat|
+
     end
 
-    @body = "to_archives: #{count}"
-    render 'admin_users/bank_logins/statement'
+    # FbComment.all.each do |fb_comment|
+    #   fb_comment.destroy!
+    #   count = count + 1
+    # end
+    #
+    # @body = "to_archives: #{count}"
+    # render 'admin_users/bank_logins/statement'
   end
 
   def attachments

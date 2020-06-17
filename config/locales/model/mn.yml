@@ -154,6 +154,7 @@ mn:
       product_sale: Борлуулалт
       product_sale_call: Залгах
       category_filter_group: Категорын шүүлтүүр
+      category_filter: Шүүлтүүр
       fb_post: Пост
       fb_comment: Комментууд
       fb_comment_archive: Түүх
@@ -458,9 +459,11 @@ mn:
         quantity: Тоо хэмжээ
       category_filter_group:
         name: Бүлгийн нэр
+        name_en: Нэр (Англи)
         category_filters: Шүүлтүүрүүд
       category_filter:
         name: Нэр
+        name_en: Нэр (Англи)
       fb_post:
         post_id: FB Post ID
         product_name: Барааны нэр

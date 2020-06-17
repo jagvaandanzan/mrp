@@ -1,0 +1,30 @@
+<tr class="nested-fields">
+  <td>
+    <%= field_errors f.object, :name %>
+    <%= f.text_field :name, class: 'form-control field', placeholder: t('activerecord.attributes.category_filter_group.name') %>
+  </td>
+  <td>
+    <%= field_errors f.object, :name %>
+    <%= f.text_field :name, class: 'form-control field', placeholder: t('activerecord.attributes.category_filter_group.name') %>
+  </td>
+  <td class="va-mid">
+    <div class="inner-nested-div">
+      <%= field_errors(f.object, :category_filters) %>
+
+      <%= f.fields_for :category_filters do |o| %>
+        <%= render 'category_filter_fields', :f => o %>
+      <% end %>
+      <div class="links links-in item_append">
+        <%= link_to_add_association f, :category_filters do %>
+          <button type="button" class="btn btn-default btn-xs inner-btn" style="margin: 2px;font-size: 11px!important;">
+            <i class="fa fa-plus"></i> <%= t('activerecord.models.category_filter') %></button>
+        <% end %>
+      </div>
+    </div>
+  </td>
+  <td class="va-mid remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>
