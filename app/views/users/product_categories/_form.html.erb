@@ -14,26 +14,11 @@
 
           <div class="col-md-12">
             <div class="row">
-              <% if @category.parent.presence %>
-                <div class="col-md-3 field_div">
-                  <%= f.label :parent, class: 'control-label' %>
-                  <div class="<%= get_error_class(@category, :parent) %>">
-                    <%= f.text_field :parent, class: 'form-control', value: @category.parent.name, disabled: true %>
-                  </div>
-                </div>
-              <% end %>
-              <div class="col-md-1 field_div">
+              <div class="col-md-3 field_div">
                 <%= f.label :queue, class: 'control-label' %>
                 <div class="<%= get_error_class(@category, :queue) %>">
                   <%= field_errors(@category, :queue) %>
                   <%= f.number_field :queue, class: 'form-control', placeholder: t('activerecord.attributes.product_category.queue') %>
-                </div>
-              </div>
-              <div class="col-md-5 field_div">
-                <%= f.label :name, class: 'control-label' %>
-                <div class="<%= get_error_class(@category, :name) %>">
-                  <%= field_errors(@category, :name) %>
-                  <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.product_category.name') %>
                 </div>
               </div>
               <div class="col-md-3 field_div">
@@ -41,6 +26,32 @@
                 <div class="<%= get_error_class(@category, :code) %>">
                   <%= field_errors(@category, :code) %>
                   <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product_category.code'), readonly: true %>
+                </div>
+              </div>
+              <% if @category.parent.presence %>
+                <div class="col-md-6 field_div">
+                  <%= f.label :parent, class: 'control-label' %>
+                  <div class="<%= get_error_class(@category, :parent) %>">
+                    <%= f.text_field :parent, class: 'form-control', value: @category.parent.name, disabled: true %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6 field_div">
+                <%= f.label :name, class: 'control-label' %>
+                <div class="<%= get_error_class(@category, :name) %>">
+                  <%= field_errors(@category, :name) %>
+                  <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.product_category.name') %>
+                </div>
+              </div>
+              <div class="col-md-6 field_div">
+                <%= f.label :name_en, class: 'control-label' %>
+                <div class="<%= get_error_class(@category, :name_en) %>">
+                  <%= field_errors(@category, :name_en) %>
+                  <%= f.text_field :name_en, class: 'form-control', placeholder: t('activerecord.attributes.product_category.name_en') %>
                 </div>
               </div>
             </div>

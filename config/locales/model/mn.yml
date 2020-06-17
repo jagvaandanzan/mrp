@@ -222,6 +222,7 @@ mn:
       product_category:
         queue: Дараалал
         name: Нэр
+        name_en: Нэр (Англи)
         code: Код
         parent_id: Эцэг ангилал
         parent: Эцэг ангилал
