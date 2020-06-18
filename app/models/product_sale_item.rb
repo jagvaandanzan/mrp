@@ -47,7 +47,7 @@ class ProductSaleItem < ApplicationRecord
   end
 
   def product_code
-    product.main_code
+    product.code
   end
 
   def product_barcode
