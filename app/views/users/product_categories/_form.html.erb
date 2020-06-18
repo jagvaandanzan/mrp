@@ -61,6 +61,8 @@
             <div class="col-md-12 field_div">
               <%= f.label :category_filter_groups, class: 'control-label' %>
 
+                <%= link_to t('titles.edit'), users_category_filter_groups_path(category_id: @category.id) %>
+
               <div class="cocoon-nested-form">
                 <table class="table table-bordered" id="tb_category_filter_groups">
                   <tr>
