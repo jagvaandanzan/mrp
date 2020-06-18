@@ -57,31 +57,75 @@
             </div>
           </div>
 
-          <div class="col-md-12 field_div">
-            <%= f.label :category_filter_groups, class: 'control-label' %>
+          <% if @category.persisted? %>
+            <div class="col-md-12 field_div">
+              <%= f.label :category_filter_groups, class: 'control-label' %>
 
-            <div class="cocoon-nested-form">
-              <div class="<%= get_error_class(@category, :category_filter_groups) %>">
-                <%= field_errors(@category, :category_filter_groups) %>
+              <div class="cocoon-nested-form">
                 <table class="table table-bordered" id="tb_category_filter_groups">
                   <tr>
                     <th><%= t('activerecord.attributes.category_filter_group.name') %></th>
                     <th><%= t('activerecord.attributes.category_filter_group.name_en') %></th>
                     <th width="60%"><%= t('activerecord.attributes.category_filter_group.category_filters') %></th>
-                    <th width="50px"></th>
                   </tr>
-                  <%= f.fields_for :category_filter_groups do |m| %>
-                    <%= render 'category_filter_group_fields', :f => m %>
-                  <% end %>
+                  <% @category.category_filter_groups.each {|filter_group| %>
+                    <tr>
+                      <td class="va-mid"><%= filter_group.name %></td>
+                      <td class="va-mid"><%= filter_group.name_en %></td>
+                      <td class="va-mid">
+                        <div class="inner-nested-div">
+                          <% filter_group.category_filters.each {|filter| %>
+                            <div class="nested-fields col-sm-12">
+                              <div class="row">
+                                <div class="inner-nested" style="width: 32%">
+                                  <%= filter.name %>
+                                </div>
+                                <div class="inner-nested" style="width: 32%">
+                                  <%= filter.name_en %>
+                                </div>
+                                <div class="inner-nested" style="width: 20%">
+                                  <% if filter.img.present? %>
+                                    <div class="preview noselect">
+                                      <%= image_tag filter.img.url(:tumb), class: 'preview-img' %>
+                                    </div>
+                                  <% end %>
+                                </div>
+                              </div>
+                            </div>
+                          <% } %>
+                        </div>
+                      </td>
+                    </tr>
+                  <% } %>
                 </table>
               </div>
-              <div class="links item_append">
-                <%= link_to_add_association f, :category_filter_groups, data: {association_insertion_node: '#tb_category_filter_groups', association_insertion_method: :append} do %>
-                  <%= nested_add_btn %>
-                <% end %>
-              </div>
             </div>
-          </div>
+          <% end %>
+          <!--          <div class="col-md-12 field_div">-->
+          <%#= f.label :category_filter_groups, class: 'control-label' %>
+
+          <!--            <div class="cocoon-nested-form">-->
+          <!--              <div class="<%#= get_error_class(@category, :category_filter_groups) %>">-->
+          <%#= field_errors(@category, :category_filter_groups) %>
+          <!--                <table class="table table-bordered" id="tb_category_filter_groups">-->
+          <!--                  <tr>-->
+          <!--                    <th><%#= t('activerecord.attributes.category_filter_group.name') %></th>-->
+          <!--                    <th><%#= t('activerecord.attributes.category_filter_group.name_en') %></th>-->
+          <!--                    <th width="60%"><%#= t('activerecord.attributes.category_filter_group.category_filters') %></th>-->
+          <!--                    <th width="50px"></th>-->
+          <!--                  </tr>-->
+          <%#= f.fields_for :category_filter_groups do |m| %>
+          <%#= render 'category_filter_group_fields', :f => m %>
+          <%# end %>
+          <!--                </table>-->
+          <!--              </div>-->
+          <!--              <div class="links item_append">-->
+          <%#= link_to_add_association f, :category_filter_groups, data: {association_insertion_node: '#tb_category_filter_groups', association_insertion_method: :append} do %>
+          <%#= nested_add_btn %>
+          <%# end %>
+          <!--              </div>-->
+          <!--            </div>-->
+          <!--          </div>-->
 
           <div class="action-buttons">
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
