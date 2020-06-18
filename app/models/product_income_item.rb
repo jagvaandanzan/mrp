@@ -3,7 +3,6 @@ class ProductIncomeItem < ApplicationRecord
   belongs_to :supply_order_item, :class_name => "ProductSupplyOrderItem"
   belongs_to :product
   belongs_to :product_supplier
-  belongs_to :feature_rel, :class_name => "ProductFeatureRel"
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
   has_many :income_locations, :class_name => "ProductIncomeLocation", :foreign_key => "income_item_id", dependent: :destroy
 
@@ -108,8 +107,6 @@ class ProductIncomeItem < ApplicationRecord
       self.product = supply_order_item.product
       self.product_supplier = supply_order_item.product_supply_order.supplier
     end
-
-    self.feature_rel_id = feature_item.feature_rel_id if feature_item_id.present?
   end
 
   def set_sum_price

@@ -3,7 +3,6 @@ class ProductSaleDirect < ApplicationRecord
 
   belongs_to :salesman
   belongs_to :product
-  belongs_to :feature_rel, :class_name => "ProductFeatureRel"
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
   belongs_to :sale_item, :class_name => "ProductSaleItem"
 
@@ -31,7 +30,7 @@ class ProductSaleDirect < ApplicationRecord
   end
 
   def product_image
-    feature_rel.image
+    feature_item.img
   end
 
   def product_size
