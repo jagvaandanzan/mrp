@@ -1,4 +1,4 @@
-﻿<aside class="main-sidebar sidebar_fixed">
+<aside class="main-sidebar sidebar_fixed">
   <section class="sidebar">
     <ul class="sidebar-menu" data-widget="tree">
       <% if can? :read, ProductIncome %>
@@ -97,7 +97,7 @@
         <%= content_tag :li, class: controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations' ||
             controller_name == 'product_categories' || controller_name == 'product_suppliers' ||
             controller_name == 'product_features' || controller_name == 'product_feature_options' ||
-            controller_name == 'product_locations' ||
+            controller_name == 'product_locations' || controller_name == 'category_filter_groups' ||
             controller_name == 'brands' || controller_name == 'manufacturers' || controller_name == 'technical_specifications' || controller_name == 'size_instructions' ||
             controller_name == 'operators' || controller_name == 'salesmen' ? 'treeview active' : 'treeview' do %>
           <%= link_to "#" do %>
@@ -124,6 +124,11 @@
               <%= content_tag :li, class: (controller_name == 'product_features' || controller_name == 'product_feature_options') ? 'active' : '' do %>
                 <%= link_to users_product_features_path do %>
                   <i class="fa fa-asterisk"></i><span><%= t('titles.product_features') %></span>
+                <% end %>
+              <% end %>
+              <%= content_tag :li, class: (controller_name == 'category_filter_groups') ? 'active' : '' do %>
+                <%= link_to users_category_filter_groups_path do %>
+                  <i class="fa fa-filter"></i><span><%= t('titles.category_filter_groups') %></span>
                 <% end %>
               <% end %>
               <%= content_tag :li, class: (controller_name == 'brands') ? 'active' : '' do %>

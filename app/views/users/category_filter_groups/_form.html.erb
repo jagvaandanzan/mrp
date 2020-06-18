@@ -7,14 +7,37 @@
       <%= form_with model: @filter_group, url: @filter_group.persisted? ? users_category_filter_group_path : users_category_filter_groups_path,
                     method: @filter_group.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
-
+          <%= f.hidden_field :product_category_id, {value: @filter_group.product_category.id} %>
           <div class="col-md-12">
             <div class="row">
-              <div class="col-md-12 field_div">
+              <div class="col-md-6 field_div">
+                <div class="div_input">
+                  <b><%= t('activerecord.attributes.category_filter_group.produc_category_code') %>
+                    :</b> <%= @filter_group.product_category.code %>
+                </div>
+              </div>
+              <div class="col-md-6 field_div">
+                <div class="div_input">
+                  <b><%= t('activerecord.attributes.category_filter_group.produc_category_name') %>
+                    :</b> <%= @filter_group.product_category.name %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6 field_div">
                 <%= f.label :name, class: 'control-label' %>
                 <div class="<%= get_error_class(@filter_group, :name) %>">
                   <%= field_errors(@filter_group, :name) %>
                   <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.category_filter_group.name') %>
+                </div>
+              </div>
+              <div class="col-md-6 field_div">
+                <%= f.label :name_en, class: 'control-label' %>
+                <div class="<%= get_error_class(@filter_group, :name_en) %>">
+                  <%= field_errors(@filter_group, :name_en) %>
+                  <%= f.text_field :name_en, class: 'form-control', placeholder: t('activerecord.attributes.category_filter_group.name_en') %>
                 </div>
               </div>
             </div>
@@ -28,6 +51,8 @@
                 <table class="table table-bordered" id="tb_category_filters">
                   <tr>
                     <th><%= t('activerecord.attributes.category_filter.name') %></th>
+                    <th><%= t('activerecord.attributes.category_filter.name_en') %></th>
+                    <th><%= t('activerecord.attributes.category_filter.img') %></th>
                     <th width="50px"></th>
                   </tr>
                   <%= f.fields_for :category_filters do |m| %>

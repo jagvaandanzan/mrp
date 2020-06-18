@@ -11,8 +11,12 @@ class CategoryFilterGroup < ApplicationRecord
   scope :order_name, ->() {
     order(:name)
   }
-  scope :search, ->(name) {
+  scope :search, ->(category_id, category_code, category_name, name) {
     items = order_name
+    items = items.joins(:product_category) if category_code.present? || category_name.present?
+    items = items.where('product_categories.code = ?', category_code) if category_code.present?
+    items = items.where('product_categories.name LIKE :value', value: "%#{category_name}%") if category_name.present?
+    items = items.where('product_category_id = ?', category_id) if category_id.present?
     items = items.where('name LIKE :value', value: "%#{name}%") if name.present?
     items
   }

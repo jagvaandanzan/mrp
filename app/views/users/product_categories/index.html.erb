@@ -42,7 +42,7 @@
                   <td class="va-mid"><%= link_to c.name, users_product_categories_path(parent_id: c.id) %></td>
                   <td class="va-mid"><%= c.parent.presence ? c.parent.name : "" %></td>
                   <td class="text-center va-mid"><%= c.children.presence ? c.children.count : "0" %></td>
-                  <td class="text-center va-mid"><%= c.category_filter_groups.count %></td>
+                  <td class="va-mid text-center"><%= link_to c.category_filter_groups.count, users_category_filter_groups_path(category_id: c.id) %></td>
                   <% if is_manage %>
                     <td>
                       <div class="btn-group">

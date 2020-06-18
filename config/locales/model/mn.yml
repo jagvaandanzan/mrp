@@ -67,6 +67,15 @@ mn:
         jpy: Иен
         gbr: Английн фунт
         mnt: Төгрөг
+      status:
+        order_created: Захиалга үүссэн
+        ordered: Захиалга хийсэн
+        cost_included: Тээврийн зардал орсон
+        warehouse_received: Агуулах хүлээж авсан
+        calculated: Тооцоо нийлсэн
+        clarification: Тодруулга хийх
+        clarified: Тодруулга хийсэн
+        canceled: Цуцалсан
     product_supply_order:
       payment:
         belneer: Бэлнээр
@@ -330,12 +339,17 @@ mn:
         gift_wrap: Бэлгийн боолт
       product_sample:
         code: Код
+        status: Төлөв
         ordered_date: Огноо
         supplier_id: Нийлүүлэгч
         payment: Төл.хэлбэр
         exchange: Валют
         exchange_value: Ханш
         product_supply_order_items: Бараанууд
+        link: Линк
+        description: Тайлбар
+        product_name: Барааны нэр
+        product_sample_images: Барааны зураг
       product_supply_order:
         code: Код
         ordered_date: Огноо
@@ -350,10 +364,7 @@ mn:
       product_supply_order_item:
         supply_order_id: Худалдан авалт
         product_id: Бараа
-        product_name: Барааны нэр
-        link: Линк
         note: Тайлбар
-        image: Зураг
         sum_price: Нийт дүн
       product_supply_feature:
         feature_item_id: Шинж чанар
@@ -459,12 +470,15 @@ mn:
         sum_price: Нийт
         quantity: Тоо хэмжээ
       category_filter_group:
+        produc_category_code: Категорын код
+        produc_category_name: Категорын нэр
         name: Бүлгийн нэр
         name_en: Нэр (Англи)
         category_filters: Шүүлтүүрүүд
       category_filter:
         name: Нэр
         name_en: Нэр (Англи)
+        img: Зураг
       fb_post:
         post_id: FB Post ID
         product_name: Барааны нэр

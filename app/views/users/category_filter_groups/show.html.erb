@@ -11,7 +11,7 @@
     <% if can? :update, Product %>
       <%= link_to t('controls.button.edit'), edit_users_category_filter_group_path(@filter_group), class: 'btn btn-info' %>
     <% end %>
-    <%= link_to t('titles.back_to_list'), users_category_filter_groups_path(page: cookies[:category_filter_page_number]), {class: "btn blck-btn"} %>
+    <%= link_to t('titles.back_to_list'), users_category_filter_groups_path(category_id: @filter_group.product_category_id, page: cookies[:category_filter_page_number]), {class: "btn blck-btn"} %>
     <% if can? :destroy, Product %>
       <%= link_to t('controls.button.delete'), users_category_filter_group_path(@filter_group), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <% end %>
@@ -21,9 +21,26 @@
       <div class="box-body">
         <div class="col-md-12">
           <div class="row">
-            <div class="col-md-12 field_div">
+            <div class="col-md-2 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.category_filter_group.produc_category_code') %>
+                  :</b> <%= @filter_group.product_category.present? ? @filter_group.product_category.code : '' %>
+              </div>
+            </div>
+            <div class="col-md-4 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.category_filter_group.produc_category_name') %>
+                  :</b> <%= @filter_group.product_category.present? ? @filter_group.product_category.name : '' %>
+              </div>
+            </div>
+            <div class="col-md-3 field_div">
               <div class="div_input">
                 <b><%= t('activerecord.attributes.category_filter_group.name') %>:</b> <%= @filter_group.name %>
+              </div>
+            </div>
+            <div class="col-md-3 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.category_filter_group.name_en') %>:</b> <%= @filter_group.name_en %>
               </div>
             </div>
           </div>
@@ -31,23 +48,28 @@
 
         <% if @filter_group.category_filters.present? %>
           <div class="col-md-12 group_div m-t-20">
-              <b><%= t('activerecord.attributes.category_filter_group.category_filters') %></b>
-              <table class="table table-bordered">
-                <thead>
+            <b><%= t('activerecord.attributes.category_filter_group.category_filters') %></b>
+            <table class="table table-bordered">
+              <thead>
+              <tr>
+                <th><%= t('activerecord.attributes.category_filter.name') %></th>
+                <th><%= t('activerecord.attributes.category_filter.name_en') %></th>
+                <th><%= t('activerecord.attributes.category_filter.img') %></th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @filter_group.category_filters.each do |filter| %>
                 <tr>
-                  <th><%= t('activerecord.attributes.category_filter.name') %></th>
-                  <th><%= t('activerecord.attributes.category_filter.name') %></th>
-                </tr>
-                </thead>
-                <tbody>
-                <% @filter_group.category_filters.each do |filter| %>
-                  <tr>
-                    <td class="va-mid"><%= filter.name %></td>
-                    <td class="va-mid"><%= image_tag filter.img.url, class: 'tumb' %></td>
-                  </tr>
-                <% end %>
-                </tbody>
-              </table>
+                  <td class="va-mid"><%= filter.name %></td>
+                  <td class="va-mid"><%= filter.name_en %></td>
+                  <td class="va-mid">
+                    <% if filter.img.present? %>
+                      <%= image_tag filter.img.url, class: 'tumb' %></td>
+                    <% end %>
+                    </tr>
+              <% end %>
+              </tbody>
+            </table>
           </div>
         <% end %>
       </div>
