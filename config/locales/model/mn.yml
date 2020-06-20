@@ -140,6 +140,8 @@ mn:
         is_send_text: Зурвас илгээсэн
         user_hide: Хэрэглэгч нуусан
         user_remove: Хэрэглэгч устгасан
+        to_archive: Хариулаагүй
+        auto_phone: MRP бүртгэсэн
   activerecord:
     models:
       admin_user: Админ
