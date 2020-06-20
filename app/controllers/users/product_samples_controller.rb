@@ -22,7 +22,7 @@ class Users::ProductSamplesController < Users::BaseController
     @product_sample = ProductSample.new(product_sample_params)
     if @product_sample.save
       flash[:success] = t('alert.saved_successfully')
-      redirect_to :action => 'show', id: @product_sample.id
+      redirect_to action: :edit, id: @product_sample.id, tab_index: 1
     else
       logger.debug(@product_sample.errors.full_messages)
       render 'new'
@@ -31,12 +31,14 @@ class Users::ProductSamplesController < Users::BaseController
 
   def edit
     @product_sample.tab_index = params[:tab_index] if params[:tab_index].present?
+    product = @product_sample.get_product
+    if product.present?
+      @product_sample.option_rels = product.product_feature_option_rels.map {|i| i.feature_option_id.to_s}.to_a
+      @product_sample.product_name = product.name_en
+    end
+
     @product_sample.product_supply_order_items.each do |item|
-      if item.supply_features.count == 0
-        item.product.product_feature_items.each {|feature_item|
-          item.supply_features << ProductSupplyFeature.new(feature_item: feature_item)
-        }
-      end
+      item.set_supply_feature
     end
   end
 
@@ -89,8 +91,8 @@ class Users::ProductSamplesController < Users::BaseController
   end
 
   def product_sample_params
-    params.require(:product_sample).permit(:code, :ordered_date, :supplier_id, :payment, :exchange, :exchange_value,
-                                           product_supply_order_items_attributes: [:id, :product_name, :link, :note, :image, :_destroy])
+    params.require(:product_sample).permit(:tab_index, :code, :ordered_date, :supplier_id, :exchange, :product_name, :link, :description, option_rels: [],
+                                           product_sample_images_attributes: [:id, :image, :_destroy])
         .merge(:user => current_user)
   end
 

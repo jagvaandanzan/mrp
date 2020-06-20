@@ -38,6 +38,14 @@ class Users::ProductsController < Users::BaseController
     unless @product.product_package.present?
       @product.product_package = ProductPackage.new
     end
+    unless @product.product_names.present?
+      @product.product_names << [ProductName.new(n_type: :m_name),
+                                 ProductName.new(n_type: :m_number),
+                                 ProductName.new(n_type: :packaging),
+                                 ProductName.new(n_type: :brand),
+                                 ProductName.new(n_type: :material),
+                                 ProductName.new(n_type: :advantages)]
+    end
   end
 
   def update

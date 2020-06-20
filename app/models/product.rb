@@ -43,10 +43,11 @@ class Product < ApplicationRecord
   validates_attachment :picture,
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
 
-  with_options :if => Proc.new {|m| m.tab_index.to_i == 0} do
+  before_save :set_option_rels
+  after_save :set_option_item_single
+
+  with_options :if => Proc.new {|m| m.tab_index.to_i == 0 && !m.draft} do
     before_validation :set_name
-    before_save :set_option_rels
-    after_save :set_option_item_single
 
     validates :name, :category_id, :code, :is_own, presence: true
     validates :product_names, :length => {:minimum => 1}

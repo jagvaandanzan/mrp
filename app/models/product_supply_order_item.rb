@@ -1,25 +1,16 @@
 class ProductSupplyOrderItem < ApplicationRecord
   belongs_to :product_supply_order, optional: true
   belongs_to :product_sample, optional: true
-  belongs_to :product, -> { with_deleted }
+  belongs_to :product, -> {with_deleted}
   has_many :income_items, :class_name => "ProductIncomeItem", :foreign_key => "supply_order_item_id", dependent: :destroy
   has_many :supply_features, :class_name => "ProductSupplyFeature", :foreign_key => "order_item_id", dependent: :destroy
   accepts_nested_attributes_for :supply_features, allow_destroy: true
 
-  has_attached_file :image, :path => ":rails_root/public/product_supply_order_items/image/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/product_supply_order_items/image/:id_partition/:style.:extension'
-  validates_attachment :image,
-                       content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
   attr_accessor :tab_index
 
-  with_options :if => Proc.new { |m| m.product_supply_order.present? } do
+  with_options :if => Proc.new {|m| m.product_supply_order.present?} do
     validates :product_id, presence: true
   end
-
-  with_options :if => Proc.new { |m| m.product_sample.present? } do
-    validates :link, presence: true
-    validates :product_name, presence: true, length: {maximum: 255}
-  end
-
 
   def get_currency(value)
     ApplicationController.helpers.get_currency(value, Const::CURRENCY[get_model.exchange_before_type_cast.to_i], 0)
@@ -73,7 +64,18 @@ class ProductSupplyOrderItem < ApplicationRecord
       sum += feature.quantity * feature.price
     end
 
-    self.update_attributes(sum_price: sum.to_f.round(1), sum_tug: (sum * get_model.exchange_value).to_f.round(1))
+    self.update_attributes(sum_price: sum.to_f.round(1))
+  end
+
+  def set_supply_feature
+    if product.product_feature_items.present?
+      if supply_features.count != product.product_feature_items.count
+        self.supply_features.destroy_all
+        product.product_feature_items.each {|feature_item|
+          self.supply_features << ProductSupplyFeature.new(feature_item: feature_item)
+        }
+      end
+    end
   end
 
   private

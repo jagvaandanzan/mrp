@@ -1,0 +1,21 @@
+<div class="nested-fields text-center" style="float: left;margin-right: 8px">
+  <div>
+    <%= field_errors f.object, :image %>
+    <%= f.file_field :image, accept: "image/*", class: 'image-file none-force' %>
+    <div class="preview noselect">
+      <% if f.object.image.present? %>
+        <%= image_tag f.object.image.url(:tumb), class: 'preview-img' %>
+      <% else %>
+        <span class="text"><%= t('upload_image') %></span>
+      <% end %>
+    </div>
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </div>
+</div>
+<script>
+    $(document).ready(function () {
+        load_image_preview("#div_product_sample_images .nested-fields:last");
+    })
+</script>

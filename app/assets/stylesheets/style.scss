@@ -23,7 +23,7 @@
 }
 
 .content-wrapper {
-  margin-top: 30px;
+  margin-top: 50px;
 }
 
 .none {
@@ -693,4 +693,8 @@ img.tumb {
 }
 .inner-nested input.form-control{
   border: 1px solid #dee2e6!important;
+}
+
+.cocoon-nested-form .links a.append-after {
+  float: left;
 }

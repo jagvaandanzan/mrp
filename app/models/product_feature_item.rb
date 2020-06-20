@@ -4,7 +4,8 @@ class ProductFeatureItem < ApplicationRecord
   belongs_to :option2, :class_name => "ProductFeatureOption"
   belongs_to :same_item, :class_name => "ProductFeatureItem", optional: true
 
-  has_many :product_sale_items, :class_name => "ProductSaleItem", :foreign_key => "feature_item_id"
+  has_many :product_sale_items, :class_name => "ProductSaleItem", :foreign_key => "feature_item_id", dependent: :destroy
+  has_many :product_supply_features, :class_name => "ProductSupplyFeature", :foreign_key => "feature_item_id", dependent: :destroy
   has_many :product_sales, through: :product_sale_items
   has_many :salesman_travel, through: :product_sales
 
@@ -77,7 +78,7 @@ class ProductFeatureItem < ApplicationRecord
     end
   end
 
-    def img
+  def img
     if image.present?
       image
     elsif same_item.present?
