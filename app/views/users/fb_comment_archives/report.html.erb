@@ -63,7 +63,7 @@
                   <td class="text-center"><%= operator.to_chat_count %></td>
                   <td class="text-center"><%= operator.comment_count %></td>
                   <td class="text-center"><%= operator.no_replied %></td>
-                  <td><%= operator.reply_percent > 0 ? get_f(operator.reply_percent) + '%' : '' %></td>
+                  <td><%= operator.reply_percent > 0 ? "#{get_f(operator.reply_percent)} %" : '' %></td>
                   <td><%= operator.comment_minute > 0 ? "#{get_f(operator.comment_minute)} #{t('minute_s')}" : '' %></td>
                   <td><%= operator.comment_avg > 0 ? "#{get_f(operator.comment_avg)} #{t('minute_s')}" : '' %></td>
                   <td class="text-center"><%= operator.like_count %></td>
