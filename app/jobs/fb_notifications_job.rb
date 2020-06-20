@@ -42,6 +42,7 @@ class FbNotificationsJob < ApplicationJob
                              date: created_at)
           else
             FbCommentArchive.create(fb_post: fb_post,
+                                    verb: 9,
                                     message: message,
                                     photo: obj[:photo],
                                     comment_id: obj[:comment_id],
