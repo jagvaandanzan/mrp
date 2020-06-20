@@ -15,9 +15,17 @@ class Operators::FbCommentArchivesController < Operators::BaseController
       today = Time.now.beginning_of_day
       @start = @finish = today.strftime('%Y/%m/%d')
     end
+    if params[:start_hour].present?
+      @start_hour = params[:start_hour]
+      @end_hour = params[:end_hour]
+    else
+      @start_hour = 0
+      @end_hour = 23
+    end
     @operator_id = params[:operator_id]
 
-    @fb_comment_archives = FbCommentArchive.search(params[:archive_id], params[:cid], @fb_post_id, @post_id, @user_name, @message, @start, @finish, @verb, @operator_id).page(params[:page])
+    @fb_comment_archives = FbCommentArchive.search(params[:archive_id], params[:cid], @fb_post_id, @post_id, @user_name, @message,
+                                                   @start, @finish, @start_hour, @end_hour, @verb, @operator_id).page(params[:page])
     cookies[:fb_comment_archive_page_number] = params[:page]
 
   end

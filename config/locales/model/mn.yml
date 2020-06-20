@@ -530,6 +530,7 @@ mn:
         remove_count: Устгасан
         user_remove_count: Х. устгасан
         mpr_phone: MRP Бүртгэсэн тоо
+        total_count: Бүх комментын тоо
       bank_transaction:
         value: Гүйлгээний утга
         account: Данс

@@ -20,6 +20,11 @@
           <%= f.hidden_field :finish, value: @finish %>
         </div>
       </div>
+      <div class="col-md-1 search">
+        <%= f.select :start_hour, 0..23, {selected: @start_hour}, {class: '', style:'border-color: #d2d6de;'} %>
+        -
+        <%= f.select :end_hour, 0..23, {selected: @end_hour}, {class: '', style:'border-color: #d2d6de;'} %>
+      </div>
       <div class="col-md-2 search">
         <%= f.select :verb, FbCommentArchive.verbs_i18n.keys.map {|k| [FbCommentArchive.verbs_i18n[k], k]},
                      {:prompt => t('activerecord.attributes.fb_comment_archive.verb'), :selected => @verb}, {class: 'form-control'} %>
@@ -28,7 +33,7 @@
       <div class="col-md-2 search">
         <%= f.collection_select :operator_id, Operator.order_name, :id, :name, {:selected => @operator_id, :include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
       </div>
-      <div class="col-md-2 search">
+      <div class="col-md-1 search">
         <%= submit_tag t('controls.button.searching') + " (" + @fb_comment_archives.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
       </div>
     <% end %>

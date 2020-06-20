@@ -44,6 +44,7 @@
             <table class="table table-hover table-bordered">
               <tr>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.operator') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.user_count') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.to_chat_count') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.comments') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.no_replied') %></th>
@@ -57,9 +58,23 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.user_remove_count') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.fb_comment_archive.mpr_phone') %></th>
               </tr>
+              <% user_count = 0
+                 to_chat_count = 0
+                 comment_count = 0
+                 no_replied = 0
+                 reply_percent = 0
+                 comment_minute = 0
+                 comment_avg = 0
+                 like_count = 0
+                 remove_count = 0
+                 hide_count = 0
+                 user_hide_count = 0
+                 user_remove_count = 0
+                 mpr_phone = 0 %>
               <% @operators.each {|operator| %>
                 <tr>
                   <td><%= operator.name %></td>
+                  <td class="text-center"><%= operator.user_count %></td>
                   <td class="text-center"><%= operator.to_chat_count %></td>
                   <td class="text-center"><%= operator.comment_count %></td>
                   <td class="text-center"><%= operator.no_replied %></td>
@@ -73,8 +88,40 @@
                   <td class="text-center"><%= operator.user_remove_count %></td>
                   <td class="text-center"><%= operator.mpr_phone %></td>
                 </tr>
+                <% user_count = user_count + operator.user_count
+                   to_chat_count = to_chat_count + operator.to_chat_count
+                   comment_count = comment_count + operator.comment_count
+                   no_replied = no_replied + operator.no_replied
+                   reply_percent = reply_percent + operator.reply_percent
+                   comment_minute = comment_minute + operator.comment_minute
+                   comment_avg = comment_avg + operator.comment_avg
+                   like_count = like_count + operator.like_count
+                   remove_count = remove_count + operator.remove_count
+                   hide_count = hide_count + operator.hide_count
+                   user_hide_count = user_hide_count + operator.user_hide_count
+                   user_remove_count = user_remove_count + operator.user_remove_count
+                   mpr_phone = mpr_phone + operator.mpr_phone %>
               <% } %>
+              <tr>
+                <td><b><%= t('titles.total') %></b></td>
+                <td class="text-center"><%= user_count %></td>
+                <td class="text-center"><%= to_chat_count %></td>
+                <td class="text-center"><%= comment_count %></td>
+                <td class="text-center"><%= no_replied %></td>
+                <td><%= reply_percent > 0 ? "#{get_f(reply_percent)} %" : '' %></td>
+                <td><%= comment_minute > 0 ? "#{get_f(comment_minute)} #{t('minute_s')}" : '' %></td>
+                <td><%= comment_avg > 0 ? "#{get_f(comment_avg)} #{t('minute_s')}" : '' %></td>
+                <td class="text-center"><%= like_count %></td>
+                <td class="text-center"><%= remove_count %></td>
+                <td class="text-center"><%= hide_count %></td>
+                <td class="text-center"><%= user_hide_count %></td>
+                <td class="text-center"><%= user_remove_count %></td>
+                <td class="text-center"><%= mpr_phone %></td>
+              </tr>
             </table>
+            <div style="padding: 6px;font-size: 12px">
+              <b><%= t('activerecord.attributes.fb_comment_archive.total_count') %></b>: <%= @total_count %>
+            </div>
           </div>
         </div>
       </div>

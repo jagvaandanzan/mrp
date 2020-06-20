@@ -33,7 +33,7 @@ class FbCommentArchive < ApplicationRecord
     where("archive_id IS#{is} ?", nil)
   }
 
-  scope :search, ->(archive_id, comment_id, fb_post_id, post_id, user_name, message, start, finish, verb, operator_id) {
+  scope :search, ->(archive_id, comment_id, fb_post_id, post_id, user_name, message, start, finish, s_hour, e_hour, verb, operator_id) {
     items = order_date_desc
     if archive_id.present?
       items = items.where(archive_id: archive_id) if archive_id.present?
@@ -48,6 +48,7 @@ class FbCommentArchive < ApplicationRecord
     items = items.where('user_name LIKE :value', value: "%#{user_name}%") if user_name.present?
     items = items.where('message LIKE :value', value: "%#{message}%") if message.present?
     items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items = items.where('? <= HOUR(date) AND HOUR(date) <= ?', s_hour.to_i, e_hour.to_i) unless (s_hour.to_i == 0 && e_hour.to_i == 23)
     items = items.where(operator_id: operator_id) if operator_id.present?
     items
   }
@@ -60,23 +61,33 @@ class FbCommentArchive < ApplicationRecord
     items
   }
 
-  scope :by_response_time, ->(operator_id, start, finish) {
+  scope :by_response, ->(operator_id, start, finish) {
     items = where("verb = ?", 0)
+                .or(where("user_id IS NOT ?", nil))
+                .or(where("verb IS ?", nil))
                 .or(where("verb = ?", 4))
                 .or(where("verb = ?", 5))
     items = items.joins(:operator)
                 .where(operator_id: operator_id) if operator_id.present?
     items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items
+  }
+
+  scope :by_response_time, ->(operator_id, start, finish) {
+    items = by_response(operator_id, start, finish)
     items.sum("TIMESTAMPDIFF(MINUTE,fb_comment_archives.date,fb_comment_archives.created_at)")
   }
 
   scope :by_response_count, ->(operator_id, start, finish) {
+    items = by_response(operator_id, start, finish)
+    items.count
+  }
+
+  scope :by_count, ->(start, finish) {
     items = where("verb = ?", 0)
-                .or(where("verb = ?", 4))
-                .or(where("verb = ?", 5))
-    items = items.joins(:operator)
-                .where(operator_id: operator_id) if operator_id.present?
-    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+                .or(where("verb IS ?", nil))
+                .or(where("user_id IS NOT ?", nil))
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days)
     items.count
   }
 
@@ -90,6 +101,15 @@ class FbCommentArchive < ApplicationRecord
 
   scope :by_verb_count, ->(operator_id, start, finish, verb) {
     items = where("verb = ?", verb)
+    items = items.joins(:operator)
+                .where(operator_id: operator_id) if operator_id.present?
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items.count
+  }
+  scope :mpr_phone, ->(operator_id, start, finish) {
+    items = joins(:fb_post)
+    items = items.where("fb_posts.product_code != ?", '000000')
+    items = items.where("verb = ?", 9)
     items = items.joins(:operator)
                 .where(operator_id: operator_id) if operator_id.present?
     items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
