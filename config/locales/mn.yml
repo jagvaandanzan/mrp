@@ -101,6 +101,7 @@ mn:
   are_you_sure_switch: "Шилжүүлэх үү ?"
   currency: ₮
   minute: минут
+  minute_s: мин
   currency_name: Төгрөг
   upload_file: Файл хуулах
   upload_image: Зураг хуулах

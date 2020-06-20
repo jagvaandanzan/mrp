@@ -520,12 +520,14 @@ mn:
         comment_time: Зарцуулсан хугацаа
         avg_time: Дундаж хугацаа
         like_count: Лайк
-        verb_count: Хариулсан комментын хувь
-        user_count: Харилцсан харилцагчийн тоо
+        verb_count: Хариулсан коммент хувь
+        user_count: Харилцсан харилцагч тоо
+        to_chat_count: Чат руу шилжсэн
         hide_count: Нуусан
-        user_hide_count: Хэрэглэгч нуусан
+        user_hide_count: Х. нуусан
         remove_count: Устгасан
-        user_remove_count: Хэрэглэгч устгасан
+        user_remove_count: Х. устгасан
+        mpr_phone: MRP Бүртгэсэн тоо
       bank_transaction:
         value: Гүйлгээний утга
         account: Данс
