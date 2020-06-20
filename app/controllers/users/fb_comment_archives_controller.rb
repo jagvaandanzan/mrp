@@ -61,7 +61,7 @@ class Users::FbCommentArchivesController < Users::BaseController
       operator.hide_count = FbCommentArchive.by_verb_count(oper.id, @start, @finish, 1)
       operator.user_hide_count = FbCommentArchive.by_verb_count(oper.id, @start, @finish, 6)
       operator.user_remove_count = FbCommentArchive.by_verb_count(oper.id, @start, @finish, 7)
-      operator.comment_avg = (operator.comment_minute > 0 && operator.comment_count > 0) ? (operator.comment_minute.to_f / operator.comment_count).to_f.round(1) : 0
+      operator.comment_avg = (operator.comment_minute > 0 && operator.comment_count > 0) ? (operator.comment_minute.to_f / operator.comment_count).round(1) : 0
       operator.mpr_phone = FbCommentArchive.mpr_phone(oper.id, @start, @finish)
       @operators << operator
       @operator_count.push({label: operator.name, value: operator.comment_count})
