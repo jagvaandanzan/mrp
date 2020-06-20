@@ -61,15 +61,19 @@ class FbCommentArchive < ApplicationRecord
   }
 
   scope :by_response_time, ->(operator_id, start, finish) {
-    items = where("verb = 0 OR verb = 4 OR verb = 5")
-    items = joins(:operator)
+    items = where("verb = ?", 0)
+                .or(where("verb = ?", 4))
+                .or(where("verb = ?", 5))
+    items = items.joins(:operator)
                 .where(operator_id: operator_id) if operator_id.present?
     items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items.sum("TIMESTAMPDIFF(MINUTE,fb_comment_archives.date,fb_comment_archives.created_at)")
   }
 
   scope :by_response_count, ->(operator_id, start, finish) {
-    items = where("verb = 0 OR verb = 4 OR verb = 5")
+    items = where("verb = ?", 0)
+                .or(where("verb = ?", 4))
+                .or(where("verb = ?", 5))
     items = items.joins(:operator)
                 .where(operator_id: operator_id) if operator_id.present?
     items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
@@ -88,7 +92,7 @@ class FbCommentArchive < ApplicationRecord
     items = where("verb = ?", verb)
     items = items.joins(:operator)
                 .where(operator_id: operator_id) if operator_id.present?
-    items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items.count
   }
 
@@ -104,7 +108,7 @@ class FbCommentArchive < ApplicationRecord
                 .or(where("verb = ?", 5))
     items = items.joins(:operator)
                 .where(operator_id: operator_id) if operator_id.present?
-    items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items.count
   }
 
