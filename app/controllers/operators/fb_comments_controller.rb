@@ -54,6 +54,7 @@ class Operators::FbCommentsController < Operators::BaseController
           answers = FbCommentAnswer.by_answer(answer)
           if answers.present?
             fb_comment_answer = answers.first
+            fb_comment_answer.update_attribute(:used, fb_comment_answer.used + 1)
             Rails.logger.info("greeting_answer: #{fb_comment_answer.id} => #{answer}")
           else
             fb_comment_answer = FbCommentAnswer.create(answer: @fb_comment.reply_text, operator: current_operator)
