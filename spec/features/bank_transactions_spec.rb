@@ -25,6 +25,7 @@ describe "bank transaction check", type: :feature do
 
     puts "tbl_Stmt: " + Time.now.to_s
 
+    sleep 2.second
     while page.has_content?("Цааш нь үзэх")
       puts "click: cphMain_ctl00_btnReadMore => " + Time.now.to_s
       click_link "cphMain_ctl00_btnReadMore"
