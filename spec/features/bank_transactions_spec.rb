@@ -23,6 +23,7 @@ describe "bank transaction check", type: :feature do
     find('#cphMain_ctl00_ddlAcntNo').find(:xpath, "option[@value='MNTD0000000#{ENV['ACCOUNT']}']").select_option
 
     click_link "cphMain_ctl00_btnSearch1"
+    page.has_css?('table#tbl_Stmt', wait: 0)
     page.has_selector?('table#tbl_Stmt')
 
     puts "tbl_Stmt: " + Time.now.to_s
