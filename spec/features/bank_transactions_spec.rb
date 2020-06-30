@@ -13,7 +13,7 @@ describe "bank transaction check", type: :feature do
       click_link "btnLogin"
     end
     puts "click 1: " + Time.now.to_s
-    sleep 1.minute
+    sleep 6.minute
     page.has_css?('a#cphMain_ctl00_ucAcnt_Menu1_acntJrnl', wait: 0)
     page.has_selector?('a#cphMain_ctl00_ucAcnt_Menu1_acntJrnl')
     puts "Logged: " + Time.now.to_s
