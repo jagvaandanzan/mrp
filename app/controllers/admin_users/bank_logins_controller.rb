@@ -25,7 +25,9 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
       click_link "btnLogin"
     end
 
-    page.has_selector?('a#cphMain_ctl00_ucAcnt_Menu1_acntJrnl')
+    # page.has_selector?('a#cphMain_ctl00_ucAcnt_Menu1_acntJrnl')
+    page.has_css?('a#cphMain_ctl00_ucAcnt_Menu1_acntJrnl', wait: 100)
+
     puts "Logged: " + Time.now.to_s
     visit('/pageMain?content=ucAcnt_Statement')
     # fill_in 'ctl00$cphMain$ctl00$numBegDate', with: '2020.01.09'
