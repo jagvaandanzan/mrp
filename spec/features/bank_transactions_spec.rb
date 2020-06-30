@@ -13,13 +13,13 @@ describe "bank transaction check", type: :feature do
       click_link "btnLogin"
     end
     puts "click 1: " + Time.now.to_s
-    sleep 4.minute
+    sleep 3.minute
     page.has_css?('a#cphMain_ctl00_ucAcnt_Menu1_acntJrnl', wait: 0)
     page.has_selector?('a#cphMain_ctl00_ucAcnt_Menu1_acntJrnl')
     puts "Logged: " + Time.now.to_s
     visit('/pageMain?content=ucAcnt_Statement')
     # fill_in 'ctl00$cphMain$ctl00$numBegDate', with: '2020.01.09'
-
+    sleep 2.minute
     find('#cphMain_ctl00_ddlAcntNo').find(:xpath, "option[@value='MNTD0000000#{ENV['ACCOUNT']}']").select_option
 
     click_link "cphMain_ctl00_btnSearch1"
