@@ -5,7 +5,7 @@ require 'capybara/rspec'
 require 'capybara/dsl'
 require 'selenium/webdriver'
 
-Capybara.default_max_wait_time = 6
+Capybara.default_max_wait_time = 9
 # Setup chrome headless driver
 Capybara.server = :puma, { Silent: true }
 
