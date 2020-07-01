@@ -52,7 +52,7 @@ class ProductSample < ApplicationRecord
       if product_supply_order_items.present?
         product = get_product
         product.option_rels = option_rels
-        product.name_en = product_name
+        product.name = product_name
         product.save
       else
         product = Product.new(draft: true,

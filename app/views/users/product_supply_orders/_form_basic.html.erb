@@ -1,0 +1,70 @@
+<%= form_with model: product_supply, url: product_supply.persisted? ? users_product_supply_order_path : users_product_supply_orders_path,
+              method: product_supply.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+  <%= form_body do %>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3">
+            <%= f.label :code, class: 'control-label' %>
+            <div class="<%= get_error_class(product_supply, :code) %>">
+              <%= field_errors(product_supply, :code) %>
+              <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product_supply_order.code') %>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <%= f.label :ordered_date, class: 'control-label' %>
+            <div class="input-append input-group date <%= get_error_class(product_supply, :ordered_date) %>" data-provide="datepicker">
+              <%= field_errors(product_supply, :ordered_date) %>
+              <%= f.text_field :ordered_date, value: product_supply.ordered_date.strftime('%F'), class: 'field form-control', placeholder: t('activerecord.attributes.product_supply_order.ordered_date') %>
+              <div class="input-group-addon">
+                <i class="fa fa-calendar"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 field_div">
+            <%= f.label :supplier_id, class: 'control-label' %>
+            <div class="<%= get_error_class(product_supply, :supplier_id) %>">
+              <%= field_errors(product_supply, :supplier_id) %>
+              <%= f.collection_select :supplier_id, ProductSupplier.search(""), :id, :name, {}, {class: 'form-control'} %>
+            </div>
+          </div>
+          <div class="col-md-3 field_div">
+            <%= f.label :exchange, class: 'control-label' %>
+            <div class="<%= get_error_class(product_supply, :exchange) %>">
+              <%= field_errors(product_supply, :exchange) %>
+              <%= f.select :exchange, ProductSample.exchanges_i18n.keys.map {|k| [ProductSample.exchanges_i18n[k], k]},
+                           {}, {class: 'form-control'} %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 field_div">
+        <%= f.label :product_supply_order_items, class: 'control-label' %>
+
+        <div class="cocoon-nested-form">
+          <div class="<%= get_error_class(product_supply, :product_supply_order_items) %>">
+            <%= field_errors(product_supply, :product_supply_order_items) %>
+            <table class="table table-bordered" id="tb_product_supply_order_items">
+              <tr>
+                <th><%= t('activerecord.attributes.product_supply_order_item.product_id') %></th>
+                <th><%= t('activerecord.attributes.product_supply_order_item.note') %></th>
+                <th width="50px"></th>
+              </tr>
+              <%= f.fields_for :product_supply_order_items do |m| %>
+                <%= render 'product_supply_order_item_fields', :f => m %>
+              <% end %>
+            </table>
+          </div>
+          <div class="links item_append">
+            <%= link_to_add_association f, :product_supply_order_items, data: {association_insertion_node: '#tb_product_supply_order_items', association_insertion_method: :append} do %>
+              <%= nested_add_btn %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

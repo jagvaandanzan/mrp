@@ -23,7 +23,11 @@ class Users::ProductSupplyOrdersController < Users::BaseController
     @product_supply_order = ProductSupplyOrder.new(product_supply_order_params)
     if @product_supply_order.save
       flash[:success] = t('alert.saved_successfully')
-      redirect_to :action => 'show', id: @product_supply_order.id
+      if @product_supply_order.product_supply_order_items.count > 0
+        redirect_to action: :edit, id: @product_supply_order.id, tab_index: 1
+      else
+        redirect_to action: 'index'
+      end
     else
       logger.debug(@product_supply_order.errors.full_messages)
       render 'new'
@@ -35,7 +39,8 @@ class Users::ProductSupplyOrdersController < Users::BaseController
     @product_supply_order.product_supply_order_items.each do |item|
       if item.supply_features.count == 0
         item.product.product_feature_items.each {|feature_item|
-          item.supply_features << ProductSupplyFeature.new(feature_item: feature_item)
+          item.supply_features << ProductSupplyFeature.new(feature_item: feature_item,
+                                                           price: feature_item.price)
         }
       end
     end
@@ -50,7 +55,7 @@ class Users::ProductSupplyOrdersController < Users::BaseController
     if @product_supply_order.save
       flash[:success] = t('alert.info_updated')
       if @product_supply_order.product_supply_order_items.count > 0
-        redirect_to action: :edit, id: params[:id], tab_index: 1
+        redirect_to action: :edit, id: params[:id], tab_index: @product_supply_order.tab_index + 1
       else
         redirect_to action: 'index'
       end
@@ -102,7 +107,7 @@ class Users::ProductSupplyOrdersController < Users::BaseController
   end
 
   def product_supply_order_params
-    params.require(:product_supply_order).permit(:code, :ordered_date, :supplier_id, :payment, :exchange, :is_closed, :closed_date,
+    params.require(:product_supply_order).permit(:code, :ordered_date, :supplier_id, :exchange,
                                                  product_supply_order_items_attributes: [:id, :product_id, :note, :_destroy])
         .merge(:user => current_user)
   end

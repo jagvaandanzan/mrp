@@ -7,7 +7,7 @@ class ProductSupplyOrder < ApplicationRecord
   accepts_nested_attributes_for :product_supply_order_items, allow_destroy: true
   attr_accessor :tab_index
 
-  validates :supplier_id, :code, :payment, :exchange, :exchange_value, presence: true
+  validates :supplier_id, :code, :exchange, presence: true
   validates :code, uniqueness: true
 
   enum payment: {belneer: 0, zeeleer: 1}

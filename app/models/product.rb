@@ -89,11 +89,14 @@ class Product < ApplicationRecord
   scope :order_by_name, -> {
     order(:name)
   }
+  scope :by_not_draft, -> {
+    where(draft: false)
+  }
 
   scope :search, ->(sname) {
-    items = order_by_name
+    items = by_not_draft
     items = items.where('code LIKE :value OR name LIKE :value', value: "%#{sname}%") if sname.present?
-    items
+    items.order_by_name
   }
   scope :search_by_id, ->(id) {
     if id.present?

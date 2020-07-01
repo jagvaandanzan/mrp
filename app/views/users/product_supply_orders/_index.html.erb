@@ -47,8 +47,6 @@
                 <th><%= t('activerecord.attributes.product_supply_order.code') %></th>
                 <th><%= t('activerecord.attributes.product_supply_order_item.product_id') %></th>
                 <th><%= t('activerecord.attributes.product_supply_order_item.sum_price') %></th>
-                <th><%= t('titles.total_tugrug') %></th>
-                <th><%= t('activerecord.attributes.product_supply_order.payment') %></th>
               </tr>
               <% @product_supply_order_items.each_with_index do |i, index| %>
                 <% supply_order = order_type == "order" ? i.product_supply_order : i.product_sample %>
@@ -57,8 +55,6 @@
                   <td class="va-mid"><%= link_to supply_order.code, order_type == "order" ? users_product_supply_order_path(supply_order, tab_index: index + 1) : users_product_sample_path(supply_order, tab_index: index + 1) %></td>
                   <td class="va-mid"><%= i.product.name_with_code %></td>
                   <td class="va-mid"><%= i.get_currency i.sum_price %></td>
-                  <td class="va-mid"><%= get_currency_mn i.sum_tug %></td>
-                  <td class="va-mid"><%= supply_order.payment_i18n %></td>
                 </tr>
               <% end %>
             </table>

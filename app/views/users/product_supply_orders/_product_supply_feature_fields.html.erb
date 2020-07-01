@@ -1,8 +1,8 @@
 <tr class="nested-fields field_div">
-  <td class="va-mid">
+  <td class="va-mid text-center">
     <% if f.object.feature_item.img.present? %>
       <%= link_to f.object.feature_item.img.url, "data-lightbox": "roadtrip" do %>
-        <%= image_tag f.object.feature_item.img.url(:tumb), class: 'tumb' %>
+        <%= t('titles.view')  %>
       <% end %>
     <% end %>
   </td>

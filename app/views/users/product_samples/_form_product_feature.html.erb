@@ -1,4 +1,4 @@
-<% if product.persisted? %>
+<% if product.present? && product.persisted? %>
   <%= form_with model: order_item, url: order_type == "order" ? form_feature_users_product_supply_orders_path(id: id, item_id: order_item.id) : form_feature_users_product_samples_path(id: id, item_id: order_item.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
     <%= form_body do %>
       <%= f.hidden_field :tab_index, {value: 1} %>

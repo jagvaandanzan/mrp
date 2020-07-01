@@ -1,93 +1,72 @@
 <div class="body-box">
   <div class="row">
     <div class="col-md-12">
-      <div class="col-md-4 field_div">
-        <b><%= t('activerecord.attributes.product_sample.code') %>:</b> <%= product_supply.code %>
+      <div class="col-md-3 field_div">
+        <b><%= t('activerecord.attributes.product_sample.code') %>:</b> <%= @product_sample.code %>
       </div>
-      <div class="col-md-4 field_div">
+      <div class="col-md-3 field_div">
         <b><%= t('activerecord.attributes.product_sample.ordered_date') %>
-          :</b> <%= product_supply.ordered_date.strftime('%F') %>
+          :</b> <%= @product_sample.ordered_date.strftime('%F') %>
       </div>
-      <div class="col-md-4 field_div">
-        <b><%= t('activerecord.attributes.product_sample.supplier_id') %>:</b> <%= product_supply.supplier.name %>
+      <div class="col-md-3 field_div">
+        <b><%= t('activerecord.attributes.product_sample.supplier_id') %>:</b> <%= @product_sample.supplier.name %>
+      </div>
+      <div class="col-md-3 field_div">
+        <b><%= t('activerecord.attributes.product_sample.exchange') %>:</b> <%= @product_sample.exchange_i18n %>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
-      <div class="col-md-4 field_div">
-        <b><%= t('activerecord.attributes.product_sample.payment') %>:</b> <%= product_supply.payment_i18n %>
+      <div class="col-md-6 field_div">
+        <b><%= t('activerecord.attributes.product_sample.product_name') %>:</b> <%= @product_sample.product_name %>
       </div>
-      <div class="col-md-4 field_div">
-        <b><%= t('activerecord.attributes.product_sample.exchange') %>:</b> <%= product_supply.exchange %>
-      </div>
-      <div class="col-md-4 field_div">
-        <b><%= t('activerecord.attributes.product_sample.exchange_value') %>:</b> <%= product_supply.exchange_value %>
+      <div class="col-md-6 field_div">
+        <b><%= t('activerecord.attributes.product_sample.link') %>:</b> <%= @product_sample.link %>
       </div>
     </div>
   </div>
-  <% if order_type == "order" %>
+  <% if @product_sample.product_sample_images.present? %>
     <div class="row">
       <div class="col-md-12">
-        <div class="col-md-4 field_div">
-          <b><%= t('activerecord.attributes.product_supply_order.is_closed') %>:</b> <%= yes_no(product_supply.is_closed==1) %>
-        </div>
-        <div class="col-md-4 field_div">
-          <b><%= t('activerecord.attributes.product_supply_order.closed_date') %>:</b> <%= product_supply.closed_date.present? ? product_supply.closed_date.strftime('%F') : ''  %>
+        <div class="col-md-12 field_div">
+          <% @product_sample.product_sample_images.each {|img| %>
+            <div style="display: inline-block">
+              <%= link_to img.image.url, "data-lightbox": "roadtrip" do %>
+                <%= image_tag img.image.url(:tumb), class: 'tumb' %>
+              <% end %>
+            </div>
+          <% } %>
         </div>
       </div>
     </div>
   <% end %>
   <div class="row">
     <div class="col-md-12">
-      <div class="col-md-12 field_div">
-        <% if order_type == "order" %>
-          <table class="table table-bordered" id="tb_product_supply_order_items">
-            <thead>
-            <tr>
-              <th><%= t('activerecord.attributes.product_supply_order_item.product_id') %></th>
-              <th><%= t('activerecord.attributes.product_supply_order_item.note') %></th>
-            </tr>
-            </thead>
-            <tbody>
-            <% product_supply.product_supply_order_items.each {|order_item| %>
-              <tr>
-                <td class="va-mid"><%= order_item.product.full_name %></td>
-                <td class="va-mid"><%= order_item.note %></td>
-              </tr>
+      <% ProductFeature.skip_no.order_by_queue.each {|feature| %>
+        <div class="form-group">
+          <%= label_tag :product_feature_rel, class: 'col-sm-1 control-label' do %>
+            <%= feature.name %>
+          <% end %>
+          <div class="col-sm-11">
+            <% feature.options.order_queue.each {|option| %>
+              <div class="col-md-2">
+                <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
+                  <%= option.name %>
+                  <%= yes_no(@product_sample.option_rels.include?(option.id.to_s)) %>
+                </div>
+              </div>
             <% } %>
-            </tbody>
-          </table>
-        <% else %>
-          <table class="table table-bordered" id="tb_product_supply_order_items">
-            <thead>
-            <tr>
-              <th><%= t('activerecord.attributes.product_supply_order_item.product_id') %></th>
-              <th><%= t('activerecord.attributes.product_supply_order_item.note') %></th>
-              <th><%= t('activerecord.attributes.product_supply_order_item.link') %></th>
-              <th><%= t('activerecord.attributes.product_supply_order_item.note') %></th>
-              <th><%= t('activerecord.attributes.product_supply_order_item.image') %></th>
-            </tr>
-            </thead>
-            <tbody>
-            <% product_supply.product_supply_order_items.each {|order_item| %>
-              <tr>
-                <td class="va-mid"><%= order_item.product.full_name %></td>
-                <td class="va-mid"><%= order_item.link %></td>
-                <td class="va-mid"><%= order_item.note %></td>
-                <td>
-                  <% if order_item.image.present? %>
-                    <%= link_to order_item.image.url, "data-lightbox": "roadtrip" do %>
-                      <%= image_tag order_item.image.url(:tumb), class: 'tumb' %>
-                    <% end %>
-                  <% end %>
-                </td>
-              </tr>
-            <% } %>
-            </tbody>
-          </table>
-        <% end %>
           </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-6 field_div">
+        <b><%= t('activerecord.attributes.product_sample.description') %>:</b> <%= @product_sample.description %>
+      </div>
     </div>
   </div>
 </div>

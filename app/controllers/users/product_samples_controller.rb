@@ -44,6 +44,11 @@ class Users::ProductSamplesController < Users::BaseController
 
   def show
     @product_sample.tab_index = params[:tab_index] if params[:tab_index].present?
+    product = @product_sample.get_product
+    if product.present?
+      @product_sample.option_rels = product.product_feature_option_rels.map {|i| i.feature_option_id.to_s}.to_a
+      @product_sample.product_name = product.name_en
+    end
   end
 
   def update

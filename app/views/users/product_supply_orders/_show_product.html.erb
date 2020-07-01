@@ -1,0 +1,34 @@
+<div class="body-box">
+  <div class="row">
+    <div class="col-md-12 field_div cocoon-nested-form">
+      <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+          <th class="text-center"><%= t('activerecord.attributes.product_feature_item.image') %></th>
+          <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.feature_item_id') %></th>
+          <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.quantity') %></th>
+          <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.price') %></th>
+          <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.note') %></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% order_item.supply_features.each {|feature| %>
+          <tr class="field_div">
+            <td class="text-center">
+              <% if feature.feature_item.img.present? %>
+                <%= link_to feature.feature_item.img.url, "data-lightbox": "roadtrip" do %>
+                  <%= image_tag feature.feature_item.img.url(:tumb), class: 'tumb' %>
+                <% end %>
+              <% end %>
+            </td>
+            <td class="va-mid"><%= feature.feature_item.name %></td>
+            <td class="va-mid"><%= feature.quantity %></td>
+            <td class="va-mid"><%= feature.get_currency(feature.price) %></td>
+            <td class="va-mid"><%= feature.note %></td>
+          </tr>
+        <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
