@@ -91,6 +91,16 @@ mn:
         jpy: Иен
         gbr: Английн фунт
         mnt: Төгрөг
+    product_supply_order_item:
+      status:
+        order_created: Захиалга үүссэн
+        ordered: Захиалга хийсэн
+        cost_included: Тээврийн зардал орсон
+        warehouse_received: Агуулах хүлээж авсан
+        calculated: Тооцоо нийлсэн
+        clarification: Тодруулга хийх
+        clarified: Тодруулга хийсэн
+        canceled: Цуцалсан
     product_income_item:
       urgent_type:
         engiin: Энгийн
@@ -359,10 +369,19 @@ mn:
         sum_price: Нийт дүн
         product_supply_order_items: Бараанууд
       product_supply_order_item:
+        status: Төлөв
         supply_order_id: Худалдан авалт
         product_id: Бараа
         note: Тайлбар
         sum_price: Нийт дүн
+        order_type: Төрөл
+        product_name: Барааны нэр
+        product_code: Бараа код
+        product_sample_id: Дээж бараа
+        product_supply_order_id: Үндсэн бараа
+        note_lo: Тайлбар
+        purchase: Худалдан авалт
+        purchase_date: Худалдан авсан
       product_supply_feature:
         feature_item_id: Шинж чанар
         order_item_id: Худалдан авалт
@@ -370,6 +389,9 @@ mn:
         price: Нэгж үнэ
         note: Тайлбар
         sum_price: Нийт дүн
+        quantity_lo: Тоо хэмжээ
+        price_lo: Нэгж үнэ
+        note_lo: Тайлбар
       product_income:
         code: Код
         income_date: Огноо

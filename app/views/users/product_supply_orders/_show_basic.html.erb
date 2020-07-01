@@ -31,6 +31,7 @@
           <thead>
           <tr>
             <th><%= t('activerecord.attributes.product_supply_order_item.product_id') %></th>
+            <th><%= t('activerecord.attributes.product_supply_order_item.status') %></th>
             <th><%= t('activerecord.attributes.product_supply_order_item.note') %></th>
           </tr>
           </thead>
@@ -38,6 +39,7 @@
           <% @product_supply_order.product_supply_order_items.each {|order_item| %>
             <tr>
               <td class="va-mid"><%= order_item.product.full_name %></td>
+              <td class="va-mid"><%= order_item.status_i18n %></td>
               <td class="va-mid"><%= order_item.note %></td>
             </tr>
           <% } %>

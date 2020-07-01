@@ -10,8 +10,16 @@ class ProductSupplyFeature < ApplicationRecord
     before_save :set_sum_price
   end
 
+  with_options :unless => Proc.new {|m| m.is_create.present?} do
+    before_update :set_sum_price_lo
+  end
+
   def price
     ApplicationController.helpers.get_f(self[:price])
+  end
+
+  def price_lo
+    ApplicationController.helpers.get_f(self[:price_lo])
   end
 
   def get_currency(value)
@@ -38,6 +46,10 @@ class ProductSupplyFeature < ApplicationRecord
 
   def set_sum_price
     self.sum_price = (price * quantity).to_f.round(1)
+  end
+
+  def set_sum_price_lo
+    self.sum_price_lo = (price_lo * quantity_lo).to_f.round(1) if price_lo.present? && quantity_lo.present?
   end
 
   def set_product_balance

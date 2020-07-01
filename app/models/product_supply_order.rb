@@ -37,11 +37,23 @@ class ProductSupplyOrder < ApplicationRecord
     ApplicationController.helpers.get_f(self[:exchange_value])
   end
 
+  def get_currency(value)
+    ApplicationController.helpers.get_currency(value, Const::CURRENCY[exchange_before_type_cast.to_i], 0)
+  end
+
   def code_with_info
     "Захиалга - #{self.code}"
   end
 
   def get_status
     "#{ordered_date.strftime('%F')} - #{status_i18n} - #{user.name}"
+  end
+
+  def update_status(stat)
+    # Бүгд дор хаяж тэнцүү болсон үед солино
+    exist_items = product_supply_order_items.by_status_lower(stat)
+    unless exist_items.present?
+      self.update_attributes(status: stat)
+    end
   end
 end

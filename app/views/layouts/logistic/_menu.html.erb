@@ -2,15 +2,9 @@
   <section class="sidebar">
     <ul class="sidebar-menu" data-widget="tree">
 
-      <%= content_tag :li, class: controller_name == 'users' ? 'active' : '' do %>
-        <%= link_to admin_users_users_path do %>
-          <i class="fa fa-users"></i><span><%= t('titles.users') %></span>
-        <% end %>
-      <% end %>
-
-      <%= content_tag :li, class: controller_name == 'logistics' ? 'active' : '' do %>
-        <%= link_to admin_users_logistics_path do %>
-          <i class="fa fa-user-secret"></i><span><%= t('activerecord.models.logistic') %></span>
+      <%= content_tag :li, class: controller_name == 'supply_orders' ? 'active' : '' do %>
+        <%= link_to logistics_supply_orders_path do %>
+          <i class="fa fa-cubes"></i><span><%= t('titles.product_supply_ordering') %></span>
         <% end %>
       <% end %>
 

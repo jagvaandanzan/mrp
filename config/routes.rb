@@ -209,6 +209,8 @@ Rails.application.routes.draw do
   namespace :logistics, path: :logistic do
     root "base#root"
 
+    resources :supply_orders, only: [:index, :show, :edit, :update]
+
     match "*any", to: "base#routing_error", via: :all
   end
 

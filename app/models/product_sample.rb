@@ -37,6 +37,10 @@ class ProductSample < ApplicationRecord
     ApplicationController.helpers.get_f(self[:exchange_value])
   end
 
+  def get_currency(value)
+    ApplicationController.helpers.get_currency(value, Const::CURRENCY[exchange_before_type_cast.to_i], 0)
+  end
+
   def get_product
     if self.product_supply_order_items.present?
       product_supply_order_item = self.product_supply_order_items.first
@@ -45,7 +49,11 @@ class ProductSample < ApplicationRecord
   end
 
   def get_status
-      "#{ordered_date.strftime('%F')} - #{status_i18n} - #{user.name}"
+    "#{ordered_date.strftime('%F')} - #{status_i18n} - #{user.name}"
+  end
+
+  def update_status(stat)
+    self.update_attributes(status: stat)
   end
 
   private

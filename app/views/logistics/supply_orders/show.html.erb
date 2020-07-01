@@ -1,0 +1,108 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "show" %>
+<% end %>
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+  <section class="content-header align-left padding-15">
+    <h1><%= t('activerecord.models.product_supply_order') %></h1>
+  </section>
+
+  <div class="action-buttons">
+    <%= link_to t('controls.button.edit'), edit_logistics_supply_order_path(@supply_order_item), class: 'btn btn-info' %>
+    <%= link_to t('titles.back_to_list'), logistics_supply_orders_path(page: cookies[:product_supply_order_page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body table-responsive no-padding">
+        <% supply_order = @supply_order_item.product_supply_order.present? ? @supply_order_item.product_supply_order : @supply_order_item.product_sample %>
+        <div class="col-md-12 m-t-10">
+          <div class="col-md-5 field_div">
+            <b><%= t('activerecord.attributes.product_sample.status') %>
+              :</b> <%= supply_order.ordered_date.strftime('%F') %> - <%= @supply_order_item.status_i18n %>
+            - <%= supply_order.user.name %>
+          </div>
+          <div class="col-md-2 field_div">
+            <b><%= t('activerecord.attributes.product_sample.code') %>:</b> <%= supply_order.code %>
+          </div>
+          <div class="col-md-5 field_div">
+            <b><%= t('activerecord.attributes.product_supply_order_item.note') %>:</b>
+            <% if @supply_order_item.product_supply_order.present? %>
+              <%= @supply_order_item.note %>
+            <% end %>
+            <% if @supply_order_item.product_sample.present? %>
+              <%= @supply_order_item.product_sample.description %>
+            <% end %>
+          </div>
+        </div>
+        <% if @supply_order_item.product_sample.present? && @supply_order_item.product_sample.product_sample_images.present? %>
+          <div class="col-md-12">
+            <div class="col-md-12 field_div">
+              <% @supply_order_item.product_sample.product_sample_images.each {|img| %>
+                <div style="display: inline-block">
+                  <%= link_to img.image.url, "data-lightbox": "roadtrip" do %>
+                    <%= image_tag img.image.url(:tumb), class: 'tumb' %>
+                  <% end %>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        <% end %>
+        <div class="row">
+          <div class="col-md-12">
+            <table class="table table-hover table-bordered">
+              <thead>
+              <% is_supply_order = @supply_order_item.product_supply_order.present? %>
+              <tr>
+                <% if is_supply_order %>
+                  <th class="text-center"><%= t('activerecord.attributes.product_feature_item.image') %></th>
+                <% end %>
+                <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.feature_item_id') %></th>
+                <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.quantity') %></th>
+                <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.price') %></th>
+                <th></th>
+                <th class="text-center" width="40%"><%= t('activerecord.attributes.product_supply_feature.note') %></th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @supply_order_item.supply_features.each {|feature| %>
+                <tr>
+                  <% if is_supply_order %>
+                    <td class="va-mid text-center">
+                      <% if feature.feature_item.img.present? %>
+                        <%= link_to feature.feature_item.img.url, "data-lightbox": "roadtrip" do %>
+                          <%= t('titles.view') %>
+                        <% end %>
+                      <% end %>
+                    </td>
+                  <% end %>
+                  <td class="va-mid">
+                    <%= feature.feature_item.name %>
+                  </td>
+                  <td class="va-mid">
+                    <%= feature.quantity %> / <b><%= feature.quantity_lo %></b>
+                  </td>
+                  <td class="va-mid">
+                    <%= feature.get_currency(feature.price) %> / <b><%= feature.get_currency(feature.price_lo) %></b>
+                  </td>
+                  <td class="va-mid">
+                    <%= feature.note %>
+                  </td>
+                  <td class="va-mid">
+                    <%= feature.note_lo %>
+                  </td>
+                </tr>
+              <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="col-md-12 field_div">
+            <b><%= t('activerecord.attributes.product_supply_order_item.note_lo') %>
+              :</b> <%= @supply_order_item.note_lo %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

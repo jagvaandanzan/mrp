@@ -1,0 +1,35 @@
+<tr class="nested-fields field_div">
+  <% if is_supply_order %>
+    <td class="va-mid text-center">
+      <% if f.object.feature_item.img.present? %>
+        <%= link_to f.object.feature_item.img.url, "data-lightbox": "roadtrip" do %>
+          <%= t('titles.view') %>
+        <% end %>
+      <% end %>
+    </td>
+  <% end %>
+  <td class="va-mid">
+    <%= f.object.feature_item.name %>
+  </td>
+  <td class="va-mid">
+    <%= f.object.quantity %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :quantity_lo %>
+    <%= f.number_field :quantity_lo, class: 'form-control field quantity', placeholder: t('activerecord.attributes.product_supply_feature.quantity_lo') %>
+  </td>
+  <td class="va-mid">
+    <%= f.object.get_currency(f.object.price) %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :price_lo %>
+    <%= f.number_field :price_lo, class: 'form-control field price', placeholder: t('activerecord.attributes.product_supply_feature.price_lo') %>
+  </td>
+  <td class="va-mid">
+    <%= f.object.note %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :note_lo %>
+    <%= f.text_field :note_lo, class: 'form-control field', placeholder: t('activerecord.attributes.product_supply_feature.note_lo') %>
+  </td>
+</tr>
