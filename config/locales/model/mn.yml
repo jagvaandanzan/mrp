@@ -56,9 +56,6 @@ mn:
         w_gr: Гр
         w_kg: Кг
     product_sample:
-      payment:
-        belneer: Бэлнээр
-        zeeleer: Зээлээр
       exchange:
         cny: Юань
         usd: АНУ-ын доллар
@@ -77,12 +74,15 @@ mn:
         clarified: Тодруулга хийсэн
         canceled: Цуцалсан
     product_supply_order:
-      payment:
-        belneer: Бэлнээр
-        zeeleer: Зээлээр
-      is_closed:
-        _no: Үгүй
-        _yes: Тийм
+      status:
+        order_created: Захиалга үүссэн
+        ordered: Захиалга хийсэн
+        cost_included: Тээврийн зардал орсон
+        warehouse_received: Агуулах хүлээж авсан
+        calculated: Тооцоо нийлсэн
+        clarification: Тодруулга хийх
+        clarified: Тодруулга хийсэн
+        canceled: Цуцалсан
       exchange:
         cny: Юань
         usd: АНУ-ын доллар
@@ -344,9 +344,7 @@ mn:
         status: Төлөв
         ordered_date: Огноо
         supplier_id: Нийлүүлэгч
-        payment: Төл.хэлбэр
         exchange: Валют
-        exchange_value: Ханш
         product_supply_order_items: Бараанууд
         link: Линк
         description: Тайлбар
@@ -354,14 +352,11 @@ mn:
         product_sample_images: Барааны зураг
       product_supply_order:
         code: Код
+        status: Төлөв
         ordered_date: Огноо
         supplier_id: Нийлүүлэгч
-        payment: Төл.хэлбэр
         exchange: Валют
-        exchange_value: Ханш
-        closed_date: Хаагдсан огноо
-        is_closed: Хаагдсан
-        sum_price: Нийт дүн (₮)
+        sum_price: Нийт дүн
         product_supply_order_items: Бараанууд
       product_supply_order_item:
         supply_order_id: Худалдан авалт

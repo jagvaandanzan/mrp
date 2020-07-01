@@ -24,5 +24,10 @@ class UpdateProduct < ActiveRecord::Migration[5.2]
     add_column :product_samples, :link, :text, after: 'exchange'
     add_column :products, :draft, :boolean, after: 'is_own', default: false
     remove_attachment :product_supply_order_items, :image
+    add_column :product_supply_orders, :status, :integer, after: 'code', default: 0
+    remove_column :product_samples, :payment, :integer
+    remove_column :product_supply_orders, :payment, :integer
+    remove_column :product_supply_orders, :closed_date, :datetime
+    remove_column :product_supply_orders, :is_closed, :boolean
   end
 end

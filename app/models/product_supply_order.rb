@@ -10,8 +10,7 @@ class ProductSupplyOrder < ApplicationRecord
   validates :supplier_id, :code, :exchange, presence: true
   validates :code, uniqueness: true
 
-  enum payment: {belneer: 0, zeeleer: 1}
-  enum is_closed: {_no: 0, _yes: 1}
+  enum status: {order_created: 0, ordered: 1, cost_included: 2, warehouse_received: 3, calculated: 4, clarification: 5, clarified: 6, canceled: 7}
   enum exchange: {cny: 0, usd: 1, eur: 2, rub: 3, jpy: 4, gbr: 5, mnt: 6}
 
   scope :created_at_desc, -> {
@@ -42,4 +41,7 @@ class ProductSupplyOrder < ApplicationRecord
     "Захиалга - #{self.code}"
   end
 
+  def get_status
+    "#{ordered_date.strftime('%F')} - #{status_i18n} - #{user.name}"
+  end
 end

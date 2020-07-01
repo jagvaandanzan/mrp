@@ -1,6 +1,13 @@
 <div class="body-box">
   <div class="row">
     <div class="col-md-12">
+      <div class="col-md-12 field_div">
+        <b><%= t('activerecord.attributes.product_sample.status') %>:</b> <%= @product_sample.get_status %>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
       <div class="col-md-3 field_div">
         <b><%= t('activerecord.attributes.product_sample.code') %>:</b> <%= @product_sample.code %>
       </div>

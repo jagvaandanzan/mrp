@@ -9,7 +9,6 @@ class ProductSample < ApplicationRecord
 
   accepts_nested_attributes_for :product_sample_images, allow_destroy: true
 
-  enum payment: {belneer: 0, zeeleer: 1}
   enum status: {order_created: 0, ordered: 1, cost_included: 2, warehouse_received: 3, calculated: 4, clarification: 5, clarified: 6, canceled: 7}
   enum exchange: {cny: 0, usd: 1, eur: 2, rub: 3, jpy: 4, gbr: 5, mnt: 6}
 
@@ -43,6 +42,10 @@ class ProductSample < ApplicationRecord
       product_supply_order_item = self.product_supply_order_items.first
       product_supply_order_item.product
     end
+  end
+
+  def get_status
+      "#{ordered_date.strftime('%F')} - #{status_i18n} - #{user.name}"
   end
 
   private
