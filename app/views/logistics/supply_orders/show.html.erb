@@ -59,11 +59,13 @@
                 <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.feature_item_id') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.quantity') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.price') %></th>
+                <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.sum_price') %></th>
                 <th></th>
                 <th class="text-center" width="40%"><%= t('activerecord.attributes.product_supply_feature.note') %></th>
               </tr>
               </thead>
               <tbody>
+              <% total_sum = 0 %>
               <% @supply_order_item.supply_features.each {|feature| %>
                 <tr>
                   <% if is_supply_order %>
@@ -85,13 +87,22 @@
                     <%= feature.get_currency(feature.price) %> / <b><%= feature.get_currency(feature.price_lo) %></b>
                   </td>
                   <td class="va-mid">
+                    <%= feature.get_currency(feature.sum_price_lo) %></b>
+                  </td>
+                  <td class="va-mid">
                     <%= feature.note %>
                   </td>
                   <td class="va-mid">
                     <%= feature.note_lo %>
                   </td>
                 </tr>
-              <% } %>
+              <% total_sum += feature.sum_price_lo if feature.sum_price_lo.present?
+                 } %>
+              <tr>
+                <td colspan="<%= is_supply_order ? 4 : 3 %>" class="text-right"><b><%= t('titles.total') %></b></td>
+                <td><b><%= @supply_order_item.get_currency(total_sum) %></b></td>
+                <td colspan="2"></td>
+              </tr>
               </tbody>
             </table>
           </div>
