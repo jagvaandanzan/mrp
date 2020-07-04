@@ -101,6 +101,12 @@ mn:
         clarification: Тодруулга хийх
         clarified: Тодруулга хийсэн
         canceled: Цуцалсан
+    shipping_er_item:
+      s_type:
+        post_cargo: "Шуудан: Үйлд-Карго"
+        post_er: "Шуудан: Үйлд-Эрээн"
+        cargo_er: "Карго: Үйлд-Эрээн"
+        cargo_post: "Карго: Шуудан-Эрээн"
     product_income_item:
       urgent_type:
         engiin: Энгийн
@@ -188,6 +194,10 @@ mn:
       technical_spec_item: Техникийн үзүүлэлт
       size_instruction: Хэмжээний заавар
       logistic: Хангамжийн ажилтан
+      shipping_er: Үйлдвэр-Эрээн тээвэрлэлт
+      shipping_er_item: Бараанууд
+      shipping_ub: Эрээн-УБ тээвэрлэлт
+      shipping_ub_item: Бараанууд
     attributes:
       admin_user:
         email: Имэйл
@@ -398,6 +408,24 @@ mn:
         product_income_items: Бараанууд
         note: Тайлбар
         sum_price: Нийт дүн (₮)
+      shipping_er:
+        logistic: Хангамжийн ажилтан
+        date: Хүлээж авсан огноо
+        description: Тайлбар
+        shipping_er_items: Бараа
+        shipping_er_item_count: Барааны тоо
+      shipping_er_item:
+        product_supply_feature_id: Шинж чанар
+        product_name: Бараа нэр
+        product_code: Бараа код
+        product_image: Зураг
+        product_feature: Өнгө хэмжээ
+        product_bought: Авсан үлдэгдэл
+        received: Хүлээн авсан барааны тоо
+        cargo: Ачааны тоо
+        s_type: Тээврийн төрөл, Чиглэл
+        cost: Зардал
+        number: Баримтын дугаар
       product_income_item:
         income_id: Орлого
         income_code: Орлогын код

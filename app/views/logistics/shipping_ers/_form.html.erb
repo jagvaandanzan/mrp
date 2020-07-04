@@ -1,0 +1,67 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "form" %>
+<% end %>
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1><%= t('activerecord.models.shipping_er') + t(@shipping_er.persisted? ? 'titles.edit' : 'titles.add') %></h1>
+  </section>
+  <section class="content">
+    <div class="box box-info">
+      <%= form_with model: @shipping_er, url: @shipping_er.persisted? ? logistics_shipping_er_path : logistics_shipping_ers_path, method: @shipping_er.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <div class="col-md-12">
+            <div class="form-group">
+              <%= f.label :date, class: 'col-sm-3 control-label' %>
+              <div class="col-sm-9 <%= get_error_class(@shipping_er, :date) %>">
+                <div class="input-append input-group date <%= get_error_class(@shipping_er, :date) %>" data-provide="datepicker">
+                  <%= field_errors(@shipping_er, :date) %>
+                  <%= f.text_field :date, value: @shipping_er.date.strftime('%F'), class: 'field form-control', placeholder: t('activerecord.attributes.shipping_er.date') %>
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 field_div">
+            <div class="cocoon-nested-form">
+              <div class="<%= get_error_class(@shipping_er, :shipping_er_items) %>">
+                <%= field_errors(@shipping_er, :shipping_er_items) %>
+                <table class="table table-bordered" id="tb_shipping_er_items">
+                  <tr>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_name') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_code') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_image') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_feature') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_bought') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.received') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.cargo') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.s_type') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.cost') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.number') %></th>
+                    <th width="50px"></th>
+                  </tr>
+                  <%= f.fields_for :shipping_er_items do |m| %>
+                    <%= render 'shipping_er_item_fields', :f => m %>
+                  <% end %>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 m-t-10">
+            <div class="form-group">
+              <%= f.label :description, class: 'col-sm-3 control-label' %>
+              <div class="col-sm-9 <%= get_error_class(@shipping_er, :description) %>">
+                <%= field_errors(@shipping_er, :description) %>
+                <%= f.text_area :description, class: 'form-control', placeholder: t('activerecord.attributes.shipping_er.description') %>
+              </div>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>

@@ -2,8 +2,10 @@ class ProductSupplyFeature < ApplicationRecord
   belongs_to :order_item, :class_name => "ProductSupplyOrderItem"
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
   has_one :product_income_balance, :class_name => "ProductIncomeBalance", :foreign_key => "supply_feature_id", dependent: :destroy
+  has_many :shipping_er_items, dependent: :destroy
 
-  attr_accessor :is_create
+  attr_accessor :is_create, :remainder
+
   with_options :if => Proc.new {|m| m.is_create.present?} do
     validates :quantity, :price, presence: true
     before_save :set_product_balance
@@ -13,6 +15,13 @@ class ProductSupplyFeature < ApplicationRecord
   with_options :unless => Proc.new {|m| m.is_create.present?} do
     before_update :set_sum_price_lo
   end
+
+  scope :find_to_er, -> {
+    left_joins(:shipping_er_items)
+        .group("product_supply_features.id")
+        .having("SUM(shipping_er_items.received) IS NULL OR SUM(shipping_er_items.received) < product_supply_features.sum_price_lo")
+        .select("product_supply_features.*, product_supply_features.quantity_lo - IFNULL(SUM(shipping_er_items.received), 0) as remainder")
+  }
 
   def price
     ApplicationController.helpers.get_f(self[:price])

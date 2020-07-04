@@ -7,6 +7,11 @@
           <i class="fa fa-cubes"></i><span><%= t('titles.product_supply_ordering') %></span>
         <% end %>
       <% end %>
+      <%= content_tag :li, class: controller_name == 'shipping_ers' ? 'active' : '' do %>
+        <%= link_to logistics_shipping_ers_path do %>
+          <i class="fa fa-truck"></i><span><%= t('activerecord.models.shipping_er') %></span>
+        <% end %>
+      <% end %>
 
     </ul>
   </section>

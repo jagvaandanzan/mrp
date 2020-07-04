@@ -210,6 +210,7 @@ Rails.application.routes.draw do
     root "base#root"
 
     resources :supply_orders, only: [:index, :show, :edit, :update]
+    resources :shipping_ers
 
     match "*any", to: "base#routing_error", via: :all
   end
