@@ -1,0 +1,59 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<div class="content-wrapper">
+  <div class="col-md-12 m-t-10 m-b-10">
+    <div class="row">
+      <%= form_with url: logistics_shipping_ubs_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+        <div class="col-md-4 search">
+          <div id="search-date" class="form-control search">
+            <i class="fa fa-calendar fa-lg p-r-0"></i>
+            <span><%= t("filters.by_date") %>...</span>
+            <%= f.hidden_field :by_start, value: @by_start %>
+            <%= f.hidden_field :by_end, value: @by_end %>
+          </div>
+        </div>
+        <div class="col-md-4 search">
+          <%= text_field_tag :product_name, @product_name, {class: 'form-control search', placeholder: t('activerecord.attributes.product_sample.product_name')} %>
+        </div>
+        <div class="col-md-4 search">
+          <%= submit_tag t('controls.button.searching') + " (" + @shipping_ubs.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
+          <%= link_to t('controls.button.create'), new_logistics_shipping_ub_path, class: 'btn btn-warning pull-right' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <%= render 'layouts/flash_message' %>
+
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th class="th-center va-mid" style="width: 20%"><%= t('activerecord.attributes.shipping_ub.date') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_ub.description') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_ub.shipping_ub_items') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_ub.shipping_ub_item_count') %></th>
+              </tr>
+              </thead>
+              <% @shipping_ubs.each do |shipping_ub| %>
+                <tr>
+                  <td class="va-mid underline text-center"><%= link_to shipping_ub.date.strftime('%F'), logistics_shipping_ub_path(shipping_ub) %></td>
+                  <td class="va-mid text-center"><%= shipping_ub.description %></td>
+                  <td class="va-mid text-center"><%= shipping_ub.shipping_ub_items.count %></td>
+                  <td class="va-mid text-center"><%= shipping_ub.shipping_ub_item_count %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+        <%= paginate @shipping_ubs %>
+      </div>
+    </div>
+  </section>
+</div>
+<%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>

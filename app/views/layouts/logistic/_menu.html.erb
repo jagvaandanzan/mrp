@@ -12,7 +12,11 @@
           <i class="fa fa-truck"></i><span><%= t('activerecord.models.shipping_er') %></span>
         <% end %>
       <% end %>
-
+      <%= content_tag :li, class: controller_name == 'shipping_ubs' ? 'active' : '' do %>
+        <%= link_to logistics_shipping_ubs_path do %>
+          <i class="fa fa-train"></i><span><%= t('activerecord.models.shipping_ub') %></span>
+        <% end %>
+      <% end %>
     </ul>
   </section>
 </aside>

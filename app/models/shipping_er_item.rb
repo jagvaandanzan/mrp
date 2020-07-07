@@ -2,6 +2,7 @@ class ShippingErItem < ApplicationRecord
   belongs_to :shipping_er
   belongs_to :product_supply_feature
   belongs_to :product
+  has_many :shipping_ub_items
   has_one :feature_item, through: :product_supply_feature
 
   attr_accessor :remainder
@@ -16,6 +17,13 @@ class ShippingErItem < ApplicationRecord
   scope :sum_received, ->(feature_id) {
     where(product_supply_feature_id: feature_id)
         .sum('received')
+  }
+
+  scope :find_to_ub, -> {
+    left_joins(:shipping_ub_items)
+        .group("shipping_er_items.id")
+        .having("SUM(shipping_ub_items.loaded) IS NULL OR SUM(shipping_ub_items.loaded) < SUM(shipping_er_items.received)")
+        .select("shipping_er_items.*, SUM(shipping_er_items.received) - IFNULL(SUM(shipping_ub_items.loaded), 0) as remainder")
   }
 
   private

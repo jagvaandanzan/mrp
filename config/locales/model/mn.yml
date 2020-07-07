@@ -107,6 +107,10 @@ mn:
         post_er: "Шуудан: Үйлд-Эрээн"
         cargo_er: "Карго: Үйлд-Эрээн"
         cargo_post: "Карго: Шуудан-Эрээн"
+    shipping_ub_item:
+      s_type:
+        simple: "Энгийн: Эрээн-УБ"
+        urgent: "Яаралтай: Эрээн-УБ"
     product_income_item:
       urgent_type:
         engiin: Энгийн
@@ -426,6 +430,19 @@ mn:
         s_type: Тээврийн төрөл, Чиглэл
         cost: Зардал
         number: Баримтын дугаар
+      shipping_ub:
+        logistic: Хангамжийн ажилтан
+        date: Эрээнээс ачуулсан огноо
+        description: Тайлбар
+        shipping_ub_items: Бараа
+        shipping_ub_item_count: Барааны тоо
+      shipping_ub_item:
+        product_bought: Худалдан авсан тоо
+        at_er: Эрээнд ирсэн огноо
+        loaded: Ачуулсан барааны тоо
+        cargo: Ачааны тоо
+        s_type: Тээврийн төрөл, Чиглэл
+        cost: Зардал
       product_income_item:
         income_id: Орлого
         income_code: Орлогын код
