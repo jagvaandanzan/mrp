@@ -122,10 +122,12 @@ Rails.application.routes.draw do
       end
     end
     resources :product_locations, only: [:index, :create, :new, :edit, :update, :destroy]
+
+    get 'product_incomes/shipping_show/:id', to: 'product_incomes#shipping_show'
     resources :product_incomes, only: [:index, :create, :new, :edit, :show, :update, :destroy] do
       collection do
         get 'shipping'
-        get 'shipping_show'
+        # get 'shipping_show'
         patch 'get_location_children'
         patch 'get_supply_order_info'
       end

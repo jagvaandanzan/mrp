@@ -44,7 +44,7 @@
               </thead>
               <% @shipping_ubs.each do |shipping_ub| %>
                 <tr>
-                  <td class="va-mid underline text-center"><%= link_to shipping_ub.date.strftime('%F'), is_logistic ? logistics_shipping_ub_path(shipping_ub) : shipping_show_users_product_incomes_path(id: shipping_ub.id) %></td>
+                  <td class="va-mid underline text-center"><%= link_to shipping_ub.date.strftime('%F'), is_logistic ? logistics_shipping_ub_path(shipping_ub) : "/user/product_incomes/shipping_show/#{shipping_ub.id}" %></td>
                   <td class="va-mid text-center"><%= shipping_ub.description %></td>
                   <td class="va-mid text-center"><%= shipping_ub.shipping_ub_items.count %></td>
                   <td class="va-mid text-center"><%= shipping_ub.shipping_ub_item_count %></td>
