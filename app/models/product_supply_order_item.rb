@@ -113,8 +113,8 @@ class ProductSupplyOrderItem < ApplicationRecord
     q = 0
     q_lo = 0
     supply_features.each do |feature|
-      q += feature.quantity
-      q_lo += feature.quantity_lo
+      q += feature.quantity if feature.quantity.present?
+      q_lo += feature.quantity_lo if feature.quantity_lo.present?
     end
     "#{ApplicationController.helpers.yes_no(!order_created?)} #{q} / <b>#{q_lo}</b>"
   end
