@@ -118,8 +118,16 @@ class Product < ApplicationRecord
     name_with_code
   end
 
+  def short_name
+    if name.present? && name.length > 100
+      name[0..100]
+    else
+      name
+    end
+  end
+
   def name_with_code
-    "#{self.code} - #{self.name}"
+    "#{self.code} - #{self.short_name}"
   end
 
   def product_feature_option_ids
