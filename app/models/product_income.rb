@@ -1,14 +1,13 @@
 class ProductIncome < ApplicationRecord
   belongs_to :user
+  belongs_to :shipping_ub
   has_many :product_income_items, dependent: :destroy
 
   accepts_nested_attributes_for :product_income_items, allow_destroy: true
 
-  before_save :set_sum_price
-
-  validates :code, presence: true
+  validates :code, :cargo_price, :income_date, presence: true
   validates :code, uniqueness: true
-  validate :valid_quantity
+  # validate :valid_quantity
 
   scope :income_date_desc, -> {
     order(income_date: :desc)
@@ -22,15 +21,6 @@ class ProductIncome < ApplicationRecord
   }
 
   private
-
-  def set_sum_price
-    sum = 0
-    product_income_items.each do |item|
-      sum += item.supply_order_item.product_supply_order.exchange_value * (item.quantity * item.price)
-    end
-
-    self.sum_price = sum
-  end
 
   def valid_quantity
     remainder = Hash.new

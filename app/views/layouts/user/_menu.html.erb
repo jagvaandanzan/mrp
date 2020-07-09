@@ -2,9 +2,24 @@
   <section class="sidebar">
     <ul class="sidebar-menu" data-widget="tree">
       <% if can? :read, ProductIncome %>
-        <%= content_tag :li, class: (controller_name == 'product_incomes' || controller_name == 'product_income_items') ? 'active' : '' do %>
-          <%= link_to users_product_incomes_path do %>
-            <i class="fa fa-cart-arrow-down"></i><span><%= t('titles.product_incomes') %></span>
+        <%= content_tag :li, class: controller_name == 'product_incomes' ? 'treeview active' : 'treeview' do %>
+          <%= link_to "#" do %>
+            <i class="fa fa-cart-arrow-down"></i><span><%= t('activerecord.models.product_income') %></span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          <% end %>
+          <%= content_tag :ul, class: 'treeview-menu' do %>
+            <%= content_tag :li, class: (action_name == 'shipping' || action_name == 'shipping_show' || action_name == 'get_income') ? 'active' : '' do %>
+              <%= link_to shipping_users_product_incomes_path do %>
+                <i class="fa fa-list"></i><span><%= t('titles.product_incomes') %></span>
+              <% end %>
+            <% end %>
+            <%= content_tag :li, class: (action_name == 'index' || action_name == 'show' || action_name == 'edit') ? 'active' : '' do %>
+              <%= link_to users_product_incomes_path do %>
+                <i class="fa fa-check-circle"></i><span><%= t('titles.product_income_quality') %></span>
+              <% end %>
+            <% end %>
           <% end %>
         <% end %>
       <% end %>

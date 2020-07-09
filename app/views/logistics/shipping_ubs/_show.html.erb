@@ -1,0 +1,90 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "show" %>
+<% end %>
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+  <section class="content-header align-left padding-15">
+    <h1><%= t('activerecord.models.shipping_ub') %></h1>
+  </section>
+
+  <div class="action-buttons">
+    <% if is_logistic %>
+      <%= link_to t('controls.button.edit'), edit_logistics_shipping_ub_path(@shipping_ub), class: 'btn btn-info' %>
+      <%= link_to t('titles.back_to_list'), logistics_shipping_ubs_path(page: cookies[:shipping_ub_page_number]), {class: "btn blck-btn"} %>
+    <% else %>
+      <%= link_to t('titles.product_incomes'), new_users_product_income_path(id: @shipping_ub.id), class: 'btn btn-warning' %>
+    <% end %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body table-responsive no-padding">
+        <div class="col-md-12 m-t-10">
+          <div class="col-md-12 field_div">
+            <b><%= t('activerecord.attributes.shipping_ub.date') %>:</b> <%= @shipping_ub.date.strftime('%F') %>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+              <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_name') %></th>
+              <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_code') %></th>
+              <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_image') %></th>
+              <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_feature') %></th>
+              <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_item.product_bought') %></th>
+              <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.received') %></th>
+              <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.cargo') %></th>
+              <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_item.at_er') %></th>
+              <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_item.loaded') %></th>
+              <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_item.cargo') %></th>
+              <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_item.s_type') %></th>
+              <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_item.cost') %></th>
+            </tr>
+            </thead>
+            <tbody>
+            <% total_sum = 0 %>
+            <% @shipping_ub.shipping_ub_items.each {|item| %>
+              <% product = item.product
+                 feature_item = item.feature_item %>
+              <tr>
+                <td class="va-mid"><%= product.name %></td>
+                <td class="va-mid"><%= product.code %></td>
+                <td class="va-mid text-center">
+                  <% if feature_item.img.present? %>
+                    <%= link_to feature_item.img.url, "data-lightbox": "roadtrip" do %>
+                      <%= t('titles.view') %>
+                    <% end %>
+                  <% end %>
+                </td>
+                <td class="va-mid"><%= feature_item.name %></td>
+                <td class="va-mid"><%= item.product_supply_feature.quantity_lo %></td>
+                <td class="va-mid"><%= item.shipping_er_item.received %></td>
+                <td class="va-mid"><%= item.shipping_er_item.cargo %></td>
+                <td class="va-mid"><%= item.shipping_er_item.shipping_er.date.strftime('%F') %></td>
+                <td class="va-mid"><%= item.loaded %></td>
+                <td class="va-mid"><%= item.cargo %></td>
+                <td class="va-mid"><%= item.s_type_i18n %></td>
+                <td class="va-mid">
+                  <%= item.cost.present? && item.cost > 0 ? get_currency(item.cost, "￥", 0) : '' %>
+                </td>
+              </tr>
+            <% total_sum += item.loaded } %>
+            <tr>
+              <td colspan="8" class="text-right"><b><%= t('titles.total') %></b>
+              </td>
+              <td><b><%= total_sum %></b></td>
+              <td colspan="3"></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-12">
+          <div class="col-md-12 field_div">
+            <b><%= t('activerecord.attributes.shipping_ub.description') %>
+              :</b> <%= @shipping_ub.description %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

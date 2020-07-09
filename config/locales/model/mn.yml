@@ -410,7 +410,7 @@ mn:
         code: Код
         income_date: Огноо
         product_income_items: Бараанууд
-        note: Тайлбар
+        cargo_price: Ачааны төлбөр
         sum_price: Нийт дүн (₮)
       shipping_er:
         logistic: Хангамжийн ажилтан
@@ -444,22 +444,17 @@ mn:
         s_type: Тээврийн төрөл, Чиглэл
         cost: Зардал
       product_income_item:
-        income_id: Орлого
-        income_code: Орлогын код
-        supply_order_item_id: Захиалгын бараа
-        supply_order_item_code: Захиалгын код
-        exchange: Захиалгын валют
-        remainder: Үлд
-        product_supplier_id: Нийлүүлэгч
-        quantity: Тоо хэмжээ
-        price: Нэгж үнэ
-        shuudan: Шуудан
-        note: Тайлбар
-        urgent_type: Төрөл
-        location_id: Байршил
-        sum_price: Нийт дүн (₮)
+        order_code: Захиалгын код
+        order_number: Захиалсан
+        loaded: Ачуулсан
+        cargo: Ачааны тоо
+        quantity: Хүлээн авсан тоо
+        shipping_cost: Ачааны зардал
+        qr_printed: QR код хэвлэсэн тоо
+        problematic: Асуудалтай барааны тоо
+        shelf: Тавиурт байршуулах барааны тоо
+        remainder: Үлдэгдэл
         feature_item_id: Барааны шинж чанар
-        date: Огноо
         income_locations: Агуулахын байршил
       product_income_feature_rel:
         feature_option_id: Шинж чанар, утга

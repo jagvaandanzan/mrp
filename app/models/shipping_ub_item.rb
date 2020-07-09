@@ -3,6 +3,7 @@ class ShippingUbItem < ApplicationRecord
   belongs_to :product_supply_feature
   belongs_to :product
   belongs_to :shipping_er_item
+  has_one :product_income_items
   has_one :feature_item, through: :product_supply_feature
 
   attr_accessor :remainder

@@ -32,9 +32,15 @@
                   :</b> <%= @product_income.income_date.strftime('%F') %>
               </div>
             </div>
-            <div class="col-md-6 field_div">
+            <div class="col-md-3 field_div">
               <div class="div_input">
-                <b><%= t('activerecord.attributes.product_income.note') %>:</b> <%= @product_income.note %>
+                <b><%= t('activerecord.models.logistic') %>:</b> <%= @product_income.shipping_ub.logistic.name %>
+              </div>
+            </div>
+            <div class="col-md-3 field_div">
+              <div class="div_input">
+                <b><%= t('activerecord.attributes.product_income.cargo_price') %>
+                  :</b> <%= @product_income.cargo_price %>
               </div>
             </div>
           </div>
@@ -46,45 +52,43 @@
             <table class="table table-bordered">
               <thead>
               <tr>
-                <th><%= t('activerecord.attributes.product_income_item.supply_order_item_code') %></th>
-                <th style="width: 100px"><%= t('activerecord.attributes.product_feature_rel.image') %></th>
-                <th><%= t('activerecord.attributes.product_income_item.supply_order_item_id') %></th>
-                <th><%= t('activerecord.attributes.product_income_item.exchange') %></th>
-                <th><%= t('activerecord.attributes.product_income_item.feature_item_id') %></th>
-                <th><%= t('activerecord.attributes.product_income_item.price') %></th>
-                <th><%= t('activerecord.attributes.product_income_item.quantity') %></th>
-                <th><%= t('activerecord.attributes.product_supply_order_item.sum_price') %></th>
-                <th><%= t('titles.total_tugrug') %></th>
-                <th><%= t('activerecord.attributes.product_income_item.shuudan') %></th>
-                <th><%= t('activerecord.attributes.product_income_item.urgent_type') %></th>
-                <th><%= t('activerecord.attributes.product_income_item.date') %></th>
-                <th><%= t('activerecord.attributes.product_income_item.note') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_code') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_name') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_image') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_feature') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.order_number') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.quantity') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.cargo') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.shipping_cost') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.qr_printed') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.problematic') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.shelf') %></th>
               </tr>
               </thead>
               <tbody>
               <% @product_income.product_income_items.each do |i| %>
+                <% product = i.product
+                   feature_item = i.feature_item %>
                 <tr>
-                  <td class="va-mid"><%= i.supply_order_item.product_supply_order.code %></td>
+                  <td class="va-mid"><%= product.code %></td>
+                  <td class="va-mid"><%= product.name %></td>
                   <td class="va-mid">
-                    <% if i.feature_rel.image.present? %>
-                      <%= link_to i.feature_rel.image.url, "data-lightbox": "roadtrip" do %>
-                        <%= image_tag i.feature_rel.image.url(:tumb), class: 'tumb' %>
+                    <% if feature_item.img.present? %>
+                      <%= link_to feature_item.img.url, "data-lightbox": "roadtrip" do %>
+                        <%= t('titles.view') %>
                       <% end %>
-                    <% else %>
-                      <%= image_tag 'no-image.png', class: 'tumb' %>
                     <% end %>
                   </td>
-                  <td class="va-mid"><%= i.supply_order_item.product_name_with_code %></td>
-                  <td class="va-mid"><%= i.supply_order_item.product_supply_order.exchange_i18n + ' ' + get_currency_mn(i.supply_order_item.product_supply_order.exchange_value) %></td>
-                  <td class="va-mid"><%= i.feature_item.name %></td>
-                  <td class="va-mid"><%= i.get_currency i.price %></td>
+                  <td class="va-mid"><%= feature_item.name %></td>
+                  <td class="va-mid"><%= i.supply_feature.quantity %></td>
+                  <td class="va-mid"><%= i.shipping_ub_item.loaded %></td>
                   <td class="va-mid"><%= i.quantity %></td>
-                  <td class="va-mid"><%= i.get_currency i.sum_price %></td>
-                  <td class="va-mid"><%= get_currency_mn i.sum_tug %></td>
-                  <td class="va-mid"><%= i.get_currency i.shuudan %></td>
-                  <td class="va-mid"><%= i.urgent_type_i18n %></td>
-                  <td class="va-mid"><%= i.date.strftime('%F') %></td>
-                  <td class="va-mid"><%= i.note.presence || '' %></td>
+                  <td class="va-mid"><%= i.cargo %></td>
+                  <td class="va-mid"><%= get_currency(i.shipping_cost, "￥", 0) %></td>
+                  <td class="va-mid"><%= i.qr_printed %></td>
+                  <td class="va-mid"><%= i.problematic %></td>
+                  <td class="va-mid"><%= i.shelf %></td>
                 </tr>
               <% end %>
               </tbody>

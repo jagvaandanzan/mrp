@@ -124,6 +124,8 @@ Rails.application.routes.draw do
     resources :product_locations, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_incomes, only: [:index, :create, :new, :edit, :show, :update, :destroy] do
       collection do
+        get 'shipping'
+        get 'shipping_show'
         patch 'get_location_children'
         patch 'get_supply_order_info'
       end

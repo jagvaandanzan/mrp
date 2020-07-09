@@ -1,16 +1,13 @@
 <% content_for :stylesheets do -%>
   <%= stylesheet_link_tag "form" %>
 <% end %>
-<script !src="">
-    var urgent_type = "";
-    var product_income_date = "";
-</script>
 <div class="content-wrapper">
   <section class="content">
     <div class="box box-info">
       <%= form_with model: @product_income, url: @product_income.persisted? ? users_product_income_path : users_product_incomes_path,
                     method: @product_income.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
+          <%= f.hidden_field :shipping_ub_id %>
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-3 field_div">
@@ -30,11 +27,15 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-6 field_div">
-                <%= f.label :note, class: 'control-label' %>
-                <div class="<%= get_error_class(@product_income, :note) %>">
-                  <%= field_errors(@product_income, :note) %>
-                  <%= f.text_field :note, class: 'form-control', placeholder: t('activerecord.attributes.product_income.note') %>
+              <div class="col-md-3 field_div">
+                <%= f.label :logistic, class: 'control-label' do %><%= t('activerecord.models.logistic') %><% end %>
+                <div><%= f.text_field :logistic, value: @product_income.shipping_ub.logistic.name, class: 'form-control', readonly: true %></div>
+              </div>
+              <div class="col-md-3 field_div">
+                <%= f.label :cargo_price, class: 'control-label' %>
+                <div class="<%= get_error_class(@product_income, :cargo_price) %>">
+                  <%= field_errors(@product_income, :cargo_price) %>
+                  <%= f.number_field :cargo_price, step: 1, class: 'form-control', placeholder: t('activerecord.attributes.product_income.cargo_price') %>
                 </div>
               </div>
             </div>
@@ -47,28 +48,25 @@
                 <%= field_errors(@product_income, :product_income_items) %>
                 <table class="table table-bordered" id="tb_product_income_items">
                   <tr>
-                    <th><%= t('activerecord.attributes.product_income_item.supply_order_item_code') %></th>
-                    <th><%= t('activerecord.attributes.product_income_item.supply_order_item_id') %></th>
-                    <th><%= t('activerecord.attributes.product_income_item.exchange') %></th>
-                    <th><%= t('activerecord.attributes.product_income_item.remainder') %></th>
-                    <th><%= t('activerecord.attributes.product_income_item.feature_item_id') %></th>
-                    <th><%= t('activerecord.attributes.product_income_item.quantity') %></th>
-                    <th><%= t('activerecord.attributes.product_income_item.price') %></th>
-                    <th><%= t('activerecord.attributes.product_income_item.shuudan') %></th>
-                    <th><%= t('activerecord.attributes.product_income_item.urgent_type') %></th>
-                    <th><%= t('activerecord.attributes.product_income_item.date') %></th>
-                    <th><%= t('activerecord.attributes.product_income_item.note') %></th>
-                    <th width="50px"></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_code') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_name') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_image') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_feature') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.order_number') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.quantity') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.cargo') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.shipping_cost') %></th>
+                    <% if @product_income.persisted? %>
+                      <th class="va-mid"><%= t('activerecord.attributes.product_income_item.qr_printed') %></th>
+                      <th class="va-mid"><%= t('activerecord.attributes.product_income_item.problematic') %></th>
+                      <th class="va-mid"><%= t('activerecord.attributes.product_income_item.shelf') %></th>
+                    <% end %>
                   </tr>
                   <%= f.fields_for :product_income_items do |m| %>
-                    <%= render 'product_income_item_fields', :f => m %>
+                    <%= render 'product_income_item_fields', :f => m, is_new: @product_income.persisted? %>
                   <% end %>
                 </table>
-              </div>
-              <div class="links item_append">
-                <%= link_to_add_association f, :product_income_items, data: {association_insertion_node: '#tb_product_income_items', association_insertion_method: :append} do %>
-                  <%= nested_add_btn %>
-                <% end %>
               </div>
             </div>
           </div>
@@ -80,36 +78,3 @@
     </div>
   </section>
 </div>
-<script>
-    function supply_order_item_changed(select) {
-        // alert($(select).val());
-        // zahialgiin kod, exchange, exchange_value
-        let order_item_id = $(select).val();
-        if (valid_id(order_item_id)) {
-            let parentTr = select_parent(select);
-            Rails.ajax({
-                url: "<%= get_supply_order_info_users_product_incomes_path %>",
-                type: "PATCH",
-                data: "order_item_id=" + order_item_id,
-                success: function (data) {
-                    if (data.order_code !== undefined) {
-                        parentTr.find('input[name=supply_order_item_code]').val(data.order_code);
-                        parentTr.find('input[name=exchange]').val(data.exchange+"("+data.exchange_value+")");
-                        parentTr.find('input.remainder').val(data.remainder);
-                        parentTr.find('input.price').val(data.price);
-                        parentTr.find('input.shuudan').val(data.shuudan);
-                        let features = data.features;
-                        var feature_select = "";
-                        for (var i = 0; i < features.length; i++) {
-                            feature_select += '<option value="' + features[i]["id"] + '">' + features[i]["name"] + '</option>';
-                        }
-                        parentTr.find('select.feature_item').html("<option>Сонгох</option>" + feature_select).selectpicker('refresh');
-                    }
-                },
-                error: function (data) {
-                    console.log(data);
-                }
-            }); // end ajax
-        }
-    }
-</script>

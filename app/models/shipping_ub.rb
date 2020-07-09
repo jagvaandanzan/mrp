@@ -13,6 +13,10 @@ class ShippingUb < ApplicationRecord
     order(:date)
   }
 
+  scope :is_not_income, -> {
+    where(is_income: :false)
+  }
+
   scope :search, ->(start, finish, product_name) {
     items = order_created_at
     items = items.joins(:products)
@@ -24,5 +28,9 @@ class ShippingUb < ApplicationRecord
   def shipping_ub_item_count
     shipping_ub_items
         .sum(:loaded)
+  end
+
+  def cargo_price
+    shipping_ub_items.sum(:cost)
   end
 end

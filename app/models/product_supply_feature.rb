@@ -31,6 +31,10 @@ class ProductSupplyFeature < ApplicationRecord
     ApplicationController.helpers.get_f(self[:price_lo])
   end
 
+  def code
+    get_model.code
+  end
+
   def get_currency(value)
     ApplicationController.helpers.get_currency(value, Const::CURRENCY[get_model.exchange_before_type_cast.to_i], 0)
   end
