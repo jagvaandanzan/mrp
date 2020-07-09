@@ -54,8 +54,8 @@
                   <td class="va-mid"><%= product.code %></td>
                   <td class="va-mid"><%= product.name %></td>
                   <td class="va-mid"><%= i.purchase_stat.html_safe %></td>
-                  <td class="va-mid"><%= supply_order.get_currency(i.sum_price_lo) %></td>
-                  <td class="va-mid"><%= i.purchase_date.strftime('%F') %></td>
+                  <td class="va-mid"><%= i.sum_price_lo.present? ? supply_order.get_currency(i.sum_price_lo) : '' %></td>
+                  <td class="va-mid"><%= i.purchase_date.present? ? i.purchase_date.strftime('%F') : '' %></td>
                 </tr>
               <% end %>
             </table>

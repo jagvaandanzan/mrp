@@ -34,3 +34,12 @@
 <select id="product_supply_order_item_product_id"></select>
 <%= render 'shared/suggestion_search', id: 'product_supply_order_item_product_id', url: search_product_path %>
 
+<script>
+    $(document).ready(function () {
+        $('.selectpicker').selectpicker('refresh');
+        $('tr.nested-fields select').each(function () {
+            select_input_press($(this).attr('id'), "<%= search_product_path %>", false);
+        });
+    });
+
+</script>

@@ -37,9 +37,7 @@ class Users::ProductSamplesController < Users::BaseController
       @product_sample.product_name = product.name_en
     end
 
-    @product_sample.product_supply_order_items.each do |item|
-      item.set_supply_feature
-    end
+    @product_sample.product_supply_order_items.each(&:set_supply_feature)
   end
 
   def show

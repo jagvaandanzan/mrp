@@ -54,7 +54,8 @@ class Users::ProductSupplyOrdersController < Users::BaseController
     @product_supply_order.attributes = product_supply_order_params
     if @product_supply_order.save
       flash[:success] = t('alert.info_updated')
-      if @product_supply_order.product_supply_order_items.count > 0
+      if @product_supply_order.product_supply_order_items.count > 0 &&
+          @product_supply_order.product_supply_order_items.count != @product_supply_order.tab_index
         redirect_to action: :edit, id: params[:id], tab_index: @product_supply_order.tab_index + 1
       else
         redirect_to action: 'index'
