@@ -16,21 +16,21 @@ class CreateShippingUbItems < ActiveRecord::Migration[5.2]
     # remove_column :product_incomes, :note, :string
     #
     # add_reference :product_income_items, :shipping_ub_item, foreign_key: true, after: 'product_income_id'
-    add_reference :product_income_items, :supply_feature, foreign_key: {to_table: :product_supply_features}, after: 'shipping_ub_item_id'
-    remove_reference :product_income_items, :supply_order_item
-    remove_reference :product_income_items, :product_supplier
-    add_column :product_income_items, :cargo, :integer, after: 'quantity'
-    add_column :product_income_items, :qr_printed, :integer, after: 'sum_price'
-    remove_column :product_income_items, :sum_price, :float
-    add_column :product_income_items, :problematic, :integer, after: 'sum_tug'
-    remove_column :product_income_items, :sum_tug, :float
-    add_column :product_income_items, :shelf, :integer, after: 'shuudan'
-    remove_column :product_income_items, :shuudan, :float
-    remove_column :product_income_items, :price, :float
-    remove_column :product_income_items, :date, :datetime
-    remove_column :product_income_items, :note, :string
-    remove_column :product_income_items, :urgent_type, :integer
-    add_reference :product_incomes, :shipping_ub, foreign_key: true, after: ' id '
+    # add_reference :product_income_items, :supply_feature, foreign_key: {to_table: :product_supply_features}, after: 'shipping_ub_item_id'
+    # remove_reference :product_income_items, :supply_order_item
+    # remove_reference :product_income_items, :product_supplier
+    # add_column :product_income_items, :cargo, :integer, after: 'quantity'
+    # add_column :product_income_items, :qr_printed, :integer, after: 'sum_price'
+    # remove_column :product_income_items, :sum_price, :float
+    # add_column :product_income_items, :problematic, :integer, after: 'sum_tug'
+    # remove_column :product_income_items, :sum_tug, :float
+    # add_column :product_income_items, :shelf, :integer, after: 'shuudan'
+    # remove_column :product_income_items, :shuudan, :float
+    # remove_column :product_income_items, :price, :float
+    # remove_column :product_income_items, :date, :datetime
+    # remove_column :product_income_items, :note, :string
+    # remove_column :product_income_items, :urgent_type, :integer
+    add_reference :product_incomes, :shipping_ub, foreign_key: true, after: 'id'
     remove_column :product_incomes, :sum_price, :float
 
   end
