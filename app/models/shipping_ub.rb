@@ -13,10 +13,6 @@ class ShippingUb < ApplicationRecord
     order(:date)
   }
 
-  scope :is_not_income, -> {
-    where(is_income: :false)
-  }
-
   scope :search, ->(start, finish, product_name) {
     items = order_created_at
     items = items.joins(:products)

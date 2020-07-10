@@ -38,6 +38,6 @@ class CreateShippingUbItems < ActiveRecord::Migration[5.2]
     remove_reference :product_samples, :supplier
     add_reference :product_supply_orders, :logistic, foreign_key: true, after: 'supplier_id'
     remove_reference :product_supply_orders, :supplier
-
+    remove_column :shipping_ubs, :is_income, :boolean
   end
 end

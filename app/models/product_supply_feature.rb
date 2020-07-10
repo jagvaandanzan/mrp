@@ -19,7 +19,7 @@ class ProductSupplyFeature < ApplicationRecord
   scope :find_to_er, -> {
     left_joins(:shipping_er_items)
         .group("product_supply_features.id")
-        .having("SUM(shipping_er_items.received) IS NULL OR SUM(shipping_er_items.received) < product_supply_features.sum_price_lo")
+        .having("SUM(shipping_er_items.received) IS NULL OR SUM(shipping_er_items.received) < product_supply_features.quantity_lo")
         .select("product_supply_features.*, product_supply_features.quantity_lo - IFNULL(SUM(shipping_er_items.received), 0) as remainder")
   }
 
