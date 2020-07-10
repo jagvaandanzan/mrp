@@ -64,6 +64,8 @@
                       <th class="va-mid"><%= t('activerecord.attributes.product_income_item.qr_printed') %></th>
                       <th class="va-mid"><%= t('activerecord.attributes.product_income_item.problematic') %></th>
                       <th class="va-mid"><%= t('activerecord.attributes.product_income_item.shelf') %></th>
+                    <% else %>
+                      <th width="50px"></th>
                     <% end %>
                   </tr>
                   <%= f.fields_for :product_income_items do |m| %>

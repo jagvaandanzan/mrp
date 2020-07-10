@@ -7,6 +7,7 @@ class ProductIncome < ApplicationRecord
 
   validates :code, :cargo_price, :income_date, presence: true
   validates :code, uniqueness: true
+  validates :product_income_items, :length => {:minimum => 1}
   # validate :valid_quantity
 
   scope :income_date_desc, -> {

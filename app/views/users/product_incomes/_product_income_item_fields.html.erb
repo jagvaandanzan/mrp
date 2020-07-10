@@ -40,5 +40,11 @@
       <%= field_errors f.object, :shelf %>
       <%= f.number_field :shelf, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.shelf') %>
     </td>
+  <% else %>
+    <td class="remove">
+      <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+        <%= nested_remove_btn %>
+      <% end %>
+    </td>
   <% end %>
 </tr>
