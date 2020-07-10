@@ -30,7 +30,7 @@ class ProductIncomeItem < ApplicationRecord
                 .joins("LEFT JOIN product_supply_order_items ON product_supply_features.order_item_id=product_supply_order_items.id")
                 .joins("LEFT JOIN product_samples ON product_supply_order_items.product_sample_id=product_samples.id")
                 .joins("LEFT JOIN product_supply_orders ON product_supply_order_items.product_supply_order_id=product_supply_orders.id")
-                .where('(product_samples.id IS NULL AND product_supply_orders.code LIKE :value) OR (product_supply_orders.id IS NULL AND product_samples.code LIKE :value)', value: "%#{supply_code}%")
+                .where('(product_samples.id IS NULL AND product_supply_orders.code LIKE :value) OR (product_supply_orders.id IS NULL AND product_samples.code LIKE :value)', value: "%#{supply_code}%") if supply_code.present?
     items = items.joins(:product).where('products.code LIKE :value OR products.name LIKE :value', value: "%#{product_name}%") if product_name.present?
     items
   }
