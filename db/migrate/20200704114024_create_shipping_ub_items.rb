@@ -30,8 +30,14 @@ class CreateShippingUbItems < ActiveRecord::Migration[5.2]
     # remove_column :product_income_items, :date, :datetime
     # remove_column :product_income_items, :note, :string
     # remove_column :product_income_items, :urgent_type, :integer
-    add_reference :product_incomes, :shipping_ub, foreign_key: true, after: 'id'
-    remove_column :product_incomes, :sum_price, :float
+    # remove_column :product_incomes, :sum_price, :float
+
+    add_reference :product_incomes, :logistic, foreign_key: true, after: 'user_id'
+    remove_reference :product_incomes, :shipping_ub
+    add_reference :product_samples, :logistic, foreign_key: true, after: 'supplier_id'
+    remove_reference :product_samples, :supplier
+    add_reference :product_supply_orders, :logistic, foreign_key: true, after: 'supplier_id'
+    remove_reference :product_supply_orders, :supplier
 
   end
 end

@@ -22,8 +22,8 @@ class ShippingErItem < ApplicationRecord
   scope :find_to_ub, -> {
     left_joins(:shipping_ub_items)
         .group("shipping_er_items.id")
-        .having("SUM(shipping_ub_items.loaded) IS NULL OR SUM(shipping_ub_items.loaded) < SUM(shipping_er_items.received)")
-        .select("shipping_er_items.*, SUM(shipping_er_items.received) - IFNULL(SUM(shipping_ub_items.loaded), 0) as remainder")
+        .having("SUM(shipping_ub_items.loaded) IS NULL OR SUM(shipping_ub_items.loaded) < shipping_er_items.received")
+        .select("shipping_er_items.*, shipping_er_items.received - IFNULL(SUM(shipping_ub_items.loaded), 0) as remainder")
   }
 
   private

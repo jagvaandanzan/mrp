@@ -1,7 +1,7 @@
 class ProductSample < ApplicationRecord
   acts_as_paranoid
 
-  belongs_to :supplier, -> {with_deleted}, :class_name => "ProductSupplier"
+  belongs_to :logistic
   belongs_to :user
 
   has_many :product_sample_images
@@ -15,7 +15,7 @@ class ProductSample < ApplicationRecord
   attr_accessor :tab_index, :product_name, :option_rels
 
   validates :product_name, presence: true, length: {maximum: 255}
-  validates :supplier_id, :code, :exchange, :link, presence: true
+  validates :logistic_id, :code, :exchange, :link, presence: true
   validates :code, uniqueness: true
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 0} do

@@ -17,7 +17,7 @@
   </td>
   <td class="va-mid"><%= feature_item.name %></td>
   <td class="va-mid"><%= f.object.supply_feature.quantity %></td>
-  <td class="va-mid"><%= f.object.shipping_ub_item.loaded %></td>
+  <td class="va-mid"><%= f.object.shipping_ub_item.un_loaded %></td>
   <td>
     <%= field_errors f.object, :quantity %>
     <%= f.number_field :quantity, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.quantity') %>

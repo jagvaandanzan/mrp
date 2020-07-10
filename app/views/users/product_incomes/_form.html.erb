@@ -28,8 +28,11 @@
                 </div>
               </div>
               <div class="col-md-3 field_div">
-                <%= f.label :logistic, class: 'control-label' do %><%= t('activerecord.models.logistic') %><% end %>
-                <div><%= f.text_field :logistic, value: @product_income.shipping_ub.logistic.name, class: 'form-control', readonly: true %></div>
+                <%= f.label :logistic_id, class: 'control-label' %>
+                <div class="<%= get_error_class(@product_income, :logistic_id) %>">
+                  <%= field_errors(@product_income, :logistic_id) %>
+                  <%= f.collection_select :logistic_id, Logistic.all, :id, :name, {}, {class: 'form-control'} %>
+                </div>
               </div>
               <div class="col-md-3 field_div">
                 <%= f.label :cargo_price, class: 'control-label' %>

@@ -94,7 +94,7 @@ class Users::ProductSamplesController < Users::BaseController
   end
 
   def product_sample_params
-    params.require(:product_sample).permit(:tab_index, :code, :ordered_date, :supplier_id, :exchange, :product_name, :link, :description, option_rels: [],
+    params.require(:product_sample).permit(:tab_index, :code, :ordered_date, :logistic_id, :exchange, :product_name, :link, :description, option_rels: [],
                                            product_sample_images_attributes: [:id, :image, :_destroy])
         .merge(:user => current_user)
   end

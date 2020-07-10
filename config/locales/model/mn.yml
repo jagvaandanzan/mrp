@@ -367,7 +367,7 @@ mn:
         code: Код
         status: Төлөв
         ordered_date: Огноо
-        supplier_id: Нийлүүлэгч
+        logistic_id: Хангамжийн ажилтан
         exchange: Валют
         product_supply_order_items: Бараанууд
         link: Линк
@@ -378,7 +378,7 @@ mn:
         code: Код
         status: Төлөв
         ordered_date: Огноо
-        supplier_id: Нийлүүлэгч
+        logistic_id: Хангамжийн ажилтан
         exchange: Валют
         sum_price: Нийт дүн
         product_supply_order_items: Бараанууд
@@ -408,6 +408,7 @@ mn:
         note_lo: Тайлбар
       product_income:
         code: Код
+        logistic_id: Хангамжийн ажилтан
         income_date: Огноо
         product_income_items: Бараанууд
         cargo_price: Ачааны төлбөр

@@ -1,13 +1,13 @@
 class ProductSupplyOrder < ApplicationRecord
   acts_as_paranoid
-  belongs_to :supplier, -> {with_deleted}, :class_name => "ProductSupplier"
+  belongs_to :logistic
   belongs_to :user
 
   has_many :product_supply_order_items, dependent: :destroy
   accepts_nested_attributes_for :product_supply_order_items, allow_destroy: true
   attr_accessor :tab_index
 
-  validates :supplier_id, :code, :exchange, presence: true
+  validates :logistic_id, :code, :exchange, presence: true
   validates :code, uniqueness: true
 
   enum status: {order_created: 0, ordered: 1, cost_included: 2, warehouse_received: 3, calculated: 4, clarification: 5, clarified: 6, canceled: 7}

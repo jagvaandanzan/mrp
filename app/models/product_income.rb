@@ -1,6 +1,6 @@
 class ProductIncome < ApplicationRecord
   belongs_to :user
-  belongs_to :shipping_ub
+  belongs_to :logistic
   has_many :product_income_items, dependent: :destroy
 
   accepts_nested_attributes_for :product_income_items, allow_destroy: true
