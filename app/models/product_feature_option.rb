@@ -1,6 +1,7 @@
 class ProductFeatureOption < ApplicationRecord
   acts_as_paranoid
 
+  belongs_to :group, :class_name => "ProductFeatureGroup", optional: true
   belongs_to :product_feature
   has_many :product_feature_option_rels, :class_name => "ProductFeatureOptionRel", :foreign_key => "feature_option_id", dependent: :destroy
 
@@ -21,9 +22,13 @@ class ProductFeatureOption < ApplicationRecord
         .where("product_features.feature_type=?", is_feature)
         .where("product_feature_options.id IN (?)", ids)
   }
+  scope :by_group_id, ->(id) {
+    where(group_id: id)
+  }
 
-  scope :search, ->(f_id, sname) {
+  scope :search, ->(f_id, sname, group_id) {
     items = where(product_feature_id: f_id)
+    items = items.where(group_id: group_id) if group_id.present?
     items = items.where('name LIKE :value', value: "%#{sname}%") if sname.present?
     items.order_queue
   }

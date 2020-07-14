@@ -65,7 +65,7 @@ mn:
     product_categories: Ангилалууд
     product_locations: Байршлууд
     product_suppliers: Нийлүүлэгчид
-    product_features: Шинж чанар
+    product_features: Хэмжээ
     product_feature_options: Шинж чанарын утгууд
     category_filter_groups: Категорын шүүлтүүр
     products: Бараа
@@ -85,6 +85,7 @@ mn:
     open: Нээх
     view: Үзэх
     product_supply_ordering: Бараа худалдан авалт
+    color: Өнгө
   app_name: “MRP”
   app_short_name: M
   alert:

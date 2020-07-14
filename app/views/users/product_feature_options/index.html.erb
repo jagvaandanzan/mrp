@@ -1,6 +1,6 @@
 <div class="content-wrapper index">
   <%= render 'layouts/breadcrumbs', data: [
-      [users_product_features_path, t('titles.product_features')],
+      [users_product_features_path, t('activerecord.models.product_feature')],
       [users_product_feature_options_path(product_feature_id: @product_feature.id), @product_feature.name], t('titles.product_feature_options')] %>
 
   <section class="content-header align-left with-breadcrumbs">
@@ -13,7 +13,7 @@
       <%= text_field_tag :option_name, @search_name, {class: 'form-control search'} %>
       <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn' %>
       <% if is_manage %>
-        <%= link_to t('controls.button.create'), new_users_product_feature_option_path(product_feature_id: @product_feature.id), class: 'btn btn-warning' %>
+        <%= link_to t('controls.button.create'), new_users_product_feature_option_path(product_feature_id: @product_feature.id, group_id: params[:group_id]), class: 'btn btn-warning' %>
       <% end %>
     <% end %>
   </div>
@@ -29,6 +29,9 @@
               <tr>
                 <th class="va-mid"><%= t('activerecord.attributes.product_feature_option.queue') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_feature_option.name') %></th>
+                <% if params[:product_feature_id].to_i == 1 %>
+                  <th class="va-mid"><%= t('activerecord.attributes.product_feature_option.code') %></th>
+                <% end %>
                 <% if is_manage %>
                   <th class="th-email"></th>
                 <% end %>
@@ -37,10 +40,15 @@
                 <tr>
                   <td class="va-mid underline"><%= o.queue %></td>
                   <td class="va-mid underline"><%= o.name %></td>
+                  <% if o.code.present? %>
+                    <td class="va-mid">
+                      <div class="square-30" style="background-color: <%= o.code %>"></div>
+                    </td>
+                  <% end %>
                   <% if is_manage %>
                     <td>
                       <div class="btn-loc_khoroo">
-                        <%= link_to edit_users_product_feature_option_path(o), class: 'no-underline' do %>
+                        <%= link_to edit_users_product_feature_option_path(o, product_feature_id: o.product_feature_id), class: 'no-underline' do %>
                           <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
                         <% end %>
 

@@ -175,6 +175,7 @@ mn:
       product_location: Байршил
       product_supplier: Нийлүүлэгч
       product_feature: Шинж чанар
+      product_feature_group: Өнгө
       product_feature_option: Шинж чанарын утга
       product_feature_rel: Барааны шинж чанар
       product: Бараа
@@ -303,14 +304,21 @@ mn:
         product_id: Бараа
         feature_id: Шинж чанар
         feature_option_id: Шинж чанарын утга
+      product_feature_group:
+        queue: Дараалал
+        name: Нэр
+        code: Өнгөний код
+        product_features: Өнгөнүүд
       product_feature:
         feature_type: Төрөл
         queue: Дараалал
         name: Нэр
         description: Дэлгэрэнгүй
       product_feature_option:
+        group_id: Бүлэг
         queue: Дараалал
-        name: Утга
+        name: Нэр
+        code: Өнгөний код
         product_feature_id: Шинж чанар
         product_feature: Шинж чанар
       product_feature_item:

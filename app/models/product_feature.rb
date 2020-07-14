@@ -3,9 +3,9 @@ class ProductFeature < ApplicationRecord
 
   has_many :options, -> {order(:queue).order(:name)}, :class_name => "ProductFeatureOption", :foreign_key => "product_feature_id", dependent: :destroy
 
-  after_create -> {sync_web('post')}
-  after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
-  after_destroy -> {sync_web('delete')}
+  # after_create -> {sync_web('post')}
+  # after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
+  # after_destroy -> {sync_web('delete')}
   attr_accessor :method_type
 
   enum feature_type: {is_feature: 0, is_size: 1}

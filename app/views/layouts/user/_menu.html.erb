@@ -96,7 +96,7 @@
       <% if (can? :read, Location) || (can? :read, Product) || (can? :read, ProductLocation) || (can? :read, Operator) || (can? :read, ProductSupplier) %>
         <%= content_tag :li, class: controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations' ||
             controller_name == 'product_categories' || controller_name == 'product_suppliers' ||
-            controller_name == 'product_features' || controller_name == 'product_feature_options' ||
+            controller_name == 'product_feature_groups' || controller_name == 'product_features' || controller_name == 'product_feature_options' ||
             controller_name == 'product_locations' || controller_name == 'category_filter_groups' ||
             controller_name == 'brands' || controller_name == 'manufacturers' || controller_name == 'technical_specifications' || controller_name == 'size_instructions' ||
             controller_name == 'operators' || controller_name == 'salesmen' ? 'treeview active' : 'treeview' do %>
@@ -121,8 +121,13 @@
                   <i class="fa fa-navicon"></i><span><%= t('titles.product_categories') %></span>
                 <% end %>
               <% end %>
-              <%= content_tag :li, class: (controller_name == 'product_features' || controller_name == 'product_feature_options') ? 'active' : '' do %>
-                <%= link_to users_product_features_path do %>
+              <%= content_tag :li, class: (controller_name == 'product_feature_groups' || (controller_name == 'product_feature_options' && params[:product_feature_id].to_i == 1)) ? 'active' : '' do %>
+                <%= link_to users_product_feature_groups_path do %>
+                  <i class="fa fa-object-group"></i><span><%= t('activerecord.models.product_feature_group') %></span>
+                <% end %>
+              <% end %>
+              <%= content_tag :li, class: (controller_name == 'product_feature_options' && params[:product_feature_id].present? && params[:product_feature_id].to_i == 2) ? 'active' : '' do %>
+                <%= link_to users_product_feature_options_path(product_feature_id: 2) do %>
                   <i class="fa fa-asterisk"></i><span><%= t('titles.product_features') %></span>
                 <% end %>
               <% end %>

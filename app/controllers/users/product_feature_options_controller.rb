@@ -4,13 +4,19 @@ class Users::ProductFeatureOptionsController < Users::BaseController
 
   def index
     @search_name = params[:option_name]
+    @group_id = params[:group_id]
     @product_feature = ProductFeature.find_by!(id: params[:product_feature_id])
-    @options = ProductFeatureOption.search(@product_feature.id, @search_name).page(params[:page])
+    @options = ProductFeatureOption.search(@product_feature.id, @search_name, @group_id).page(params[:page])
   end
 
   def new
     @option = ProductFeatureOption.new
     @option.product_feature = ProductFeature.find_by!(id: params[:product_feature_id])
+    if params[:group_id].present?
+      @option.queue = ProductFeatureOption.by_group_id(params[:group_id]).count + 1
+      @option.group_id = params[:group_id]
+      @option.code = @option.group.code
+    end
   end
 
   def create
@@ -18,7 +24,11 @@ class Users::ProductFeatureOptionsController < Users::BaseController
 
     if @option.save
       flash[:success] = t('alert.saved_successfully')
-      redirect_to action: :index, product_feature_id: @option.product_feature.id
+      if @option.group.present?
+        redirect_to action: :index, product_feature_id: @option.product_feature.id, group_id: @option.group_id
+      else
+        redirect_to action: :index, product_feature_id: @option.product_feature.id
+      end
     else
       render 'new'
     end
@@ -34,7 +44,11 @@ class Users::ProductFeatureOptionsController < Users::BaseController
     @option.attributes = product_feature_option_params
     if @option.save
       flash[:success] = t('alert.info_updated')
-      redirect_to action: :index, product_feature_id: @option.product_feature.id
+      if @option.group.present?
+        redirect_to action: :index, product_feature_id: @option.product_feature.id, group_id: @option.group_id
+      else
+        redirect_to action: :index, product_feature_id: @option.product_feature.id
+      end
     else
       render 'edit'
     end
@@ -55,6 +69,6 @@ class Users::ProductFeatureOptionsController < Users::BaseController
   end
 
   def product_feature_option_params
-    params.require(:product_feature_option).permit(:product_feature_id, :queue, :name)
+    params.require(:product_feature_option).permit(:product_feature_id, :group_id, :queue, :name, :code)
   end
 end

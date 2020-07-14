@@ -1,9 +1,12 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "admin-lte/bower_components/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min" %>
+<% end %>
 <div class="content-wrapper">
 
   <%= render 'layouts/breadcrumbs', data: [
-      [users_product_features_path, t('titles.product_features')],
+      [users_product_features_path, t('activerecord.models.product_feature')],
       [users_product_feature_options_path(product_feature_id: @option.product_feature.id), @option.product_feature.name],
-      t('activerecord.models.product_feature_option') +t(@option.persisted? ? 'titles.edit' : 'titles.add')] %>
+      t('titles.color') +t(@option.persisted? ? 'titles.edit' : 'titles.add')] %>
 
 
   <section class="content">
@@ -12,6 +15,20 @@
                     method: @option.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
           <%= f.hidden_field :product_feature_id %>
+          <%= f.hidden_field :group_id %>
+
+          <% if @option.group.present? %>
+            <div class="form-group">
+              <%= f.label :group_id, class: 'col-sm-3 control-label' do %>
+                <%= t('activerecord.attributes.product_feature_option.group_id') %>: <%= @option.group.name %>
+              <% end %>
+              <div class="col-sm-9">
+                <%= field_errors(@option, :group_id) %>
+                <div class="square-30" style="background-color: <%= @option.group.code %>"></div>
+              </div>
+            </div>
+          <% end %>
+
           <div class="form-group">
             <%= f.label :queue, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@option, :queue) %>">
@@ -27,6 +44,17 @@
               <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.product_feature_option.name') %>
             </div>
           </div>
+          
+          <% if @option.group.present? %>
+            <div class="form-group">
+              <%= f.label :code, class: 'col-sm-3 control-label' %>
+              <div class="col-sm-6 <%= get_error_class(@option, :code) %>">
+                <%= field_errors(@option, :code) %>
+                <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product_feature_option.code') %>
+              </div>
+            </div>
+          <% end %>
+
           <div class="action-buttons">
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
           </div>
@@ -35,3 +63,43 @@
     </div>
   </section>
 </div>
+
+<% content_for :footer_js do -%>
+  <%= javascript_include_tag 'admin-lte/bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min' %>
+<% end %>
+<script>
+    $(document).ready(function () {
+        $('#product_feature_option_code').colorpicker({
+            customClass: 'colorpicker-2x',
+            sliders: {
+                saturation: {
+                    maxLeft: 200,
+                    maxTop: 200
+                },
+                hue: {
+                    maxTop: 200
+                },
+                alpha: {
+                    maxTop: 200
+                }
+            }
+        });
+    })
+</script>
+
+<style>
+  .colorpicker.colorpicker-2x {
+    width: 272px;
+  }
+
+  .colorpicker-2x .colorpicker-saturation {
+    width: 200px;
+    height: 200px;
+  }
+
+  .colorpicker-2x .colorpicker-hue,
+  .colorpicker-2x .colorpicker-alpha {
+    width: 30px;
+    height: 200px;
+  }
+</style>

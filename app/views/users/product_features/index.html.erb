@@ -8,7 +8,7 @@
       <%= text_field_tag :feature_name, @search_name, {class: 'form-control search'} %>
       <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn' %>
       <% if is_manage %>
-        <%= link_to t('controls.button.create'), new_users_product_feature_path, class: 'btn btn-warning' %>
+        <%= link_to t('controls.button.create'), new_users_product_feature_path, class: 'none btn btn-warning' %>
       <% end %>
     <% end %>
   </div>
@@ -18,9 +18,7 @@
       <div class="col-xs-12">
         <div class="box">
           <div class="box-body table-responsive no-padding">
-
             <%= render 'layouts/flash_message' %>
-
             <table class="table table-hover">
               <tr>
                 <th class="va-mid"><%= t('activerecord.attributes.product_feature.feature_type') %></th>
@@ -35,7 +33,7 @@
                 <tr>
                   <td class="va-mid"><%= f.feature_type_i18n %></td>
                   <td class="va-mid"><%= f.queue %></td>
-                  <td class="va-mid"><%= link_to f.name, users_product_feature_options_path(product_feature_id: f.id) %></td>
+                  <td class="va-mid"><%= link_to f.name, users_product_feature_groups_path %></td>
                   <td class="va-mid"><%=f.description %></td>
                   <% if is_manage %>
                     <td>
