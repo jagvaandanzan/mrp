@@ -13,22 +13,6 @@
       <% end %>
     </div>
     <div class="row">
-      <div class="col-md-6 field_div">
-        <%= f.label :name_en, class: 'control-label' %>
-        <div class="<%= get_error_class(@product, :name_en) %>">
-          <%= field_errors(@product, :name_en) %>
-          <%= f.text_field :name_en, class: 'form-control', placeholder: t('activerecord.attributes.product.name_en') %>
-        </div>
-      </div>
-      <div class="col-md-6 field_div">
-        <%= f.label :name_cn, class: 'control-label' %>
-        <div class="<%= get_error_class(@product, :name_cn) %>">
-          <%= field_errors(@product, :name_cn) %>
-          <%= f.text_field :name_cn, class: 'form-control', placeholder: t('activerecord.attributes.product.name_cn') %>
-        </div>
-      </div>
-    </div>
-    <div class="row">
       <div class="col-md-4 field_div">
         <%= f.label :category_id, class: 'control-label' %>
         <div class="<%= get_error_class(@product, :category_id) %>" id="product_category">

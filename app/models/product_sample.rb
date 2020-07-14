@@ -67,7 +67,7 @@ class ProductSample < ApplicationRecord
         product.save
       else
         product = Product.new(draft: true,
-                              name_en: product_name,
+                              name: product_name,
                               code: ApplicationController.helpers.get_code(Product.last),
                               option_rels: option_rels)
 

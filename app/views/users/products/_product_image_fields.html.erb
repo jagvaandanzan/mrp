@@ -1,5 +1,5 @@
-<tr class="nested-fields">
-  <td class="va-mid">
+<div class="nested-fields text-center" style="float: left;margin-right: 8px">
+  <div>
     <%= field_errors f.object, :image %>
     <%= f.file_field :image, accept: "image/*", class: 'image-file none-force' %>
     <div class="preview noselect">
@@ -9,15 +9,13 @@
         <span class="text"><%= t('upload_image') %></span>
       <% end %>
     </div>
-  </td>
-  <td class="remove va-mid">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
       <%= nested_remove_btn %>
     <% end %>
-  </td>
-</tr>
+  </div>
+</div>
 <script>
     $(document).ready(function () {
-        load_image_preview("#tb_product_images .nested-fields:last");
+        load_image_preview("#div_product_images .nested-fields:last");
     })
 </script>

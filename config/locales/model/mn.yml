@@ -26,8 +26,8 @@ mn:
       edit: Администраторийн мэдээлэл засах
     product_name:
       n_type:
-        m_name: Моделийн нэр
-        m_number: Моделийн дугаар
+        m_name: Барааны нэр
+        m_number: Моделийн дугаар (үйлдвэрийн код)
         packaging: Хэмжээ, савалгаа
         brand: Брендийн нэр
         material: Материал
@@ -296,8 +296,6 @@ mn:
         photo_web: Бодит зургыг вебд харуулах
         product_feature_items: Зураг, Видео
         product_size_instructions: Хэмжээний заавар
-        name_en: Англи нэр
-        name_cn: Хятад нэр
         product_images: Дэлгэрэнгүй зураг
         product_videos: Видео
         picture: Нүүр зураг
@@ -355,11 +353,12 @@ mn:
       product_image:
         image: Зураг
       product_package:
-        product_size: Барааны хэмжээс
+        product_size: Савалгаа хайрцаг
+        bag: Уут
         length: Урт
         width: Өргөн
         height: Өндөр
-        package_unit: Хэмжээний нэгж
+        package_unit: Савалгаа нэгж
         weight_unit: Барааны нэгж
         weight: Барааны жин
         gift_wrap: Бэлгийн боолт

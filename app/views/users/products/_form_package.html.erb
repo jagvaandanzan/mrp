@@ -8,35 +8,34 @@
           <%= t('activerecord.attributes.product_package.product_size') %>
           <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[3] %>"></i>
         <% end %>
-        <div class="col-sm-9 <%= get_error_class(@product.product_package, :product_size) %>">
+        <div class="col-sm-3 <%= get_error_class(@product.product_package, :product_size) %>">
           <%= field_errors(@product.product_package, :product_size) %>
           <%= f.text_field :product_size, class: 'form-control', placeholder: t('activerecord.attributes.product_package.product_size') %>
+        </div>
+        <%= f.label :bag, class: 'col-sm-1 control-label' %>
+        <div class="col-sm-3 <%= get_error_class(@product.product_package, :bag) %>">
+          <%= field_errors(@product.product_package, :bag) %>
+          <%= f.text_field :bag, class: 'form-control', placeholder: t('activerecord.attributes.product_package.bag') %>
         </div>
       </div>
       <div class="form-group">
         <%= f.label :length, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9 <%= get_error_class(@product.product_package, :length) %>">
+        <div class="col-sm-1 <%= get_error_class(@product.product_package, :length) %>">
           <%= field_errors(@product.product_package, :length) %>
           <%= f.number_field :length, min: 0, step: 0.1, class: 'form-control', placeholder: t('activerecord.attributes.product_package.length') %>
         </div>
-      </div>
-      <div class="form-group">
-        <%= f.label :width, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9 <%= get_error_class(@product.product_package, :width) %>">
+        <%= f.label :width, class: 'col-sm-1 control-label' %>
+        <div class="col-sm-1 <%= get_error_class(@product.product_package, :width) %>">
           <%= field_errors(@product.product_package, :width) %>
           <%= f.number_field :width, min: 0, step: 0.1, class: 'form-control', placeholder: t('activerecord.attributes.product_package.width') %>
         </div>
-      </div>
-      <div class="form-group">
-        <%= f.label :height, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9 <%= get_error_class(@product.product_package, :height) %>">
+        <%= f.label :height, class: 'col-sm-1 control-label' %>
+        <div class="col-sm-1 <%= get_error_class(@product.product_package, :height) %>">
           <%= field_errors(@product.product_package, :height) %>
           <%= f.number_field :height, min: 0, step: 0.1, class: 'form-control', placeholder: t('activerecord.attributes.product_package.height') %>
         </div>
-      </div>
-      <div class="form-group m-t-10">
-        <%= f.label :package_unit, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product.product_package, :package_unit) %>">
+        <%= f.label :package_unit, class: 'col-sm-2 control-label' %>
+        <div class="col-sm-2 radio-group p-t-5 <%= get_error_class(@product.product_package, :package_unit) %>">
           <%= field_errors(@product.product_package, :package_unit) %>
           <%= f.collection_radio_buttons :package_unit, ProductPackage.package_units_i18n, :first, :second do |b| %>
             <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
@@ -45,14 +44,11 @@
       </div>
       <div class="form-group">
         <%= f.label :weight, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9 <%= get_error_class(@product.product_package, :weight) %>">
+        <div class="col-sm-3 <%= get_error_class(@product.product_package, :weight) %>">
           <%= field_errors(@product.product_package, :weight) %>
           <%= f.text_field :weight, class: 'form-control', placeholder: t('activerecord.attributes.product_package.weight') %>
         </div>
-      </div>
-      <div class="form-group m-t-10">
-        <%= f.label :weight_unit, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product.product_package, :weight_unit) %>">
+        <div class="col-sm-3 radio-group p-t-5 <%= get_error_class(@product.product_package, :weight_unit) %>">
           <%= field_errors(@product.product_package, :weight_unit) %>
           <%= f.collection_radio_buttons :weight_unit, ProductPackage.weight_units_i18n, :first, :second do |b| %>
             <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;

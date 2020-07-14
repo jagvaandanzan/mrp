@@ -1,7 +1,10 @@
 <%= form_body do %>
   <% product_package = @product.product_package %>
-  <div class="col-md-12 field_div">
+  <div class="col-md-6 field_div">
     <b><%= t('activerecord.attributes.product_package.product_size') %>:</b> <%= product_package.product_size %>
+  </div>
+  <div class="col-md-6 field_div">
+    <b><%= t('activerecord.attributes.product_package.bag') %>:</b> <%= product_package.bag %>
   </div>
   <div class="row">
     <div class="col-md-12">

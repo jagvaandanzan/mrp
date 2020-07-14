@@ -34,7 +34,7 @@ class Users::ProductSamplesController < Users::BaseController
     product = @product_sample.get_product
     if product.present?
       @product_sample.option_rels = product.product_feature_option_rels.map {|i| i.feature_option_id.to_s}.to_a
-      @product_sample.product_name = product.name_en
+      @product_sample.product_name = product.name
     end
 
     @product_sample.product_supply_order_items.each(&:set_supply_feature)

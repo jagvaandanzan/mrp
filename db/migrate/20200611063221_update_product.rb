@@ -14,20 +14,23 @@ class UpdateProduct < ActiveRecord::Migration[5.2]
     # add_reference :product_specifications, :spec_item, foreign_key: {to_table: :technical_spec_items}, after: 'product_id'
     # add_column :product_categories, :name_en, :string, after: 'name'
 
-    remove_column :product_supply_order_items, :sum_tug, :float
-    remove_column :product_supply_order_items, :link, :string
-    remove_column :product_supply_features, :sum_tug, :float
-    remove_column :product_supply_orders, :exchange_value, :float
-    remove_column :product_samples, :exchange_value, :float
-    add_column :product_samples, :description, :text, after: 'user_id'
-    add_column :product_samples, :status, :integer, after: 'code', default: 0
-    add_column :product_samples, :link, :text, after: 'exchange'
-    add_column :products, :draft, :boolean, after: 'is_own', default: false
-    remove_attachment :product_supply_order_items, :image
-    add_column :product_supply_orders, :status, :integer, after: 'code', default: 0
-    remove_column :product_samples, :payment, :integer
-    remove_column :product_supply_orders, :payment, :integer
-    remove_column :product_supply_orders, :closed_date, :datetime
-    remove_column :product_supply_orders, :is_closed, :boolean
+    # remove_column :product_supply_order_items, :sum_tug, :float
+    # remove_column :product_supply_order_items, :link, :string
+    # remove_column :product_supply_features, :sum_tug, :float
+    # remove_column :product_supply_orders, :exchange_value, :float
+    # remove_column :product_samples, :exchange_value, :float
+    # add_column :product_samples, :description, :text, after: 'user_id'
+    # add_column :product_samples, :status, :integer, after: 'code', default: 0
+    # add_column :product_samples, :link, :text, after: 'exchange'
+    # add_column :products, :draft, :boolean, after: 'is_own', default: false
+    # remove_attachment :product_supply_order_items, :image
+    # add_column :product_supply_orders, :status, :integer, after: 'code', default: 0
+    # remove_column :product_samples, :payment, :integer
+    # remove_column :product_supply_orders, :payment, :integer
+    # remove_column :product_supply_orders, :closed_date, :datetime
+    # remove_column :product_supply_orders, :is_closed, :boolean
+    remove_column :products, :name_cn, :string
+    remove_column :products, :name_en, :string
+    add_column :product_packages, :bag, :string, after: 'product_size'
   end
 end
