@@ -6,7 +6,7 @@
   <%= render 'layouts/breadcrumbs', data: [
       [users_product_features_path, t('activerecord.models.product_feature')],
       [users_product_feature_options_path(product_feature_id: @option.product_feature.id), @option.product_feature.name],
-      t('titles.color') +t(@option.persisted? ? 'titles.edit' : 'titles.add')] %>
+      t('titles.color') + t(@option.persisted? ? 'titles.edit' : 'titles.add')] %>
 
 
   <section class="content">
@@ -15,20 +15,25 @@
                     method: @option.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
           <%= f.hidden_field :product_feature_id %>
-          <%= f.hidden_field :group_id %>
 
           <% if @option.group.present? %>
             <div class="form-group">
               <%= f.label :group_id, class: 'col-sm-3 control-label' do %>
-                <%= t('activerecord.attributes.product_feature_option.group_id') %>: <%= @option.group.name %>
               <% end %>
               <div class="col-sm-9">
                 <%= field_errors(@option, :group_id) %>
                 <div class="square-30" style="background-color: <%= @option.group.code %>"></div>
               </div>
             </div>
-          <% end %>
 
+            <div class="form-group">
+              <%= f.label :group_id, class: 'col-sm-3 control-label' %>
+              <div class="col-sm-9 <%= get_error_class(@option, :group_id) %>">
+                <%= field_errors(@option, :group_id) %>
+                <%= f.collection_select :group_id, ProductFeatureGroup.order_name, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+              </div>
+            </div>
+          <% end %>
           <div class="form-group">
             <%= f.label :queue, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@option, :queue) %>">
@@ -44,7 +49,7 @@
               <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.product_feature_option.name') %>
             </div>
           </div>
-          
+
           <% if @option.group.present? %>
             <div class="form-group">
               <%= f.label :code, class: 'col-sm-3 control-label' %>
