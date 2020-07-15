@@ -29,8 +29,9 @@ class UpdateProduct < ActiveRecord::Migration[5.2]
     # remove_column :product_supply_orders, :payment, :integer
     # remove_column :product_supply_orders, :closed_date, :datetime
     # remove_column :product_supply_orders, :is_closed, :boolean
-    remove_column :products, :name_cn, :string
-    remove_column :products, :name_en, :string
-    add_column :product_packages, :bag, :string, after: 'product_size'
+    # remove_column :products, :name_cn, :string
+    # remove_column :products, :name_en, :string
+    # add_column :product_packages, :bag, :string, after: 'product_size'
+    add_column :product_feature_options, :name_en, :string, after: 'name'
   end
 end
