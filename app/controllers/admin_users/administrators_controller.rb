@@ -7,7 +7,7 @@ class AdminUsers::AdministratorsController < AdminUsers::BaseController
     cat_colors = CategoryFilterGroup.search_name("color").map(&:id).to_a
     colors = CategoryFilter.by_group(cat_colors)
     colors.each do |c|
-      ProductFeatureOption.create(name: c, name_en: c, product_feature_id: 1)
+      ProductFeatureOption.create(name: c, name_en: c, product_feature_id: 1, group_id: 1)
     end
     groups = CategoryFilterGroup.qe_name('color')
     groups.destroy_all
