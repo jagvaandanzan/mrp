@@ -43,7 +43,12 @@ class CategoryFilterGroup < ApplicationRecord
       params = nil
       url += "/" + id.to_s
     else
-      params = self.to_json(methods: [:method_type], only: [:id, :product_category_id, :name, :name_en])
+      params = self.to_json(methods: [:method_type], only: [:id, :product_category_id, :name, :name_en],
+                            :include => {:category_filters => {
+                                methods: [:img_url],
+                                only: [:id, :category_filter_group_id, :name, :name_en],
+                            }}
+      )
     end
 
     response = ApplicationController.helpers.api_request(url, method, params)

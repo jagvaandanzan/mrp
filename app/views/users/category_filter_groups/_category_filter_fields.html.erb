@@ -12,7 +12,7 @@
     <%= f.file_field :img, accept: "image/*" %>
     <% if f.object.img.present? %>
       <div class="preview noselect">
-        <%= image_tag f.object.img.url(:tumb), class: 'preview-img' %>
+        <%= image_tag f.object.img.url, class: 'preview-img' %>
       </div>
     <% end %>
   </td>
