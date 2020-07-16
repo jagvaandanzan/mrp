@@ -43,7 +43,7 @@ class ProductFeatureOption < ApplicationRecord
       params = nil
       url += "/" + id.to_s
     else
-      params = self.to_json(methods: [:method_type], only: [:id, :queue, :name, :product_feature_id])
+      params = self.to_json(methods: [:method_type], only: [:id, :group_id, :queue, :name, :code, :product_feature_id])
     end
 
     response = ApplicationController.helpers.api_request(url, method, params)

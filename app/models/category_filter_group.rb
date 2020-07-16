@@ -5,6 +5,11 @@ class CategoryFilterGroup < ApplicationRecord
 
   accepts_nested_attributes_for :category_filters, allow_destroy: true
 
+  after_create -> {sync_web('post')}
+  after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
+  after_destroy -> {sync_web('delete')}
+  attr_accessor :method_type
+
   validates :name, presence: true
   validates_uniqueness_of :name, scope: [:product_category_id]
 
@@ -27,4 +32,23 @@ class CategoryFilterGroup < ApplicationRecord
     items = items.where('name LIKE :value', value: "%#{name}%") if name.present?
     items
   }
+
+  private
+
+  def sync_web(method)
+    self.method_type = method
+    url = "categories/filter_group"
+
+    if method == 'delete'
+      params = nil
+      url += "/" + id.to_s
+    else
+      params = self.to_json(methods: [:method_type], only: [:id, :product_category_id, :name, :name_en])
+    end
+
+    response = ApplicationController.helpers.api_request(url, method, params)
+    if response.code.to_i == 201
+      self.update(sync_at: Time.now, method_type: 'sync')
+    end
+  end
 end
