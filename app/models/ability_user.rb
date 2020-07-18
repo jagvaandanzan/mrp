@@ -32,7 +32,7 @@ class AbilityUser
         can role, LocKhoroo
         can role, Location
       when "product_supplier"
-        can role, ProductSupplier
+        can role, Customer
       when "product_location"
         can role, ProductLocation
       when "fb_post"

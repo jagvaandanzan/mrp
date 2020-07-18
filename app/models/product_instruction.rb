@@ -5,6 +5,11 @@ class ProductInstruction < ApplicationRecord
 
   validates_uniqueness_of :i_type, scope: [:product_id]
 
+  after_create -> {sync_web('post')}
+  after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
+  after_destroy -> {sync_web('delete')}
+  attr_accessor :method_type
+
   validates :i_type, presence: true
   validate :valid_instruction
 
@@ -16,9 +21,37 @@ class ProductInstruction < ApplicationRecord
   validates_attachment :video,
                        content_type: {content_type: ["video/mp4"], message: :content_type}, size: {less_than: 10.megabytes}
 
+  def image_url
+    if image.present?
+      image.url
+    end
+  end
+
+  def video_url
+    if video.present?
+      video.url
+    end
+  end
+
   private
 
   def valid_instruction
     self.errors.add(:description, :blank) if !description.present? && !file.present?
+  end
+
+  def sync_web(method)
+    self.method_type = method
+    url = "product/instruction"
+
+    if method == 'delete'
+      params = nil
+      url += "/" + id.to_s
+    else
+
+      params = self.to_json(only: [:id, :product_id, :i_type, :description], :methods => [:method_type, :image_url, :video_url])
+    end
+
+    response = ApplicationController.helpers.api_request(url, method, params)
+    Rails.logger.info("response.body: #{response.body}")
   end
 end

@@ -10,7 +10,7 @@
             <%= f.label :queue, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@size_instruction, :queue) %>">
               <%= field_errors(@size_instruction, :queue) %>
-              <%= f.text_field :queue, class: 'form-control', placeholder: t('activerecord.attributes.size_instruction.queue') %>
+              <%= f.number_field :queue, class: 'form-control', min: 0, step: 1, placeholder: t('activerecord.attributes.size_instruction.queue') %>
             </div>
           </div>
 

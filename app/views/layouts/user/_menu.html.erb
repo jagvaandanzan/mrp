@@ -95,7 +95,7 @@
 
       <% if (can? :read, Location) || (can? :read, Product) || (can? :read, ProductLocation) || (can? :read, Operator) || (can? :read, ProductSupplier) %>
         <%= content_tag :li, class: controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations' ||
-            controller_name == 'product_categories' || controller_name == 'product_suppliers' ||
+            controller_name == 'product_categories' || controller_name == 'customers' ||
             controller_name == 'product_feature_groups' || controller_name == 'product_features' || controller_name == 'product_feature_options' ||
             controller_name == 'product_locations' || controller_name == 'category_filter_groups' ||
             controller_name == 'brands' || controller_name == 'manufacturers' || controller_name == 'technical_specifications' || controller_name == 'size_instructions' ||
@@ -171,10 +171,10 @@
                 <% end %>
               <% end %>
             <% end %>
-            <% if can? :read, ProductSupplier %>
-              <%= content_tag :li, class: (controller_name == 'product_suppliers') ? 'active' : '' do %>
-                <%= link_to users_product_suppliers_path do %>
-                  <i class="fa fa-building-o"></i><span><%= t('titles.product_suppliers') %></span>
+            <% if can? :read, Customer %>
+              <%= content_tag :li, class: (controller_name == 'customers') ? 'active' : '' do %>
+                <%= link_to users_customers_path do %>
+                  <i class="fa fa-users"></i><span><%= t('activerecord.models.customer') %></span>
                 <% end %>
               <% end %>
             <% end %>

@@ -173,7 +173,7 @@ mn:
       loc_khoroo: Хороо/сум
       product_category: Ангилал
       product_location: Байршил
-      product_supplier: Нийлүүлэгч
+      customer: Харилцагч
       product_feature: Шинж чанар
       product_feature_group: Өнгө
       product_feature_option: Шинж чанарын утга
@@ -270,9 +270,9 @@ mn:
         parent_id: Эцэг байршил
         parent: Эцэг байршил
         children: Дэд байршил
-      product_supplier:
+      customer:
         name: Нэр
-        code: Код
+        queue: Дараалал
         description: Дэлгэрэнгүй
       product:
         name: Нэр

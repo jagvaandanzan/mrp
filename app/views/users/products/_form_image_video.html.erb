@@ -81,21 +81,13 @@
       </div>
       <div class="form-group">
         <%= f.label :product_photos, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9 cocoon-nested-form">
-          <div class="<%= get_error_class(@product, :product_photos) %>">
-            <%= field_errors(@product, :product_photos) %>
-            <table class="table table-bordered" id="tb_product_photos">
-              <tr>
-                <th><%= t('activerecord.attributes.product_photo.photo') %></th>
-                <th width="50px"></th>
-              </tr>
-              <%= f.fields_for :product_photos do |m| %>
-                <%= render 'product_photo_fields', :f => m %>
-              <% end %>
-            </table>
-          </div>
+        <div id="div_product_photos" class="col-sm-9 cocoon-nested-form <%= get_error_class(@product, :product_photos) %>">
+          <%= field_errors(@product, :product_photos) %>
+          <%= f.fields_for :product_photos do |m| %>
+            <%= render 'product_photo_fields', :f => m %>
+          <% end %>
           <div class="links">
-            <%= link_to_add_association f, :product_photos, data: {association_insertion_node: '#tb_product_photos', association_insertion_method: :append} do %>
+            <%= link_to_add_association f, :product_photos, class: 'append-after' do %>
               <%= nested_add_btn %>
             <% end %>
           </div>

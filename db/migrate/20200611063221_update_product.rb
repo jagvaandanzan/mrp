@@ -33,9 +33,13 @@ class UpdateProduct < ActiveRecord::Migration[5.2]
     # remove_column :products, :name_en, :string
     # add_column :product_packages, :bag, :string, after: 'product_size'
     # add_column :product_feature_options, :name_en, :string, after: 'name'
-    add_column :product_feature_groups, :sync_at, :datetime, after: 'code'
-    add_column :category_filter_groups, :sync_at, :datetime, after: 'name_en'
-    add_column :category_filters, :sync_at, :datetime, after: 'name_en'
+    # add_column :product_feature_groups, :sync_at, :datetime, after: 'code'
+    # add_column :category_filter_groups, :sync_at, :datetime, after: 'name_en'
+    # add_column :category_filters, :sync_at, :datetime, after: 'name_en'
+    add_column :customers, :sync_at, :datetime, after: 'description'
+    add_column :brands, :sync_at, :datetime, after: 'logo_updated_at'
+    add_column :manufacturers, :sync_at, :datetime, after: 'country'
+    add_column :technical_specifications, :sync_at, :datetime, after: 'specification_gr'
 
   end
 end

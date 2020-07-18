@@ -5,7 +5,7 @@ class Product < ApplicationRecord
   belongs_to :category, -> {with_deleted}, :class_name => "ProductCategory", optional: true
   belongs_to :brand, optional: true
   belongs_to :manufacturer, optional: true
-  belongs_to :technical_gr, :class_name => "TechnicalSpecificationGr", optional: true
+  belongs_to :technical_specification, optional: true
 
   has_many :product_names
   has_many :product_feature_option_rels
@@ -34,9 +34,10 @@ class Product < ApplicationRecord
 
   enum delivery_type: {is_own: 0, is_customer: 1}
 
-  # after_create -> {sync_web('post')}
-  # after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
-  # after_destroy -> {sync_web('delete')}
+  after_create -> {sync_web('post')}
+  after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
+  after_destroy -> {sync_web('delete')}
+
   attr_accessor :option_rels, :method_type, :tab_index, :filters, :instruction_id, :instruction_val, :specification_id, :specification_val
 
   has_attached_file :picture, :path => ":rails_root/public/products/picture/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/products/picture/:id_partition/:style.:extension'
@@ -165,6 +166,12 @@ class Product < ApplicationRecord
     end
   end
 
+  def picture_url
+    if picture.present?
+      picture.url
+    end
+  end
+
   private
 
   def valid_custom
@@ -180,10 +187,6 @@ class Product < ApplicationRecord
     if name.length > 0
       self.name = name[0..(name.length - 3)]
     end
-  end
-
-  def check_feature_no_select
-
   end
 
   def valid_option_rels
@@ -321,26 +324,30 @@ class Product < ApplicationRecord
   end
 
   def sync_web(method)
-    self.method_type = method
-    url = "products"
-    if method == 'delete'
-      params = nil
-      url += "/" + id.to_s
-    else
-      params = self.to_json(methods: [:method_type], except: [:deleted_at, :created_at, :updated_at, :sync_at],
-                            :include => {:product_feature_rels => {
-                                only: [:id, :product_id, :sale_price, :discount_price, :barcode], :methods => [:image_url],
-                                :include => {:product_feature_items => {
-                                    only: [:id, :product_id, :feature_rel_id, :feature1_id, :option1_id, :feature2_id, :option2_id], :methods => [:balance]
-                                }}
-                            }})
-    end
-    # Rails.logger.debug(params)
-    response = ApplicationController.helpers.api_request(url, method, params)
-    # Rails.logger.debug(response.code)
-    # Rails.logger.debug(response.body)
-    if response.code.to_i == 201
-      self.update(sync_at: Time.now, method_type: 'sync')
+    unless draft
+      self.method_type = method
+      url = "products"
+      if method == 'delete'
+        params = nil
+        url += "/" + id.to_s
+      else
+        params = self.to_json(methods: [:method_type, :picture_url], except: [:draft, :picture_updated_at, :picture_file_size, :picture_content_type, :picture_file_name,
+                                                                              :deleted_at, :created_at, :updated_at, :sync_at],
+                              include: {
+                                  :product_feature_option_rels => {
+                                      only: [:id, :product_id, :feature_option_id],
+                                  },
+                                  :product_feature_items => {
+                                      only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :c_balance], :methods => [:image_url],
+                                  }})
+      end
+      # Rails.logger.debug(params)
+      response = ApplicationController.helpers.api_request(url, method, params)
+      Rails.logger.debug("code: #{response.code}")
+      Rails.logger.debug(response.body)
+      if response.code.to_i == 201
+        self.update(sync_at: Time.now, method_type: 'sync')
+      end
     end
   end
 end
