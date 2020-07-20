@@ -78,6 +78,10 @@ class ProductFeatureItem < ApplicationRecord
   def name
     if option1_id == option2_id
       option1.name.to_s
+    elsif option1_id == 12
+      option2.name.to_s
+    elsif option2_id == 12
+      option1.name.to_s
     else
       option1.name.to_s + " - " + option2.name.to_s
     end
@@ -108,7 +112,7 @@ class ProductFeatureItem < ApplicationRecord
       url += "/" + id.to_s
     else
 
-      params = self.to_json(only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :c_balance], :methods => [:method_type, :image_url])
+      params = self.to_json(only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :c_balance, :same_item_id], :methods => [:method_type, :image_url])
     end
 
     ApplicationController.helpers.api_request(url, method, params)

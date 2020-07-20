@@ -8,18 +8,20 @@
           <%= t('activerecord.attributes.product_package.product_size') %>
           <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[3] %>"></i>
         <% end %>
-        <div class="col-sm-3 <%= get_error_class(@product.product_package, :product_size) %>">
+        <div class="col-sm-6 <%= get_error_class(@product.product_package, :product_size) %>">
           <%= field_errors(@product.product_package, :product_size) %>
-          <%= f.text_field :product_size, class: 'form-control', placeholder: t('activerecord.attributes.product_package.product_size') %>
-        </div>
-        <%= f.label :bag, class: 'col-sm-1 control-label' %>
-        <div class="col-sm-3 <%= get_error_class(@product.product_package, :bag) %>">
-          <%= field_errors(@product.product_package, :bag) %>
-          <%= f.text_field :bag, class: 'form-control', placeholder: t('activerecord.attributes.product_package.bag') %>
+          <%= f.text_area :product_size, class: 'form-control', placeholder: t('activerecord.attributes.product_package.product_size') %>
         </div>
       </div>
       <div class="form-group">
-        <%= f.label :length, class: 'col-sm-3 control-label' %>
+        <%= f.label :bag, class: 'col-sm-2 control-label' do %>&nbsp;<% end %>
+        <div class="col-sm-2 radio-group p-t-5 <%= get_error_class(@product.product_package, :bag) %>">
+          <%= field_errors(@product.product_package, :bag) %>
+          <%= f.collection_radio_buttons :bag, ProductPackage.bags_i18n, :first, :second do |b| %>
+            <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
+          <% end %>
+        </div>
+        <%= f.label :length, class: 'col-sm-1 control-label', style:'width:20px' %>
         <div class="col-sm-1 <%= get_error_class(@product.product_package, :length) %>">
           <%= field_errors(@product.product_package, :length) %>
           <%= f.number_field :length, min: 0, step: 0.1, class: 'form-control', placeholder: t('activerecord.attributes.product_package.length') %>
@@ -34,7 +36,6 @@
           <%= field_errors(@product.product_package, :height) %>
           <%= f.number_field :height, min: 0, step: 0.1, class: 'form-control', placeholder: t('activerecord.attributes.product_package.height') %>
         </div>
-        <%= f.label :package_unit, class: 'col-sm-2 control-label' %>
         <div class="col-sm-2 radio-group p-t-5 <%= get_error_class(@product.product_package, :package_unit) %>">
           <%= field_errors(@product.product_package, :package_unit) %>
           <%= f.collection_radio_buttons :package_unit, ProductPackage.package_units_i18n, :first, :second do |b| %>

@@ -29,7 +29,6 @@ mn:
         m_name: Барааны нэр
         m_number: Моделийн дугаар (үйлдвэрийн код)
         packaging: Хэмжээ, савалгаа
-        brand: Брендийн нэр
         material: Материал
         advantages: Бусад давуу талууд
     product_feature:
@@ -46,6 +45,9 @@ mn:
         installation: Угсарах заавар
         washing: Угаас заавар
     product_package:
+      bag:
+        box: Хайрцаг
+        bag: Уут
       gift_wrap:
         wrap_have: Байгаа
         wrap_not: Байхгүй
@@ -361,8 +363,7 @@ mn:
       product_image:
         image: Зураг
       product_package:
-        product_size: Савалгаа хайрцаг
-        bag: Уут
+        product_size: Хэмжээсүүд
         length: Урт
         width: Өргөн
         height: Өндөр

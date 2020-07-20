@@ -180,9 +180,13 @@ class Product < ApplicationRecord
 
   def set_name
     name = ""
-    product_names.each do |pn|
-      name += "#{pn.name}, " if pn.name.present?
-    end
+    product_names.each_with_index {|pn, index|
+      if index == 3
+        name += "#{brand.name}, " if brand.present?
+      else
+        name += "#{pn.name}, " if pn.name.present?
+      end
+    }
 
     if name.length > 0
       self.name = name[0..(name.length - 3)]
@@ -213,6 +217,7 @@ class Product < ApplicationRecord
       product_feature_option_rels.by_feature_option_ids(delete_ids).destroy_all
 
       added_feature_items = Hash.new
+      product_feature_items_add= false
       (feature_option_rels - was_option_ids).each do |option_id|
         feature_option = ProductFeatureOption.find(option_id)
         self.product_feature_option_rels << ProductFeatureOptionRel.new(feature_option: feature_option)
@@ -237,12 +242,36 @@ class Product < ApplicationRecord
                 unless added_feature_items[added_key]
                   self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2)
                   added_feature_items[added_key] == "added"
+                  product_feature_items_add = true
                 end
               end
             end
           }
         end
       end
+      unless product_feature_items_add # Зөвхөн нэг талын хэмжээс сонгосон жн дан размер
+        no_select_feature = ProductFeatureOption.find(12)
+        self.product_feature_option_rels.each {|option_rel|
+          product_feature_1 = option_rel.feature_option.product_feature
+          product_feature_2 = no_select_feature.product_feature
+          # Дараалал түрүүнд байгаа нь эхэндээ байна
+          if product_feature_1.queue < product_feature_2.queue
+            option_1 = option_rel.feature_option_id
+            option_2 = no_select_feature.id
+          else
+            option_1 = no_select_feature.id
+            option_2 = option_rel.feature_option_id
+          end
+
+          added_key = "#{option_1}-#{option_2}"
+          unless added_feature_items[added_key]
+            self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2)
+            added_feature_items[added_key] == "added"
+          end
+        }
+        self.product_feature_option_rels << ProductFeatureOptionRel.new(feature_option: ProductFeatureOption.find(12))
+      end
+
     elsif product_feature_option_rels.count == 0
       #   Өнгө размер сонгоогүй бол солголтгүй бараа үүсгэнэ
       self.product_feature_option_rels << ProductFeatureOptionRel.new(feature_option: ProductFeatureOption.find(12))

@@ -14,7 +14,6 @@ class Users::ProductsController < Users::BaseController
     @product.product_names << [ProductName.new(n_type: :m_name),
                                ProductName.new(n_type: :m_number),
                                ProductName.new(n_type: :packaging),
-                               ProductName.new(n_type: :brand),
                                ProductName.new(n_type: :material),
                                ProductName.new(n_type: :advantages)]
   end
@@ -42,7 +41,6 @@ class Users::ProductsController < Users::BaseController
       @product.product_names << [ProductName.new(n_type: :m_name),
                                  ProductName.new(n_type: :m_number),
                                  ProductName.new(n_type: :packaging),
-                                 ProductName.new(n_type: :brand),
                                  ProductName.new(n_type: :material),
                                  ProductName.new(n_type: :advantages)]
     end
@@ -142,7 +140,7 @@ class Users::ProductsController < Users::BaseController
   end
 
   def product_params
-    params.require(:product).permit(:tab_index, :category_id, :code, :is_own, :customer_id, option_rels: [],
+    params.require(:product).permit(:tab_index, :brand_id, :category_id, :code, :is_own, :customer_id, option_rels: [],
                                     product_names_attributes: [:id, :name, :n_type, :_destroy])
   end
 
@@ -152,7 +150,7 @@ class Users::ProductsController < Users::BaseController
   end
 
   def form_information_params
-    params.require(:product).permit(:tab_index, :search_key, :description, :brand_id, :manufacturer_id, :expiry_date, :technical_specification_id,
+    params.require(:product).permit(:tab_index, :search_key, :description, :manufacturer_id, :expiry_date, :technical_specification_id,
                                     filters: [], specification_id: [], specification_val: [],
                                     product_instructions_attributes: [:id, :i_type, :description, :image, :video, :_destroy])
   end

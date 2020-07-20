@@ -11,6 +11,16 @@
       <%= f.fields_for :product_names do |m| %>
         <%= render 'product_name_fields', :f => m %>
       <% end %>
+      <div class="form-group">
+        <%= f.label :brand_id, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.brand_id') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_NAME[4] %>"></i>
+        <% end %>
+        <div class="col-sm-9 field_div <%= get_error_class(@product, :brand_id) %>">
+          <%= field_errors(@product, :brand_id) %>
+          <%= f.collection_select :brand_id, Brand.order_name, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+        </div>
+      </div>
     </div>
     <div class="row">
       <div class="col-md-4 field_div">

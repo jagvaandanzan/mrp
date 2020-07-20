@@ -23,8 +23,8 @@
           </div>
           <div class="col-md-3 field_div">
             <%= f.label :logistic_id, class: 'control-label' %>
-            <div class="<%= get_error_class(@product_income, :logistic_id) %>">
-              <%= field_errors(@product_income, :logistic_id) %>
+            <div class="<%= get_error_class(product_supply, :logistic_id) %>">
+              <%= field_errors(product_supply, :logistic_id) %>
               <%= f.collection_select :logistic_id, Logistic.all, :id, :name, {}, {class: 'form-control'} %>
             </div>
           </div>

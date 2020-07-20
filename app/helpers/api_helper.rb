@@ -5,6 +5,7 @@ module ApiHelper
   # response.is_a?(Net::HTTPSuccess) &&
   def api_request(url, method, params = nil)
     uri = URI.parse(ENV['SERVER_API'] + url)
+    uri = URI.parse("http://pmis.mn")
     req = if method == 'post' || method == 'update'
             Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json; charset=utf-8')
           elsif method == 'patch'
@@ -18,8 +19,7 @@ module ApiHelper
     req['access-token'] = header["access-token"]
     req['uid'] = header["uid"]
     req['client'] = header["client"]
-    req.body = JSON.parse(params).to_json unless params.nil?
-
+    # TODO req.body = JSON.parse(params).to_json unless params.nil?
     Net::HTTP.start(uri.hostname, uri.port,
                     :use_ssl => uri.scheme == 'https') {|http|
       http.request(req)
