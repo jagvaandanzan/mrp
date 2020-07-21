@@ -5,6 +5,7 @@ class AbilityAdmin
 
     if current_admin.is_admin
       can :manage, :administrator
+      can :manage, :AdminUser
       can :manage, Logistic
     end
 

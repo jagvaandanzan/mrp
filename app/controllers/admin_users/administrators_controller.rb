@@ -4,12 +4,6 @@ class AdminUsers::AdministratorsController < AdminUsers::BaseController
 
   def index
     @admin_users = AdminUser.all.page(params[:page])
-    ProductFeatureOption.by_group_id(1).limit(3).each do |opt|
-      category = CategoryFilter.find_by_name_en(opt.name_en)
-      if category.present?
-        opt.update_attribute(:name, category.name)
-      end
-    end
     # cat_colors = CategoryFilterGroup.search_name("color").map(&:id).to_a
     # colors = CategoryFilter.by_group(cat_colors)
     # colors.each do |c|

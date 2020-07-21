@@ -68,7 +68,7 @@ Rails.application.routes.draw do
     root 'users#index'
     resources :administrators, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :users, only: [:index, :create, :new, :show, :edit, :update, :destroy]
-    resources :logistics
+    resources :logistics, only: [:index, :create, :new, :show, :edit, :update, :destroy]
 
     namespace :bank_logins do
       get 'login'
