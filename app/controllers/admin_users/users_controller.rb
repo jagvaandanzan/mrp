@@ -7,7 +7,7 @@ class AdminUsers::UsersController < AdminUsers::BaseController
     @sphone = params[:phone]
     @users = User.search(@sname, @semail, @sphone).page(params[:page])
     cookies[:user_page_number] = params[:page]
-    ProductFeatureOption.by_group_id(1).limit(3).each do |opt|
+    ProductFeatureOption.by_group_id(1).each do |opt|
       category = CategoryFilter.find_by_name_en(opt.name_en)
       if category.present?
         opt.update_attribute(:name, category.name)
