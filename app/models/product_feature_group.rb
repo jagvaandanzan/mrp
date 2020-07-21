@@ -21,6 +21,11 @@ class ProductFeatureGroup < ApplicationRecord
     items
   }
 
+  def check_option_selected(option_rels)
+    arr = product_feature_options.map(&:id).to_a
+    !(option_rels.map(&:to_i) & arr).empty?
+  end
+
   private
 
   def sync_web(method)

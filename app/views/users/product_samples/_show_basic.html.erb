@@ -49,24 +49,54 @@
     </div>
   <% end %>
   <div class="row">
-    <div class="col-md-12">
-      <% ProductFeature.skip_no.order_by_queue.each {|feature| %>
-        <div class="form-group">
-          <%= label_tag :product_feature_rel, class: 'col-sm-1 control-label' do %>
-            <%= feature.name %>
-          <% end %>
-          <div class="col-sm-11">
-            <% feature.options.order_queue.each {|option| %>
-              <div class="col-md-2">
-                <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
-                  <%= option.name %>
-                  <%= yes_no(@product_sample.option_rels.include?(option.id.to_s)) %>
+    <div class="col-md-12 field_div">
+      <form action="" class="form-horizontal">
+        <% ProductFeature.skip_no.order_by_queue.each {|feature| %>
+          <% if feature.id == 2 %>
+            <div class="form-group">
+              <%= label_tag :product_feature_rel, class: 'col-sm-1 control-label' do %>
+                <%= feature.name %>
+              <% end %>
+              <div class="col-sm-11">
+                <% feature.options.order_queue.each {|option| %>
+                  <div class="col-md-2">
+                    <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
+                      <%= label_tag do %>
+                        <%= option.name %>
+                        <%= yes_no(@product_sample.option_rels.include?(option.id.to_s)) %>
+                      <% end %>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          <% else %>
+            <% ProductFeatureGroup.order_name.each {|gr| %>
+              <div class="form-group">
+                <%= label_tag :gr_rel, class: 'col-sm-1 control-label' do %>
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse<%= gr.id %>" style="color: black">
+                    <%= gr.name %>
+                  </a>
+                <% end %>
+                <div class="col-sm-11">
+                  <div id="collapse<%= gr.id %>" class="panel-collapse collapse <%= gr.check_option_selected(@product_sample.option_rels) ? 'in' : '' %>">
+                    <% gr.product_feature_options.order_queue.each {|option| %>
+                      <div class="col-md-2">
+                        <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
+                          <%= label_tag do %>
+                            <%= option.name %>
+                            <%= yes_no(@product_sample.option_rels.include?(option.id.to_s)) %>
+                          <% end %>
+                        </div>
+                      </div>
+                    <% } %>
+                  </div>
                 </div>
               </div>
             <% } %>
-          </div>
-        </div>
-      <% } %>
+          <% end %>
+        <% } %>
+      </form>
     </div>
   </div>
   <div class="row">

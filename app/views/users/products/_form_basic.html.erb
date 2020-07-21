@@ -98,7 +98,7 @@
                   </a>
                 <% end %>
                 <div class="col-sm-11">
-                  <div id="collapse<%= gr.id %>" class="panel-collapse collapse <%= index == 0 ? 'in' : '' %>">
+                  <div id="collapse<%= gr.id %>" class="panel-collapse collapse <%= (!@product.persisted? && index == 0 || (@product.persisted? && gr.check_option_selected(@product.option_rels))) ? 'in' : '' %>">
                     <% gr.product_feature_options.order_queue.each {|option| %>
                       <div class="col-md-2">
                         <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
