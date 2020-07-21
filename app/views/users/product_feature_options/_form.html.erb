@@ -52,6 +52,13 @@
 
           <% if @option.group.present? %>
             <div class="form-group">
+              <%= f.label :name_en, class: 'col-sm-3 control-label' %>
+              <div class="col-sm-9 <%= get_error_class(@option, :name_en) %>">
+                <%= field_errors(@option, :name_en) %>
+                <%= f.text_field :name_en, class: 'form-control', placeholder: t('activerecord.attributes.product_feature_option.name_en') %>
+              </div>
+            </div>
+            <div class="form-group">
               <%= f.label :code, class: 'col-sm-3 control-label' %>
               <div class="col-sm-6 <%= get_error_class(@option, :code) %>">
                 <%= field_errors(@option, :code) %>

@@ -320,6 +320,7 @@ mn:
         group_id: Бүлэг
         queue: Дараалал
         name: Нэр
+        name_en: Англи
         code: Өнгөний код
         product_feature_id: Шинж чанар
         product_feature: Шинж чанар

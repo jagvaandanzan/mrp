@@ -30,6 +30,7 @@
                 <th class="va-mid"><%= t('activerecord.attributes.product_feature_option.queue') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_feature_option.name') %></th>
                 <% if params[:product_feature_id].to_i == 1 %>
+                  <th class="va-mid"><%= t('activerecord.attributes.product_feature_option.name_en') %></th>
                   <th class="va-mid"><%= t('activerecord.attributes.product_feature_option.code') %></th>
                 <% end %>
                 <% if is_manage %>
@@ -40,9 +41,12 @@
                 <tr>
                   <td class="va-mid underline"><%= o.queue %></td>
                   <td class="va-mid underline"><%= o.name %></td>
-                  <% if o.code.present? %>
+                  <% if params[:product_feature_id].to_i == 1 %>
+                    <td class="va-mid"><%= o.name_en %></td>
                     <td class="va-mid">
-                      <div class="square-30" style="background-color: <%= o.code %>"></div>
+                      <% if o.code.present? %>
+                        <div class="square-30" style="background-color: <%= o.code %>"></div>
+                      <% end %>
                     </td>
                   <% end %>
                   <% if is_manage %>
