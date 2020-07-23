@@ -34,7 +34,7 @@
               <% @manufacturers.each do |manufacturer| %>
                 <tr>
                   <td class="va-mid underline"><%= manufacturer.queue %></td>
-                  <td class="va-mid underline"><%= link_to manufacturer.country, users_manufacturer_path(manufacturer) %></td>
+                  <td class="va-mid underline"><%= manufacturer.country %></td>
                   <% if is_manage %>
                     <td class="th-center va-mid">
                       <div class="btn-group">

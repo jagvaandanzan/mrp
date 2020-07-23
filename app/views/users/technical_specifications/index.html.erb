@@ -33,7 +33,7 @@
               </thead>
               <% @specifications.each do |gr| %>
                 <tr>
-                  <td class="va-mid underline"><%= link_to gr.specification_gr, users_technical_specification_path(gr) %></td>
+                  <td class="va-mid underline"><%= gr.specification_gr %></td>
                   <td class="va-mid"><%= gr.technical_spec_items.count %></td>
                   <% if is_manage %>
                     <td class="th-center va-mid">

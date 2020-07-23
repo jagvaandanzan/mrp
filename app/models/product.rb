@@ -379,13 +379,13 @@ class Product < ApplicationRecord
                                       only: [:id, :product_id, :feature_option_id],
                                   },
                                   :product_feature_items => {
-                                      only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :c_balance], :methods => [:image_url],
+                                      only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :c_balance, :same_item_id], :methods => [:image_url],
                                   }})
       end
       # Rails.logger.debug(params)
       response = ApplicationController.helpers.api_request(url, method, params)
       Rails.logger.debug("code: #{response.code}")
-      Rails.logger.debug(response.body)
+      # Rails.logger.debug(response.body)
       if response.code.to_i == 201
         self.update(sync_at: Time.now, method_type: 'sync')
       end

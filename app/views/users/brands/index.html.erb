@@ -33,7 +33,7 @@
               </thead>
               <% @brands.each do |brand| %>
                 <tr>
-                  <td class="va-mid underline"><%= link_to brand.name, users_brand_path(brand) %></td>
+                  <td class="va-mid underline"><%= brand.name %></td>
                   <td class="td-center va-mid">
                     <% if brand.logo.present? %>
                       <%= link_to brand.logo.url, "data-lightbox": "roadtrip" do %>
