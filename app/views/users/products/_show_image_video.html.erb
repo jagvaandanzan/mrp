@@ -51,13 +51,28 @@
     <div class="form-group">
       <%= label_tag :product_videos, t('activerecord.attributes.product.product_videos'), class: 'col-sm-3 control-label' %>
       <div class="col-sm-9">
-        <% @product.product_videos.each_with_index {|vid, index| %>
-          <div class="col-sm-2 m-b-6">
-            <% if vid.video.present? %>
-              <%= link_to "video-#{index + 1}", vid.video.url(:original, false) %>
-            <% end %>
-          </div>
-        <% } %>
+        <table class="table table-bordered">
+          <tr>
+            <th><%= t('activerecord.attributes.product_video.image') %></th>
+            <th><%= t('activerecord.attributes.product_video.video') %></th>
+          </tr>
+          <% @product.product_videos.each_with_index {|vid, index| %>
+            <tr class="field_div">
+              <td class="va-mid">
+                <% if vid.image.present? %>
+                  <%= link_to vid.image.url, "data-lightbox": "roadtrip" do %>
+                    <%= image_tag vid.image.url(:tumb), class: 'tumb' %>
+                  <% end %>
+                <% end %>
+              </td>
+              <td class="va-mid">
+                <% if vid.video.present? %>
+                  <%= link_to "video-#{index + 1}", vid.video.url(:original, false) %>
+                <% end %>
+              </td>
+            </tr>
+          <% } %>
+        </table>
       </div>
     </div>
     <div class="form-group">

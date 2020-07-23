@@ -15,6 +15,7 @@ class AbilityUser
         can role, ProductIncome
       when "product"
         can role, Product
+        can role, ProductDiscount
         can role, ProductCategory
         can role, ProductFeatureOption
         can role, ProductFeatureGroup

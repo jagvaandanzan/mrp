@@ -185,6 +185,7 @@ mn:
       product_supply_order: Бараа захиалга
       product_income: Орлого
       product_income_item: Орлогын бараа
+      product_dicount: Хямдрал
       product_sale: Борлуулалт
       product_sale_call: Залгах
       category_filter_group: Категорын шүүлтүүр
@@ -302,6 +303,7 @@ mn:
         product_images: Дэлгэрэнгүй зураг
         product_videos: Видео
         picture: Нүүр зураг
+        product_discounts: Хямдралууд
       product_feature_option_rel:
         product_id: Бараа
         feature_id: Шинж чанар
@@ -360,6 +362,7 @@ mn:
         queue: Дараалал
         country: Улс
       product_video:
+        image: Харагдах зураг
         video: Видео
       product_image:
         image: Зураг
@@ -468,6 +471,11 @@ mn:
         income_locations: Агуулахын байршил
       product_income_feature_rel:
         feature_option_id: Шинж чанар, утга
+      product_discount:
+        percent: Хувь
+        user_id: Зарласан
+        start_date: Эхлэх огноо
+        end_date: Дуусах огноо
       product_sale:
         code: Код
         delivery_start: Хүргэж өгөх өдөр

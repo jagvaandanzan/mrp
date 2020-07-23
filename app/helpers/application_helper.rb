@@ -52,4 +52,12 @@ module ApplicationHelper
       I18n.t('dates.good_night')
     end
   end
+
+  def get_percentage(percent, price)
+    if percent == 0
+      price
+    else
+      percent * price / 100
+    end
+  end
 end

@@ -6,11 +6,19 @@ class ProductVideo < ApplicationRecord
   after_destroy -> {sync_web('delete')}
   attr_accessor :method_type
 
+  has_attached_file :image, :path => ":rails_root/public/product_videos/image/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/product_videos/image/:id_partition/:style.:extension'
+  validates_attachment :image,
+                       content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
+
   has_attached_file :video, :path => ":rails_root/public/product_videos/video/:id_partition/:style.:extension", :url => '/product_videos/video/:id_partition/:style.:extension'
   validates_attachment :video,
                        content_type: {content_type: ["video/mp4"], message: :content_type}, size: {less_than: 10.megabytes}
 
-  validates :video, presence: true
+  validates :image, :video, presence: true
+
+  def image_url
+    image.url
+  end
 
   def video_url
     video.url
@@ -27,7 +35,7 @@ class ProductVideo < ApplicationRecord
       url += "/" + id.to_s
     else
 
-      params = self.to_json(only: [:id, :product_id], :methods => [:method_type, :video_url])
+      params = self.to_json(only: [:id, :product_id], :methods => [:method_type, :image_url, :video_url])
     end
 
     ApplicationController.helpers.api_request(url, method, params)

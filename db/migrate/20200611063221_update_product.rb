@@ -40,8 +40,9 @@ class UpdateProduct < ActiveRecord::Migration[5.2]
     # add_column :brands, :sync_at, :datetime, after: 'logo_updated_at'
     # add_column :manufacturers, :sync_at, :datetime, after: 'country'
     # add_column :technical_specifications, :sync_at, :datetime, after: 'specification_gr'
-    change_column :product_packages, :product_size, :text
-    change_column :product_packages, :bag, :integer
+    # change_column :product_packages, :product_size, :text
+    # change_column :product_packages, :bag, :integer
+    add_attachment :product_videos, :image, after: 'product_id'
 
   end
 end

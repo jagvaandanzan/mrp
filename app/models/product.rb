@@ -18,6 +18,7 @@ class Product < ApplicationRecord
   has_many :product_photos
   has_many :product_images
   has_many :product_videos
+  has_many :product_discounts
   has_one :product_package
 
   has_many :supply_order_items, :class_name => "ProductSupplyOrderItem", :foreign_key => "product_id"
@@ -172,6 +173,17 @@ class Product < ApplicationRecord
     end
   end
 
+  def product_discount
+    percent = 0
+    discounts = self.product_discounts.by_available
+    if discounts.present?
+      product_discount = discounts.last
+      percent = product_discount.percent
+    end
+
+    percent
+  end
+
   private
 
   def valid_custom
@@ -217,7 +229,7 @@ class Product < ApplicationRecord
       product_feature_option_rels.by_feature_option_ids(delete_ids).destroy_all
 
       added_feature_items = Hash.new
-      product_feature_items_add= false
+      product_feature_items_add = false
       (feature_option_rels - was_option_ids).each do |option_id|
         feature_option = ProductFeatureOption.find(option_id)
         self.product_feature_option_rels << ProductFeatureOptionRel.new(feature_option: feature_option)

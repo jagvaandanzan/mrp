@@ -118,6 +118,7 @@ mn:
     image_video: Зураг, видео
     package: Хүргэлт, баглаа боодол
     price_quantity: Үнэ, тоо ширхэг
+    discount: Хямдрал
   errors:
     format: "%{attribute}%{message}"
     messages:

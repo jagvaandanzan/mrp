@@ -1,0 +1,44 @@
+<div class="form-horizontal">
+  <div class="body-box">
+    <div class="form-group">
+      <%= label_tag :product_discounts, t('activerecord.attributes.product.product_discounts'), class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9">
+        <div class="action-buttons" style="margin: 0 0 2px 0">
+          <%= link_to t('controls.button.create'), new_users_product_discount_path(pid: @product.id), class: 'btn btn-warning' %>
+        </div>
+        <table class="table table-hover table-bordered">
+          <thead>
+          <tr>
+            <th class="text-center"><%= t('activerecord.attributes.product_discount.percent') %></th>
+            <th class="text-center"><%= t('activerecord.attributes.product_discount.start_date') %></th>
+            <th class="text-center"><%= t('activerecord.attributes.product_discount.end_date') %></th>
+            <th class="text-center"><%= t('activerecord.attributes.product_discount.user_id') %></th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @product.product_discounts.order_date.each {|discount| %>
+            <tr class="field_div">
+              <td><%= discount.percent %></td>
+              <td><%= discount.start_date %></td>
+              <td><%= discount.end_date %></td>
+              <td><%= discount.user.name %></td>
+              <td>
+                <div class="btn-group">
+                  <%= link_to edit_users_product_discount_path(discount), class: 'no-underline' do %>
+                    <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
+                  <% end %>
+                  <%= link_to users_product_discount_path(discount), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
+                    <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

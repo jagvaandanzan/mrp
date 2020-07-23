@@ -19,27 +19,31 @@
   <%= show_body do %>
     <div class="nav-tabs-custom">
       <ul class="nav nav-tabs">
-        <li class="active"><a href="#basic" data-toggle="tab"><%= t('product_form.basic') %></a></li>
-        <li><a href="#price" data-toggle="tab"><%= t('product_form.price') %></a></li>
-        <li><a href="#information" data-toggle="tab"><%= t('product_form.information') %></a></li>
-        <li><a href="#image_video" data-toggle="tab"><%= t('product_form.image_video') %></a></li>
-        <li><a href="#package" data-toggle="tab"><%= t('product_form.package') %></a></li>
+        <li class="<%= !@product.tab_index.present? || @product.tab_index.to_i == 0 ? 'active':'' %>"><a href="#basic" data-toggle="tab"><%= t('product_form.basic') %></a></li>
+        <li class="<%= @product.tab_index.to_i == 1 ? 'active':'' %>"><a href="#price" data-toggle="tab"><%= t('product_form.price') %></a></li>
+        <li class="<%= @product.tab_index.to_i == 2 ? 'active':'' %>"><a href="#information" data-toggle="tab"><%= t('product_form.information') %></a></li>
+        <li class="<%= @product.tab_index.to_i == 3 ? 'active':'' %>"><a href="#image_video" data-toggle="tab"><%= t('product_form.image_video') %></a></li>
+        <li class="<%= @product.tab_index.to_i == 4 ? 'active':'' %>"><a href="#package" data-toggle="tab"><%= t('product_form.package') %></a></li>
+        <li class="<%= @product.tab_index.to_i == 5 ? 'active':'' %>"><a href="#discount" data-toggle="tab"><%= t('product_form.discount') %></a></li>
       </ul>
       <div class="tab-content">
-        <div class="active tab-pane" id="basic">
+        <div class="<%= !@product.tab_index.present? || @product.tab_index.to_i == 0 ? 'active ':'' %>tab-pane" id="basic">
           <%= render 'show_basic' %>
         </div>
-        <div class="tab-pane" id="price">
+        <div class="<%= @product.tab_index.to_i == 1 ? 'active ':'' %>tab-pane" id="price">
           <%= render 'show_price' %>
         </div>
-        <div class="tab-pane" id="information">
+        <div class="<%= @product.tab_index.to_i == 2 ? 'active ':'' %>tab-pane" id="information">
           <%= render 'show_information' %>
         </div>
-        <div class="tab-pane" id="image_video">
+        <div class="<%= @product.tab_index.to_i == 3 ? 'active ':'' %>tab-pane" id="image_video">
           <%= render 'show_image_video' %>
         </div>
-        <div class="tab-pane" id="package">
+        <div class="<%= @product.tab_index.to_i == 4 ? 'active ':'' %>tab-pane" id="package">
           <%= render 'show_package' %>
+        </div>
+        <div class="<%= @product.tab_index.to_i == 5 ? 'active ':'' %>tab-pane" id="discount">
+          <%= render 'show_discount' %>
         </div>
       </div>
     </div>
