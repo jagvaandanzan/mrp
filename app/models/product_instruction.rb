@@ -17,9 +17,9 @@ class ProductInstruction < ApplicationRecord
   validates_attachment :image,
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
 
-  has_attached_file :video, :path => ":rails_root/public/products/instruction/video/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/products/instruction/video/:id_partition/:style.:extension'
+  has_attached_file :video, :path => ":rails_root/public/products/instruction/video/:id_partition/:style.:extension", :url => '/products/instruction/video/:id_partition/:style.:extension'
   validates_attachment :video,
-                       content_type: {content_type: ["video/mp4"], message: :content_type}, size: {less_than: 10.megabytes}
+                       content_type: {content_type: ["video/mp4"], message: :content_type}, size: {less_than: 20.megabytes}
 
   def image_url
     if image.present?
@@ -36,7 +36,7 @@ class ProductInstruction < ApplicationRecord
   private
 
   def valid_instruction
-    self.errors.add(:description, :blank) if !description.present? && !file.present?
+    self.errors.add(:description, :blank) if !description.present? && !image.present? && !video.present?
   end
 
   def sync_web(method)

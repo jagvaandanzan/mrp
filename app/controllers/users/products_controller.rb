@@ -90,6 +90,7 @@ class Users::ProductsController < Users::BaseController
       flash[:success] = t('alert.info_updated')
       redirect_to action: :edit, id: @product.id, tab_index: 3
     else
+      Rails.logger.info("product: #{@product.errors.full_messages}")
       category_headers
       render 'edit'
     end
