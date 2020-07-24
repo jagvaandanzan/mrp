@@ -3,10 +3,16 @@
 <% end %>
 <div class="content-wrapper">
 
-  <%= render 'layouts/breadcrumbs', data: [
-      [users_product_features_path, t('activerecord.models.product_feature')],
-      [users_product_feature_options_path(product_feature_id: @option.product_feature.id), @option.product_feature.name],
-      t('titles.color') + t(@option.persisted? ? 'titles.edit' : 'titles.add')] %>
+  <% if params[:product_feature_id].to_i == 1 %>
+    <%= render 'layouts/breadcrumbs', data: [
+        [users_product_feature_groups_path, t('activerecord.models.product_feature')],
+        [users_product_feature_options_path(product_feature_id: @option.product_feature.id), @option.product_feature.name],
+        t('titles.color') + t(@option.persisted? ? 'titles.edit' : 'titles.add')] %>
+  <% else %>
+    <%= render 'layouts/breadcrumbs', data: [
+        [users_product_feature_options_path(product_feature_id: @option.product_feature.id), @option.product_feature.name],
+        t('activerecord.models.product_feature') + t(@option.persisted? ? 'titles.edit' : 'titles.add')] %>
+  <% end %>
 
 
   <section class="content">

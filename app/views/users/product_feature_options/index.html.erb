@@ -1,8 +1,12 @@
 <div class="content-wrapper index">
-  <%= render 'layouts/breadcrumbs', data: [
-      [users_product_features_path, t('activerecord.models.product_feature')],
-      [users_product_feature_options_path(product_feature_id: @product_feature.id), @product_feature.name], t('titles.product_feature_options')] %>
-
+  <% if params[:product_feature_id].to_i == 1 %>
+    <%= render 'layouts/breadcrumbs', data: [
+        [users_product_feature_groups_path, t('activerecord.models.product_feature')],
+        [users_product_feature_options_path(product_feature_id: @product_feature.id), @product_feature.name], t('titles.product_feature_options')] %>
+  <% else %>
+    <%= render 'layouts/breadcrumbs', data: [
+        [users_product_feature_options_path(product_feature_id: @product_feature.id), @product_feature.name], t('titles.product_feature_options')] %>
+  <% end %>
   <section class="content-header align-left with-breadcrumbs">
     <h4> (<%= t('titles.total') %>：<%= @options.total_count %>)</h4>
   </section>
