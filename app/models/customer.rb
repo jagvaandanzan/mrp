@@ -34,7 +34,7 @@ class Customer < ApplicationRecord
     response = ApplicationController.helpers.api_request(url, method, params)
     Rails.logger.info("#{response.body}")
     if response.code.to_i == 201
-      self.update(sync_at: Time.now, method_type: 'sync')
+      self.update_attributes(sync_at: Time.now, method_type: 'sync')
     end
   end
 

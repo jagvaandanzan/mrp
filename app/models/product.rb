@@ -389,7 +389,7 @@ class Product < ApplicationRecord
       Rails.logger.debug("code: #{response.code}")
       # Rails.logger.debug(response.body)
       if response.code.to_i == 201
-        self.update(sync_at: Time.now, method_type: 'sync')
+        self.update_attributes(sync_at: Time.now, method_type: 'sync')
       end
     end
   end
