@@ -255,14 +255,12 @@ class Product < ApplicationRecord
                   self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2)
                   added_feature_items[added_key] == "added"
                   product_feature_items_add = true
-                  Rails.logger.info("added_feature_items[added_key]: #{added_key}")
                 end
               end
             end
           }
         end
       end
-      Rails.logger.info("product_feature_items_add: #{product_feature_items_add}")
       unless product_feature_items_add # Зөвхөн нэг талын хэмжээс сонгосон жн дан размер
         no_select_feature = ProductFeatureOption.find(12)
         self.product_feature_option_rels.each {|option_rel|
@@ -386,7 +384,6 @@ class Product < ApplicationRecord
       end
       # Rails.logger.debug(params)
       response = ApplicationController.helpers.api_request(url, method, params)
-      Rails.logger.debug("code: #{response.code}")
       # Rails.logger.debug(response.body)
       if response.code.to_i == 201
         self.update_attributes(sync_at: Time.now, method_type: 'sync')
