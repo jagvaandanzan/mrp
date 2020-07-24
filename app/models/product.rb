@@ -255,12 +255,14 @@ class Product < ApplicationRecord
                   self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2)
                   added_feature_items[added_key] == "added"
                   product_feature_items_add = true
+                  Rails.logger.info("added_feature_items[added_key]: #{added_key}")
                 end
               end
             end
           }
         end
       end
+      Rails.logger.info("product_feature_items_add: #{product_feature_items_add}")
       unless product_feature_items_add # Зөвхөн нэг талын хэмжээс сонгосон жн дан размер
         no_select_feature = ProductFeatureOption.find(12)
         self.product_feature_option_rels.each {|option_rel|
