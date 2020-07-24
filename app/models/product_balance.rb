@@ -7,6 +7,7 @@ class ProductBalance < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :operator, optional: true
 
+  after_save -> {sync_web}
 
   scope :balance, -> (product_id, feature_item_id = nil) {
     items = where(product_id: product_id)
@@ -18,4 +19,18 @@ class ProductBalance < ApplicationRecord
     where(feature_item_id: feature_item_id)
         .where(sale_item_id: sale_item_id)
   }
+
+  private
+
+  def sync_web
+    if feature_item.present?
+      url = "product/balance"
+      balance = ProductBalance.balance(product_id, feature_item_id)
+
+      params = {product_id: product_id, feature_item_id: feature_item_id, balance: balance}.to_json
+      response = ApplicationController.helpers.api_request(url, 'patch', params)
+      Rails.logger.info("response: #{response.body}")
+    end
+
+  end
 end
