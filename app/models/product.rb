@@ -45,8 +45,8 @@ class Product < ApplicationRecord
   validates_attachment :picture,
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
 
-  before_save :set_option_rels
-  after_save :set_option_item_single
+  before_save :set_option_rels, unless: Proc.new {self.method_type == "sync"}
+  after_save :set_option_item_single, unless: Proc.new {self.method_type == "sync"}
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 0 && !m.draft} do
     before_validation :set_name
