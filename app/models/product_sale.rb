@@ -45,7 +45,7 @@ class ProductSale < ApplicationRecord
     items = joins(:status)
     items = items.where('phone LIKE :value', value: "%#{phone}%") if phone.present?
     items = items.joins(product_sale_items: :product)
-                .where('products.code LIKE :value OR products.name LIKE :value', value: "%#{code_name}%").group("id") if code_name.present?
+                .where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{code_name}%").group("id") if code_name.present?
     items = items.where('main_status_id = :s OR status_id=:s', s: status_id) if status_id.present?
     items = items.where('? <= delivery_start AND delivery_start <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items = items.order("product_sale_statuses.queue")

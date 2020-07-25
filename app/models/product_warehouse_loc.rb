@@ -5,7 +5,7 @@ class ProductWarehouseLoc < ApplicationRecord
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
 
   scope :by_travel, ->(travel_id, id = nil) {
-    items = select("products.name as name,
+    items = select("products.n_name as name,
             products.code as code,
             product_locations.name as deck,
             product_warehouse_locs.*")
