@@ -42,7 +42,12 @@ class UpdateProduct < ActiveRecord::Migration[5.2]
     # add_column :technical_specifications, :sync_at, :datetime, after: 'specification_gr'
     # change_column :product_packages, :product_size, :text
     # change_column :product_packages, :bag, :integer
-    add_attachment :product_videos, :image, after: 'product_id'
-
+    # add_attachment :product_videos, :image, after: 'product_id'
+    change_column :products, :name, :string
+    add_column :products, :n_model, :string, after: 'name'
+    add_column :products, :n_package, :string, after: 'n_model'
+    add_column :products, :n_material, :string, after: 'n_package'
+    add_column :products, :n_advantage, :string, after: 'n_material'
+    rename_column :products, :name, :n_name
   end
 end

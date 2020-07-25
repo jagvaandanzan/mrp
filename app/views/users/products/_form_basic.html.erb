@@ -7,18 +7,65 @@
   <%= form_body do %>
     <%= f.hidden_field :tab_index, {value: 0} %>
     <div class="row">
-      <%= field_errors(@product, :name) %>
-      <%= f.fields_for :product_names do |m| %>
-        <%= render 'product_name_fields', :f => m %>
-      <% end %>
+      <div class="form-group">
+        <%= f.label :n_name, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.n_name') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_NAME[0] %>"></i>
+        <% end %>
+        <div class="col-sm-9 field_div <%= get_error_class(f.object, :n_name) %>">
+          <%= field_errors f.object, :n_name %>
+          <%= f.text_field :n_name, {class: 'form-control field', placeholder: t('activerecord.attributes.product.n_name')} %>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :n_model, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.n_model') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_NAME[1] %>"></i>
+        <% end %>
+        <div class="col-sm-9 field_div <%= get_error_class(f.object, :n_model) %>">
+          <%= field_errors f.object, :n_model %>
+          <%= f.text_field :n_model, {class: 'form-control field', placeholder: t('activerecord.attributes.product.n_model')} %>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :n_package, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.n_package') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_NAME[2] %>"></i>
+        <% end %>
+        <div class="col-sm-9 field_div <%= get_error_class(f.object, :n_package) %>">
+          <%= field_errors f.object, :n_package %>
+          <%= f.text_field :n_package, {class: 'form-control field', placeholder: t('activerecord.attributes.product.n_package')} %>
+        </div>
+      </div>
       <div class="form-group">
         <%= f.label :brand_id, class: 'col-sm-3 control-label' do %>
           <%= t('activerecord.attributes.product.brand_id') %>
-          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_NAME[4] %>"></i>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_NAME[3] %>"></i>
         <% end %>
         <div class="col-sm-9 field_div <%= get_error_class(@product, :brand_id) %>">
           <%= field_errors(@product, :brand_id) %>
           <%= f.collection_select :brand_id, Brand.order_name, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :n_material, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.n_material') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_NAME[4] %>"></i>
+        <% end %>
+        <div class="col-sm-9 field_div <%= get_error_class(f.object, :n_material) %>">
+          <%= field_errors f.object, :n_material %>
+          <%= f.text_field :n_material, {class: 'form-control field', placeholder: t('activerecord.attributes.product.n_material')} %>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :n_advantage, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.n_advantage') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_NAME[5] %>"></i>
+        <% end %>
+        <div class="col-sm-9 field_div <%= get_error_class(f.object, :n_advantage) %>">
+          <%= field_errors f.object, :n_advantage %>
+          <%= f.text_field :n_advantage, {class: 'form-control field', placeholder: t('activerecord.attributes.product.n_advantage')} %>
         </div>
       </div>
     </div>
@@ -179,6 +226,7 @@
                 product_customer_div.removeClass('none');
             }
         });
+        $('[data-toggle="tooltip"]').tooltip();
     });
 
 </script>

@@ -24,13 +24,6 @@ mn:
       list: Администраторууд
       add: Администратор нэмэх
       edit: Администраторийн мэдээлэл засах
-    product_name:
-      n_type:
-        m_name: Барааны нэр
-        m_number: Моделийн дугаар (үйлдвэрийн код)
-        packaging: Хэмжээ, савалгаа
-        material: Материал
-        advantages: Бусад давуу талууд
     product_feature:
       feature_type:
         is_feature: Шинж чанар
@@ -279,6 +272,11 @@ mn:
         description: Дэлгэрэнгүй
       product:
         name: Нэр
+        n_name: Барааны нэр
+        n_model: Моделийн дугаар (үйлдвэрийн код)
+        n_package: Хэмжээ, савалгаа
+        n_material: Материал
+        n_advantage: Бусад давуу талууд
         code: Код
         category: Ангилал
         category_id: Ангилал

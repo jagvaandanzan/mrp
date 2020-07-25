@@ -1,11 +1,25 @@
 <div class="body-box">
   <div class="row">
     <div class="col-md-12">
-      <% @product.product_names.each {|product_name| %>
-        <div class="col-md-4 field_div">
-          <b><%= product_name.n_type_i18n %>:</b> <%= product_name.name %>
-        </div>
-      <% } %>
+      <div class="col-md-4 field_div">
+        <b><%= t('activerecord.attributes.product.n_name') %>:</b> <%= @product.n_name %>
+      </div>
+      <div class="col-md-4 field_div">
+        <b><%= t('activerecord.attributes.product.n_model') %>:</b> <%= @product.n_model %>
+      </div>
+      <div class="col-md-4 field_div">
+        <b><%= t('activerecord.attributes.product.n_package') %>:</b> <%= @product.n_package %>
+      </div>
+      <div class="col-md-4 field_div">
+        <b><%= t('activerecord.attributes.product.brand_id') %>
+          :</b> <%= @product.brand.present? ? @product.brand.name : '' %>
+      </div>
+      <div class="col-md-4 field_div">
+        <b><%= t('activerecord.attributes.product.n_material') %>:</b> <%= @product.n_material %>
+      </div>
+      <div class="col-md-4 field_div">
+        <b><%= t('activerecord.attributes.product.n_advantage') %>:</b> <%= @product.n_advantage %>
+      </div>
     </div>
   </div>
   <div class="row">
@@ -71,7 +85,7 @@
                           <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
                             <%= label_tag do %>
                               <%= option.name %>
-                                <%= yes_no(@product.option_rels.include?(option.id.to_s)) %>
+                              <%= yes_no(@product.option_rels.include?(option.id.to_s)) %>
                             <% end %>
                           </div>
                         </div>

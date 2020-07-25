@@ -7,7 +7,6 @@ class Product < ApplicationRecord
   belongs_to :manufacturer, optional: true
   belongs_to :technical_specification, optional: true
 
-  has_many :product_names
   has_many :product_feature_option_rels
   has_many :product_feature_items
   has_many :product_instructions
@@ -26,7 +25,6 @@ class Product < ApplicationRecord
   has_many :product_sales, through: :product_sale_items
   has_many :salesman_travel, through: :product_sales
 
-  accepts_nested_attributes_for :product_names, allow_destroy: true
   accepts_nested_attributes_for :product_feature_items, allow_destroy: true
   accepts_nested_attributes_for :product_instructions, allow_destroy: true
   accepts_nested_attributes_for :product_photos, allow_destroy: true
@@ -49,10 +47,7 @@ class Product < ApplicationRecord
   after_save :set_option_item_single, unless: Proc.new {self.method_type == "sync"}
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 0 && !m.draft} do
-    before_validation :set_name
-
-    validates :name, :category_id, :code, :is_own, presence: true
-    validates :product_names, :length => {:minimum => 1}
+    validates :n_name, :category_id, :code, :is_own, presence: true
     validates :code, uniqueness: true
     validate :valid_custom
   end
@@ -89,7 +84,7 @@ class Product < ApplicationRecord
   end
 
   scope :order_by_name, -> {
-    order(:name)
+    order(:n_name)
   }
   scope :by_not_draft, -> {
     where(draft: false)
@@ -112,7 +107,7 @@ class Product < ApplicationRecord
         .where("salesman_travels.salesman_id = ?", salesman_id)
         .where("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0) > ?", 0)
         .order(:code)
-        .order(:name)
+        .order(:n_name)
         .group(:id)
   }
 
@@ -120,16 +115,18 @@ class Product < ApplicationRecord
     name_with_code
   end
 
-  def short_name
-    if name.present? && name.length > 100
-      name[0..100]
-    else
-      name
-    end
+  def name
+    n = n_name
+    n += ", #{n_model}" if n_model.present?
+    n += ", #{n_package}" if n_package.present?
+    n += ", #{brand.name}" if brand.present?
+    n += ", #{n_material}" if n_material.present?
+    n += ", #{n_advantage}" if n_advantage.present?
+    n
   end
 
   def name_with_code
-    "#{self.code} - #{self.short_name}"
+    "#{self.code} - #{self.n_name}"
   end
 
   def product_feature_option_ids
@@ -188,21 +185,6 @@ class Product < ApplicationRecord
 
   def valid_custom
     errors.add(:category_id, :blank) if category_id.present? && ProductCategory.search(category_id).count > 0
-  end
-
-  def set_name
-    name = ""
-    product_names.each_with_index {|pn, index|
-      if index == 3
-        name += "#{brand.name}, " if brand.present?
-      else
-        name += "#{pn.name}, " if pn.name.present?
-      end
-    }
-
-    if name.length > 0
-      self.name = name[0..(name.length - 3)]
-    end
   end
 
   def valid_option_rels
@@ -317,7 +299,9 @@ class Product < ApplicationRecord
   end
 
   def set_option_item_single
+    Rails.logger.info("set_option_item_single:")
     if product_feature_items.count == 0 && self.product_feature_option_rels.count == 1
+      Rails.logger.info("set_option_item_single_set")
       product_feature_option = self.product_feature_option_rels.first
       ProductFeatureItem.create(tab_index: 1, product: self, option1_id: product_feature_option.feature_option_id, option2_id: product_feature_option.feature_option_id)
     end

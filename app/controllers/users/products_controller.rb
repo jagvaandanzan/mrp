@@ -11,11 +11,6 @@ class Users::ProductsController < Users::BaseController
   def new
     @product = Product.new
     @product.code = ApplicationController.helpers.get_code(Product.last)
-    @product.product_names << [ProductName.new(n_type: :m_name),
-                               ProductName.new(n_type: :m_number),
-                               ProductName.new(n_type: :packaging),
-                               ProductName.new(n_type: :material),
-                               ProductName.new(n_type: :advantages)]
   end
 
   def create
@@ -36,13 +31,6 @@ class Users::ProductsController < Users::BaseController
     category_headers
     unless @product.product_package.present?
       @product.product_package = ProductPackage.new
-    end
-    unless @product.product_names.present?
-      @product.product_names << [ProductName.new(n_type: :m_name),
-                                 ProductName.new(n_type: :m_number),
-                                 ProductName.new(n_type: :packaging),
-                                 ProductName.new(n_type: :material),
-                                 ProductName.new(n_type: :advantages)]
     end
   end
 
@@ -141,8 +129,7 @@ class Users::ProductsController < Users::BaseController
   end
 
   def product_params
-    params.require(:product).permit(:tab_index, :brand_id, :category_id, :code, :is_own, :customer_id, option_rels: [],
-                                    product_names_attributes: [:id, :name, :n_type, :_destroy])
+    params.require(:product).permit(:tab_index, :n_name, :n_model, :n_package, :n_material, :n_advantage, :brand_id, :category_id, :code, :is_own, :customer_id, option_rels: [])
   end
 
   def form_price_params
