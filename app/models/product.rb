@@ -44,7 +44,7 @@ class Product < ApplicationRecord
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
 
   before_save :set_option_rels, unless: Proc.new {self.method_type == "sync"}
-  after_save :set_option_item_single, unless: Proc.new {self.method_type == "sync"}
+  after_save :set_option_item_single
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 0 && !m.draft} do
     validates :n_name, :category_id, :code, :is_own, presence: true
@@ -299,9 +299,7 @@ class Product < ApplicationRecord
   end
 
   def set_option_item_single
-    Rails.logger.info("set_option_item_single:")
     if product_feature_items.count == 0 && self.product_feature_option_rels.count == 1
-      Rails.logger.info("set_option_item_single_set")
       product_feature_option = self.product_feature_option_rels.first
       ProductFeatureItem.create(tab_index: 1, product: self, option1_id: product_feature_option.feature_option_id, option2_id: product_feature_option.feature_option_id)
     end
