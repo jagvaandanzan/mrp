@@ -22,8 +22,12 @@ class ProductFeatureGroup < ApplicationRecord
   }
 
   def check_option_selected(option_rels)
-    arr = product_feature_options.map(&:id).to_a
-    !(option_rels.map(&:to_i) & arr).empty?
+    if option_rels.present?
+      arr = product_feature_options.map(&:id).to_a
+      !(option_rels.map(&:to_i) & arr).empty?
+    else
+      false
+    end
   end
 
   private

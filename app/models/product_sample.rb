@@ -59,21 +59,18 @@ class ProductSample < ApplicationRecord
   private
 
   def set_product
-    if option_rels.present?
-      if product_supply_order_items.present?
-        product = get_product
-        product.option_rels = option_rels
-        product.name = product_name
-        product.save
-      else
-        product = Product.new(draft: true,
-                              name: product_name,
-                              code: ApplicationController.helpers.get_code(Product.last),
-                              option_rels: option_rels)
+    if product_supply_order_items.present?
+      product = get_product
+      product.option_rels = option_rels
+      product.name = product_name
+      product.save
+    else
+      product = Product.new(draft: true,
+                            n_name: product_name,
+                            code: ApplicationController.helpers.get_code(Product.last),
+                            option_rels: option_rels)
 
-        self.product_supply_order_items << ProductSupplyOrderItem.new(product: product)
-      end
+      self.product_supply_order_items << ProductSupplyOrderItem.new(product: product)
     end
   end
-
 end
