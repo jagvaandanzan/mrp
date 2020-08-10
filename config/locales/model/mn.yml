@@ -326,8 +326,8 @@ mn:
         product_feature: Шинж чанар
       product_feature_item:
         price: Зарах үнэ
-        p_6_8: 6-8 ширхэг үнэ
-        p_9_: 9-с дээш үнэ
+        p_6_8: 6-8 ширхэг(%)
+        p_9_: 9-с дээш(%)
         c_balance: Харилцагчийн үлдэгдэл
         feature_item_id: Шинж чанар
         same_item_id: Адил шинж чанар

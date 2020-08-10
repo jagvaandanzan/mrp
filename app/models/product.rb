@@ -3,7 +3,7 @@ class Product < ApplicationRecord
 
   belongs_to :customer, -> {with_deleted}, optional: true
   belongs_to :category, -> {with_deleted}, :class_name => "ProductCategory", optional: true
-  belongs_to :brand, optional: true
+  belongs_to :brand
   belongs_to :manufacturer, optional: true
   belongs_to :technical_specification, optional: true
 
@@ -47,7 +47,7 @@ class Product < ApplicationRecord
   after_save :set_option_item_single
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 0 && !m.draft} do
-    validates :n_name, :category_id, :code, :is_own, presence: true
+    validates :n_name, :brand_id, :category_id, :code, :is_own, presence: true
     validates :code, uniqueness: true
     validate :valid_custom
   end
@@ -72,7 +72,7 @@ class Product < ApplicationRecord
     before_save :set_specifications
     before_save :set_filters
     after_save :set_filter_groups
-    validates :search_key, :description, presence: true
+    validates :search_key, :description, :manufacturer_id, presence: true
   end
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 3} do
@@ -234,7 +234,8 @@ class Product < ApplicationRecord
 
                 added_key = "#{option_1}-#{option_2}"
                 unless added_feature_items[added_key]
-                  self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2)
+                  Rails.logger.info("is_own = #{is_own}")
+                  self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2, p_6_8: is_own == 1 ? 5 : nil, p_9_: is_own == 1 ? 6 : nil)
                   added_feature_items[added_key] == "added"
                   product_feature_items_add = true
                 end
@@ -259,7 +260,7 @@ class Product < ApplicationRecord
 
           added_key = "#{option_1}-#{option_2}"
           unless added_feature_items[added_key]
-            self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2)
+            self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2, p_6_8: is_own == 1 ? 5 : nil, p_9_: is_own == 1 ? 6 : nil)
             added_feature_items[added_key] == "added"
           end
         }
@@ -301,7 +302,8 @@ class Product < ApplicationRecord
   def set_option_item_single
     if product_feature_items.count == 0 && self.product_feature_option_rels.count == 1
       product_feature_option = self.product_feature_option_rels.first
-      ProductFeatureItem.create(tab_index: 1, product: self, option1_id: product_feature_option.feature_option_id, option2_id: product_feature_option.feature_option_id)
+      ProductFeatureItem.create(tab_index: 1, product: self, option1_id: product_feature_option.feature_option_id, option2_id: product_feature_option.feature_option_id,
+                                p_6_8: is_own == 1 ? 5 : nil, p_9_: is_own == 1 ? 6 : nil)
     end
   end
 

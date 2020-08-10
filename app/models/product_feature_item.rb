@@ -23,7 +23,7 @@ class ProductFeatureItem < ApplicationRecord
   end
 
   with_options :unless => Proc.new {|m| m.tab_index.present?} do
-    validates :price, :p_6_8, :p_9_, presence: true, :numericality => true
+    validates :price, presence: true, :numericality => true
   end
 
   with_options :if => Proc.new {|m| m.tab_index == 3} do
