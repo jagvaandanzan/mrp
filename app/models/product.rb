@@ -111,6 +111,24 @@ class Product < ApplicationRecord
         .group(:id)
   }
 
+  def all_categories
+    categories = get_parent_category([category], category)
+    categories.reverse
+  end
+
+  def get_parent_category(parents, category)
+    if category.parent.present?
+      parents << category.parent
+      get_parent_category(parents, category.parent)
+    else
+      parents
+    end
+  end
+
+  def check_filter_group_selected(ids)
+    (ids & product_filter_groups.map(&:category_filter_group_id).to_a).any?
+  end
+
   def full_name
     name_with_code
   end
@@ -192,7 +210,8 @@ class Product < ApplicationRecord
   end
 
   def valid_image_videos
-    any_img = false
+    # Ганц сонголттой бол зураггүй байж болно
+    any_img = product_feature_items.size == 1
     product_feature_items.each do |p_img|
       any_img = true if p_img.image.present?
     end

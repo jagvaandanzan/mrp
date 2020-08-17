@@ -1,5 +1,12 @@
 <script>
     var category_max_index = 0;
+    function getColorByBgColor(id, bgColor) {
+        var color = (bgColor.charAt(0) === '#') ? bgColor.substring(1, 7) : bgColor;
+        var r = parseInt(color.substring(0, 2), 16); // hexToR
+        var g = parseInt(color.substring(2, 4), 16); // hexToG
+        var b = parseInt(color.substring(4, 6), 16); // hexToB
+        $(id).css('color', (((r * 0.299) + (g * 0.587) + (b * 0.114)) > 186) ? '#000' : '#fff');
+    }
 </script>
 
 <%= form_with model: @product, url: @product.persisted? ? users_product_path(id: @product.id) : users_products_path,
@@ -151,7 +158,12 @@
                         <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
                           <%= label_tag do %>
                             <%= f.check_box(:option_rels, {:multiple => true}, option.id.to_s, nil) %>
-                            <%= option.name %>
+                            <% if option.code.present? %>
+                              <span id="p-<%= option.id %>" style="background-color: <%= option.code %>"><%= option.name %></span>
+                              <script>getColorByBgColor("#p-<%= option.id %>", "<%= option.code %>");</script>
+                            <% else %>
+                              <%= option.name %>
+                            <% end %>
                           <% end %>
                         </div>
                       </div>

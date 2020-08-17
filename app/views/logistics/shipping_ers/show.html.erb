@@ -28,6 +28,7 @@
               <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_image') %></th>
               <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_feature') %></th>
               <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.received') %></th>
+              <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.same_feature') %></th>
               <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.cargo') %></th>
               <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.s_type') %></th>
               <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.cost') %></th>
@@ -51,6 +52,7 @@
                 </td>
                 <td class="va-mid"><%= feature_item.name %></td>
                 <td class="va-mid"><%= item.received %></td>
+                <td class="va-mid"><%= item.same_item.present? ? item.same_item.name : '' %></td>
                 <td class="va-mid"><%= item.cargo %></td>
                 <td class="va-mid"><%= item.s_type_i18n %></td>
                 <td class="va-mid">

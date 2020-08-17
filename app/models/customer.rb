@@ -6,7 +6,7 @@ class Customer < ApplicationRecord
   after_destroy -> {sync_web('delete')}
   attr_accessor :method_type
 
-  validates :name, :queue, presence: true
+  validates :code, :name, :queue, presence: true
 
   scope :order_by_name, -> {
     order(:queue)
