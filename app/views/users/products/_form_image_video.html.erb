@@ -3,7 +3,10 @@
     <%= form_body do %>
       <%= f.hidden_field :tab_index, {value: 3} %>
       <div class="form-group">
-        <%= f.label :picture, class: 'col-sm-3 control-label va-mid' %>
+        <%= f.label :picture, class: 'col-sm-3 control-label va-mid' do %>
+          <%= t('activerecord.attributes.product.picture') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_IMG[0] %>"></i>
+        <% end %>
         <div class="col-sm-9 <%= get_error_class(@product, :picture) %>" id="product_picture_div">
           <%= field_errors(@product, :picture) %>
           <%= f.file_field :picture, accept: "image/*", class: 'image-file none-force' %>
@@ -25,7 +28,8 @@
             <table class="table table-bordered" id="tb_product_image_videos">
               <tr>
                 <th><%= t('activerecord.attributes.product_feature_item.feature_item_id') %></th>
-                <th><%= t('activerecord.attributes.product_feature_item.image') %></th>
+                <th><%= t('activerecord.attributes.product_feature_item.image') %>
+                  <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_IMG[1] %>"></i></th>
                 <th><%= t('activerecord.attributes.product_feature_item.same_item_id') %>
                   <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[2] %>"></i>
                 </th>
@@ -38,7 +42,10 @@
         </div>
       </div>
       <div class="form-group">
-        <%= f.label :product_images, class: 'col-sm-3 control-label' %>
+        <%= f.label :product_images, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.product_images') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_IMG[2] %>"></i>
+        <% end %>
         <div id="div_product_images" class="col-sm-9 cocoon-nested-form <%= get_error_class(@product, :product_images) %>">
           <%= field_errors(@product, :product_images) %>
           <%= f.fields_for :product_images do |m| %>
@@ -75,7 +82,10 @@
         </div>
       </div>
       <div class="form-group">
-        <%= f.label :photo_web, class: 'col-sm-3 control-label' %>
+        <%= f.label :photo_web, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.photo_web') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_IMG[3] %>"></i>
+        <% end %>
         <div class="col-sm-9 <%= get_error_class(@product, :photo_web) %>">
           <%= f.check_box :photo_web %>
         </div>

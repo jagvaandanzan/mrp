@@ -9,7 +9,7 @@
         <% end %>
         <div class="col-sm-9 <%= get_error_class(@product, :search_key) %>">
           <%= field_errors(@product, :search_key) %>
-          <%= f.text_area :search_key, class: 'form-control', placeholder: t('activerecord.attributes.product.search_key') %>
+          <%= f.text_area :search_key, class: 'form-control', placeholder: t('placeholders.search_key') %>
         </div>
       </div>
       <div class="form-group">
@@ -55,7 +55,10 @@
         <% end
            } %>
       <div class="form-group">
-        <%= f.label :product_instructions, class: 'col-sm-3 control-label' %>
+        <%= f.label :product_instructions, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.product_instructions') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[5] %>"></i>
+        <% end %>
         <div class="col-sm-9 cocoon-nested-form">
           <div class="<%= get_error_class(@product, :product_instructions) %>">
             <%= field_errors(@product, :product_instructions) %>
@@ -87,7 +90,10 @@
         </div>
       </div>
       <div class="form-group">
-        <%= f.label :product_specifications, class: 'col-sm-3 control-label' %>
+        <%= f.label :product_specifications, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.product_specifications') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[6] %>"></i>
+        <% end %>
         <div class="col-sm-9 cocoon-nested-form">
           <div class="<%= get_error_class(@product, :product_specifications) %>">
             <%= field_errors(@product, :product_specifications) %>
@@ -116,7 +122,10 @@
         </div>
       </div>
       <div class="form-group">
-        <%= f.label :manufacturer_id, class: 'col-sm-3 control-label' %>
+        <%= f.label :manufacturer_id, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.manufacturer_id') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[7] %>"></i>
+        <% end %>
         <div class="col-sm-9 <%= get_error_class(@product, :manufacturer_id) %>">
           <%= field_errors(@product, :manufacturer_id) %>
           <%= f.collection_select :manufacturer_id, Manufacturer.order_country, :id, :country, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>

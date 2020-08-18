@@ -194,3 +194,12 @@ mn:
       product: "Барааны сангийн хандах эрхгүй байна!"
     update:
       all: "Та өөрчлөх эрхгүй байна"
+  placeholders:
+    n_name: Биеийн тос
+    n_model: TF225693
+    n_package: 250мг
+    brand_id: Сонгох
+    n_material: Цэвэр арьс
+    n_advantage: Арьсыг чийгшүүлэх, үхэжсэн эд эсүүдийг сэргээх үйлчилгээтэй
+    search_key: biyiin tos мист mist VS chiigshuulegch chiigshuuleh
+    product_size: Угсарсны дараах өндөр 2м, өргөн 70см, урт 60см

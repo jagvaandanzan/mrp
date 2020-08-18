@@ -10,11 +10,14 @@
         <% end %>
         <div class="col-sm-6 <%= get_error_class(@product.product_package, :product_size) %>">
           <%= field_errors(@product.product_package, :product_size) %>
-          <%= f.text_area :product_size, class: 'form-control', placeholder: t('activerecord.attributes.product_package.product_size') %>
+          <%= f.text_area :product_size, class: 'form-control', placeholder: t('placeholders.product_size') %>
         </div>
       </div>
       <div class="form-group">
-        <%= f.label :bag, class: 'col-sm-2 control-label' do %>&nbsp;<% end %>
+        <%= f.label :bag, class: 'col-sm-2 control-label' do %>
+          <%= t('enums.product_package.package') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_SIZE[0] %>"></i>
+        <% end %>
         <div class="col-sm-2 radio-group p-t-5 <%= get_error_class(@product.product_package, :bag) %>">
           <%= field_errors(@product.product_package, :bag) %>
           <%= f.collection_radio_buttons :bag, ProductPackage.bags_i18n, :first, :second do |b| %>
@@ -44,7 +47,10 @@
         </div>
       </div>
       <div class="form-group">
-        <%= f.label :weight, class: 'col-sm-3 control-label' %>
+        <%= f.label :weight, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product_package.weight') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_SIZE[1] %>"></i>
+        <% end %>
         <div class="col-sm-3 <%= get_error_class(@product.product_package, :weight) %>">
           <%= field_errors(@product.product_package, :weight) %>
           <%= f.text_field :weight, class: 'form-control', placeholder: t('activerecord.attributes.product_package.weight') %>
@@ -57,7 +63,10 @@
         </div>
       </div>
       <div class="form-group m-t-10">
-        <%= f.label :gift_wrap, class: 'col-sm-3 control-label' %>
+        <%= f.label :gift_wrap, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product_package.gift_wrap') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_SIZE[2] %>"></i>
+        <% end %>
         <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product.product_package, :gift_wrap) %>">
           <%= field_errors(@product.product_package, :gift_wrap) %>
           <%= f.collection_radio_buttons :gift_wrap, ProductPackage.gift_wraps_i18n, :first, :second do |b| %>

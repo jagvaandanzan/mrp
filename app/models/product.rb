@@ -144,7 +144,7 @@ class Product < ApplicationRecord
   end
 
   def name_with_code
-    "#{self.code} - #{self.n_name}"
+    "#{self.n_name}, #{self.code}, #{brand.name}"
   end
 
   def product_feature_option_ids

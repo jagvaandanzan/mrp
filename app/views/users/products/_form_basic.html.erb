@@ -1,5 +1,6 @@
 <script>
     var category_max_index = 0;
+
     function getColorByBgColor(id, bgColor) {
         var color = (bgColor.charAt(0) === '#') ? bgColor.substring(1, 7) : bgColor;
         var r = parseInt(color.substring(0, 2), 16); // hexToR
@@ -15,13 +16,22 @@
     <%= f.hidden_field :tab_index, {value: 0} %>
     <div class="row">
       <div class="form-group">
+        <%= f.label :n_full, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.n_full') %>
+        <% end %>
+        <div class="col-sm-9 field_div">
+          <input id="full_name" type="text" class="form-control field" readonly style="background-color:white"
+                 placeholder="Биеийн тос, Vicroria's Secret, TF225693, 250мг, арьсыг чийгшүүлэх, үхэжсэн эд эсийг сэргээх үйлчилгээтэй">
+        </div>
+      </div>
+      <div class="form-group">
         <%= f.label :n_name, class: 'col-sm-3 control-label' do %>
           <%= t('activerecord.attributes.product.n_name') %>
           <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_NAME[0] %>"></i>
         <% end %>
         <div class="col-sm-9 field_div <%= get_error_class(f.object, :n_name) %>">
           <%= field_errors f.object, :n_name %>
-          <%= f.text_field :n_name, {class: 'form-control field', placeholder: t('activerecord.attributes.product.n_name')} %>
+          <%= f.text_field :n_name, {class: 'form-control field n_press', placeholder: t('placeholders.n_name')} %>
         </div>
       </div>
       <div class="form-group">
@@ -31,7 +41,7 @@
         <% end %>
         <div class="col-sm-9 field_div <%= get_error_class(f.object, :n_model) %>">
           <%= field_errors f.object, :n_model %>
-          <%= f.text_field :n_model, {class: 'form-control field', placeholder: t('activerecord.attributes.product.n_model')} %>
+          <%= f.text_field :n_model, {class: 'form-control field n_press', placeholder: t('placeholders.n_model')} %>
         </div>
       </div>
       <div class="form-group">
@@ -41,7 +51,7 @@
         <% end %>
         <div class="col-sm-9 field_div <%= get_error_class(f.object, :n_package) %>">
           <%= field_errors f.object, :n_package %>
-          <%= f.text_field :n_package, {class: 'form-control field', placeholder: t('activerecord.attributes.product.n_package')} %>
+          <%= f.text_field :n_package, {class: 'form-control field n_press', placeholder: t('placeholders.n_package')} %>
         </div>
       </div>
       <div class="form-group">
@@ -51,10 +61,9 @@
         <% end %>
         <div class="col-sm-9 field_div <%= get_error_class(@product, :brand_id) %>">
           <%= field_errors(@product, :brand_id) %>
-          <%= f.collection_select :brand_id, Brand.order_name, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+          <%= f.collection_select :brand_id, Brand.order_name, :id, :name, {:prompt => t('placeholders.brand_id')}, {class: 'form-control selectpicker', "data-live-search": true} %>
         </div>
       </div>
-
       <div class="form-group">
         <%= f.label :n_material, class: 'col-sm-3 control-label' do %>
           <%= t('activerecord.attributes.product.n_material') %>
@@ -62,7 +71,7 @@
         <% end %>
         <div class="col-sm-9 field_div <%= get_error_class(f.object, :n_material) %>">
           <%= field_errors f.object, :n_material %>
-          <%= f.text_field :n_material, {class: 'form-control field', placeholder: t('activerecord.attributes.product.n_material')} %>
+          <%= f.text_field :n_material, {class: 'form-control field n_press', placeholder: t('placeholders.n_material')} %>
         </div>
       </div>
       <div class="form-group">
@@ -72,7 +81,7 @@
         <% end %>
         <div class="col-sm-9 field_div <%= get_error_class(f.object, :n_advantage) %>">
           <%= field_errors f.object, :n_advantage %>
-          <%= f.text_field :n_advantage, {class: 'form-control field', placeholder: t('activerecord.attributes.product.n_advantage')} %>
+          <%= f.text_field :n_advantage, {class: 'form-control field n_press', placeholder: t('placeholders.n_advantage')} %>
         </div>
       </div>
     </div>
@@ -227,6 +236,27 @@
         }
     }
 
+    function set_full_name() {
+        var n = "";
+        n = get_name_text(n, $("#product_n_name").val());
+        n = get_name_text(n, $("#product_n_model").val());
+        n = get_name_text(n, $("#product_n_package").val());
+        if ($("#product_brand_id").val() !== "") {
+            n = get_name_text(n, $("#product_brand_id option[value=" + $("#product_brand_id").val() + "]").text());
+        }
+        n = get_name_text(n, $("#product_n_material").val());
+        n = get_name_text(n, $("#product_n_advantage").val());
+        $("#full_name").val(n);
+    }
+
+    function get_name_text(n, v) {
+        if (v !== undefined && v.length > 0) {
+            if (n.length > 0) n += ", ";
+            n += v;
+        }
+        return n;
+    }
+
     $(document).ready(function () {
         $('.selectpicker').selectpicker('refresh');
 
@@ -239,6 +269,18 @@
             }
         });
         $('[data-toggle="tooltip"]').tooltip();
+
+        $('.n_press').keyup(function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+            } else {
+                set_full_name();
+            }
+
+        });
+        $('#product_brand_id').on('change', function () {
+            set_full_name();
+        })
     });
 
 </script>

@@ -38,6 +38,7 @@ mn:
         installation: Угсарах заавар
         washing: Угаас заавар
     product_package:
+      package: Баглаа, боодол
       bag:
         box: Хайрцаг
         bag: Уут
@@ -274,6 +275,7 @@ mn:
       product:
         name: Нэр
         n_name: Барааны нэр
+        n_full: Харагдах байдал
         n_model: Моделийн дугаар (үйлдвэрийн код)
         n_package: Хэмжээ, савалгаа
         n_material: Материал
@@ -291,8 +293,8 @@ mn:
         brand_id: Бренд
         manufacturer_id: Үйлдвэрлэсэн улс
         product_instructions: Бараатай холбоотоай заавар
-        technical_specification_id: Техникийн үзүүлэлт бүлэг
-        product_specifications: Техникийн үзүүлэлт
+        technical_specification_id: Үзүүлэлт бүлэг
+        product_specifications: Үзүүлэлт
         product_filters: Шүүлтүүр
         product_image_videos: Зураг, Видео
         product_photos: Бодит зураг
