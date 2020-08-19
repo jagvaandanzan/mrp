@@ -28,6 +28,7 @@ class ProductFeatureItem < ApplicationRecord
 
   with_options :if => Proc.new {|m| m.tab_index == 3} do
     validates :feature_item_id, presence: true
+    before_validation :check_same_id
   end
 
   with_options :if => Proc.new {|m| m.tab_index == 3 && !m.same_item.present?} do
@@ -102,6 +103,12 @@ class ProductFeatureItem < ApplicationRecord
   end
 
   private
+
+  def check_same_id
+    if same_item.present? && id == same_item_id
+      self.same_item = nil
+    end
+  end
 
   def sync_web(method)
     self.method_type = method
