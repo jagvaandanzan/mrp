@@ -28,7 +28,7 @@ class Customer < ApplicationRecord
       params = nil
       url += "/" + id.to_s
     else
-      params = self.to_json(methods: [:method_type], only: [:id, :queue, :name, :description])
+      params = self.to_json(methods: [:method_type], only: [:id, :code, :queue, :name, :description])
     end
 
     response = ApplicationController.helpers.api_request(url, method, params)

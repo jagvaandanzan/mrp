@@ -53,6 +53,12 @@ class ProductCategory < ApplicationRecord
     items.order(:name)
   }
 
+  def img_url
+    if image.present?
+      image.url
+    end
+  end
+
   private
 
   # def filter_should_be_uniq
@@ -70,7 +76,7 @@ class ProductCategory < ApplicationRecord
       params = nil
       url += "/" + id.to_s
     else
-      params = self.to_json(methods: [:method_type], only: [:id, :queue, :name, :name_en, :code, :parent_id, :is_clothes])
+      params = self.to_json(methods: [:method_type, :img_url], only: [:id, :queue, :name, :name_en, :code, :parent_id, :is_clothes, :cross_id])
     end
 
     response = ApplicationController.helpers.api_request(url, method, params)
