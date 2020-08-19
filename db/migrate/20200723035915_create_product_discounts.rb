@@ -9,8 +9,10 @@ class CreateProductDiscounts < ActiveRecord::Migration[5.2]
     #
     #   t.timestamps
     # end
-    add_column :customers, :code, :string, after: 'queue'
-    add_reference :shipping_er_items, :same_item, foreign_key: {to_table: :shipping_er_items}, after: 'cargo'
-    add_reference :shipping_ub_items, :same_item, foreign_key: {to_table: :shipping_ub_items}, after: 'cargo'
+    # add_column :customers, :code, :string, after: 'queue'
+    # add_reference :shipping_er_items, :same_item, foreign_key: {to_table: :shipping_er_items}, after: 'cargo'
+    # add_reference :shipping_ub_items, :same_item, foreign_key: {to_table: :shipping_ub_items}, after: 'cargo'
+    add_reference :product_categories, :cross, foreign_key: {to_table: :product_categories}, after: 'parent_id'
+    add_attachment :product_categories, :image, after: 'is_clothes'
   end
 end

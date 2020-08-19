@@ -254,6 +254,7 @@ mn:
         queue: Дараалал
       product_category:
         queue: Дараалал
+        image: Зураг
         name: Нэр
         name_en: Нэр (Англи)
         code: Код
@@ -261,6 +262,7 @@ mn:
         parent: Эцэг ангилал
         children: Дэд ангилал
         category_filter_groups: Шүүлтүүр
+        cross_id: Кросс холболт
       product_location:
         name: Нэр
         code: Код

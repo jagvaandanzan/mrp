@@ -3,11 +3,16 @@ class ProductCategory < ApplicationRecord
 
   has_many :children, :class_name => "ProductCategory", :foreign_key => "parent_id"
   belongs_to :parent, -> {with_deleted}, :class_name => "ProductCategory", optional: true
+  belongs_to :cross, -> {with_deleted}, :class_name => "ProductCategory", optional: true
 
   has_many :products, :class_name => "Product", :foreign_key => "category_id"
   has_many :category_filter_groups, dependent: :destroy
 
   accepts_nested_attributes_for :category_filter_groups, allow_destroy: true
+
+  has_attached_file :image, :path => ":rails_root/public/product/image/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/product/image/:id_partition/:style.:extension'
+  validates_attachment :image,
+                       content_type: {content_type: ["image/jpeg", "image/jpg", "image/x-png", "image/png"], message: :content_type}
 
   after_create -> {sync_web('post')}
   after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}

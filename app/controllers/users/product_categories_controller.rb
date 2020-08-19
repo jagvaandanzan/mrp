@@ -33,6 +33,10 @@ class Users::ProductCategoriesController < Users::BaseController
   end
 
   def edit
+    if @category.cross.present?
+      @headers = ApplicationController.helpers.get_category_parents(@category.cross)
+      @headers = @headers.reverse
+    end
   end
 
   def update
@@ -60,7 +64,7 @@ class Users::ProductCategoriesController < Users::BaseController
   end
 
   def category_params
-    params.require(:product_category).permit(:parent_id, :queue, :name, :name_en, :code)
+    params.require(:product_category).permit(:parent_id, :image, :queue, :name, :name_en, :code, :cross_id)
     # category_filter_groups_attributes: [:id, :name, :name_en, :_destroy,
     #                                     category_filters_attributes: [:id, :name, :name_en, :img, :_destroy]])
   end
