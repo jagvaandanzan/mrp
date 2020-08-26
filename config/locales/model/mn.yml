@@ -307,6 +307,9 @@ mn:
         product_videos: Видео
         picture: Нүүр зураг
         product_discounts: Хямдралууд
+        price: Үнэ
+        price_min: Үнэ(бага)
+        price_max: Үнэ(их)
       product_feature_option_rel:
         product_id: Бараа
         feature_id: Шинж чанар

@@ -90,9 +90,23 @@ class Product < ApplicationRecord
     where(draft: false)
   }
 
-  scope :search, ->(sname) {
+  scope :search, ->(code, name, price_min, price_max, customer_id, category_id) {
     items = by_not_draft
-    items = items.where('code LIKE :value OR n_name LIKE :value', value: "%#{sname}%") if sname.present?
+    items = items.where('code LIKE :value', value: "%#{code}%") if code.present?
+    if name.present?
+      items = items.joins(:brand)
+      items = items.where('n_model LIKE :value OR n_name LIKE :value OR n_package LIKE :value OR n_material LIKE :value OR n_advantage LIKE :value OR brands.name LIKE :value', value: "%#{name}%")
+    end
+    if price_min.present? && price_max.present?
+      items = items.left_joins(:product_feature_items)
+      items = items.where("product_feature_items.price >= ?", price_min)
+                  .where("product_feature_items.price <= ?", price_max)
+                  .group(:id)
+    end
+    items = items.where(customer_id: customer_id) if customer_id.present?
+
+    items = items.where(category_id: category_id) if category_id.present?
+
     items.order_by_name
   }
   scope :search_by_id, ->(id) {
@@ -114,6 +128,14 @@ class Product < ApplicationRecord
   def all_categories
     categories = get_parent_category([category], category)
     categories.reverse
+
+    if category.cross_id.present?
+      cross_categories = get_parent_category([category.cross], category.cross)
+      cross_categories.reverse
+      categories = categories + cross_categories
+    end
+
+    categories
   end
 
   def get_parent_category(parents, category)
@@ -197,6 +219,15 @@ class Product < ApplicationRecord
     end
 
     percent
+  end
+
+  def price
+    if product_feature_items.present?
+      product_feature_item = product_feature_items.first
+      product_feature_item.price
+    else
+      0
+    end
   end
 
   private

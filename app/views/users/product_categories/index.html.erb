@@ -39,7 +39,11 @@
                 <tr>
                   <td class="text-center va-mid"><%= c.queue %></td>
                   <td class="text-center va-mid"><%= c.code %></td>
-                  <td class="va-mid"><%= link_to c.name, users_product_categories_path(parent_id: c.id) %></td>
+                  <td class="va-mid"><%= link_to c.name, users_product_categories_path(parent_id: c.id) %>
+                    <% if c.cross_id.present? %>
+                      &nbsp;/<%= get_name_recursive(c.cross) %>/
+                    <% end %>
+                  </td>
                   <td class="va-mid"><%= c.parent.presence ? c.parent.name : "" %></td>
                   <td class="text-center va-mid"><%= c.children.presence ? c.children.count : "0" %></td>
                   <td class="va-mid text-center"><%= link_to c.category_filter_groups.count, users_category_filter_groups_path(category_id: c.id) %></td>
