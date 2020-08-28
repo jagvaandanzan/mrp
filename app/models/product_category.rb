@@ -1,7 +1,7 @@
 class ProductCategory < ApplicationRecord
   acts_as_paranoid
 
-  has_many :children, :class_name => "ProductCategory", :foreign_key => "parent_id"
+  has_many :children, -> {order_by}, :class_name => "ProductCategory", :foreign_key => "parent_id"
   belongs_to :parent, -> {with_deleted}, :class_name => "ProductCategory", optional: true
   belongs_to :cross, -> {with_deleted}, :class_name => "ProductCategory", optional: true
 

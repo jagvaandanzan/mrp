@@ -31,8 +31,8 @@
                                 {class: 'form-control selectpicker', id: "category-0", ind: 0, onchange: 'callChildren(this)', "data-live-search": "true"} %>
         <% @headers.present? && @headers.each_with_index do |h, i| %>
           <% if h != @headers.first %>
-            <div class="col-sm-12 sub_category" id="category-<%= i + 1 %>" style="padding: 10px 0 0 0;">
-              <select class='form-control selectpicker' onchange='callChildren(this)' ind=<%= i + 1 %>>
+            <div class="col-sm-12 sub_category" id="category-<%= i %>" style="padding: 10px 0 0 0;">
+              <select class='form-control selectpicker' onchange='callChildren(this)' ind=<%= i %>>
                 <% h.parent.children.each {|child| %>
                   <option value="<%= child.id %>" <%= h.id == child.id ? 'selected' : '' %>><%= child.name %></option>
                 <% } %>
@@ -45,8 +45,8 @@
         <% end %>
 
         <% if @product_category.present? && @product_category.children.present? %>
-          <div class="col-sm-12 sub_category" id="category-<%= @headers.size + 1 %>" style="padding: 10px 0 0 0;">
-            <select class='form-control selectpicker' onchange='callChildren(this)' ind=<%= @headers.size + 1 %>>
+          <div class="col-sm-12 sub_category" id="category-<%= @headers.size %>" style="padding: 10px 0 0 0;">
+            <select class='form-control selectpicker' onchange='callChildren(this)' ind=<%= @headers.size %>>
               <option value=''>Дэд ангилал сонгох</option>
               <% @product_category.children.each {|child| %>
                 <option value="<%= child.id %>"><%= child.name %></option>
