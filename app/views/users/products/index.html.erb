@@ -21,24 +21,38 @@
         <%= number_field_tag :price_max, @price_max, {class: 'form-control search', step: 100, placeholder: t('activerecord.attributes.product.price_max')} %>
       </div>
       <div class="col-md-2 search">
-        <%= f.collection_select :customer_id, Customer.order_by_name, :id, :name, {:prompt => t('activerecord.attributes.product.customer_id'), :selected => @customer_id}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
+        <%= f.select :customer_id, Customer.order_by_name.collect {|c| [c.name, c.id]}.insert(0, [t('activerecord.attributes.product.is_own'), 0]),
+                     {:prompt => t('activerecord.attributes.product.customer_id'), :selected => @customer_id}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
       </div>
       <div class="col-md-2 search" id="product_category">
         <%= hidden_field_tag :category_id, @category_id %>
         <%= f.collection_select :main_category_id, ProductCategory.top_level, :id, :name,
                                 {:prompt => t('activerecord.attributes.product.category_id'), selected: @headers.present? ? @headers.first.id : ""},
-                                {class: 'form-control selectpicker', id: "category-0", ind: 0, onchange: 'callChildren(this)'} %>
+                                {class: 'form-control selectpicker', id: "category-0", ind: 0, onchange: 'callChildren(this)', "data-live-search": "true"} %>
         <% @headers.present? && @headers.each_with_index do |h, i| %>
           <% if h != @headers.first %>
             <div class="col-sm-12 sub_category" id="category-<%= i + 1 %>" style="padding: 10px 0 0 0;">
               <select class='form-control selectpicker' onchange='callChildren(this)' ind=<%= i + 1 %>>
-                <option value="<%= h.id %>"><%= h.name %></option>
+                <% h.parent.children.each {|child| %>
+                  <option value="<%= child.id %>" <%= h.id == child.id ? 'selected' : '' %>><%= child.name %></option>
+                <% } %>
               </select>
             </div>
             <script type="text/javascript" charset="utf-8">
                 category_max_index = <%= i + 1  %>;
             </script>
           <% end %>
+        <% end %>
+
+        <% if @product_category.present? && @product_category.children.present? %>
+          <div class="col-sm-12 sub_category" id="category-<%= @headers.size + 1 %>" style="padding: 10px 0 0 0;">
+            <select class='form-control selectpicker' onchange='callChildren(this)' ind=<%= @headers.size + 1 %>>
+              <option value=''>Дэд ангилал сонгох</option>
+              <% @product_category.children.each {|child| %>
+                <option value="<%= child.id %>"><%= child.name %></option>
+              <% } %>
+            </select>
+          </div>
         <% end %>
       </div>
       <div class="col-md-1 search">
@@ -105,7 +119,7 @@
 
                     let childrens = data.childrens;
                     if (childrens.length > 0) {
-                        $("#category_id").val("");
+                        $("#category_id").val(val);
                         var divSelect = "<div class='col-sm-12 sub_category' id=category-" + ind + " style='padding: 10px 0 0 0;'>" +
                             "<select class='form-control' onchange='callChildren(this)' ind=" + ind + ">" +
                             "<option value=''>Дэд ангилал сонгох</option>";

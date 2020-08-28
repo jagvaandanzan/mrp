@@ -59,6 +59,30 @@ class ProductCategory < ApplicationRecord
     end
   end
 
+  def has_subs?
+    children.exists?
+  end
+
+  def last_depth
+    if children.empty?
+      self
+    else
+      children.map(&:last_depth).max
+    end
+  end
+
+  def category_ids
+    self.deep_ids << self.id
+  end
+
+  def deep_ids
+    ids = children.map(&:id).to_a
+    children.each do |subcategory|
+      ids += subcategory.deep_ids
+    end
+    ids
+  end
+
   private
 
   # def filter_should_be_uniq
