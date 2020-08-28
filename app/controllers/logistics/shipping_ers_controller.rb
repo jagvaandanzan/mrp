@@ -65,7 +65,7 @@ class Logistics::ShippingErsController < Logistics::BaseController
 
   def shipping_er_params
     params.require(:shipping_er).permit(:date, :description,
-                                        shipping_er_items_attributes: [:id, :product_id, :product_supply_feature_id, :remainder, :received, :cargo, :s_type, :cost, :number, :_destroy])
+                                        shipping_er_items_attributes: [:id, :product_id, :product_supply_feature_id, :remainder, :received, :same_item_id, :cargo, :s_type, :cost, :number, :_destroy])
         .merge(:logistic => current_logistic)
   end
 end

@@ -1,6 +1,9 @@
 <% content_for :stylesheets do -%>
   <%= stylesheet_link_tag "form" %>
 <% end %>
+<script>
+    var category_max_index = 0;
+</script>
 <div class="content-wrapper">
   <section class="content-header">
     <h1><%= t('activerecord.models.product_category') + t(@category.persisted? ? 'titles.edit' : 'titles.add') %></h1>
@@ -12,6 +15,20 @@
         <%= form_body do %>
           <%= f.hidden_field :parent_id %>
 
+          <div class="form-group">
+            <%= f.label :image, class: 'col-sm-3 control-label va-mid' %>
+            <div class="col-sm-9 <%= get_error_class(@category, :image) %>" id="product_image_div">
+              <%= field_errors(@category, :image) %>
+              <%= f.file_field :image, accept: "image/*", class: 'image-file none-force' %>
+              <div class="preview noselect">
+                <% if @category.image.present? %>
+                  <%= image_tag f.object.image.url(:tumb), class: 'preview-img' %>
+                <% else %>
+                  <span class="text"><%= t('upload_image') %></span>
+                <% end %>
+              </div>
+            </div>
+          </div>
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-3 field_div">
@@ -28,8 +45,31 @@
                   <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product_category.code'), readonly: true %>
                 </div>
               </div>
+              <div class="col-md-3 field_div">
+                <%= f.label :cross_id, class: 'control-label' %>
+                <div class="<%= get_error_class(@category, :cross_id) %>" id="product_category_cross">
+                  <%= f.hidden_field :cross_id %>
+                  <%= field_errors(@category, :cross_id) %>
+                  <%= collection_select @category, :main_cross_id, ProductCategory.top_level, :id, :name,
+                                        {:prompt => t('controls.select.none'), selected: @headers.present? ? @headers.first.id : ""},
+                                        {class: 'form-control selectpicker', id: "category-0", ind: 0, onchange: 'callChildren(this)'} %>
+
+                  <% @headers.present? && @headers.each_with_index do |h, i| %>
+                    <% if h != @headers.first %>
+                      <div class="col-sm-12 sub_category" id="category-<%= i + 1 %>" style="padding: 10px 0 0 0;">
+                        <select class='form-control selectpicker' onchange='callChildren(this)' ind=<%= i + 1 %>>
+                          <option value="<%= h.id %>"><%= h.name %></option>
+                        </select>
+                      </div>
+                      <script type="text/javascript" charset="utf-8">
+                          category_max_index = <%= i + 1  %>;
+                      </script>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
               <% if @category.parent.presence %>
-                <div class="col-md-6 field_div">
+                <div class="col-md-3 field_div">
                   <%= f.label :parent, class: 'control-label' %>
                   <div class="<%= get_error_class(@category, :parent) %>">
                     <%= f.text_field :parent, class: 'form-control', value: @category.parent.name, disabled: true %>
@@ -61,7 +101,7 @@
             <div class="col-md-12 field_div">
               <%= f.label :category_filter_groups, class: 'control-label' %>
 
-                <%= link_to t('titles.edit'), users_category_filter_groups_path(category_id: @category.id) %>
+              <%= link_to t('titles.edit'), users_category_filter_groups_path(category_id: @category.id) %>
 
               <div class="cocoon-nested-form">
                 <table class="table table-bordered" id="tb_category_filter_groups">
@@ -103,32 +143,6 @@
               </div>
             </div>
           <% end %>
-          <!--          <div class="col-md-12 field_div">-->
-          <%#= f.label :category_filter_groups, class: 'control-label' %>
-
-          <!--            <div class="cocoon-nested-form">-->
-          <!--              <div class="<%#= get_error_class(@category, :category_filter_groups) %>">-->
-          <%#= field_errors(@category, :category_filter_groups) %>
-          <!--                <table class="table table-bordered" id="tb_category_filter_groups">-->
-          <!--                  <tr>-->
-          <!--                    <th><%#= t('activerecord.attributes.category_filter_group.name') %></th>-->
-          <!--                    <th><%#= t('activerecord.attributes.category_filter_group.name_en') %></th>-->
-          <!--                    <th width="60%"><%#= t('activerecord.attributes.category_filter_group.category_filters') %></th>-->
-          <!--                    <th width="50px"></th>-->
-          <!--                  </tr>-->
-          <%#= f.fields_for :category_filter_groups do |m| %>
-          <%#= render 'category_filter_group_fields', :f => m %>
-          <%# end %>
-          <!--                </table>-->
-          <!--              </div>-->
-          <!--              <div class="links item_append">-->
-          <%#= link_to_add_association f, :category_filter_groups, data: {association_insertion_node: '#tb_category_filter_groups', association_insertion_method: :append} do %>
-          <%#= nested_add_btn %>
-          <%# end %>
-          <!--              </div>-->
-          <!--            </div>-->
-          <!--          </div>-->
-
           <div class="action-buttons">
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
             <%= link_to t('controls.button.back'), users_product_categories_path(parent_id: (@category.parent.presence ? @category.parent.id : nil)), {class: "btn blck-btn"} %>
@@ -139,3 +153,52 @@
     </div>
   </section>
 </div>
+<script>
+    function callChildren(select) {
+        let val = $(select).val();
+        let ind = parseInt($(select).attr('ind')) + 1;
+        for (let i = ind; i <= category_max_index; i++) {
+            $("#category-" + i).remove();
+        }
+
+        if (valid_id(val)) {
+            if (ind > category_max_index) {
+                category_max_index = ind;
+            }
+            Rails.ajax({
+                url: "<%= get_product_category_children_users_products_path %>",
+                type: "PATCH",
+                data: "parent_id=" + val,
+                success: function (data) {
+
+                    let childrens = data.childrens;
+                    if (childrens.length > 0) {
+                        $("#product_category_cross_id").val("");
+                        var divSelect = "<div class='col-sm-12 sub_category' id=category-" + ind + " style='padding: 10px 0 0 0;'>" +
+                            "<select class='form-control' onchange='callChildren(this)' ind=" + ind + ">" +
+                            "<option value=''>Дэд ангилал сонгох</option>";
+
+                        for (var i = 0; i < childrens.length; i++) {
+                            divSelect += '<option value="' + childrens[i]["id"] + '">' + childrens[i]["name"] + '</option>';
+                        }
+                        divSelect += "</select>" + "</div>";
+
+                        $("#product_category_cross").append(divSelect);
+                        $('#product_category_cross select:last').selectpicker('refresh');
+                    } else {
+                        $("#product_category_cross_id").val(val);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        } else {
+            $("#product_category_id").val("");
+        }
+    }
+
+    $(document).ready(function () {
+        load_image_preview("#product_image_div");
+    });
+</script>

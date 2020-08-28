@@ -4,8 +4,18 @@ class Users::ProductsController < Users::BaseController
   before_action :set_product, only: [:edit, :update, :destroy, :show, :form_price]
 
   def index
-    @search_name = params[:product_name]
-    @products = Product.search(@search_name).page(params[:page])
+    @code = params[:code]
+    @name = params[:name]
+    @price_min = params[:price_min]
+    @price_max = params[:price_max]
+    @customer_id = params[:customer_id]
+    @category_id = params[:category_id]
+    if @category_id.present?
+      product_category = ProductCategory.find(@category_id)
+      @headers = ApplicationController.helpers.get_category_parents(product_category)
+      @headers = @headers.reverse
+    end
+    @products = Product.search(@code, @name, @price_min, @price_max, @customer_id, @category_id).page(params[:page])
   end
 
   def new

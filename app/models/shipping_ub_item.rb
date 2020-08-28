@@ -3,6 +3,8 @@ class ShippingUbItem < ApplicationRecord
   belongs_to :product_supply_feature
   belongs_to :product
   belongs_to :shipping_er_item
+  belongs_to :same_item, :class_name => "ShippingUbItem", optional: true
+
   has_many :product_income_items
   has_one :feature_item, through: :product_supply_feature
 
@@ -29,6 +31,10 @@ class ShippingUbItem < ApplicationRecord
 
   def un_loaded
     loaded - product_income_items.sum(:quantity)
+  end
+
+  def name
+    "#{product.code} #{feature_item.name}"
   end
 
   private

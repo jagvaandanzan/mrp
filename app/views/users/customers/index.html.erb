@@ -24,8 +24,9 @@
 
             <table class="table table-hover">
               <tr>
-                <th class="th-email"><%= t('activerecord.attributes.customer.queue') %></th>
-                <th class="th-email"><%= t('activerecord.attributes.customer.name') %></th>
+                <th><%= t('activerecord.attributes.customer.queue') %></th>
+                <th><%= t('activerecord.attributes.customer.code') %></th>
+                <th><%= t('activerecord.attributes.customer.name') %></th>
                 <% if is_manage %>
                   <th class="th-email"></th>
                 <% end %>
@@ -33,6 +34,7 @@
               <% @customers.each do |s| %>
                 <tr>
                   <td class="va-mid"><%= s.queue %></td>
+                  <td class="va-mid"><%= s.code %></td>
                   <td class="va-mid"><%= link_to s.name, users_customer_path(s) %></td>
                   <% if is_manage %>
                     <td>

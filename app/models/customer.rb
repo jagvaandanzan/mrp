@@ -6,7 +6,7 @@ class Customer < ApplicationRecord
   after_destroy -> {sync_web('delete')}
   attr_accessor :method_type
 
-  validates :name, :queue, presence: true
+  validates :code, :name, :queue, presence: true
 
   scope :order_by_name, -> {
     order(:queue)
@@ -28,7 +28,7 @@ class Customer < ApplicationRecord
       params = nil
       url += "/" + id.to_s
     else
-      params = self.to_json(methods: [:method_type], only: [:id, :queue, :name, :description])
+      params = self.to_json(methods: [:method_type], only: [:id, :code, :queue, :name, :description])
     end
 
     response = ApplicationController.helpers.api_request(url, method, params)

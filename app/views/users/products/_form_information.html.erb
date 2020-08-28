@@ -9,7 +9,7 @@
         <% end %>
         <div class="col-sm-9 <%= get_error_class(@product, :search_key) %>">
           <%= field_errors(@product, :search_key) %>
-          <%= f.text_area :search_key, class: 'form-control', placeholder: t('activerecord.attributes.product.search_key') %>
+          <%= f.text_area :search_key, class: 'form-control', placeholder: t('placeholders.search_key') %>
         </div>
       </div>
       <div class="form-group">
@@ -23,27 +23,42 @@
         </div>
       </div>
       <%= field_errors(@product, :product_filters) %>
-      <% @product.category.category_filter_groups.order_name.each {|group| %>
-        <div class="form-group">
-          <%= label_tag :product_filter_groups, class: 'col-sm-3 control-label' do %>
-            <%= group.name %>
-          <% end %>
-          <div class="col-sm-9" style="padding-left: 0">
-            <% group.category_filters.order_name.each {|filter| %>
-              <div class="col-md-2">
-                <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
-                  <%= label_tag :check_box, {style: 'font-size:13px'} do %>
-                    <%= f.check_box(:filters, {:multiple => true}, filter.id.to_s, nil) %>
-                    <%= filter.name %>
-                  <% end %>
+      <% @product.all_categories.each {|category|
+        category_filter_groups = category.category_filter_groups.order_name
+        if category_filter_groups.size > 0 %>
+          <div style="width: 25%;text-align: right;font-weight:700">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse<%= category.id %>" style="color: black">
+              <%= t('activerecord.attributes.ali_category.ali_filter_groups') %>: <%= category.name %>
+            </a>
+          </div>
+          <div id="collapse<%= category.id %>" class="panel-collapse collapse <%= (!@product.persisted? && index == 2 || (@product.persisted? && @product.check_filter_group_selected(category_filter_groups.map(&:id).to_a))) ? 'in' : '' %>">
+            <% category_filter_groups.order_name.each {|group| %>
+              <div class="form-group">
+                <%= label_tag :product_filter_groups, class: 'col-sm-3 control-label' do %>
+                  <%= group.name %>
+                <% end %>
+                <div class="col-sm-9" style="padding-left: 0">
+                  <% group.category_filters.order_name.each {|filter| %>
+                    <div class="col-md-2">
+                      <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
+                        <%= label_tag :check_box, {style: 'font-size:13px'} do %>
+                          <%= f.check_box(:filters, {:multiple => true}, filter.id.to_s, nil) %>
+                          <%= filter.name %>
+                        <% end %>
+                      </div>
+                    </div>
+                  <% } %>
                 </div>
               </div>
             <% } %>
           </div>
-        </div>
-      <% } %>
+        <% end
+           } %>
       <div class="form-group">
-        <%= f.label :product_instructions, class: 'col-sm-3 control-label' %>
+        <%= f.label :product_instructions, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.product_instructions') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[5] %>"></i>
+        <% end %>
         <div class="col-sm-9 cocoon-nested-form">
           <div class="<%= get_error_class(@product, :product_instructions) %>">
             <%= field_errors(@product, :product_instructions) %>
@@ -75,7 +90,10 @@
         </div>
       </div>
       <div class="form-group">
-        <%= f.label :product_specifications, class: 'col-sm-3 control-label' %>
+        <%= f.label :product_specifications, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.product_specifications') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[6] %>"></i>
+        <% end %>
         <div class="col-sm-9 cocoon-nested-form">
           <div class="<%= get_error_class(@product, :product_specifications) %>">
             <%= field_errors(@product, :product_specifications) %>
@@ -93,7 +111,7 @@
                     <td class="va-mid"><%= spec.specification %></td>
                     <td class="va-mid">
                       <%= hidden_field_tag "product[specification_id][]", spec.id %>
-                      <%= text_field_tag 'product[specification_val][]', @product.get_specification(spec.id ), {class: 'form-control field', placeholder: t('activerecord.attributes.product_specification.specification')} %>
+                      <%= text_field_tag 'product[specification_val][]', @product.get_specification(spec.id), {class: 'form-control field', placeholder: t('activerecord.attributes.product_specification.specification')} %>
                     </td>
                   </tr>
                 <% } %>
@@ -104,7 +122,10 @@
         </div>
       </div>
       <div class="form-group">
-        <%= f.label :manufacturer_id, class: 'col-sm-3 control-label' %>
+        <%= f.label :manufacturer_id, class: 'col-sm-3 control-label' do %>
+          <%= t('activerecord.attributes.product.manufacturer_id') %>
+          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[7] %>"></i>
+        <% end %>
         <div class="col-sm-9 <%= get_error_class(@product, :manufacturer_id) %>">
           <%= field_errors(@product, :manufacturer_id) %>
           <%= f.collection_select :manufacturer_id, Manufacturer.order_country, :id, :country, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>

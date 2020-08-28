@@ -50,6 +50,6 @@ class Users::ManufacturersController < Users::BaseController
   end
 
   def manufacturer_params
-    params.require(:manufacturer).permit(:country)
+    params.require(:manufacturer).permit(:queue, :country)
   end
 end

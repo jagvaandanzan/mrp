@@ -2,17 +2,52 @@
   <%= stylesheet_link_tag "search" %>
   <%= stylesheet_link_tag "list" %>
 <% end %>
+<script>
+    var category_max_index = 0;
+</script>
 <div class="content-wrapper index">
-  <section class="content-header align-left padding-15 m-b-5">
-    <h1> <%= t('titles.products') %> </h1>
-  </section>
-
-  <div class="action-buttons index">
+  <div class="col-md-12 m-t-10 m-b-10">
     <%= form_with url: users_products_path, method: "get", class: 'form-horizontal', local: true do |f| %>
-      <%= text_field_tag :product_name, @search_name, {class: 'form-control search'} %>
-      <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn' %>
+      <div class="col-md-2 search">
+        <%= text_field_tag :code, @code, {class: 'form-control search', placeholder: t('activerecord.attributes.product.code')} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= text_field_tag :name, @name, {class: 'form-control search', placeholder: t('activerecord.attributes.product.name')} %>
+      </div>
+      <div class="col-md-1 search">
+        <%= number_field_tag :price_min, @price_min, {class: 'form-control search', step: 100, placeholder: t('activerecord.attributes.product.price_min')} %>
+      </div>
+      <div class="col-md-1 search">
+        <%= number_field_tag :price_max, @price_max, {class: 'form-control search', step: 100, placeholder: t('activerecord.attributes.product.price_max')} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= f.collection_select :customer_id, Customer.order_by_name, :id, :name, {:prompt => t('activerecord.attributes.product.customer_id'), :selected => @customer_id}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
+      </div>
+      <div class="col-md-2 search" id="product_category">
+        <%= hidden_field_tag :category_id, @category_id %>
+        <%= f.collection_select :main_category_id, ProductCategory.top_level, :id, :name,
+                                {:prompt => t('activerecord.attributes.product.category_id'), selected: @headers.present? ? @headers.first.id : ""},
+                                {class: 'form-control selectpicker', id: "category-0", ind: 0, onchange: 'callChildren(this)'} %>
+        <% @headers.present? && @headers.each_with_index do |h, i| %>
+          <% if h != @headers.first %>
+            <div class="col-sm-12 sub_category" id="category-<%= i + 1 %>" style="padding: 10px 0 0 0;">
+              <select class='form-control selectpicker' onchange='callChildren(this)' ind=<%= i + 1 %>>
+                <option value="<%= h.id %>"><%= h.name %></option>
+              </select>
+            </div>
+            <script type="text/javascript" charset="utf-8">
+                category_max_index = <%= i + 1  %>;
+            </script>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="col-md-1 search">
+        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
+      </div>
       <% if can? :create, Product %>
-        <%= link_to t('controls.button.create'), new_users_product_path, class: 'btn btn-warning' %>
+        <div class="col-md-1 search">
+          <%= link_to t('controls.button.create'), new_users_product_path, class: 'btn btn-warning' %>
+        </div>
       <% end %>
     <% end %>
   </div>
@@ -27,14 +62,18 @@
 
             <table class="table table-hover table-bordered">
               <tr>
-                <th><%= t('activerecord.attributes.product.name') %></th>
                 <th><%= t('activerecord.attributes.product.code') %></th>
+                <th><%= t('activerecord.attributes.product.name') %></th>
+                <th><%= t('activerecord.attributes.product.customer_id') %></th>
+                <th><%= t('activerecord.attributes.product.price') %></th>
                 <th><%= t('activerecord.attributes.product.category') %></th>
               </tr>
               <% @products.each do |p| %>
                 <tr>
-                  <td class="va-mid"><%= link_to p.name, users_product_path(p) %></td>
-                  <td class="va-mid"><%= p.code %></td>
+                  <td class="va-mid"><%= link_to p.code, users_product_path(p) %></td>
+                  <td class="va-mid"><%= p.name %></td>
+                  <td class="va-mid"><%= p.customer.present? ? p.customer.name : '' %></td>
+                  <td class="va-mid"><%= get_currency_mn(p.price) %></td>
                   <td class="va-mid"><%= get_name_recursive(p.category) %></td>
                 </tr>
               <% end %>
@@ -46,3 +85,48 @@
     <%= paginate @products %>
   </section>
 </div>
+<script>
+    function callChildren(select) {
+        let val = $(select).val();
+        let ind = parseInt($(select).attr('ind')) + 1;
+        for (let i = ind; i <= category_max_index; i++) {
+            $("#category-" + i).remove();
+        }
+
+        if (valid_id(val)) {
+            if (ind > category_max_index) {
+                category_max_index = ind;
+            }
+            Rails.ajax({
+                url: "<%= get_product_category_children_users_products_path %>",
+                type: "PATCH",
+                data: "parent_id=" + val,
+                success: function (data) {
+
+                    let childrens = data.childrens;
+                    if (childrens.length > 0) {
+                        $("#category_id").val("");
+                        var divSelect = "<div class='col-sm-12 sub_category' id=category-" + ind + " style='padding: 10px 0 0 0;'>" +
+                            "<select class='form-control' onchange='callChildren(this)' ind=" + ind + ">" +
+                            "<option value=''>Дэд ангилал сонгох</option>";
+
+                        for (var i = 0; i < childrens.length; i++) {
+                            divSelect += '<option value="' + childrens[i]["id"] + '">' + childrens[i]["name"] + '</option>';
+                        }
+                        divSelect += "</select>" + "</div>";
+
+                        $("#product_category").append(divSelect);
+                        $('#product_category select:last').selectpicker('refresh');
+                    } else {
+                        $("#category_id").val(val);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        } else {
+            $("#category_id").val("");
+        }
+    }
+</script>

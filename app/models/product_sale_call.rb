@@ -17,7 +17,7 @@ class ProductSaleCall < ApplicationRecord
   scope :search, ->(start, finish, phone, code_name) {
     items = order(created_at: :desc)
     items = items.where('phone LIKE :value', value: "%#{phone}%") if phone.present?
-    items = items.joins(:product).where('products.code LIKE :value OR products.name LIKE :value', value: "%#{code_name}%") if code_name.present?
+    items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{code_name}%") if code_name.present?
     items = items.where('? <= created_at AND created_at <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items
   }

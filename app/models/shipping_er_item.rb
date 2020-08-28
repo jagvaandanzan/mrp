@@ -1,6 +1,8 @@
 class ShippingErItem < ApplicationRecord
   belongs_to :shipping_er
   belongs_to :product_supply_feature
+  belongs_to :same_item, :class_name => "ShippingErItem", optional: true
+
   belongs_to :product
   has_many :shipping_ub_items
   has_one :feature_item, through: :product_supply_feature
@@ -25,6 +27,10 @@ class ShippingErItem < ApplicationRecord
         .having("SUM(shipping_ub_items.loaded) IS NULL OR SUM(shipping_ub_items.loaded) < shipping_er_items.received")
         .select("shipping_er_items.*, shipping_er_items.received - IFNULL(SUM(shipping_ub_items.loaded), 0) as remainder")
   }
+
+  def name
+    "#{product.code} #{feature_item.name}"
+  end
 
   private
 

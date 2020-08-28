@@ -3,7 +3,7 @@ class Product < ApplicationRecord
 
   belongs_to :customer, -> {with_deleted}, optional: true
   belongs_to :category, -> {with_deleted}, :class_name => "ProductCategory", optional: true
-  belongs_to :brand, optional: true
+  belongs_to :brand
   belongs_to :manufacturer, optional: true
   belongs_to :technical_specification, optional: true
 
@@ -47,7 +47,7 @@ class Product < ApplicationRecord
   after_save :set_option_item_single
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 0 && !m.draft} do
-    validates :n_name, :category_id, :code, :is_own, presence: true
+    validates :n_name, :brand_id, :category_id, :code, :is_own, presence: true
     validates :code, uniqueness: true
     validate :valid_custom
   end
@@ -72,7 +72,7 @@ class Product < ApplicationRecord
     before_save :set_specifications
     before_save :set_filters
     after_save :set_filter_groups
-    validates :search_key, :description, presence: true
+    validates :search_key, :description, :manufacturer_id, presence: true
   end
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 3} do
@@ -90,9 +90,23 @@ class Product < ApplicationRecord
     where(draft: false)
   }
 
-  scope :search, ->(sname) {
+  scope :search, ->(code, name, price_min, price_max, customer_id, category_id) {
     items = by_not_draft
-    items = items.where('code LIKE :value OR n_name LIKE :value', value: "%#{sname}%") if sname.present?
+    items = items.where('code LIKE :value', value: "%#{code}%") if code.present?
+    if name.present?
+      items = items.joins(:brand)
+      items = items.where('n_model LIKE :value OR n_name LIKE :value OR n_package LIKE :value OR n_material LIKE :value OR n_advantage LIKE :value OR brands.name LIKE :value', value: "%#{name}%")
+    end
+    if price_min.present? && price_max.present?
+      items = items.left_joins(:product_feature_items)
+      items = items.where("product_feature_items.price >= ?", price_min)
+                  .where("product_feature_items.price <= ?", price_max)
+                  .group(:id)
+    end
+    items = items.where(customer_id: customer_id) if customer_id.present?
+
+    items = items.where(category_id: category_id) if category_id.present?
+
     items.order_by_name
   }
   scope :search_by_id, ->(id) {
@@ -111,6 +125,32 @@ class Product < ApplicationRecord
         .group(:id)
   }
 
+  def all_categories
+    categories = get_parent_category([category], category)
+    categories.reverse
+
+    if category.cross_id.present?
+      cross_categories = get_parent_category([category.cross], category.cross)
+      cross_categories.reverse
+      categories = categories + cross_categories
+    end
+
+    categories
+  end
+
+  def get_parent_category(parents, category)
+    if category.parent.present?
+      parents << category.parent
+      get_parent_category(parents, category.parent)
+    else
+      parents
+    end
+  end
+
+  def check_filter_group_selected(ids)
+    (ids & product_filter_groups.map(&:category_filter_group_id).to_a).any?
+  end
+
   def full_name
     name_with_code
   end
@@ -126,7 +166,7 @@ class Product < ApplicationRecord
   end
 
   def name_with_code
-    "#{self.code} - #{self.n_name}"
+    "#{self.n_name}, #{self.code}, #{brand.name}"
   end
 
   def product_feature_option_ids
@@ -181,6 +221,15 @@ class Product < ApplicationRecord
     percent
   end
 
+  def price
+    if product_feature_items.present?
+      product_feature_item = product_feature_items.first
+      product_feature_item.price
+    else
+      0
+    end
+  end
+
   private
 
   def valid_custom
@@ -192,7 +241,8 @@ class Product < ApplicationRecord
   end
 
   def valid_image_videos
-    any_img = false
+    # Ганц сонголттой бол зураггүй байж болно
+    any_img = product_feature_items.size == 1
     product_feature_items.each do |p_img|
       any_img = true if p_img.image.present?
     end
@@ -234,7 +284,8 @@ class Product < ApplicationRecord
 
                 added_key = "#{option_1}-#{option_2}"
                 unless added_feature_items[added_key]
-                  self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2)
+                  Rails.logger.info("is_own = #{is_own}")
+                  self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2, p_6_8: is_own == 1 ? 5 : nil, p_9_: is_own == 1 ? 6 : nil)
                   added_feature_items[added_key] == "added"
                   product_feature_items_add = true
                 end
@@ -259,7 +310,7 @@ class Product < ApplicationRecord
 
           added_key = "#{option_1}-#{option_2}"
           unless added_feature_items[added_key]
-            self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2)
+            self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2, p_6_8: is_own == 1 ? 5 : nil, p_9_: is_own == 1 ? 6 : nil)
             added_feature_items[added_key] == "added"
           end
         }
@@ -301,7 +352,8 @@ class Product < ApplicationRecord
   def set_option_item_single
     if product_feature_items.count == 0 && self.product_feature_option_rels.count == 1
       product_feature_option = self.product_feature_option_rels.first
-      ProductFeatureItem.create(tab_index: 1, product: self, option1_id: product_feature_option.feature_option_id, option2_id: product_feature_option.feature_option_id)
+      ProductFeatureItem.create(tab_index: 1, product: self, option1_id: product_feature_option.feature_option_id, option2_id: product_feature_option.feature_option_id,
+                                p_6_8: is_own == 1 ? 5 : nil, p_9_: is_own == 1 ? 6 : nil)
     end
   end
 

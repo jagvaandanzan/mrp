@@ -38,6 +38,7 @@ mn:
         installation: Угсарах заавар
         washing: Угаас заавар
     product_package:
+      package: Баглаа, боодол
       bag:
         box: Хайрцаг
         bag: Уут
@@ -253,6 +254,7 @@ mn:
         queue: Дараалал
       product_category:
         queue: Дараалал
+        image: Зураг
         name: Нэр
         name_en: Нэр (Англи)
         code: Код
@@ -260,6 +262,7 @@ mn:
         parent: Эцэг ангилал
         children: Дэд ангилал
         category_filter_groups: Шүүлтүүр
+        cross_id: Кросс холболт
       product_location:
         name: Нэр
         code: Код
@@ -268,11 +271,13 @@ mn:
         children: Дэд байршил
       customer:
         name: Нэр
+        code: Код
         queue: Дараалал
         description: Дэлгэрэнгүй
       product:
         name: Нэр
         n_name: Барааны нэр
+        n_full: Харагдах байдал
         n_model: Моделийн дугаар (үйлдвэрийн код)
         n_package: Хэмжээ, савалгаа
         n_material: Материал
@@ -290,18 +295,21 @@ mn:
         brand_id: Бренд
         manufacturer_id: Үйлдвэрлэсэн улс
         product_instructions: Бараатай холбоотоай заавар
-        technical_specification_id: Техникийн үзүүлэлт бүлэг
-        product_specifications: Техникийн үзүүлэлт
+        technical_specification_id: Үзүүлэлт бүлэг
+        product_specifications: Үзүүлэлт
         product_filters: Шүүлтүүр
         product_image_videos: Зураг, Видео
         product_photos: Бодит зураг
         photo_web: Бодит зургыг вебд харуулах
-        product_feature_items: Зураг, Видео
+        product_feature_items: Зураг
         product_size_instructions: Хэмжээний заавар
         product_images: Дэлгэрэнгүй зураг
         product_videos: Видео
         picture: Нүүр зураг
         product_discounts: Хямдралууд
+        price: Үнэ
+        price_min: Үнэ(бага)
+        price_max: Үнэ(их)
       product_feature_option_rel:
         product_id: Бараа
         feature_id: Шинж чанар
@@ -326,8 +334,8 @@ mn:
         product_feature: Шинж чанар
       product_feature_item:
         price: Зарах үнэ
-        p_6_8: 6-8 ширхэг үнэ
-        p_9_: 9-с дээш үнэ
+        p_6_8: 6-8 ширхэг(%)
+        p_9_: 9-с дээш(%)
         c_balance: Харилцагчийн үлдэгдэл
         feature_item_id: Шинж чанар
         same_item_id: Адил шинж чанар
@@ -437,6 +445,7 @@ mn:
         product_feature: Өнгө хэмжээ
         product_bought: Авсан үлдэгдэл
         received: Хүлээн авсан барааны тоо
+        same_feature: Нэг хайрцагт
         cargo: Ачааны тоо
         s_type: Тээврийн төрөл, Чиглэл
         cost: Зардал
@@ -451,6 +460,7 @@ mn:
         product_bought: Худалдан авсан тоо
         at_er: Эрээнд ирсэн огноо
         loaded: Ачуулсан барааны тоо
+        same_feature: Нэг хайрцагт
         cargo: Ачааны тоо
         s_type: Тээврийн төрөл, Чиглэл
         cost: Зардал

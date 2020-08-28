@@ -15,27 +15,32 @@
   </td>
   <td class="va-mid"><%= feature_item.name %></td>
   <td class="va-mid text-center"><%= f.object.remainder %>
-  <td>
+  <td class="va-mid">
     <%= field_errors f.object, :received %>
     <%= f.number_field :received, class: 'form-control field', min: 0, step: 1, placeholder: t('activerecord.attributes.shipping_er_item.received') %>
   </td>
-  <td>
+  <td class="va-mid">
+    <%= field_errors f.object, :same_item_id %>
+    <%= f.collection_select :same_item_id, @shipping_er.shipping_er_items, :id, :name, {:prompt => t('controls.select.none')},
+                            {class: 'form-control selectpicker', "data-live-search": true} %>
+  </td>
+  <td class="va-mid">
     <%= field_errors f.object, :cargo %>
     <%= f.number_field :cargo, class: 'form-control field', min: 0, step: 1, placeholder: t('activerecord.attributes.shipping_er_item.cargo') %>
   </td>
-  <td>
+  <td class="va-mid">
     <%= field_errors f.object, :s_type %>
     <%= f.select :s_type, ShippingErItem.s_types_i18n.keys.map {|k| [ShippingErItem.s_types_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
   </td>
-  <td>
+  <td class="va-mid">
     <%= field_errors f.object, :cost %>
     <%= f.number_field :cost, class: 'form-control field', min: 0, step: 0.1, placeholder: t('activerecord.attributes.shipping_er_item.cost') %>
   </td>
-  <td>
+  <td class="va-mid">
     <%= field_errors f.object, :number %>
     <%= f.text_field :number, class: 'form-control field', placeholder: t('activerecord.attributes.shipping_er_item.number') %>
   </td>
-  <td class="remove">
+  <td class="va-mid remove">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
       <%= nested_remove_btn %>
     <% end %>

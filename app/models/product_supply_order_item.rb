@@ -23,7 +23,7 @@ class ProductSupplyOrderItem < ApplicationRecord
     items = joins(:product_sample)
     items = items.where('? <= product_samples.ordered_date AND product_samples.ordered_date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items = items.where('product_samples.code LIKE :value', value: "%#{supply_code}%") if supply_code.present?
-    items = items.joins(:product).where('products.code LIKE :value OR products.name LIKE :value', value: "%#{product_name}%") if product_name.present?
+    items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{product_name}%") if product_name.present?
     items.order("product_samples.ordered_date": :desc)
     items
   }
@@ -32,7 +32,7 @@ class ProductSupplyOrderItem < ApplicationRecord
     items = joins(:product_supply_order)
     items = items.where('? <= product_supply_orders.ordered_date AND product_supply_orders.ordered_date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items = items.where('product_supply_orders.code LIKE :value', value: "%#{supply_code}%") if supply_code.present?
-    items = items.joins(:product).where('products.code LIKE :value OR products.name LIKE :value', value: "%#{product_name}%") if product_name.present?
+    items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{product_name}%") if product_name.present?
     items.order("product_supply_orders.ordered_date": :desc)
     items
   }
@@ -52,7 +52,7 @@ class ProductSupplyOrderItem < ApplicationRecord
     if supply_code.present?
       items = items.where('(product_samples.id IS NULL AND product_supply_orders.code LIKE :value) OR (product_supply_orders.id IS NULL AND product_samples.code LIKE :value)', value: "%#{supply_code}%")
     end
-    items = items.joins(:product).where('products.code LIKE :value OR products.name LIKE :value', value: "%#{product_name}%") if product_name.present?
+    items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{product_name}%") if product_name.present?
     items.created_at_desc
   }
 
