@@ -2,6 +2,17 @@ module API
   module SALESMAN
     class Sales < Grape::API
       resource :sales do
+
+        route_param :id do
+          resource :sale_items do
+            desc "GET sales/:id/sale_items"
+            get do
+              sale_items = ProductSaleItem.sale_available(params[:id])
+              present :sale_items, sale_items, with: API::SALESMAN::Entities::ProductSaleItem
+            end
+          end
+        end
+
         resource :products do
           resource :available do
             desc "GET sales/products/available"
@@ -18,7 +29,6 @@ module API
                 product_feature_items = ProductFeatureItem.sale_available(current_salesman.id, params[:id])
                 present :feature_items, product_feature_items, with: API::SALESMAN::Entities::ProductFeatureItems
               end
-
               route_param :f_item_id do
                 resource :quantity do
                   desc "GET sales/products/:id/items/:f_item_id/quantity"

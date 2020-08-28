@@ -56,6 +56,8 @@ module API
       mount API::SALESMAN::Travels
       mount API::SALESMAN::Sales
       mount API::SALESMAN::Resources
+      mount API::SALESMAN::Report
+
     end
   end
 end

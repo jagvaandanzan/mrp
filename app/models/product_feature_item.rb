@@ -1,7 +1,7 @@
 class ProductFeatureItem < ApplicationRecord
   belongs_to :product
-  belongs_to :option1, :class_name => "ProductFeatureOption"
-  belongs_to :option2, :class_name => "ProductFeatureOption"
+  belongs_to :option1, -> {with_deleted}, :class_name => "ProductFeatureOption"
+  belongs_to :option2, -> {with_deleted}, :class_name => "ProductFeatureOption"
   belongs_to :same_item, :class_name => "ProductFeatureItem", optional: true
 
   has_many :product_sale_items, :class_name => "ProductSaleItem", :foreign_key => "feature_item_id", dependent: :destroy

@@ -53,6 +53,7 @@ module API
 
       # mounts
       mount API::USER::Travels
+      mount API::USER::Sales
     end
   end
 end

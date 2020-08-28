@@ -22,6 +22,25 @@ class ProductSaleItem < ApplicationRecord
         .where("quantity - IFNULL(bought_quantity, 0) - IFNULL(back_quantity, 0) > ?", 0)
   }
 
+  scope :sale_available, ->(salesman_id) {
+    joins(:salesman_travel)
+        .joins(:product)
+        .where("salesman_travels.salesman_id = ?", salesman_id)
+        .where("quantity - IFNULL(bought_quantity, 0) - IFNULL(back_quantity, 0) > ?", 0)
+        .order("products.code")
+        .order("products.n_name")
+  }
+
+  scope :report_sale_delivered, ->(salesman_id, start_time, end_time) {
+    left_joins(:product_sale)
+        .left_joins(:salesman_travel)
+        .where("salesman_travels.salesman_id = ?", salesman_id)
+        .where("product_sale_items.created_at >= ?", start_time)
+        .where("product_sale_items.created_at <= ?", end_time)
+        .select("SUM(product_sale_items.sum_price) as price, SUM(bought_quantity) as bought, SUM(back_quantity) as back")
+  }
+
+
   def price
     ApplicationController.helpers.get_f(self[:price])
   end
