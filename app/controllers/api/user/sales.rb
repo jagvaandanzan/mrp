@@ -2,6 +2,21 @@ module API
   module USER
     class Sales < Grape::API
       resource :sales do
+
+        resource :notification do
+          desc "POST sales/notification"
+          params do
+            requires :title, type: String
+            requires :content, type: String
+          end
+          patch do
+            user = current_user
+            ApplicationController.helpers.send_notification(user,
+                                                            user.push_options('user', params[:title], params[:content]))
+            present :updated_at, Time.now
+          end
+        end
+
         resource :salesmen do
           desc "GET sales/salesmen"
           get do

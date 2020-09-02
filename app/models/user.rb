@@ -18,7 +18,7 @@ class User < ApplicationRecord
 
   validates :surname, :name, :phone, presence: true, length: {maximum: 255}
   validates :gender, :user_position_id, :user_permission_rels, presence: true
-  validates :email, uniqueness: {conditions: -> {with_deleted}}
+  validates :email, uniqueness: {conditions: -> { with_deleted }}
   validate :permission_rel_should_be_uniq
 
   scope :search, ->(search_name, search_email, search_phone) {
@@ -57,6 +57,17 @@ class User < ApplicationRecord
     user_position_id == 3
   end
 
+  def push_options(type, p_title, content)
+    {
+        data: {type: type, id: id},
+        notification: {
+            title: p_title,
+            body: content,
+            sound: "default"},
+        priority: 'high',
+    }
+  end
+
   protected
 
   def devise_mailer
@@ -78,7 +89,7 @@ class User < ApplicationRecord
   end
 
   def remove_unnecessary_error_messages
-    errors.messages.each {|key, val| val.uniq!}
+    errors.messages.each { |key, val| val.uniq! }
   end
 
   def permission_rel_should_be_uniq
