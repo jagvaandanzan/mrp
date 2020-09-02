@@ -103,9 +103,19 @@ class Product < ApplicationRecord
                   .where("product_feature_items.price <= ?", price_max)
                   .group(:id)
     end
-    items = items.where(customer_id: customer_id) if customer_id.present?
+    if customer_id.present?
+      if customer_id.to_i == 0
+        items = items.where("customer_id IS ?", nil)
+      else
+        items = items.where(customer_id: customer_id)
+      end
+    end
 
-    items = items.where(category_id: category_id) if category_id.present?
+    if category_id.present?
+      product_category = ProductCategory.find(category_id)
+      ids = product_category.category_ids
+      items = items.where("category_id IN (?)", ids)
+    end
 
     items.order_by_name
   }

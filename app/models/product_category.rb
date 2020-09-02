@@ -1,7 +1,7 @@
 class ProductCategory < ApplicationRecord
   acts_as_paranoid
 
-  has_many :children, :class_name => "ProductCategory", :foreign_key => "parent_id"
+  has_many :children, -> {order_by}, :class_name => "ProductCategory", :foreign_key => "parent_id"
   belongs_to :parent, -> {with_deleted}, :class_name => "ProductCategory", optional: true
   belongs_to :cross, -> {with_deleted}, :class_name => "ProductCategory", optional: true
 
@@ -57,6 +57,30 @@ class ProductCategory < ApplicationRecord
     if image.present?
       image.url
     end
+  end
+
+  def has_subs?
+    children.exists?
+  end
+
+  def last_depth
+    if children.empty?
+      self
+    else
+      children.map(&:last_depth).max
+    end
+  end
+
+  def category_ids
+    self.deep_ids << self.id
+  end
+
+  def deep_ids
+    ids = children.map(&:id).to_a
+    children.each do |subcategory|
+      ids += subcategory.deep_ids
+    end
+    ids
   end
 
   private
