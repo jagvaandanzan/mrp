@@ -89,9 +89,21 @@ module API
                 optional :skip_barcode, type: Boolean
               end
               post do
-                if params[:barcode].present? || (params[:skip_barcode].present? && params[:skip_barcode])
-                  products = ProductWarehouseLoc.by_travel(nil, params[:id])
-                  present :product, products.first, with: API::USER::Entities::ProductWarehouse
+                is_success = false
+                products = ProductWarehouseLoc.by_travel(nil, params[:id])
+                product = products.first
+                if params[:skip_barcode].present? && params[:skip_barcode]
+                  is_success = true
+                elsif params[:barcode].present?
+                  if product.barcode == params[:barcode]
+                    is_success = true
+                  else
+                    error!("Couldn't find by barcode", 422)
+                  end
+                end
+
+                if is_success
+                  present :product, product, with: API::USER::Entities::ProductWarehouse
                 else
                   error!("Couldn't find data", 422)
                 end

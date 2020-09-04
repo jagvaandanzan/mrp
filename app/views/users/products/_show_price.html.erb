@@ -15,6 +15,7 @@
           <thead>
           <tr>
             <th></th>
+            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.price') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
@@ -27,6 +28,7 @@
           <% @product.product_feature_items.each {|item| %>
             <tr class="field_div">
               <td><%= item.name %></td>
+              <td><%= item.barcode %></td>
               <td><%= get_currency_mn(item.price) %></td>
               <td><%= get_currency_mn item.p_6_8 %></td>
               <td><%= get_currency_mn item.p_9_ %></td>

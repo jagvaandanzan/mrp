@@ -35,7 +35,7 @@ class ProductWarehouseLoc < ApplicationRecord
   end
 
   def barcode
-    "123456789"
+    feature_item.barcode
   end
 
   def desk

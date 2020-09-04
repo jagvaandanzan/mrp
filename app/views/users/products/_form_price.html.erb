@@ -7,6 +7,7 @@
           <thead>
           <tr>
             <th></th>
+            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.price') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
@@ -18,6 +19,7 @@
           <tbody>
           <% if @product.product_feature_items.count > 1 %>
             <tr class="btn_actions">
+              <td></td>
               <td></td>
               <td class="text-center">
                 <button type="button" class="btn btn-default btn-xs" btype="price"><%= t('controls.button.to_equate') %></button>

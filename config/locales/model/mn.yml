@@ -340,6 +340,7 @@ mn:
         feature_item_id: Шинж чанар
         same_item_id: Адил шинж чанар
         image: Зураг
+        barcode: Баркод
       product_instruction:
         i_type: Төрөл
         description: Заавар

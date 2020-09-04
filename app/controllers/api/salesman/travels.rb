@@ -95,8 +95,19 @@ module API
                     optional :skip_barcode, type: Boolean
                   end
                   post do
-                    if params[:barcode].present? || (params[:skip_barcode].present? && params[:skip_barcode])
-                      product_sale_item = ProductSaleItem.find(params[:p_item_id])
+                    is_success = false
+                    product_sale_item = ProductSaleItem.find(params[:p_item_id])
+
+                    if params[:skip_barcode].present? && params[:skip_barcode]
+                      is_success = true
+                    elsif params[:barcode].present?
+                      if product_sale_item.feature_item.barcode == params[:barcode]
+                        is_success = true
+                      else
+                        error!("Couldn't find by barcode", 422)
+                      end
+                    end
+                    if is_success
                       present :product, product_sale_item, with: API::SALESMAN::Entities::ProductSaleItemBarCode
                     else
                       error!("Couldn't find data", 422)

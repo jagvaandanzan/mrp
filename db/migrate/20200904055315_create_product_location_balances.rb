@@ -11,5 +11,6 @@ class CreateProductLocationBalances < ActiveRecord::Migration[5.2]
 
       t.timestamps
     end
+    add_column :product_feature_items, :barcode, :string, after: 'same_item_id'
   end
 end

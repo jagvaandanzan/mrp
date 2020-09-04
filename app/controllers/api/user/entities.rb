@@ -11,6 +11,10 @@ module API
         expose :salesman, using: API::USER::Entities::Salesman
       end
 
+      class ProductFeatureItem < Grape::Entity
+        expose :id, :name, :barcode
+      end
+
       class ProductWarehouse < Grape::Entity
         expose :id, :barcode, :name, :code, :desk, :feature, :image, :quantity, :load_at
       end

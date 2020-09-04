@@ -3,6 +3,10 @@
     <%= f.object.name %>
   </td>
   <td>
+    <%= field_errors f.object, :barcode %>
+    <%= f.text_field :barcode, class: 'form-control field price', placeholder: t('activerecord.attributes.product_feature_item.barcode') %>
+  </td>
+  <td>
     <%= field_errors f.object, :price %>
     <%= f.number_field :price, class: 'form-control field price', placeholder: t('activerecord.attributes.product_feature_item.price') %>
   </td>
