@@ -79,7 +79,16 @@
                   <td class="va-mid"><%= get_currency(i.shipping_cost, "￥", 0) %></td>
                   <td class="va-mid"><%= i.qr_printed %></td>
                   <td class="va-mid"><%= i.problematic %></td>
-                  <td class="va-mid"><%= i.shelf %></td>
+                  <td class="va-mid">
+                    <% i.income_locations.each {|i_loc| %>
+                      <% location = i_loc.location %>
+                      <div>
+                        <span>x<%= location.x %></span>
+                        <span>y<%= location.y %></span>
+                        <span>z<%= location.z %></span>:&nbsp;<%= i_loc.quantity %>
+                      </div>
+                    <% } %>
+                  </td>
                 </tr>
               <% end %>
             </table>

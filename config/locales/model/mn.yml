@@ -469,14 +469,16 @@ mn:
         order_number: Захиалсан
         loaded: Ачуулсан
         cargo: Ачааны тоо
-        quantity: Хүлээн авсан тоо
+        quantity: Тоо
         shipping_cost: Ачааны зардал
         qr_printed: QR код хэвлэсэн тоо
         problematic: Асуудалтай барааны тоо
-        shelf: Тавиурт байршуулах барааны тоо
+        shelf: Тавиурт байршуулах тоо
         remainder: Үлдэгдэл
         feature_item_id: Барааны шинж чанар
         income_locations: Агуулахын байршил
+      product_income_location:
+        quantity: Тоо
       product_income_feature_rel:
         feature_option_id: Шинж чанар, утга
       product_discount:

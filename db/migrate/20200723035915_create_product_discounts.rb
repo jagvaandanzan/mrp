@@ -12,7 +12,15 @@ class CreateProductDiscounts < ActiveRecord::Migration[5.2]
     # add_column :customers, :code, :string, after: 'queue'
     # add_reference :shipping_er_items, :same_item, foreign_key: {to_table: :shipping_er_items}, after: 'cargo'
     # add_reference :shipping_ub_items, :same_item, foreign_key: {to_table: :shipping_ub_items}, after: 'cargo'
-    add_reference :product_categories, :cross, foreign_key: {to_table: :product_categories}, after: 'parent_id'
-    add_attachment :product_categories, :image, after: 'is_clothes'
+    # add_reference :product_categories, :cross, foreign_key: {to_table: :product_categories}, after: 'parent_id'
+    # add_attachment :product_categories, :image, after: 'is_clothes'
+    remove_reference :product_locations, :parent
+    remove_column :product_locations, :name
+    remove_column :product_locations, :code
+    remove_column :product_income_items, :shelf
+    add_column :product_locations, :queue, :integer, after: 'id'
+    add_column :product_locations, :x, :integer, after: 'queue'
+    add_column :product_locations, :y, :integer, after: 'x'
+    add_column :product_locations, :z, :integer, after: 'y'
   end
 end

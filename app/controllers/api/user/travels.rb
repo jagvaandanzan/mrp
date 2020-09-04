@@ -47,6 +47,30 @@ module API
                                                             given_file_name: image[:filename]
                                                         })
                 salesman_travel.on_sign
+                # Тавиурын хаана байгаа дарааллыг бодож гаргана
+                product_sale_items = ProductFeatureItem.by_travel_id(salesman_travel.id)
+                product_sale_items.each {|item|
+                  feature_item = ProductFeatureItem.find(item.feature_item_id)
+                  product_locations = ProductLocation.get_quantity(item.feature_item_id)
+                  quantity = 0
+                  product_locations.each {|loc|
+                    if quantity < item.quantity
+                      q = if loc.quantity >= (item.quantity - quantity)
+                            item.quantity - quantity
+                          else
+                            loc.quantity
+                          end
+                      quantity += q
+                      ProductWarehouseLoc.create(salesman_travel: salesman_travel,
+                                                 product: feature_item.product,
+                                                 location_id: loc.id,
+                                                 feature_item_id: item.feature_item_id,
+                                                 quantity: q)
+                    else
+                      break
+                    end
+                  }
+                }
 
                 present :sign_at, travel_sign.created_at
               else

@@ -2,36 +2,29 @@ class ProductLocation < ApplicationRecord
   acts_as_paranoid
 
   has_many :children, :class_name => "ProductLocation", :foreign_key => "parent_id"
-  belongs_to :parent, -> { with_deleted }, :class_name => "ProductLocation", optional: true
   has_many :income_items, :class_name => "ProductIncomeItem", :foreign_key => "location_id"
   has_many :income_locations, :class_name => "ProductIncomeLocation", :foreign_key => "location_id"
+  has_many :product_location_balances
 
-  validates :name, :code, presence: true
-  validates :code, uniqueness: true
-
-
-  scope :search, ->(p_id) {
-    if p_id.present?
-      items = where(parent_id: p_id)
-    else
-      items = where(parent_id: nil)
-    end
-
-    items.order(:name)
+  scope :by_xyz, ->(x, y, z) {
+    where(x: x)
+        .where(y: y)
+        .where(z: z)
   }
 
-
-  scope :search_all, ->() {
-    # items = where(parent_id: p_id)
-    items.order(:name)
+  scope :get_quantity, ->(feature_item_id) {
+    select("product_locations.id, SUM(product_location_balances.quantity) as quantity")
+        .joins(:product_location_balances)
+        .where("product_location_balances.feature_item_id = ?", feature_item_id)
+        .where("quantity > ?", 0)
+        .group(:id)
+        .order(:x)
+        .order(:y)
+        .order(:z)
   }
 
-  def name_with_code
-    "#{self.code} - #{self.name}"
+  def name
+    "x#{x} y#{y} z#{z}"
   end
 
-
-  # def name_with_parent
-  #   ""
-  # end
 end

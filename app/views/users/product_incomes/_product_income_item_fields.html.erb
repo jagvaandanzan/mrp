@@ -27,7 +27,7 @@
     <%= f.number_field :cargo, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.cargo') %>
   </td>
   <td class="va-mid"><%= get_currency(f.object.shipping_cost, "￥", 0) %></td>
-  <% if is_new %>
+  <% if is_edit %>
     <td>
       <%= field_errors f.object, :qr_printed %>
       <%= f.number_field :qr_printed, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.qr_printed') %>
@@ -37,8 +37,13 @@
       <%= f.number_field :problematic, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.problematic') %>
     </td>
     <td>
-      <%= field_errors f.object, :shelf %>
-      <%= f.number_field :shelf, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.shelf') %>
+      <%= field_errors f.object, :income_locations %>
+      <%= link_to_add_association f, :income_locations do %>
+        <%= nested_add_btn %>
+      <% end %>
+      <%= f.fields_for :income_locations do |m| %>
+        <%= render 'income_location_fields', :f => m %>
+      <% end %>
     </td>
   <% else %>
     <td class="remove">

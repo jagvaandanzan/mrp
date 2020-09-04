@@ -72,6 +72,13 @@ class ProductFeatureItem < ApplicationRecord
         .sum("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0)")
   }
 
+  scope :by_travel_id, ->(travel_id) {
+    select("product_sale_items.feature_item_id as feature_item_id, SUM(product_sale_items.quantity) as quantity")
+        .joins(:salesman_travel)
+        .where("salesman_travels.id = ?", travel_id)
+        .group(:id)
+  }
+
   def balance
     ProductBalance.balance(product_id, id)
   end

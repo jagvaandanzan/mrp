@@ -89,15 +89,6 @@ class Users::ProductIncomesController < Users::BaseController
     end
   end
 
-  def get_location_children
-    @locations = nil
-    if params[:parent_id].present?
-      @locations = ProductLocation.search(params[:parent_id])
-    end
-
-    render json: {childrens: @locations}
-  end
-
   private
 
   def set_product_income
@@ -106,7 +97,8 @@ class Users::ProductIncomesController < Users::BaseController
 
   def product_income_params
     params.require(:product_income).permit(:code, :income_date, :cargo_price, :logistic_id,
-                                           product_income_items_attributes: [:id, :product_id, :shipping_ub_item_id, :supply_feature_id, :feature_item_id, :remainder, :quantity, :cargo, :qr_printed, :problematic, :shelf, :_destroy])
+                                           product_income_items_attributes: [:id, :product_id, :shipping_ub_item_id, :supply_feature_id, :feature_item_id, :remainder, :quantity, :cargo, :qr_printed, :problematic, :_destroy,
+                                                                             income_locations_attributes: [:id, :x, :y, :z, :quantity, :_destroy]])
         .merge(:user => current_user)
   end
 end
