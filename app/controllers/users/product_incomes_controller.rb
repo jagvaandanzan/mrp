@@ -40,6 +40,13 @@ class Users::ProductIncomesController < Users::BaseController
   def edit
     @product_income.product_income_items.each do |item|
       item.remainder = item.shipping_ub_item.loaded
+      item.income_locations.each {|loc|
+        if loc.location.present?
+          loc.x = loc.location.x
+          loc.y = loc.location.y
+          loc.z = loc.location.z
+        end
+      }
     end
   end
 
