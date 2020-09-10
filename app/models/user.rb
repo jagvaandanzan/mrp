@@ -18,7 +18,7 @@ class User < ApplicationRecord
 
   validates :surname, :name, :phone, presence: true, length: {maximum: 255}
   validates :gender, :user_position_id, :user_permission_rels, presence: true
-  validates :email, uniqueness: {conditions: -> { with_deleted }}
+  validates :email, uniqueness: {conditions: -> {with_deleted}}
   validate :permission_rel_should_be_uniq
 
   scope :search, ->(search_name, search_email, search_phone) {
@@ -31,6 +31,10 @@ class User < ApplicationRecord
 
   scope :created_at_desc, -> {
     order(created_at: :desc)
+  }
+
+  scope :by_position_id, ->(position_id) {
+    where(user_position_id: position_id)
   }
 
   def send_first_password_instructions
@@ -89,7 +93,7 @@ class User < ApplicationRecord
   end
 
   def remove_unnecessary_error_messages
-    errors.messages.each { |key, val| val.uniq! }
+    errors.messages.each {|key, val| val.uniq!}
   end
 
   def permission_rel_should_be_uniq

@@ -52,6 +52,7 @@ module API
       end
 
       # mounts
+      mount API::SALESMAN::Salesmen
       mount API::SALESMAN::Distributing
       mount API::SALESMAN::Travels
       mount API::SALESMAN::Sales

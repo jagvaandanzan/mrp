@@ -40,6 +40,12 @@ class ProductSaleItem < ApplicationRecord
         .select("SUM(product_sale_items.sum_price) as price, SUM(bought_quantity) as bought, SUM(back_quantity) as back")
   }
 
+  scope :count_item_quantity, ->(travel_id) {
+    joins(:salesman_travel)
+        .where("salesman_travels.id = ?", travel_id)
+        .sum(:quantity)
+  }
+
 
   def price
     ApplicationController.helpers.get_f(self[:price])
@@ -70,7 +76,22 @@ class ProductSaleItem < ApplicationRecord
   end
 
   def product_barcode
-    "90192012332"
+    feature_item.barcode
+  end
+
+  def send_notification(user, quantity)
+    salesman = salesman_travel.salesman
+    notification = Notification.create(salesman: salesman,
+                                       salesman_travel: salesman_travel,
+                                       product_sale_item: self,
+                                       title: I18n.t("api.back_product"),
+                                       body_s: I18n.t("api.body.back_product_s", user: user.name, product: "#{product.n_name} #{feature_item.name}", quantity: quantity),
+                                       body_u: I18n.t("api.body.back_product_u", user: salesman.name, product: "#{product.n_name} #{feature_item.name}", quantity: quantity))
+    ApplicationController.helpers.send_noti_salesman(user,
+                                                 ApplicationController.helpers.send_noti_salesman.push_options('back_product',
+                                                                                                               self.id,
+                                                                                                               notification.title,
+                                                                                                               notification.body_s))
   end
 
   private

@@ -7,6 +7,8 @@ class SalesmanTravel < ApplicationRecord
   has_one :salesman_travel_sign, dependent: :destroy
   has_many :product_warehouse_locs, -> {order(:queue)}, dependent: :destroy
 
+  after_create :send_notification
+
   scope :open_delivery, ->(salesman_id) {
     where(salesman_id: salesman_id)
         .where("delivered_at IS ?", nil)
@@ -61,17 +63,43 @@ class SalesmanTravel < ApplicationRecord
     total
   end
 
-  def on_sign
+  def on_sign(user)
     now = Time.now
     if salesman_travel_routes.present?
-      self.update_columns(load_at: now, delivery_at: now + (duration * 60))
+      self.update_columns(load_at: now, delivery_at: now + (duration * 60), user: user)
 
       salesman_travel_routes.each do |route|
         to_time = now + (route.duration * 60)
         route.update_columns(load_at: now, delivery_at: to_time)
         now = to_time
       end
+
+      notification = Notification.create(salesman: salesman,
+                                         salesman_travel: self,
+                                         title: I18n.t("api.user_sign"),
+                                         body_s: I18n.t("api.body.user_sign_s", user: user.name, routes: salesman_travel_routes.count),
+                                         body_u: I18n.t("api.body.user_sign_u", user: salesman.name, products: ProductSaleItem.count_item_quantity(self.id)))
+      ApplicationController.helpers.send_noti_salesman(salesman,
+                                                       ApplicationController.helpers.send_noti_salesman.push_options('user_sign',
+                                                                                                                     self.id,
+                                                                                                                     notification.title,
+                                                                                                                     notification.body_s))
     end
+  end
+
+  def salesman_sign
+    self.update_column(:sign_at, Time.now)
+
+    notification = Notification.create(user: user,
+                                       salesman_travel: self,
+                                       title: I18n.t("api.salesman_sign"),
+                                       body_s: I18n.t("api.body.salesman_sign_s", routes: salesman_travel_routes.count),
+                                       body_u: I18n.t("api.body.salesman_sign_u", user: salesman.name, products: ProductSaleItem.count_item_quantity(self.id)))
+    ApplicationController.helpers.send_noti_user(user,
+                                                 ApplicationController.helpers.send_noti_salesman.push_options('salesman_sign',
+                                                                                                               self.id,
+                                                                                                               notification.title,
+                                                                                                               notification.body_u))
   end
 
   def calculate_delivery
@@ -91,6 +119,30 @@ class SalesmanTravel < ApplicationRecord
         self.delivery_time = nil
       end
       self.save
+    end
+  end
+
+  private
+
+  def send_notification
+    notification = Notification.create(salesman: salesman,
+                                       n_type: 1,
+                                       salesman_travel: self,
+                                       title: I18n.t("api.distributing"),
+                                       body_s: I18n.t("api.body.distributing_s", routes: salesman_travel_routes.count),
+                                       body_u: I18n.t("api.body.distributing_u", user: salesman.name, products: ProductSaleItem.count_item_quantity(self.id)))
+    ApplicationController.helpers.send_noti_salesman(salesman,
+                                                     ApplicationController.helpers.send_noti_salesman.push_options('distributing',
+                                                                                                                   self.id,
+                                                                                                                   notification.title,
+                                                                                                                   notification.body_s))
+    users = User.by_position_id(2)
+    if users.present?
+      ApplicationController.helpers.send_noti_users(users,
+                                                    ApplicationController.helpers.send_noti_salesman.push_options('distributing',
+                                                                                                                  self.id,
+                                                                                                                  notification.title,
+                                                                                                                  notification.body_u))
     end
   end
 end

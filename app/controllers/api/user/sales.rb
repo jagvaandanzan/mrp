@@ -2,21 +2,6 @@ module API
   module USER
     class Sales < Grape::API
       resource :sales do
-
-        resource :notification do
-          desc "POST sales/notification"
-          params do
-            requires :title, type: String
-            requires :content, type: String
-          end
-          patch do
-            user = current_user
-            ApplicationController.helpers.send_notification(user,
-                                                            user.push_options('user', params[:title], params[:content]))
-            present :updated_at, Time.now
-          end
-        end
-
         resource :salesmen do
           desc "GET sales/salesmen"
           get do
@@ -73,12 +58,12 @@ module API
               patch do
                 message = ""
                 r_s = 200
-                Rails.logger.info("id =  #{params[:sale_item_id]}  qnty =   #{params[:quantity]}")
                 sales_item = ProductSaleItem.find(params[:sale_item_id])
 
                 sales_item.update_column(:back_quantity, sales_item.back_quantity.present? ? sales_item.back_quantity + params[:quantity] : params[:quantity])
                 product_balance = sales_item.product_balance
                 product_balance.update_column(:quantity, product_balance.quantity + params[:quantity])
+                sales_item.send_notification(current_user, params[:quantity])
                 present :load_at, sales_item.updated_at
                 message = I18n.t('alert.removed_successfully')
 

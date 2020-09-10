@@ -54,6 +54,7 @@ module API
       # mounts
       mount API::USER::Travels
       mount API::USER::Sales
+      mount API::USER::Users
     end
   end
 end

@@ -46,7 +46,7 @@ module API
                                                             given: image[:tempfile],
                                                             given_file_name: image[:filename]
                                                         })
-                salesman_travel.on_sign
+                salesman_travel.on_sign(user)
                 # Тавиурын хаана байгаа дарааллыг бодож гаргана
                 product_sale_items = ProductFeatureItem.by_travel_id(salesman_travel.id)
                 product_sale_items.each {|item|
@@ -114,8 +114,7 @@ module API
               desc "PATCH travels/products/:id/load"
               patch do
                 warehouse_loc = ProductWarehouseLoc.find(params[:id])
-                warehouse_loc.load_at = Time.now
-                warehouse_loc.save
+                warehouse_loc.update_column(:load_at, Time.now)
 
                 present :load_at, warehouse_loc.load_at
               end

@@ -46,7 +46,7 @@ module API
                 travel_sign.received = image[:tempfile]
                 travel_sign.received_file_name = image[:filename]
                 travel_sign.save
-                salesman_travel.update_column(:sign_at, Time.now)
+                salesman_travel.salesman_sign
 
                 present :sign_at, salesman_travel.sign_at
               else

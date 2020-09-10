@@ -50,6 +50,17 @@ class Salesman < ActiveRecord::Base
     avatar.url(:tumb)
   end
 
+  def push_options(type, p_title, content)
+    {
+        data: {type: type, id: id},
+        notification: {
+            title: p_title,
+            body: content,
+            sound: "default"},
+        priority: 'high',
+    }
+  end
+
   protected
 
   def devise_mailer

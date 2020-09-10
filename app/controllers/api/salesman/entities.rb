@@ -2,6 +2,10 @@ module API
   module SALESMAN
     module Entities
 
+      class Salesman < Grape::Entity
+        expose :name, :uid, :email, :phone
+      end
+
       class SalesmanTravels < Grape::Entity
         expose :id, :id_number, :distance, :duration, :wage, :sign_at, :load_at, :delivery_at, :delivered_at, :delivery_time, :route_count, :product_count
       end
@@ -42,6 +46,10 @@ module API
 
       class SaleReport < Grape::Entity
         expose :price, :bought, :back
+      end
+
+      class Notification < Grape::Entity
+        expose :title, :body_s, :salesman_travel_id, :product_sale_item_id
       end
 
     end
