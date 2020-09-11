@@ -43,8 +43,7 @@ class ProductSaleItem < ApplicationRecord
   scope :count_item_quantity, ->(travel_id) {
     joins(:salesman_travel)
         .where("salesman_travels.id = ?", travel_id)
-        .sum(:quantity)
-        .select("product_sale_items.quantity as quantity")
+        .select("SUM(product_sale_items.quantity) as quantity")
   }
 
   def price
