@@ -7,8 +7,6 @@ class SalesmanTravel < ApplicationRecord
   has_one :salesman_travel_sign, dependent: :destroy
   has_many :product_warehouse_locs, -> {order(:queue)}, dependent: :destroy
 
-  after_save :send_notification
-
   scope :open_delivery, ->(salesman_id) {
     where(salesman_id: salesman_id)
         .where("delivered_at IS ?", nil)
@@ -66,7 +64,7 @@ class SalesmanTravel < ApplicationRecord
   def on_sign(user)
     now = Time.now
     if salesman_travel_routes.present?
-      self.update_columns(load_at: now, delivery_at: now + (duration * 60), user: user)
+      self.update_columns(load_at: now, delivery_at: now + (duration * 60), user_id: user.id)
 
       salesman_travel_routes.each do |route|
         to_time = now + (route.duration * 60)
@@ -121,8 +119,6 @@ class SalesmanTravel < ApplicationRecord
       self.save
     end
   end
-
-  private
 
   def send_notification
     notification = Notification.create(salesman: salesman,

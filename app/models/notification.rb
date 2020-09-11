@@ -26,4 +26,9 @@ class Notification < ApplicationRecord
   def avatar_u
     "/orignal/missing.png"
   end
+
+  def created_at
+    self[:created_at].strftime('%F %R') if self[:created_at].present?
+  end
+
 end

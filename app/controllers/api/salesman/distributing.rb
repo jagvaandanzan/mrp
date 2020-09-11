@@ -53,6 +53,7 @@ module API
               }
               travel.duration = travel_duration
               travel.save
+              travel.send_notification
               present :travel, travel, with: API::SALESMAN::Entities::SalesmanTravels
             end
           end
