@@ -23,8 +23,13 @@ module API
         expose :id, :barcode, :name, :code, :desk, :feature, :image, :quantity, :load_at
       end
 
+      class SalesmanAvatar < Grape::Entity
+        expose :name, :avatar_tumb
+      end
+
       class Notification < Grape::Entity
         expose :created_at, :title, :body_s, :salesman_travel_id, :product_sale_item_id
+        expose :salesman, using: API::USER::Entities::SalesmanAvatar
       end
 
     end
