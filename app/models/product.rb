@@ -90,6 +90,12 @@ class Product < ApplicationRecord
     where(draft: false)
   }
 
+  scope :search_by_name, ->(sname) {
+    items = by_not_draft
+    items = items.where('code LIKE :value OR n_name LIKE :value', value: "%#{sname}%") if sname.present?
+    items.order_by_name
+  }
+
   scope :search, ->(code, name, price_min, price_max, customer_id, category_id) {
     items = by_not_draft
     items = items.where('code LIKE :value', value: "%#{code}%") if code.present?

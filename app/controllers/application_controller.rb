@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
   end
 
   def search_product
-    @list = Product.search(params[:text])
+    @list = Product.search_by_name(params[:text])
     @select_id = params[:id]
 
     respond_to do |format|
