@@ -61,10 +61,6 @@ class User < ApplicationRecord
     user_position_id == 3
   end
 
-  def avatar
-    "/orignal/missing.png"
-  end
-
   def push_options(type, p_title, content)
     {
         data: {type: type, id: id},

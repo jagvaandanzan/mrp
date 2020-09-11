@@ -48,13 +48,8 @@ module API
         expose :price, :bought, :back
       end
 
-      class User < Grape::Entity
-        expose :name, :avatar
-      end
-
       class Notification < Grape::Entity
-        expose :created_at, :title, :body_s, :salesman_travel_id, :product_sale_item_id
-        expose :user, using: API::SALESMAN::Entities::User
+        expose :created_at, :title, :body_s, :avatar_s, :salesman_travel_id, :product_sale_item_id
       end
 
     end

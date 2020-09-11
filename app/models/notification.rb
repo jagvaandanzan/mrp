@@ -14,4 +14,16 @@ class Notification < ApplicationRecord
         .or(where(n_type: 1))
         .order(created_at: :desc)
   }
+
+  def avatar_s
+    if salesman.present?
+      salesman.avatar_tumb
+    else
+      "/orignal/missing.png"
+    end
+  end
+
+  def avatar_u
+    "/orignal/missing.png"
+  end
 end
