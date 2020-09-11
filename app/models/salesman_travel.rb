@@ -74,32 +74,33 @@ class SalesmanTravel < ApplicationRecord
         now = to_time
       end
 
+      products = ProductSaleItem.count_item_quantity(self.id)
       notification = Notification.create(salesman: salesman,
                                          salesman_travel: self,
                                          title: I18n.t("api.user_sign"),
-                                         body_s: I18n.t("api.body.user_sign_s", user: user.name, routes: salesman_travel_routes.count),
-                                         body_u: I18n.t("api.body.user_sign_u", user: salesman.name, products: ProductSaleItem.count_item_quantity(self.id)))
+                                         body_s: I18n.t("api.body.user_sign_s", user: user.name, routes: self.salesman_travel_routes.count),
+                                         body_u: I18n.t("api.body.user_sign_u", user: salesman.name, products: products.present? ? products.quantity : 0))
       ApplicationController.helpers.send_noti_salesman(salesman,
                                                        ApplicationController.helpers.push_options('user_sign',
-                                                                                                                     self.id,
-                                                                                                                     notification.title,
-                                                                                                                     notification.body_s))
+                                                                                                  self.id,
+                                                                                                  notification.title,
+                                                                                                  notification.body_s))
     end
   end
 
   def salesman_sign
     self.update_column(:sign_at, Time.now)
-
+    products = ProductSaleItem.count_item_quantity(self.id)
     notification = Notification.create(user: user,
                                        salesman_travel: self,
                                        title: I18n.t("api.salesman_sign"),
-                                       body_s: I18n.t("api.body.salesman_sign_s", routes: salesman_travel_routes.count),
-                                       body_u: I18n.t("api.body.salesman_sign_u", user: salesman.name, products: ProductSaleItem.count_item_quantity(self.id)))
+                                       body_s: I18n.t("api.body.salesman_sign_s", routes: self.salesman_travel_routes.count),
+                                       body_u: I18n.t("api.body.salesman_sign_u", user: salesman.name, products: products.present? ? products.quantity : 0))
     ApplicationController.helpers.send_noti_user(user,
                                                  ApplicationController.helpers.push_options('salesman_sign',
-                                                                                                               self.id,
-                                                                                                               notification.title,
-                                                                                                               notification.body_u))
+                                                                                            self.id,
+                                                                                            notification.title,
+                                                                                            notification.body_u))
   end
 
   def calculate_delivery
@@ -125,24 +126,26 @@ class SalesmanTravel < ApplicationRecord
   private
 
   def send_notification
+    products = ProductSaleItem.count_item_quantity(self.id)
+
     notification = Notification.create(salesman: salesman,
                                        n_type: 1,
                                        salesman_travel: self,
                                        title: I18n.t("api.distributing"),
-                                       body_s: I18n.t("api.body.distributing_s", routes: salesman_travel_routes.count),
-                                       body_u: I18n.t("api.body.distributing_u", user: salesman.name, products: ProductSaleItem.count_item_quantity(self.id)))
+                                       body_s: I18n.t("api.body.distributing_s", routes: self.salesman_travel_routes.count),
+                                       body_u: I18n.t("api.body.distributing_u", user: self.salesman.name, products: products.present? ? products.quantity : 0))
     ApplicationController.helpers.send_noti_salesman(salesman,
                                                      ApplicationController.helpers.push_options('distributing',
-                                                                                                                   self.id,
-                                                                                                                   notification.title,
-                                                                                                                   notification.body_s))
+                                                                                                self.id,
+                                                                                                notification.title,
+                                                                                                notification.body_s))
     users = User.by_position_id(2)
     if users.present?
       ApplicationController.helpers.send_noti_users(users,
                                                     ApplicationController.helpers.push_options('distributing',
-                                                                                                                  self.id,
-                                                                                                                  notification.title,
-                                                                                                                  notification.body_u))
+                                                                                               self.id,
+                                                                                               notification.title,
+                                                                                               notification.body_u))
     end
   end
 end
