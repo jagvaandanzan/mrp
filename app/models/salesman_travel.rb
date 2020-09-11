@@ -7,7 +7,7 @@ class SalesmanTravel < ApplicationRecord
   has_one :salesman_travel_sign, dependent: :destroy
   has_many :product_warehouse_locs, -> {order(:queue)}, dependent: :destroy
 
-  after_create :send_notification
+  after_save :send_notification
 
   scope :open_delivery, ->(salesman_id) {
     where(salesman_id: salesman_id)
@@ -74,12 +74,11 @@ class SalesmanTravel < ApplicationRecord
         now = to_time
       end
 
-      products = ProductSaleItem.count_item_quantity(self.id)
       notification = Notification.create(salesman: salesman,
                                          salesman_travel: self,
                                          title: I18n.t("api.user_sign"),
                                          body_s: I18n.t("api.body.user_sign_s", user: user.name, routes: self.salesman_travel_routes.count),
-                                         body_u: I18n.t("api.body.user_sign_u", user: salesman.name, products: products.present? ? products.quantity : 0))
+                                         body_u: I18n.t("api.body.user_sign_u", user: salesman.name, products: ProductSaleItem.count_item_quantity(self.id)))
       ApplicationController.helpers.send_noti_salesman(salesman,
                                                        ApplicationController.helpers.push_options('user_sign',
                                                                                                   self.id,
@@ -90,12 +89,12 @@ class SalesmanTravel < ApplicationRecord
 
   def salesman_sign
     self.update_column(:sign_at, Time.now)
-    products = ProductSaleItem.count_item_quantity(self.id)
+
     notification = Notification.create(user: user,
                                        salesman_travel: self,
                                        title: I18n.t("api.salesman_sign"),
                                        body_s: I18n.t("api.body.salesman_sign_s", routes: self.salesman_travel_routes.count),
-                                       body_u: I18n.t("api.body.salesman_sign_u", user: salesman.name, products: products.present? ? products.quantity : 0))
+                                       body_u: I18n.t("api.body.salesman_sign_u", user: salesman.name, products: ProductSaleItem.count_item_quantity(self.id)))
     ApplicationController.helpers.send_noti_user(user,
                                                  ApplicationController.helpers.push_options('salesman_sign',
                                                                                             self.id,
@@ -126,14 +125,12 @@ class SalesmanTravel < ApplicationRecord
   private
 
   def send_notification
-    products = ProductSaleItem.count_item_quantity(self.id)
-
     notification = Notification.create(salesman: salesman,
                                        n_type: 1,
                                        salesman_travel: self,
                                        title: I18n.t("api.distributing"),
                                        body_s: I18n.t("api.body.distributing_s", routes: self.salesman_travel_routes.count),
-                                       body_u: I18n.t("api.body.distributing_u", user: self.salesman.name, products: products.present? ? products.quantity : 0))
+                                       body_u: I18n.t("api.body.distributing_u", user: self.salesman.name, products: ProductSaleItem.count_item_quantity(self.id)))
     ApplicationController.helpers.send_noti_salesman(salesman,
                                                      ApplicationController.helpers.push_options('distributing',
                                                                                                 self.id,
