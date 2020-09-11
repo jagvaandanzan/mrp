@@ -88,7 +88,7 @@ class ProductSaleItem < ApplicationRecord
                                        body_s: I18n.t("api.body.back_product_s", user: user.name, product: "#{product.n_name} #{feature_item.name}", quantity: quantity),
                                        body_u: I18n.t("api.body.back_product_u", user: salesman.name, product: "#{product.n_name} #{feature_item.name}", quantity: quantity))
     ApplicationController.helpers.send_noti_salesman(user,
-                                                 ApplicationController.helpers.send_noti_salesman.push_options('back_product',
+                                                 ApplicationController.helpers.push_options('back_product',
                                                                                                                self.id,
                                                                                                                notification.title,
                                                                                                                notification.body_s))

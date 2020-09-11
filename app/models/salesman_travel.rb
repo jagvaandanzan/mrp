@@ -80,7 +80,7 @@ class SalesmanTravel < ApplicationRecord
                                          body_s: I18n.t("api.body.user_sign_s", user: user.name, routes: salesman_travel_routes.count),
                                          body_u: I18n.t("api.body.user_sign_u", user: salesman.name, products: ProductSaleItem.count_item_quantity(self.id)))
       ApplicationController.helpers.send_noti_salesman(salesman,
-                                                       ApplicationController.helpers.send_noti_salesman.push_options('user_sign',
+                                                       ApplicationController.helpers.push_options('user_sign',
                                                                                                                      self.id,
                                                                                                                      notification.title,
                                                                                                                      notification.body_s))
@@ -96,7 +96,7 @@ class SalesmanTravel < ApplicationRecord
                                        body_s: I18n.t("api.body.salesman_sign_s", routes: salesman_travel_routes.count),
                                        body_u: I18n.t("api.body.salesman_sign_u", user: salesman.name, products: ProductSaleItem.count_item_quantity(self.id)))
     ApplicationController.helpers.send_noti_user(user,
-                                                 ApplicationController.helpers.send_noti_salesman.push_options('salesman_sign',
+                                                 ApplicationController.helpers.push_options('salesman_sign',
                                                                                                                self.id,
                                                                                                                notification.title,
                                                                                                                notification.body_u))
@@ -132,14 +132,14 @@ class SalesmanTravel < ApplicationRecord
                                        body_s: I18n.t("api.body.distributing_s", routes: salesman_travel_routes.count),
                                        body_u: I18n.t("api.body.distributing_u", user: salesman.name, products: ProductSaleItem.count_item_quantity(self.id)))
     ApplicationController.helpers.send_noti_salesman(salesman,
-                                                     ApplicationController.helpers.send_noti_salesman.push_options('distributing',
+                                                     ApplicationController.helpers.push_options('distributing',
                                                                                                                    self.id,
                                                                                                                    notification.title,
                                                                                                                    notification.body_s))
     users = User.by_position_id(2)
     if users.present?
       ApplicationController.helpers.send_noti_users(users,
-                                                    ApplicationController.helpers.send_noti_salesman.push_options('distributing',
+                                                    ApplicationController.helpers.push_options('distributing',
                                                                                                                   self.id,
                                                                                                                   notification.title,
                                                                                                                   notification.body_u))
