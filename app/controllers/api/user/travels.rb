@@ -26,7 +26,37 @@ module API
           resource :products do
             desc "GET travels/:id/products"
             get do
-              present :products, ProductWarehouseLoc.by_travel(params[:id]), with: API::USER::Entities::ProductWarehouse
+              salesman_travel = SalesmanTravel.find(params[:id])
+              if salesman_travel.product_warehouse_locs.count == 0
+                # Тавиурын хаана байгаа дарааллыг бодож гаргана
+                product_sale_items = ProductFeatureItem.by_travel_id(salesman_travel.id)
+                product_sale_items.each {|item|
+                  feature_item = ProductFeatureItem.find(item.feature_item_id)
+                  product_locations = ProductLocation.get_quantity(item.feature_item_id)
+                  quantity = 0
+                  product_locations.each {|loc|
+                    if quantity < item.quantity
+                      q = if loc.quantity >= (item.quantity - quantity)
+                            item.quantity - quantity
+                          else
+                            loc.quantity
+                          end
+                      quantity += q
+                      salesman_travel.product_warehouse_locs << ProductWarehouseLoc.new(product: feature_item.product,
+                                                                                        location_id: loc.id,
+                                                                                        feature_item_id: item.feature_item_id,
+                                                                                        quantity: q)
+                    else
+                      break
+                    end
+                  }
+                }
+                salesman_travel.save(validate: false)
+
+                present :products, salesman_travel.product_warehouse_locs, with: API::USER::Entities::ProductWarehouse
+              else
+                present :products, ProductWarehouseLoc.by_travel(params[:id]), with: API::USER::Entities::ProductWarehouse
+              end
             end
           end
 
@@ -47,34 +77,23 @@ module API
                                                             given_file_name: image[:filename]
                                                         })
                 salesman_travel.on_sign(user)
-                # Тавиурын хаана байгаа дарааллыг бодож гаргана
-                product_sale_items = ProductFeatureItem.by_travel_id(salesman_travel.id)
-                product_sale_items.each {|item|
-                  feature_item = ProductFeatureItem.find(item.feature_item_id)
-                  product_locations = ProductLocation.get_quantity(item.feature_item_id)
-                  quantity = 0
-                  product_locations.each {|loc|
-                    if quantity < item.quantity
-                      q = if loc.quantity >= (item.quantity - quantity)
-                            item.quantity - quantity
-                          else
-                            loc.quantity
-                          end
-                      quantity += q
-                      ProductWarehouseLoc.create(salesman_travel: salesman_travel,
-                                                 product: feature_item.product,
-                                                 location_id: loc.id,
-                                                 feature_item_id: item.feature_item_id,
-                                                 quantity: q)
-                    else
-                      break
-                    end
-                  }
-                }
-
                 present :sign_at, travel_sign.created_at
               else
                 error!("Couldn't find data", 422)
+              end
+            end
+
+            resource :check do
+              desc "GET travels/:id/check"
+              get do
+                user = current_user
+                salesman_travel = SalesmanTravel.find(params[:id])
+                if user.is_stockkeeper?
+                  not_load = salesman_travel.product_warehouse_locs.by_load_at(false).count
+                  present :sign_approve, salesman_travel.load_at.nil? && not_load == 0
+                else
+                  error!("Couldn't find data", 422)
+                end
               end
             end
           end

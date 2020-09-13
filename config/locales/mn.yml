@@ -211,7 +211,7 @@ mn:
     body:
       distributing_s: Хүсэлтийг %{routes} хүргэлттэйгээр хүлээн авлаа.
       distributing_u: "%{user}-с %{products} бараа авах хүсэлт ирлээ."
-      user_sign_s: "%{user} таны %{routes} хүргэлттэйгээр барааг олгохоор хүлээн авлаа"
+      user_sign_s: "%{user} таны %{routes} хүргэлттэй барааг олгоход бэлэн боллоо"
       user_sign_u: "%{user} -н %{products} ширхэг бараа авах хүсэлтэд гарын үсэг зурлаа"
       salesman_sign_s: "%{routes} хүргэлттэй хүсэлтэд гарын үзсэг зурлаа"
       salesman_sign_u: "%{user} %{products} ширхэг бараа хүлээн авлаа"
