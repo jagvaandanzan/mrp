@@ -27,6 +27,13 @@
               <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.brand.name') %>
             </div>
           </div>
+          <div class="form-group">
+            <%= f.label :description, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@brand, :description) %>">
+              <%= field_errors(@brand, :description) %>
+              <%= f.text_area :description, class: 'form-control', placeholder: t('activerecord.attributes.brand.description') %>
+            </div>
+          </div>
 
           <div class="action-buttons">
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>

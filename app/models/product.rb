@@ -182,7 +182,9 @@ class Product < ApplicationRecord
   end
 
   def name_with_code
-    "#{self.n_name}, #{self.code}, #{brand.name}"
+    n = "#{self.n_name}, #{self.code}"
+    n += ", #{brand.name}" if brand.present?
+    n
   end
 
   def product_feature_option_ids
@@ -434,7 +436,7 @@ class Product < ApplicationRecord
       end
       # Rails.logger.debug(params)
       response = ApplicationController.helpers.api_request(url, method, params)
-      Rails.logger.debug("response.body #{response.body}")
+      # Rails.logger.debug("response.body #{response.body}")
       if response.code.to_i == 201
         self.update_attributes(sync_at: Time.now, method_type: 'sync')
       end

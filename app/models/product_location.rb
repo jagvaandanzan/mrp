@@ -1,8 +1,6 @@
 class ProductLocation < ApplicationRecord
   acts_as_paranoid
 
-  has_many :children, :class_name => "ProductLocation", :foreign_key => "parent_id"
-  has_many :income_items, :class_name => "ProductIncomeItem", :foreign_key => "location_id"
   has_many :income_locations, :class_name => "ProductIncomeLocation", :foreign_key => "location_id"
   has_many :product_location_balances
 

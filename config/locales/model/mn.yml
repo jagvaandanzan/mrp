@@ -357,6 +357,7 @@ mn:
       brand:
         name: Нэр
         logo: Лого
+        description: Тайлбар
       technical_specification:
         specification_gr: Бүлгийн нэр
         technical_spec_items: Үзүүлэлтүүд

@@ -42,6 +42,10 @@ class ProductWarehouseLoc < ApplicationRecord
     location.name
   end
 
+  def name
+    product.full_name
+  end
+
   private
 
   def set_location_balance

@@ -109,12 +109,12 @@ module API
               end
               post do
                 is_success = false
-                products = ProductWarehouseLoc.by_travel(nil, params[:id])
-                product = products.first
+                warehouse_locs = ProductWarehouseLoc.by_travel(nil, params[:id])
+                warehouse_loc = warehouse_locs.first
                 if params[:skip_barcode].present? && params[:skip_barcode]
                   is_success = true
                 elsif params[:barcode].present?
-                  if product.barcode == params[:barcode]
+                  if warehouse_loc.barcode == params[:barcode]
                     is_success = true
                   else
                     error!("Couldn't find by barcode", 422)
@@ -122,7 +122,7 @@ module API
                 end
 
                 if is_success
-                  present :product, product, with: API::USER::Entities::ProductWarehouse
+                  present :warehouse_loc, warehouse_loc, with: API::USER::Entities::ProductWarehouse
                 else
                   error!("Couldn't find data", 422)
                 end

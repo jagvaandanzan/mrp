@@ -6,7 +6,12 @@ class Customer < ApplicationRecord
   after_destroy -> {sync_web('delete')}
   attr_accessor :method_type
 
-  validates :code, :name, :queue, presence: true
+  has_attached_file :logo, :path => ":rails_root/public/customer/logo/:id_partition/:style.:extension", styles: {original: "700x240>", tumb: "230x80>"}, :url => '/customer/logo/:id_partition/:style.:extension'
+  validates_attachment :logo,
+                       content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 3.megabytes}
+
+  validates :name, presence: true, length: {maximum: 255}
+  validates :code, :logo, :queue, presence: true
 
   scope :order_by_name, -> {
     order(:queue)
@@ -19,6 +24,12 @@ class Customer < ApplicationRecord
     items
   }
 
+  def logo_url
+    if logo.present?
+      logo.url
+    end
+  end
+
   private
 
   def sync_web(method)
@@ -28,7 +39,7 @@ class Customer < ApplicationRecord
       params = nil
       url += "/" + id.to_s
     else
-      params = self.to_json(methods: [:method_type], only: [:id, :code, :queue, :name, :description])
+      params = self.to_json(methods: [:method_type, :logo_url], only: [:id, :code, :queue, :name, :description])
     end
 
     response = ApplicationController.helpers.api_request(url, method, params)
