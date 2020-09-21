@@ -248,7 +248,10 @@ class Product < ApplicationRecord
     end
   end
 
-  private
+  scope :sync_nil, ->() {
+    where("sync_at IS ?", nil)
+  }
+  # private
 
   def valid_custom
     errors.add(:category_id, :blank) if category_id.present? && ProductCategory.search(category_id).count > 0

@@ -33,7 +33,12 @@ class ProductPackage < ApplicationRecord
     end
   end
 
-  private
+
+  scope :sync_nil, ->() {
+    where("id > ?", 890)
+  }
+
+  # private
 
   def sync_web(method)
     self.method_type = method

@@ -10,7 +10,10 @@ class ProductFilterGroup < ApplicationRecord
 
   validates :category_filter_group_id, presence: true
 
-  private
+  scope :sync_nil, ->() {
+    where("id > ?", 5210)
+  }
+  # private
 
   def sync_web(method)
     self.method_type = method

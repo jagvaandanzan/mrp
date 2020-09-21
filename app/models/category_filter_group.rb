@@ -32,8 +32,11 @@ class CategoryFilterGroup < ApplicationRecord
     items = items.where('name LIKE :value', value: "%#{name}%") if name.present?
     items
   }
-
-  private
+  scope :sync_nil, ->() {
+    where("id > ?", 13762)
+        .where("sync_at IS ?", nil)
+  }
+  # private
 
   def sync_web(method)
     self.method_type = method

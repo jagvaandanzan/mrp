@@ -24,7 +24,7 @@ class ProductVideo < ApplicationRecord
     video.url
   end
 
-  private
+  # private
 
   def sync_web(method)
     self.method_type = method

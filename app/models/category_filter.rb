@@ -28,7 +28,11 @@ class CategoryFilter < ApplicationRecord
     end
   end
 
-  private
+  scope :sync_nil, ->() {
+    where("id > ?", 126619)
+        .where("sync_at IS ?", nil)
+  }
+  # private
 
   def sync_web(method)
     self.method_type = method
