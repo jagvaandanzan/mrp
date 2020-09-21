@@ -104,7 +104,8 @@ class ProductCategory < ApplicationRecord
   end
 
   scope :sync_nil, ->() {
-    where("sync_at IS ?", nil)
+    where("id > ?", 11752)
+    .where("sync_at IS ?", nil)
   }
   # private
 
