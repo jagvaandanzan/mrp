@@ -257,6 +257,7 @@ mn:
         image: Зураг
         name: Нэр
         name_en: Нэр (Англи)
+        is_clothes: Хувцас
         code: Код
         parent_id: Эцэг ангилал
         parent: Эцэг ангилал

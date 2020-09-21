@@ -87,7 +87,14 @@
                   <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.product_category.name') %>
                 </div>
               </div>
-              <div class="col-md-6 field_div">
+              <div class="col-md-2 field_div">
+                <%= f.label :is_clothes, class: 'control-label' %>
+                <div class="<%= get_error_class(@category, :is_clothes) %>">
+                  <%= field_errors(@category, :is_clothes) %>
+                  <%= f.check_box :is_clothes %>
+                </div>
+              </div>
+              <div class="col-md-4 field_div">
                 <%= f.label :name_en, class: 'control-label' %>
                 <div class="<%= get_error_class(@category, :name_en) %>">
                   <%= field_errors(@category, :name_en) %>

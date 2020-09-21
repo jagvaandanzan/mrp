@@ -29,6 +29,7 @@
                 <th class="text-center"><%= t('activerecord.attributes.product_category.code') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.product_category.name') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.product_category.parent') %></th>
+                <th class="text-center"><%= t('activerecord.attributes.product_category.is_clothes') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.product_category.children') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.product_category.category_filter_groups') %></th>
                 <% if is_manage %>
@@ -45,6 +46,10 @@
                     <% end %>
                   </td>
                   <td class="va-mid"><%= c.parent.presence ? c.parent.name : "" %></td>
+                  <td class="va-mid text-center">
+                    <% if c.is_clothes %><i class="fa fa-check text-success"></i>
+                    <% end %>
+                  </td>
                   <td class="text-center va-mid"><%= c.children.presence ? c.children.count : "0" %></td>
                   <td class="va-mid text-center"><%= link_to c.category_filter_groups.count, users_category_filter_groups_path(category_id: c.id) %></td>
                   <% if is_manage %>

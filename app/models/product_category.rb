@@ -83,6 +83,26 @@ class ProductCategory < ApplicationRecord
     ids
   end
 
+  def is_parent_clothes(category)
+    if category.present?
+      if category.is_clothes
+        true
+      else
+        is_parent_clothes(category.parent)
+      end
+    else
+      false
+    end
+  end
+
+  def check_is_clothes
+    if is_clothes
+      true
+    else
+      is_parent_clothes(self.parent)
+    end
+  end
+
   private
 
   # def filter_should_be_uniq

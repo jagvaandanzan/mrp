@@ -4,7 +4,7 @@
   </td>
   <td>
     <%= field_errors f.object, :barcode %>
-    <%= f.text_field :barcode, class: 'form-control field price', placeholder: t('activerecord.attributes.product_feature_item.barcode') %>
+    <%= f.text_field :barcode, class: 'form-control field', placeholder: t('activerecord.attributes.product_feature_item.barcode') %>
   </td>
   <td>
     <%= field_errors f.object, :price %>
@@ -24,4 +24,9 @@
       <%= f.number_field :c_balance, class: 'form-control field c_balance', placeholder: t('activerecord.attributes.product_feature_item.c_balance') %>
     </td>
   <% end %>
+  <td class="va-mid remove">
+    <%= link_to_remove_association f, data: {confirm: "Энэ шинж чанарыг устгахдаа итгэлтэй байна уу, үүнтэй холбоотой бүх өгөгдөл устах болно!"} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
 </tr>
