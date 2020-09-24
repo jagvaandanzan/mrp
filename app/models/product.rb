@@ -173,9 +173,9 @@ class Product < ApplicationRecord
 
   def name
     n = n_name
+    n += ", #{brand.name}" if brand.present? && brand_id != 69
     n += ", #{n_model}" if n_model.present?
     n += ", #{n_package}" if n_package.present?
-    n += ", #{brand.name}" if brand.present?
     n += ", #{n_material}" if n_material.present?
     n += ", #{n_advantage}" if n_advantage.present?
     n
