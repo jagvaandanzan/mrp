@@ -342,6 +342,7 @@ mn:
         same_item_id: Адил шинж чанар
         image: Зураг
         barcode: Баркод
+        real_img: Бодит зураг
       product_instruction:
         i_type: Төрөл
         description: Заавар

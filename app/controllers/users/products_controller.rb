@@ -154,8 +154,8 @@ class Users::ProductsController < Users::BaseController
   end
 
   def form_image_video_params
-    params.require(:product).permit(:tab_index, :picture, :photo_web,
-                                    product_feature_items_attributes: [:id, :same_item_id, :image, :tab_index],
+    params.require(:product).permit(:tab_index, :picture, :photo_web, images_multi: [],
+                                    product_feature_items_attributes: [:id, :same_item_id, :image, :real_img, :tab_index],
                                     product_images_attributes: [:id, :image, :_destroy],
                                     product_videos_attributes: [:id, :image, :video, :_destroy],
                                     product_photos_attributes: [:id, :photo, :_destroy])

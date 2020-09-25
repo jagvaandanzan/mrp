@@ -38,7 +38,7 @@ class ProductPackage < ApplicationRecord
     where("id > ?", 890)
   }
 
-  # private
+  private
 
   def sync_web(method)
     self.method_type = method

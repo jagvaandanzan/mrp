@@ -13,7 +13,7 @@ class ProductFilterGroup < ApplicationRecord
   scope :sync_nil, ->() {
     where("id > ?", 5210)
   }
-  # private
+  private
 
   def sync_web(method)
     self.method_type = method

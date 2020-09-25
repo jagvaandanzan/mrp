@@ -239,11 +239,11 @@
     function set_full_name() {
         var n = "";
         n = get_name_text(n, $("#product_n_name").val());
-        n = get_name_text(n, $("#product_n_model").val());
-        n = get_name_text(n, $("#product_n_package").val());
         if ($("#product_brand_id").val() !== "") {
             n = get_name_text(n, $("#product_brand_id option[value=" + $("#product_brand_id").val() + "]").text());
         }
+        n = get_name_text(n, $("#product_n_model").val());
+        n = get_name_text(n, $("#product_n_package").val());
         n = get_name_text(n, $("#product_n_material").val());
         n = get_name_text(n, $("#product_n_advantage").val());
         $("#full_name").val(n);

@@ -15,6 +15,10 @@
       <% end %>
     </div>
   </td>
+  <td class="va-mid text-center">
+    <%= field_errors f.object, :real_img %>
+    <%= f.check_box :real_img %>
+  </td>
   <td class="va-mid">
     <%= field_errors f.object, :same_item_id %>
     <%= f.collection_select :same_item_id, @product.product_feature_items.order_is_feature, :id, :name, {:prompt => t('controls.select.none')},

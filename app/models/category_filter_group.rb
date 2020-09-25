@@ -36,7 +36,7 @@ class CategoryFilterGroup < ApplicationRecord
     where("id > ?", 13762)
         .where("sync_at IS ?", nil)
   }
-  # private
+  private
 
   def sync_web(method)
     self.method_type = method

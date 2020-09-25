@@ -1,5 +1,5 @@
 <% if @product.persisted? %>
-  <%= form_with model: @product, url: form_image_video_users_products_path(id: @product.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
+  <%= form_with model: @product, url: form_image_video_users_products_path(id: @product.id), method: :patch, local: true, multipart: true, :html => {class: 'form-horizontal'} do |f| %>
     <%= form_body do %>
       <%= f.hidden_field :tab_index, {value: 3} %>
       <div class="form-group">
@@ -30,6 +30,7 @@
                 <th><%= t('activerecord.attributes.product_feature_item.feature_item_id') %></th>
                 <th><%= t('activerecord.attributes.product_feature_item.image') %>
                   <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_IMG[1] %>"></i></th>
+                <th width="50px"><%= t('activerecord.attributes.product_feature_item.real_img') %></th>
                 <th><%= t('activerecord.attributes.product_feature_item.same_item_id') %>
                   <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[2] %>"></i>
                 </th>
@@ -46,17 +47,23 @@
           <%= t('activerecord.attributes.product.product_images') %>
           <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_IMG[2] %>"></i>
         <% end %>
-        <div id="div_product_images" class="col-sm-9 cocoon-nested-form <%= get_error_class(@product, :product_images) %>">
-          <%= field_errors(@product, :product_images) %>
-          <%= f.fields_for :product_images do |m| %>
-            <%= render 'product_image_fields', :f => m %>
-          <% end %>
-          <div class="links">
-            <%= link_to_add_association f, :product_images, class: 'append-after' do %>
-              <%= nested_add_btn %>
+        <% if @product.product_images.present? %>
+          <div id="div_product_images" class="col-sm-9 cocoon-nested-form <%= get_error_class(@product, :product_images) %>">
+            <%= field_errors(@product, :product_images) %>
+            <%= f.fields_for :product_images do |m| %>
+              <%= render 'product_image_fields', :f => m %>
             <% end %>
+            <div class="links">
+              <%= link_to_add_association f, :product_images, class: 'append-after' do %>
+                <%= nested_add_btn %>
+              <% end %>
+            </div>
           </div>
-        </div>
+        <% else %>
+          <div class="col-sm-9">
+            <%= f.file_field :images_multi, accept: "image/*", multiple: true %>
+          </div>
+        <% end %>
       </div>
       <div class="form-group">
         <%= f.label :product_videos, class: 'col-sm-3 control-label' %>

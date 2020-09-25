@@ -8,7 +8,7 @@ class Product < ApplicationRecord
   belongs_to :technical_specification, optional: true
 
   has_many :product_feature_option_rels
-  has_many :product_feature_items
+  has_many :product_feature_items, -> {order_is_feature}
   has_many :product_instructions
   has_many :product_specifications
   has_many :product_size_instructions
@@ -82,7 +82,9 @@ class Product < ApplicationRecord
   with_options :if => Proc.new {|m| m.tab_index.to_i == 4} do
     validates :gift_wrap, presence: true
   end
-
+  scope :sync_nil, ->() {
+    where("sync_at IS ?", nil)
+  }
   scope :order_by_name, -> {
     order(:n_name)
   }
@@ -248,10 +250,13 @@ class Product < ApplicationRecord
     end
   end
 
-  scope :sync_nil, ->() {
-    where("sync_at IS ?", nil)
-  }
-  # private
+  def images_multi=(array = [])
+    array.each do |f|
+      product_images.create image: f
+    end
+  end
+
+  private
 
   def valid_custom
     errors.add(:category_id, :blank) if category_id.present? && ProductCategory.search(category_id).count > 0

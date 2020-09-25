@@ -19,7 +19,7 @@ class ProductImage < ApplicationRecord
   scope :sync_nil, ->() {
     where("id > ?", 24)
   }
-  # private
+  private
 
   def sync_web(method)
     self.method_type = method

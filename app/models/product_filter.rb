@@ -17,7 +17,7 @@ class ProductFilter < ApplicationRecord
     where("id > ?", 12059)
   }
 
-  # private
+  private
 
   def sync_web(method)
     self.method_type = method
