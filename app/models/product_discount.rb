@@ -38,7 +38,7 @@ class ProductDiscount < ApplicationRecord
       url += "/" + id.to_s
     else
 
-      params = self.to_json(only: [:id, :product_id, :start_date, :end_date], :methods => [:method_type])
+      params = self.to_json(only: [:id, :product_id, :percent, :start_date, :end_date], :methods => [:method_type])
     end
 
     ApplicationController.helpers.api_request(url, method, params)

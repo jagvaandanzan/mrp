@@ -21,7 +21,7 @@
             <div class="col-sm-9 <%= get_error_class(@product_discount, :start_date) %>">
               <div class="input-append input-group date <%= get_error_class(@product_discount, :start_date) %>" data-provide="datepicker">
                 <%= field_errors(@product_discount, :start_date) %>
-                <%= f.text_field :start_date, value: @product_discount.start_date, class: 'field form-control', placeholder: t('activerecord.attributes.product_discount.start_date') %>
+                <%= f.text_field :start_date, value: @product_discount.start_date, class: 'field form-control', placeholder: t('activerecord.attributes.product_discount.start_date'), autocomplete: "off" %>
                 <div class="input-group-addon">
                   <i class="fa fa-calendar"></i>
                 </div>
@@ -33,7 +33,7 @@
             <div class="col-sm-9 <%= get_error_class(@product_discount, :end_date) %>">
               <div class="input-append input-group date <%= get_error_class(@product_discount, :end_date) %>" data-provide="datepicker">
                 <%= field_errors(@product_discount, :end_date) %>
-                <%= f.text_field :end_date, value: @product_discount.end_date, class: 'field form-control', placeholder: t('activerecord.attributes.product_discount.end_date') %>
+                <%= f.text_field :end_date, value: @product_discount.end_date, class: 'field form-control', placeholder: t('activerecord.attributes.product_discount.end_date'), autocomplete: "off" %>
                 <div class="input-group-addon">
                   <i class="fa fa-calendar"></i>
                 </div>
