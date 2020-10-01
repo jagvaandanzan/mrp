@@ -18,7 +18,7 @@
     <%= field_errors f.object, :p_9_ %>
     <%= f.number_field :p_9_, class: 'form-control field p_9_', placeholder: t('activerecord.attributes.product_feature_item.p_9_') %>
   </td>
-  <% if is_customer %>
+  <% if is_customer || no_balance%>
     <td>
       <%= field_errors f.object, :c_balance %>
       <%= f.number_field :c_balance, class: 'form-control field c_balance', placeholder: t('activerecord.attributes.product_feature_item.c_balance') %>

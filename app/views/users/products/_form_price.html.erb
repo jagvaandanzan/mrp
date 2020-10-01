@@ -3,6 +3,7 @@
     <%= form_body do %>
       <%= f.hidden_field :tab_index, {value: 1} %>
       <div class="col-md-12 field_div cocoon-nested-form">
+        <% no_balance = !@product.check_balance %>
         <table class="table table-hover table-bordered">
           <thead>
           <tr>
@@ -11,7 +12,7 @@
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.price') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
-            <% if @product.is_customer? %>
+            <% if @product.is_customer? || no_balance %>
               <th class="text-center"><%= t('activerecord.attributes.product_feature_item.c_balance') %></th>
             <% end %>
             <th></th>
@@ -31,15 +32,16 @@
               <td class="text-center">
                 <button type="button" class="btn btn-default btn-xs" btype="p_9_"><%= t('controls.button.to_equate') %></button>
               </td>
-              <% if @product.is_customer? %>
+              <% if @product.is_customer? || no_balance %>
                 <td class="text-center">
                   <button type="button" class="btn btn-default btn-xs" btype="c_balance"><%= t('controls.button.to_equate') %></button>
                 </td>
               <% end %>
+              <td></td>
             </tr>
           <% end %>
           <%= f.fields_for :product_feature_items do |m| %>
-            <%= render 'product_feature_item_fields', :f => m, is_customer: @product.is_customer? %>
+            <%= render 'product_feature_item_fields', :f => m, is_customer: @product.is_customer?, no_balance: no_balance %>
           <% end %>
           </tbody>
         </table>

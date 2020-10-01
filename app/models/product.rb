@@ -18,6 +18,7 @@ class Product < ApplicationRecord
   has_many :product_images
   has_many :product_videos
   has_many :product_discounts
+  has_many :product_balances
   has_one :product_package
 
   has_many :supply_order_items, :class_name => "ProductSupplyOrderItem", :foreign_key => "product_id"
@@ -254,6 +255,10 @@ class Product < ApplicationRecord
     array.each do |f|
       product_images.create image: f
     end
+  end
+
+  def check_balance
+    product_balances.count > 0
   end
 
   private
