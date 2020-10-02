@@ -20,9 +20,9 @@
             <div class="col-sm-9 <%= get_error_class(@category, :image) %>" id="product_image_div">
               <%= field_errors(@category, :image) %>
               <%= f.file_field :image, accept: "image/*", class: 'image-file none-force' %>
-              <div class="preview noselect">
+              <div class="preview noselect" style="width:105px;height:165px">
                 <% if @category.image.present? %>
-                  <%= image_tag f.object.image.url(:tumb), class: 'preview-img' %>
+                  <%= image_tag f.object.image.url(:tumb), class: 'preview-img',style: 'width:105px;height:165px' %>
                 <% else %>
                   <span class="text"><%= t('upload_image') %></span>
                 <% end %>
