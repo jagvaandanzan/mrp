@@ -362,7 +362,7 @@ class Product < ApplicationRecord
         if val.present? && val != ""
           self.product_size_instructions << ProductSizeInstruction.new(size_instruction_id: id.split('-')[0],
                                                                        product_feature_option_id: id.split('-')[1],
-                                                                       instruction: val.to_f)
+                                                                       instruction: val)
         end
       end
     end

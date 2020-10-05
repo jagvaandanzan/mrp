@@ -12,6 +12,7 @@ class CreateNotifications < ActiveRecord::Migration[5.2]
     #
     #   t.timestamps
     # end
-    add_column :product_feature_items, :real_img, :boolean, default: false, after: 'image_file_name'
+    # add_column :product_feature_items, :real_img, :boolean, default: false, after: 'image_file_name'
+    change_column :product_size_instructions, :instruction, :string
   end
 end
