@@ -39,8 +39,12 @@ class Users::ProductSupplyOrdersController < Users::BaseController
     @product_supply_order.product_supply_order_items.each do |item|
       if item.supply_features.count == 0
         item.product.product_feature_items.each {|feature_item|
+          product_supply_features = ProductSupplyFeature.by_feature_item_id(feature_item.id)
+          product_supply_feature = if product_supply_features.present?
+                                     product_supply_features.last
+                                   end
           item.supply_features << ProductSupplyFeature.new(feature_item: feature_item,
-                                                           price: feature_item.price)
+                                                           price: product_supply_feature.present? ? ApplicationController.helpers.get_f(product_supply_feature.price) : feature_item.price)
         }
       end
     end

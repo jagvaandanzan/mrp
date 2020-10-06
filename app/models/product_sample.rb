@@ -67,6 +67,7 @@ class ProductSample < ApplicationRecord
     else
       product = Product.new(draft: true,
                             n_name: product_name,
+                            brand_id: 69,
                             code: ApplicationController.helpers.get_code(Product.last),
                             option_rels: option_rels)
 

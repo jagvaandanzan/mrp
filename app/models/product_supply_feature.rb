@@ -23,6 +23,10 @@ class ProductSupplyFeature < ApplicationRecord
         .select("product_supply_features.*, product_supply_features.quantity_lo - IFNULL(SUM(shipping_er_items.received), 0) as remainder")
   }
 
+  scope :by_feature_item_id, ->(feature_item_id) {
+    where(feature_item_id: feature_item_id)
+  }
+
   def price
     ApplicationController.helpers.get_f(self[:price])
   end

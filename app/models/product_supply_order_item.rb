@@ -3,7 +3,6 @@ class ProductSupplyOrderItem < ApplicationRecord
   belongs_to :product_sample, optional: true
   belongs_to :logistic, optional: true
   belongs_to :product, -> {with_deleted}
-  has_many :income_items, :class_name => "ProductIncomeItem", :foreign_key => "supply_order_item_id", dependent: :destroy
   has_many :supply_features, :class_name => "ProductSupplyFeature", :foreign_key => "order_item_id", dependent: :destroy
   accepts_nested_attributes_for :supply_features, allow_destroy: true
 

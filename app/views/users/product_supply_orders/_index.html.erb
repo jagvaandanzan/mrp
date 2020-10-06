@@ -53,7 +53,7 @@
                 <tr>
                   <td class="va-mid"><%= supply_order.ordered_date.strftime('%F') %> - <%= i.status_i18n %>
                     - <%= supply_order.user.name %></td>
-                  <td class="va-mid"><%= link_to supply_order.code, order_type == "order" ? users_product_supply_order_path(supply_order, tab_index: index + 1) : users_product_sample_path(supply_order, tab_index: index + 1) %></td>
+                  <td class="va-mid"><%= link_to supply_order.code, order_type == "order" ? users_product_supply_order_path(supply_order, tab_index: 0) : users_product_sample_path(supply_order, tab_index: index + 1) %></td>
                   <td class="va-mid"><%= i.product.name_with_code %></td>
                   <td class="va-mid"><%= i.get_currency i.sum_price %></td>
                 </tr>
