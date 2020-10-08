@@ -282,23 +282,31 @@ class Product < ApplicationRecord
     self.errors.add(:product_photos, :blank) if photo_web && !product_photos.present?
   end
 
-  def add_option_rels
+  def option_rel_ids
     feature_option_ids = option_rels.map(&:to_i)
     feature_options = ProductFeatureOption.by_ids(feature_option_ids)
+    feature_types = Hash.new
+    feature_options.each do |f_option|
+      feature_types[f_option.product_feature.feature_type] = "f_type"
+    end
+    # Зөвхөн нэг талын хэмжээс сонгосон жн дан размер
+    if feature_types.size == 1
+      feature_option_ids << 12
+    end
 
+    feature_option_ids
   end
 
   def set_option_rels
     if option_rels.present?
       was_option_ids = product_feature_option_rels.map(&:feature_option_id).to_a
-      feature_option_rels = option_rels.map(&:to_i)
+      feature_option_rels = option_rel_ids
       delete_ids = was_option_ids - feature_option_rels
 
       product_feature_items.by_option_ids(delete_ids).destroy_all
       product_feature_option_rels.by_feature_option_ids(delete_ids).destroy_all
 
       added_feature_items = Hash.new
-      product_feature_items_add = false
       (feature_option_rels - was_option_ids).each do |option_id|
         feature_option = ProductFeatureOption.find(option_id)
         self.product_feature_option_rels << ProductFeatureOptionRel.new(feature_option: feature_option)
@@ -323,34 +331,11 @@ class Product < ApplicationRecord
                 unless added_feature_items[added_key]
                   self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2, p_6_8: is_own == 1 ? 5 : nil, p_9_: is_own == 1 ? 6 : nil)
                   added_feature_items[added_key] == "added"
-                  product_feature_items_add = true
                 end
               end
             end
           }
         end
-      end
-      unless product_feature_items_add # Зөвхөн нэг талын хэмжээс сонгосон жн дан размер
-        no_select_feature = ProductFeatureOption.find(12)
-        self.product_feature_option_rels.each {|option_rel|
-          product_feature_1 = option_rel.feature_option.product_feature
-          product_feature_2 = no_select_feature.product_feature
-          # Дараалал түрүүнд байгаа нь эхэндээ байна
-          if product_feature_1.queue < product_feature_2.queue
-            option_1 = option_rel.feature_option_id
-            option_2 = no_select_feature.id
-          else
-            option_1 = no_select_feature.id
-            option_2 = option_rel.feature_option_id
-          end
-
-          added_key = "#{option_1}-#{option_2}"
-          unless added_feature_items[added_key]
-            self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2, p_6_8: is_own == 1 ? 5 : nil, p_9_: is_own == 1 ? 6 : nil)
-            added_feature_items[added_key] == "added"
-          end
-        }
-        self.product_feature_option_rels << ProductFeatureOptionRel.new(feature_option: ProductFeatureOption.find(12))
       end
 
     elsif product_feature_option_rels.count == 0

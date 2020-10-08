@@ -35,8 +35,11 @@
                   <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= Const::PRODUCT_INFO[2] %>"></i>
                 </th>
               </tr>
-              <%= f.fields_for :product_feature_items do |m| %>
-                <%= render 'product_image_video_fields', :f => m %>
+              <% product_feature_items = @product.product_feature_items %>
+              <% product_feature_items.each.with_index do |product_feature_item, index| %>
+                <%= f.fields_for :product_feature_items, product_feature_item do |m| %>
+                  <%= render 'product_image_video_fields', :f => m, index: index, product_feature_items: product_feature_items %>
+                <% end %>
               <% end %>
             </table>
           </div>

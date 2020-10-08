@@ -21,7 +21,7 @@
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :same_item_id %>
-    <%= f.collection_select :same_item_id, @product.product_feature_items.order_is_feature, :id, :name, {:prompt => t('controls.select.none')},
+    <%= f.collection_select :same_item_id, product_feature_items[0, index], :id, :name, {:prompt => t('controls.select.none')},
                             {class: 'form-control selectpicker', "data-live-search": true} %>
   </td>
 </tr>
