@@ -97,6 +97,10 @@ mn:
         clarification: Тодруулга хийх
         clarified: Тодруулга хийсэн
         canceled: Цуцалсан
+    customer:
+      c_type:
+        is_organization: Байгууллага
+        is_individual: Хувь хүн
     shipping_er_item:
       s_type:
         post_cargo: "Шуудан: Үйлд-Карго"
@@ -271,6 +275,8 @@ mn:
         parent: Эцэг байршил
         children: Дэд байршил
       customer:
+        c_type: Төрөл
+        logo: Лого
         name: Нэр
         code: Код
         queue: Дараалал

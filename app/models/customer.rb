@@ -10,8 +10,10 @@ class Customer < ApplicationRecord
   validates_attachment :logo,
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 3.megabytes}
 
+  enum c_type: {is_organization: 0, is_individual: 1}
+
   validates :name, presence: true, length: {maximum: 255}
-  validates :code, :logo, :queue, presence: true
+  validates :c_type, :code, :logo, :queue, presence: true
 
   scope :order_by_name, -> {
     order(:queue)
@@ -39,7 +41,7 @@ class Customer < ApplicationRecord
       params = nil
       url += "/" + id.to_s
     else
-      params = self.to_json(methods: [:method_type, :logo_url], only: [:id, :code, :queue, :name, :description])
+      params = self.to_json(methods: [:method_type, :logo_url], only: [:id, :c_type, :code, :queue, :name, :description])
     end
 
     response = ApplicationController.helpers.api_request(url, method, params)

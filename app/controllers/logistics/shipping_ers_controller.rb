@@ -13,9 +13,11 @@ class Logistics::ShippingErsController < Logistics::BaseController
     @shipping_er = ShippingEr.new
     @shipping_er.date = Time.current
     ProductSupplyFeature.find_to_er.each do |supply_f|
-      @shipping_er.shipping_er_items << ShippingErItem.new(product_supply_feature: supply_f,
-                                                           remainder: supply_f[:remainder],
-                                                           product: supply_f.feature_item.product)
+      if supply_f[:remainder].present? && supply_f[:remainder].to_i > 0
+        @shipping_er.shipping_er_items << ShippingErItem.new(product_supply_feature: supply_f,
+                                                             remainder: supply_f[:remainder],
+                                                             product: supply_f.feature_item.product)
+      end
     end
   end
 

@@ -60,7 +60,7 @@
                 </td>
                 <td class="va-mid"><%= item.number %></td>
               </tr>
-            <% total_sum += item.received } %>
+            <% total_sum += item.received if item.received.present? } %>
             <tr>
               <td colspan="4" class="text-right"><b><%= t('titles.total') %></b>
               </td>

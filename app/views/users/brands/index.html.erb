@@ -37,7 +37,7 @@
                   <td class="td-center va-mid">
                     <% if brand.logo.present? %>
                       <%= link_to brand.logo.url, "data-lightbox": "roadtrip" do %>
-                        <%= image_tag brand.logo.url(:tumb), class: 'tumb' %>
+                        <%= image_tag brand.logo.url(:tumb), style: 'width: 230px;height: 80px' %>
                       <% end %>
                     <% end %>
                   </td>

@@ -282,6 +282,12 @@ class Product < ApplicationRecord
     self.errors.add(:product_photos, :blank) if photo_web && !product_photos.present?
   end
 
+  def add_option_rels
+    feature_option_ids = option_rels.map(&:to_i)
+    feature_options = ProductFeatureOption.by_ids(feature_option_ids)
+
+  end
+
   def set_option_rels
     if option_rels.present?
       was_option_ids = product_feature_option_rels.map(&:feature_option_id).to_a
@@ -315,7 +321,6 @@ class Product < ApplicationRecord
 
                 added_key = "#{option_1}-#{option_2}"
                 unless added_feature_items[added_key]
-                  Rails.logger.info("is_own = #{is_own}")
                   self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2, p_6_8: is_own == 1 ? 5 : nil, p_9_: is_own == 1 ? 6 : nil)
                   added_feature_items[added_key] == "added"
                   product_feature_items_add = true

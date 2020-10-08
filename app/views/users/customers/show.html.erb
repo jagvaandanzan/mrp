@@ -5,7 +5,7 @@
   </section>
 
   <div class="action-buttons">
-    <% if can? :manage, ProductSupplier %>
+    <% if can? :manage, Customer %>
       <%= link_to t('controls.button.edit'), edit_users_customer_path(@customer), class: 'btn btn-info' %>
       <%= link_to t('controls.button.delete'), users_customer_path(@customer), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <% end %>
@@ -14,6 +14,20 @@
   <%= show_body do %>
     <div class="box">
       <div class="box-body table-responsive no-padding">
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.customer.logo') %> :</div>
+          <div class="col-data">
+            <% if @customer.logo.present? %>
+              <%= link_to @customer.logo.url, "data-lightbox": "roadtrip" do %>
+                <%= image_tag @customer.logo.url(:tumb), size: 'width: 230px;height: 80px' %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.customer.c_type') %> :</div>
+          <div class="col-data"><%= @customer.c_type_i18n %></div>
+        </div>
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.customer.queue') %> :</div>
           <div class="col-data"><%= @customer.queue %></div>

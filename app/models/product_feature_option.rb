@@ -33,6 +33,10 @@ class ProductFeatureOption < ApplicationRecord
     items.order_queue
   }
 
+  scope :by_ids, ->(ids) {
+    where("id IN (?)", ids)
+  }
+
   private
 
   def sync_web(method)

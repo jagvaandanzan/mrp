@@ -11,11 +11,13 @@ class ShippingUbItem < ApplicationRecord
   attr_accessor :remainder
   enum s_type: {simple: 0, urgent: 1}
 
-  validates :loaded, :s_type, presence: true
-
-  validates_numericality_of :loaded, less_than_or_equal_to: Proc.new(&:remainder)
+  with_options :if => Proc.new {|m| m.loaded.present? && m.loaded.to_i > 0} do
+    validates :loaded, :s_type, presence: true
+    validates_numericality_of :loaded, less_than_or_equal_to: Proc.new(&:remainder)
+  end
 
   before_validation :check_float
+  after_save :check_load
 
   scope :sum_loaded, ->(feature_id) {
     where(product_supply_feature_id: feature_id)
@@ -41,5 +43,11 @@ class ShippingUbItem < ApplicationRecord
 
   def check_float
     self.cost = 0 if cost.nil?
+  end
+
+  def check_load
+    if loaded.present? || loaded.to_i == 0
+      self.destroy!
+    end
   end
 end

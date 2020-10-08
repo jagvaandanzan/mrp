@@ -10,11 +10,13 @@ class ShippingErItem < ApplicationRecord
   attr_accessor :remainder
   enum s_type: {post_cargo: 0, post_er: 1, cargo_er: 2, cargo_post: 3}
 
-  validates :received, :s_type, presence: true
-
-  validates_numericality_of :received, less_than_or_equal_to: Proc.new(&:remainder)
+  with_options :if => Proc.new {|m| m.received.present? && m.received.to_i > 0} do
+    validates :received, :s_type, presence: true
+    validates_numericality_of :received, less_than_or_equal_to: Proc.new(&:remainder)
+  end
 
   before_validation :check_float
+  after_save :check_received
 
   scope :sum_received, ->(feature_id) {
     where(product_supply_feature_id: feature_id)
@@ -36,6 +38,12 @@ class ShippingErItem < ApplicationRecord
 
   def check_float
     self.cost = 0 if cost.nil?
+  end
+
+  def check_received
+    if !received.present? || received.to_i == 0
+      self.destroy!
+    end
   end
 
 end

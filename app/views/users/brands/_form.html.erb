@@ -11,9 +11,9 @@
             <div class="col-sm-9 <%= get_error_class(@brand, :logo) %>">
               <%= f.file_field :logo, accept: "image/*", class: 'image-file none-force' %>
               <%= field_errors(@brand, :logo) %>
-              <div class="preview noselect">
+              <div class="preview noselect" style="width: 230px;height: 80px">
                 <% if @brand.logo.present? %>
-                  <%= image_tag @brand.logo.url(:tumb), class: 'preview-img' %>
+                  <%= image_tag @brand.logo.url(:tumb), class: 'preview-img', style: 'width: 230px;height: 80px' %>
                 <% else %>
                   <span class="text"><%= t('upload_image') %></span>
                 <% end %>

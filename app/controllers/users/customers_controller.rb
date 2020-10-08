@@ -52,6 +52,6 @@ class Users::CustomersController < Users::BaseController
   end
 
   def customer_params
-    params.require(:customer).permit(:queue, :code, :name, :description)
+    params.require(:customer).permit(:logo, :c_type, :queue, :code, :name, :description)
   end
 end
