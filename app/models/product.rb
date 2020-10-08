@@ -273,9 +273,15 @@ class Product < ApplicationRecord
 
   def valid_image_videos
     # Ганц сонголттой бол зураггүй байж болно
-    any_img = product_feature_items.size == 1
-    product_feature_items.each do |p_img|
-      any_img = true if p_img.image.present?
+    any_img = true
+
+    if product_feature_items.size != 1
+      product_feature_items.each do |p_img|
+        unless p_img.image.present? || (p_img.same_item_id.present? && p_img.same_item.image.present?)
+          p_img.errors.add(:image, :blank)
+          any_img = false if any_img
+        end
+      end
     end
 
     self.errors.add(:product_feature_items, :blank) unless any_img
