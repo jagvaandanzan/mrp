@@ -186,7 +186,7 @@ class Product < ApplicationRecord
 
   def name_with_code
     n = "#{self.n_name}, #{self.code}"
-    n += ", #{brand.name}" if brand.present?
+    n += ", #{brand.name}" if brand.present? && brand_id != 69
     n
   end
 
@@ -277,7 +277,7 @@ class Product < ApplicationRecord
 
     if product_feature_items.size != 1
       product_feature_items.each do |p_img|
-        unless p_img.image.present? || (p_img.same_item_id.present? && p_img.same_item.image.present?)
+        unless p_img.image.present? || p_img.same_item_id.present?
           p_img.errors.add(:image, :blank)
           any_img = false if any_img
         end
