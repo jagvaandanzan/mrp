@@ -88,7 +88,7 @@
                        total_quantity_lo = 0
                        total_price = ""
                        order_item.supply_features.each_with_index {|supply_feature, index| %>
-                      <% total_quantity += supply_feature.quantity
+                      <% total_quantity += supply_feature.quantity if supply_feature.quantity.present?
                          total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
                          if index > 0
                            total_price += ", " %>,&nbsp;
@@ -97,7 +97,7 @@
                       <%= supply_feature.feature_item.name %>
                     <% } %>
                   </td>
-                  <td class="va-mid text-center"><%= total_quantity %></td>
+                  <td class="va-mid text-center"><%= total_quantity > 0 ? total_quantity : '' %></td>
                   <td class="va-mid text-center"><%= total_price %></td>
                   <td class="va-mid" rowspan="<%= order_items_count %>"><%= i.get_currency i.sum_price %></td>
                   <td class="va-mid"><%= i.is_basic? ? order_item.note : i.description %></td>
@@ -142,7 +142,7 @@
                            total_quantity_lo = 0
                            total_price = ""
                            item.supply_features.each_with_index {|supply_feature, f_index| %>
-                          <% total_quantity += supply_feature.quantity
+                          <% total_quantity += supply_feature.quantity if supply_feature.quantity.present?
                              total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
                              if f_index > 0
                                total_price += ", " %>,&nbsp;
@@ -151,8 +151,7 @@
                           <%= supply_feature.feature_item.name %>
                         <% } %>
                       </td>
-                      <td class="va-mid text-center"><%= total_quantity %></td>
-                      <td class="va-mid text-center"><%= total_price %></td>
+                      <td class="va-mid text-center"><%= total_quantity > 0 ? total_quantity : '' %></td>
                       <td class="va-mid"><%= item.note %></td>
                       <td class="va-mid bg-1"><%= item.purchase_date %></td>
                       <td class="va-mid text-center bg-1"><%= total_quantity_lo > 0 ? total_quantity_lo : '' %></td>
