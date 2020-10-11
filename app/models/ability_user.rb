@@ -9,7 +9,6 @@ class AbilityUser
 
       case rel.user_permission.name
       when "product_suppy_order"
-        can role, ProductSample
         can role, ProductSupplyOrder
       when "product_income"
         can role, ProductIncome

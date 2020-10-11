@@ -21,26 +21,20 @@
       <ul class="nav nav-tabs">
         <li class="<%= !@product_supply_order.tab_index.present? || @product_supply_order.tab_index.to_i == 0 ? 'active' : '' %>">
           <a href="#basic" data-toggle="tab"><%= t('product_form.basic') %></a></li>
-        <% @product_supply_order.product_supply_order_items.each_with_index {|item, index|
-          product = item.product
-          if product.persisted? %>
-            <li class="<%= @product_supply_order.tab_index.to_i == index + 1 ? 'active' : '' %>">
-              <a href="#product<%= product.id %>" data-toggle="tab"><%= product.name %></a></li>
-          <% end %>
-        <% } %>
+        <li class="<%= @product_supply_order.tab_index.to_i == 1 ? 'active' : '' %>">
+          <a href="#feature" data-toggle="tab"><%= t('product_form.price_quantity') %></a></li>
       </ul>
       <div class="tab-content">
         <div class="<%= !@product_supply_order.tab_index.present? || @product_supply_order.tab_index.to_i == 0 ? 'active ' : '' %>tab-pane" id="basic">
-          <%= render 'show_basic_main' %>
+          <%= render 'show_sample_main' %>
         </div>
-        <% @product_supply_order.product_supply_order_items.each_with_index {|item, index|
-          product = item.product
-          if product.persisted? %>
-            <div class="<%= @product_supply_order.tab_index.to_i == index + 1 ? 'active ' : '' %>tab-pane" id="product<%= product.id %>">
-              <%= render 'show_product', order_item: item %>
-            </div>
-          <% end %>
-        <% } %>
+        <% if @product_supply_order.product_supply_order_items.present?
+             product_supply_order_item = @product_supply_order.product_supply_order_items.first
+             product = product_supply_order_item.product %>
+          <div class="<%= @product_supply_order.tab_index.to_i == 1 ? 'active ' : '' %>tab-pane" id="feature">
+            <%= render 'show_product_feature', is_basic: @product_supply_order.is_basic?, product: product, order_item: product_supply_order_item, id: @product_supply_order.id %>
+          </div>
+        <% end %>
       </div>
     </div>
   <% end %>

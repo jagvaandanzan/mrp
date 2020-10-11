@@ -16,7 +16,7 @@ class ShippingErItem < ApplicationRecord
   end
 
   before_validation :check_float
-  after_save :check_received
+  after_validation :check_received
 
   scope :sum_received, ->(feature_id) {
     where(product_supply_feature_id: feature_id)
@@ -30,8 +30,17 @@ class ShippingErItem < ApplicationRecord
         .select("shipping_er_items.*, shipping_er_items.received - IFNULL(SUM(shipping_ub_items.loaded), 0) as remainder")
   }
 
+  scope :by_order_item_id, ->(order_item_id) {
+    joins(:product_supply_feature)
+        .where('product_supply_features.order_item_id = ?', order_item_id)
+  }
+
   def name
     "#{product.code} #{feature_item.name}"
+  end
+
+  def cost
+    ApplicationController.helpers.get_f(self[:cost]) if self[:cost].present?
   end
 
   private

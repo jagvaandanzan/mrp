@@ -1,1 +1,5 @@
-<%= render 'form', product_supply: @product_supply_order %>
+<% if @product_supply_order.is_basic? %>
+  <%= render 'form_basic', product_supply: @product_supply_order %>
+<% else %>
+  <%= render 'form_sample', product_supply: @product_supply_order %>
+<% end %>

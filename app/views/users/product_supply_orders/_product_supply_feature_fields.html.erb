@@ -1,11 +1,13 @@
 <tr class="nested-fields field_div">
-  <td class="va-mid text-center">
-    <% if f.object.feature_item.img.present? %>
-      <%= link_to f.object.feature_item.img.url, "data-lightbox": "roadtrip" do %>
-        <%= t('titles.view')  %>
+  <% if is_basic %>
+    <td class="va-mid text-center">
+      <% if f.object.feature_item.img.present? %>
+        <%= link_to f.object.feature_item.img.url, "data-lightbox": "roadtrip" do %>
+          <%= t('titles.view') %>
+        <% end %>
       <% end %>
-    <% end %>
-  </td>
+    </td>
+  <% end %>
   <td class="va-mid">
     <%= f.hidden_field :is_create, value: true %>
     <%= f.object.feature_item.name %>

@@ -2,42 +2,42 @@
   <div class="row">
     <div class="col-md-12">
       <div class="col-md-12 field_div">
-        <b><%= t('activerecord.attributes.product_sample.status') %>:</b> <%= @product_sample.get_status %>
+        <b><%= t('activerecord.attributes.product_supply_order.status') %>:</b> <%= @product_supply_order.get_status %>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
       <div class="col-md-3 field_div">
-        <b><%= t('activerecord.attributes.product_sample.code') %>:</b> <%= @product_sample.code %>
+        <b><%= t('activerecord.attributes.product_supply_order.code') %>:</b> <%= @product_supply_order.code %>
       </div>
       <div class="col-md-3 field_div">
-        <b><%= t('activerecord.attributes.product_sample.ordered_date') %>
-          :</b> <%= @product_sample.ordered_date.strftime('%F') %>
+        <b><%= t('activerecord.attributes.product_supply_order.ordered_date') %>
+          :</b> <%= @product_supply_order.ordered_date.strftime('%F') %>
       </div>
       <div class="col-md-3 field_div">
-        <b><%= t('activerecord.attributes.product_sample.logistic_id') %>:</b> <%= @product_sample.logistic.name %>
+        <b><%= t('activerecord.attributes.product_supply_order.logistic_id') %>:</b> <%= @product_supply_order.logistic.name %>
       </div>
       <div class="col-md-3 field_div">
-        <b><%= t('activerecord.attributes.product_sample.exchange') %>:</b> <%= @product_sample.exchange_i18n %>
+        <b><%= t('activerecord.attributes.product_supply_order.exchange') %>:</b> <%= @product_supply_order.exchange_i18n %>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
       <div class="col-md-6 field_div">
-        <b><%= t('activerecord.attributes.product_sample.product_name') %>:</b> <%= @product_sample.product_name %>
+        <b><%= t('activerecord.attributes.product_supply_order.product_name') %>:</b> <%= @product_supply_order.product_name %>
       </div>
       <div class="col-md-6 field_div">
-        <b><%= t('activerecord.attributes.product_sample.link') %>:</b> <%= @product_sample.link %>
+        <b><%= t('activerecord.attributes.product_supply_order.link') %>:</b> <%= @product_supply_order.link %>
       </div>
     </div>
   </div>
-  <% if @product_sample.product_sample_images.present? %>
+  <% if @product_supply_order.product_sample_images.present? %>
     <div class="row">
       <div class="col-md-12">
         <div class="col-md-12 field_div">
-          <% @product_sample.product_sample_images.each {|img| %>
+          <% @product_supply_order.product_sample_images.each {|img| %>
             <div style="display: inline-block">
               <%= link_to img.image.url, "data-lightbox": "roadtrip" do %>
                 <%= image_tag img.image.url(:tumb), class: 'tumb' %>
@@ -63,7 +63,7 @@
                     <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
                       <%= label_tag do %>
                         <%= option.name %>
-                        <%= yes_no(@product_sample.option_rels.include?(option.id.to_s)) %>
+                        <%= yes_no(@product_supply_order.option_rels.include?(option.id.to_s)) %>
                       <% end %>
                     </div>
                   </div>
@@ -79,13 +79,13 @@
                   </a>
                 <% end %>
                 <div class="col-sm-11">
-                  <div id="collapse<%= gr.id %>" class="panel-collapse collapse <%= gr.check_option_selected(@product_sample.option_rels) ? 'in' : '' %>">
+                  <div id="collapse<%= gr.id %>" class="panel-collapse collapse <%= gr.check_option_selected(@product_supply_order.option_rels) ? 'in' : '' %>">
                     <% gr.product_feature_options.order_queue.each {|option| %>
                       <div class="col-md-2">
                         <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
                           <%= label_tag do %>
                             <%= option.name %>
-                            <%= yes_no(@product_sample.option_rels.include?(option.id.to_s)) %>
+                            <%= yes_no(@product_supply_order.option_rels.include?(option.id.to_s)) %>
                           <% end %>
                         </div>
                       </div>
@@ -102,7 +102,7 @@
   <div class="row">
     <div class="col-md-12">
       <div class="col-md-6 field_div">
-        <b><%= t('activerecord.attributes.product_sample.description') %>:</b> <%= @product_sample.description %>
+        <b><%= t('activerecord.attributes.product_supply_order.description') %>:</b> <%= @product_supply_order.description %>
       </div>
     </div>
   </div>

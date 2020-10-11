@@ -1,0 +1,59 @@
+<div class="body-box">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-12 field_div">
+        <b><%= t('activerecord.attributes.product_supply_order.status') %>:</b> <%= @product_supply_order.get_status %>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-3 field_div">
+        <b><%= t('activerecord.attributes.product_supply_order.code') %>:</b> <%= @product_supply_order.code %>
+      </div>
+      <div class="col-md-3 field_div">
+        <b><%= t('activerecord.attributes.product_supply_order.ordered_date') %>
+          :</b> <%= @product_supply_order.ordered_date.strftime('%F') %>
+      </div>
+      <div class="col-md-3 field_div">
+        <b><%= t('activerecord.attributes.product_supply_order.logistic_id') %>
+          :</b> <%= @product_supply_order.logistic.name %>
+      </div>
+      <div class="col-md-3 field_div">
+        <b><%= t('activerecord.attributes.product_supply_order.exchange') %>:</b> <%= @product_supply_order.exchange %>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-12 field_div">
+        <table class="table table-bordered" id="tb_product_supply_order_items">
+          <thead>
+          <tr>
+            <th><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
+            <th><%= t('activerecord.attributes.product_supply_order_item.product_id') %></th>
+            <th><%= t('activerecord.attributes.product_supply_order_item.status') %></th>
+            <th><%= t('activerecord.attributes.product_supply_order_item.note') %></th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @product_supply_order.product_supply_order_items.each {|order_item| %>
+            <tr>
+              <td class="va-mid text-center">
+                <% if order_item.product.picture.present? %>
+                  <%= link_to order_item.product.picture.url, "data-lightbox": "roadtrip" do %>
+                    <%= t('titles.view') %>
+                  <% end %>
+                <% end %>
+              </td>
+              <td class="va-mid"><%= order_item.product.full_name %></td>
+              <td class="va-mid"><%= order_item.status_i18n %></td>
+              <td class="va-mid"><%= order_item.note %></td>
+            </tr>
+          <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

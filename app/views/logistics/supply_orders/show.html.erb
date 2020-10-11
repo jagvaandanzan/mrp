@@ -14,30 +14,30 @@
   <%= show_body do %>
     <div class="box">
       <div class="box-body table-responsive no-padding">
-        <% supply_order = @supply_order_item.product_supply_order.present? ? @supply_order_item.product_supply_order : @supply_order_item.product_sample %>
+        <% supply_order = @supply_order_item.product_supply_order %>
         <div class="col-md-12 m-t-10">
           <div class="col-md-5 field_div">
-            <b><%= t('activerecord.attributes.product_sample.status') %>
+            <b><%= t('activerecord.attributes.product_supply_order.status') %>
               :</b> <%= supply_order.ordered_date.strftime('%F') %> - <%= @supply_order_item.status_i18n %>
             - <%= supply_order.user.name %>
           </div>
           <div class="col-md-2 field_div">
-            <b><%= t('activerecord.attributes.product_sample.code') %>:</b> <%= supply_order.code %>
+            <b><%= t('activerecord.attributes.product_supply_order.code') %>:</b> <%= supply_order.code %>
           </div>
           <div class="col-md-5 field_div">
             <b><%= t('activerecord.attributes.product_supply_order_item.note') %>:</b>
             <% if @supply_order_item.product_supply_order.present? %>
               <%= @supply_order_item.note %>
-            <% end %>
-            <% if @supply_order_item.product_sample.present? %>
-              <%= @supply_order_item.product_sample.description %>
+              <% if @supply_order_item.product_supply_order.is_sample? %>
+                <%= @supply_order_item.product_supply_order.description %>
+              <% end %>
             <% end %>
           </div>
         </div>
-        <% if @supply_order_item.product_sample.present? && @supply_order_item.product_sample.product_sample_images.present? %>
+        <% if @supply_order_item.product_supply_order.present? && @supply_order_item.product_supply_order.product_sample_images.present? %>
           <div class="col-md-12">
             <div class="col-md-12 field_div">
-              <% @supply_order_item.product_sample.product_sample_images.each {|img| %>
+              <% @supply_order_item.product_supply_order.product_sample_images.each {|img| %>
                 <div style="display: inline-block">
                   <%= link_to img.image.url, "data-lightbox": "roadtrip" do %>
                     <%= image_tag img.image.url(:tumb), class: 'tumb' %>

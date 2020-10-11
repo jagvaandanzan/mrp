@@ -4,7 +4,7 @@
       <table class="table table-hover table-bordered">
         <thead>
         <tr>
-          <% if order_type == "order" %>
+          <% if is_basic %>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.image') %></th>
           <% end %>
           <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.feature_item_id') %></th>
@@ -16,7 +16,7 @@
         <tbody>
         <% order_item.supply_features.each {|feature| %>
           <tr class="field_div">
-            <% if order_type == "order" %>
+            <% if is_basic %>
               <td>
                 <% if feature.feature_item.img.present? %>
                   <%= link_to feature.feature_item.img.url, "data-lightbox": "roadtrip" do %>
@@ -26,8 +26,8 @@
               </td>
             <% end %>
             <td class="va-mid"><%= feature.feature_item.name %></td>
-            <td class="va-mid"><%= feature.quantity %></td>
-            <td class="va-mid"><%= feature.get_currency(feature.price) %></td>
+            <td class="va-mid text-center"><%= feature.quantity %></td>
+            <td class="va-mid text-center"><%= feature.get_currency(feature.price) %></td>
             <td class="va-mid"><%= feature.note %></td>
           </tr>
         <% } %>

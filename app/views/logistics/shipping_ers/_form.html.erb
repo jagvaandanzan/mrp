@@ -42,8 +42,11 @@
                     <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.number') %></th>
                     <th width="50px"></th>
                   </tr>
-                  <%= f.fields_for :shipping_er_items do |m| %>
-                    <%= render 'shipping_er_item_fields', :f => m %>
+                  <% shipping_er_items = @shipping_er.shipping_er_items
+                     shipping_er_items.each.with_index do |shipping_er_item, index| %>
+                    <%= f.fields_for :shipping_er_items, shipping_er_item do |m| %>
+                      <%= render 'shipping_er_item_fields', :f => m, index: index, shipping_er_items: shipping_er_items %>
+                    <% end %>
                   <% end %>
                 </table>
               </div>
@@ -67,7 +70,7 @@
   </section>
 </div>
 <style>
-  .filter-option-inner-inner{
+  .filter-option-inner-inner {
     font-size: 9px;
   }
 </style>

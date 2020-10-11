@@ -1,0 +1,32 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "form" %>
+<% end %>
+<div class="content-wrapper">
+  <section class="content">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="<%= !product_supply.tab_index.present? || product_supply.tab_index.to_i == 0 ? 'active' : '' %>">
+          <a href="#basic" data-toggle="tab"><%= t('titles.product_sample') %></a></li>
+        <li class="<%= product_supply.tab_index.to_i == 1 ? 'active' : '' %>">
+          <a href="#feature" data-toggle="tab"><%= t('product_form.price_quantity') %></a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="<%= !product_supply.tab_index.present? || product_supply.tab_index.to_i == 0 ? 'active ' : '' %>tab-pane" id="basic">
+          <%= render 'form_sample_main', product_supply: product_supply %>
+        </div>
+        <% if product_supply.product_supply_order_items.present?
+             product_supply_order_item = product_supply.product_supply_order_items.first
+             product = product_supply_order_item.product %>
+          <div class="<%= product_supply.tab_index.to_i == 1 ? 'active ' : '' %>tab-pane" id="feature">
+            <%= render 'form_product_feature', is_basic: product_supply.is_basic?, product: product, order_item: product_supply_order_item, id: product_supply.id, index: 1 %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+    $(document).ready(function () {
+        load_image_preview("div.nested-fields:not(:last)");
+    });
+</script>

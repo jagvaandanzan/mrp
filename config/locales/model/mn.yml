@@ -51,24 +51,6 @@ mn:
       weight_unit:
         w_gr: Гр
         w_kg: Кг
-    product_sample:
-      exchange:
-        cny: Юань
-        usd: АНУ-ын доллар
-        eur: Евро
-        rub: Рубль
-        jpy: Иен
-        gbr: Английн фунт
-        mnt: Төгрөг
-      status:
-        order_created: Захиалга үүссэн
-        ordered: Захиалга хийсэн
-        cost_included: Тээврийн зардал орсон
-        warehouse_received: Агуулах хүлээж авсан
-        calculated: Тооцоо нийлсэн
-        clarification: Тодруулга хийх
-        clarified: Тодруулга хийсэн
-        canceled: Цуцалсан
     product_supply_order:
       status:
         order_created: Захиалга үүссэн
@@ -87,6 +69,9 @@ mn:
         jpy: Иен
         gbr: Английн фунт
         mnt: Төгрөг
+      order_type:
+        is_basic: Үндсэн
+        is_sample: Дээж
     product_supply_order_item:
       status:
         order_created: Захиалга үүссэн
@@ -179,8 +164,8 @@ mn:
       product_feature_option: Шинж чанарын утга
       product_feature_rel: Барааны шинж чанар
       product: Бараа
-      product_sample: Дээж бараа
-      product_supply_order: Бараа захиалга
+      product_supply_order: Үндсэн бараа
+      product_supply_order_item: Бараа захиалга
       product_income: Орлого
       product_income_item: Орлогын бараа
       product_dicount: Хямдрал
@@ -391,39 +376,40 @@ mn:
         weight_unit: Барааны нэгж
         weight: Барааны жин
         gift_wrap: Бэлгийн боолт
-      product_sample:
-        code: Код
-        status: Төлөв
-        ordered_date: Огноо
-        logistic_id: Хангамжийн ажилтан
-        exchange: Валют
-        product_supply_order_items: Бараанууд
-        link: Линк
-        description: Тайлбар
-        product_name: Барааны нэр
-        product_sample_images: Барааны зураг
       product_supply_order:
-        code: Код
+        order_type: Төрөл
+        code: Дугаар
         status: Төлөв
         ordered_date: Огноо
         logistic_id: Хангамжийн ажилтан
         exchange: Валют
         sum_price: Нийт дүн
+        link: Линк
+        description: Тайлбар
+        product_name: Барааны нэр
+        product_code: Барааны код
+        product_image: Зураг
+        product_feature: Өнгө, Хэмжээ
         product_supply_order_items: Бараанууд
+        product_sample_images: Барааны зураг
       product_supply_order_item:
         status: Төлөв
         supply_order_id: Худалдан авалт
         product_id: Бараа
         note: Тайлбар
         sum_price: Нийт дүн
-        order_type: Төрөл
         product_name: Барааны нэр
         product_code: Бараа код
-        product_sample_id: Дээж бараа
+        product_feature: Өнгө, Хэмжээ
         product_supply_order_id: Үндсэн бараа
         note_lo: Тайлбар
         purchase: Худалдан авалт
         purchase_date: Худалдан авсан
+        purchase_quantity: Худалдан авсан тоо
+        total_quantity: Захиалсан тоо
+        price: Үнийн дүн
+        shipping_er_date: Эрээнд ирсэн огноо
+        shipping_ub_date: Эрээнээс ачуулсан огноо
       product_supply_feature:
         feature_item_id: Шинж чанар
         order_item_id: Худалдан авалт

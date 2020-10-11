@@ -14,6 +14,13 @@ class CreateNotifications < ActiveRecord::Migration[5.2]
     # end
     # add_column :product_feature_items, :real_img, :boolean, default: false, after: 'image_file_name'
     # change_column :product_size_instructions, :instruction, :string
-    add_column :customers, :c_type, :integer, after: 'id'
+    # add_column :customers, :c_type, :integer, after: 'id'
+    add_reference :product_sample_images, :product_supply_order, foreign_key: true, after: 'id'
+    remove_reference :product_sample_images, :product_sample
+    remove_reference :product_supply_order_items, :product_sample
+    add_column :product_supply_orders, :order_type, :integer, after: 'id'
+    add_column :product_supply_orders, :link, :text, after: 'exchange'
+    add_column :product_supply_orders, :description, :text, after: 'link'
+
   end
 end

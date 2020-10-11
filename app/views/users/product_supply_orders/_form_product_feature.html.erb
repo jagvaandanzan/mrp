@@ -1,12 +1,12 @@
 <% if product.present? && product.persisted? %>
-  <%= form_with model: order_item, url: order_type == "order" ? form_feature_users_product_supply_orders_path(id: id, item_id: order_item.id) : form_feature_users_product_samples_path(id: id, item_id: order_item.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
+  <%= form_with model: order_item, url: form_feature_users_product_supply_orders_path(id: id, item_id: order_item.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
     <%= form_body do %>
-      <%= f.hidden_field :tab_index, {value: 1} %>
+      <%= f.hidden_field :tab_index, {value: index} %>
       <div class="col-md-12 field_div cocoon-nested-form">
         <table class="table table-hover table-bordered">
           <thead>
           <tr>
-            <% if order_type == "order" %>
+            <% if is_basic %>
               <th class="text-center"><%= t('activerecord.attributes.product_feature_item.image') %></th>
             <% end %>
             <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.feature_item_id') %></th>
@@ -18,7 +18,7 @@
           </thead>
           <tbody>
           <tr class="btn_actions">
-            <% if order_type == "order" %>
+            <% if is_basic %>
               <td></td>
             <% end %>
             <td></td>
@@ -32,7 +32,7 @@
             <td></td>
           </tr>
           <%= f.fields_for :supply_features do |m| %>
-            <%= render 'product_supply_feature_fields', :f => m, pid: product.id %>
+            <%= render 'product_supply_feature_fields', :f => m, pid: product.id, is_basic: is_basic %>
           <% end %>
           </tbody>
         </table>

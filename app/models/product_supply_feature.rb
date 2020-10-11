@@ -46,19 +46,11 @@ class ProductSupplyFeature < ApplicationRecord
   private
 
   def get_model
-    if order_item.product_supply_order.present?
-      order_item.product_supply_order
-    else
-      order_item.product_sample
-    end
+    order_item.product_supply_order
   end
 
   def get_user
-    if order_item.product_supply_order.present?
-      order_item.product_supply_order.user
-    else
-      order_item.product_sample.user
-    end
+    order_item.product_supply_order.user
   end
 
   def set_sum_price

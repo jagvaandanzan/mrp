@@ -3,6 +3,7 @@ class ShippingEr < ApplicationRecord
 
   has_many :shipping_er_items, dependent: :destroy
   has_many :products, through: :shipping_er_items
+  has_many :product_supply_features, through: :shipping_er_items
 
   accepts_nested_attributes_for :shipping_er_items, allow_destroy: true
 

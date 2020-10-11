@@ -1,1 +1,208 @@
-<%= render 'index', order_type: "order" %>
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<div class="content-wrapper">
+
+  <div class="col-md-12 m-t-10 m-b-10">
+    <%= form_with url: users_product_supply_orders_path, method: "get", class: "", local: true do |f| %>
+      <div class="col-md-2 search">
+        <div id="search-date" class="form-control search">
+          <i class="fa fa-calendar fa-lg p-r-0"></i>
+          <span><%= t("filters.by_date") %>...</span>
+          <%= f.hidden_field :by_start, value: @by_start %>
+          <%= f.hidden_field :by_end, value: @by_end %>
+        </div>
+      </div>
+      <div class="col-md-2 search">
+        <%= text_field_tag :by_code, @by_code, {class: 'form-control', placeholder: t('filters.by_code')} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.by_product')} %>
+      </div>
+      <div class="col-md-6 search">
+        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
+        <% if can? :create, ProductSupplyOrder %>
+          <%= link_to t('titles.product_sample'), new_users_product_supply_order_path(order_type: 1), class: 'btn btn-warning pull-right m-l-10' %>
+          <%= link_to t('activerecord.models.product_supply_order'), new_users_product_supply_order_path(order_type: 0), class: 'btn btn-warning pull-right' %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box" id="div_list">
+          <div class="box-body table-responsive no-padding">
+            <%= render 'layouts/flash_message' %>
+            <table id='supply_table' class="table table-hover table-bordered" style="width: 2500px">
+              <tr>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.code') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.order_type') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.status') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.product_code') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_name') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_feature') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order_item.total_quantity') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order_item.price') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order_item.sum_price') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.description') %></th>
+                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order_item.purchase_date') %></th>
+                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order_item.purchase_quantity') %></th>
+                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order_item.sum_price') %></th>
+                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_feature.note') %></th>
+                <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.product_supply_order_item.shipping_er_date') %></th>
+                <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.shipping_er_item.cost') %></th>
+                <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.shipping_er.shipping_er_item_count') %></th>
+                <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.shipping_er_item.cargo') %></th>
+                <th class="va-mid text-center bg-3"><%= t('activerecord.attributes.product_supply_order_item.shipping_ub_date') %></th>
+                <th class="va-mid text-center bg-3"><%= t('activerecord.attributes.shipping_er_item.cost') %></th>
+                <th class="va-mid text-center bg-3"><%= t('activerecord.attributes.shipping_er.shipping_er_item_count') %></th>
+                <th class="va-mid text-center bg-3"><%= t('activerecord.attributes.shipping_er_item.cargo') %></th>
+              </tr>
+              <% @product_supply_orders.each do |i| %>
+                <% order_items = i.product_supply_order_items
+                   order_items_count = order_items.count %>
+                <tr>
+                  <td class="va-mid" rowspan="<%= order_items_count %>">
+                    <%= link_to i.code, users_product_supply_order_path(i, tab_index: 0) %></td>
+                  <td class="va-mid" rowspan="<%= order_items_count %>"><%= i.order_type_i18n %></td>
+                  <td class="va-mid" rowspan="<%= order_items_count %>"><%= i.ordered_date.strftime('%F') %>
+                    - <%= i.status_i18n %>
+                    - <%= i.user.name %></td>
+                  <% order_item = order_items.first
+                     product = order_item.product %>
+                  <td class="va-mid"><%= product.code %></td>
+                  <td class="va-mid"><%= product.name %></td>
+                  <td class="va-mid">
+                    <% if product.picture.present? %>
+                      <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
+                        <%= t('titles.view') %>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <td class="va-mid">
+                    <% total_quantity = 0
+                       total_quantity_lo = 0
+                       total_price = ""
+                       order_item.supply_features.each_with_index {|supply_feature, index| %>
+                      <% total_quantity += supply_feature.quantity
+                         total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
+                         if index > 0
+                           total_price += ", " %>,&nbsp;
+                      <% end
+                         total_price += "#{i.get_currency supply_feature.price}" %>
+                      <%= supply_feature.feature_item.name %>
+                    <% } %>
+                  </td>
+                  <td class="va-mid text-center"><%= total_quantity %></td>
+                  <td class="va-mid text-center"><%= total_price %></td>
+                  <td class="va-mid" rowspan="<%= order_items_count %>"><%= i.get_currency i.sum_price %></td>
+                  <td class="va-mid"><%= i.is_basic? ? order_item.note : i.description %></td>
+                  <td class="va-mid bg-1"><%= order_item.purchase_date %></td>
+                  <td class="va-mid text-center bg-1"><%= total_quantity_lo > 0 ? total_quantity_lo : '' %></td>
+                  <td class="va-mid text-center bg-1"><%= order_item.get_currency order_item.sum_price_lo %></td>
+                  <td class="va-mid text-center bg-1"><%= order_item.note_lo %></td>
+                  <% date, costs, received, cargo, cost_text = order_item.shipping_er_item %>
+                  <td class="va-mid text-center bg-2"><%= date %></td>
+                  <td class="va-mid bg-2"><%= costs %>
+                    <% if costs.present? %>
+                      <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= cost_text %>"></i>
+                    <% end %>
+                  </td>
+                  <td class="va-mid text-center bg-2"><%= received %></td>
+                  <td class="va-mid text-center bg-2"><%= cargo %></td>
+                  <% date, costs, loaded, cargo, cost_text = order_item.shipping_ub_item %>
+                  <td class="va-mid text-center bg-3"><%= date %></td>
+                  <td class="va-mid bg-3"><%= costs %>
+                    <% if costs.present? %>
+                      <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= cost_text %>"></i>
+                    <% end %>
+                  </td>
+                  <td class="va-mid text-center bg-3"><%= loaded %></td>
+                  <td class="va-mid text-center bg-3"><%= cargo %></td>
+                </tr>
+                <% order_items.each_with_index {|item, index|
+                  if index > 0
+                    product = item.product %>
+                    <tr>
+                      <td class="va-mid"><%= product.code %></td>
+                      <td class="va-mid"><%= product.name %></td>
+                      <td class="va-mid">
+                        <% if product.picture.present? %>
+                          <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
+                            <%= t('titles.view') %>
+                          <% end %>
+                        <% end %>
+                      </td>
+                      <td class="va-mid">
+                        <% total_quantity = 0
+                           total_quantity_lo = 0
+                           total_price = ""
+                           item.supply_features.each_with_index {|supply_feature, f_index| %>
+                          <% total_quantity += supply_feature.quantity
+                             total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
+                             if f_index > 0
+                               total_price += ", " %>,&nbsp;
+                          <% end
+                             total_price += "#{i.get_currency supply_feature.price}" %>
+                          <%= supply_feature.feature_item.name %>
+                        <% } %>
+                      </td>
+                      <td class="va-mid text-center"><%= total_quantity %></td>
+                      <td class="va-mid text-center"><%= total_price %></td>
+                      <td class="va-mid"><%= item.note %></td>
+                      <td class="va-mid bg-1"><%= item.purchase_date %></td>
+                      <td class="va-mid text-center bg-1"><%= total_quantity_lo > 0 ? total_quantity_lo : '' %></td>
+                      <td class="va-mid text-center bg-1"><%= item.get_currency item.sum_price_lo %></td>
+                      <td class="va-mid text-center bg-1"><%= item.note_lo %></td>
+                      <% date, costs, received, cargo, cost_text = item.shipping_er_item %>
+                      <td class="va-mid text-center bg-2"><%= date %></td>
+                      <td class="va-mid bg-2"><%= costs %>
+                        <% if costs.present? %>
+                          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= cost_text %>"></i>
+                        <% end %>
+                      </td>
+                      <td class="va-mid text-center bg-2"><%= received %></td>
+                      <td class="va-mid text-center bg-2"><%= cargo %></td>
+                      <% date, costs, loaded, cargo, cost_text = item.shipping_ub_item %>
+                      <td class="va-mid text-center bg-3"><%= date %></td>
+                      <td class="va-mid bg-3"><%= costs %>
+                        <% if costs.present? %>
+                          <i class="fa fa-info-circle blue" data-toggle="tooltip" title="<%= cost_text %>"></i>
+                        <% end %>
+                      </td>
+                      <td class="va-mid text-center bg-3"><%= loaded %></td>
+                      <td class="va-mid text-center bg-3"><%= cargo %></td>
+                    </tr>
+                  <% end } %>
+              <% end %>
+            </table>
+          </div>
+        </div>
+
+        <%= paginate @product_supply_orders %>
+      </div>
+    </div>
+  </section>
+</div>
+<%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>
+<style>
+
+  .bg-1 {
+    font-weight: bold;
+    color: blue;
+  }
+
+  .bg-2 {
+    font-weight: bold;
+    color: orangered;
+  }
+
+  .bg-3 {
+    font-weight: bold;
+    color: darkgreen;
+  }
+</style>

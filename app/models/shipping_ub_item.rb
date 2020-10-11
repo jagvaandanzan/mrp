@@ -17,7 +17,7 @@ class ShippingUbItem < ApplicationRecord
   end
 
   before_validation :check_float
-  after_save :check_load
+  after_validation :check_load
 
   scope :sum_loaded, ->(feature_id) {
     where(product_supply_feature_id: feature_id)
@@ -29,6 +29,11 @@ class ShippingUbItem < ApplicationRecord
         .group("shipping_ub_items.id")
         .having("SUM(product_income_items.quantity) IS NULL OR SUM(product_income_items.quantity) < shipping_ub_items.loaded")
         .select("shipping_ub_items.*, shipping_ub_items.loaded - IFNULL(SUM(product_income_items.quantity), 0) as remainder")
+  }
+
+  scope :by_order_item_id, ->(order_item_id) {
+    joins(:product_supply_feature)
+        .where('product_supply_features.order_item_id = ?', order_item_id)
   }
 
   def un_loaded
@@ -46,7 +51,7 @@ class ShippingUbItem < ApplicationRecord
   end
 
   def check_load
-    if loaded.present? || loaded.to_i == 0
+    if !loaded.present? || loaded.to_i == 0
       self.destroy!
     end
   end

@@ -7,24 +7,24 @@
   </section>
   <section class="content">
     <div class="box box-info">
-      <% supply_order = @supply_order_item.product_supply_order.present? ? @supply_order_item.product_supply_order : @supply_order_item.product_sample %>
+      <% supply_order = @supply_order_item.product_supply_order %>
       <div class="row m-t-10">
         <div class="col-md-12">
           <div class="col-md-5 field_div">
-            <b><%= t('activerecord.attributes.product_sample.status') %>
+            <b><%= t('activerecord.attributes.product_supply_order.status') %>
               :</b> <%= supply_order.ordered_date.strftime('%F') %> - <%= @supply_order_item.status_i18n %>
             - <%= supply_order.user.name %>
           </div>
           <div class="col-md-2 field_div">
-            <b><%= t('activerecord.attributes.product_sample.code') %>:</b> <%= supply_order.code %>
+            <b><%= t('activerecord.attributes.product_supply_order.code') %>:</b> <%= supply_order.code %>
           </div>
           <div class="col-md-5 field_div">
             <b><%= t('activerecord.attributes.product_supply_order_item.note') %>:</b>
             <% if @supply_order_item.product_supply_order.present? %>
               <%= @supply_order_item.note %>
-            <% end %>
-            <% if @supply_order_item.product_sample.present? %>
-              <%= @supply_order_item.product_sample.description %>
+              <% if @supply_order_item.product_supply_order.is_sample? %>
+                <%= @supply_order_item.product_supply_order.description %>
+              <% end %>
             <% end %>
           </div>
         </div>

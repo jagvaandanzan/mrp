@@ -17,13 +17,13 @@
             <td class="text-center">
               <% if feature.feature_item.img.present? %>
                 <%= link_to feature.feature_item.img.url, "data-lightbox": "roadtrip" do %>
-                  <%= image_tag feature.feature_item.img.url(:tumb), class: 'tumb' %>
+                  <%= t('titles.view') %>
                 <% end %>
               <% end %>
             </td>
             <td class="va-mid"><%= feature.feature_item.name %></td>
-            <td class="va-mid"><%= feature.quantity %></td>
-            <td class="va-mid"><%= feature.get_currency(feature.price) %></td>
+            <td class="va-mid text-center"><%= feature.quantity %></td>
+            <td class="va-mid text-center"><%= feature.get_currency(feature.price) %></td>
             <td class="va-mid"><%= feature.note %></td>
           </tr>
         <% } %>

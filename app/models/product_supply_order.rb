@@ -3,33 +3,38 @@ class ProductSupplyOrder < ApplicationRecord
   belongs_to :logistic
   belongs_to :user
 
-  has_many :product_supply_order_items, dependent: :destroy
+  has_many :product_sample_images
+  has_many :product_supply_order_items
+  has_many :products, through: :product_supply_order_items
+
   accepts_nested_attributes_for :product_supply_order_items, allow_destroy: true
-  attr_accessor :tab_index
+  accepts_nested_attributes_for :product_sample_images, allow_destroy: true
+
+  enum order_type: {is_basic: 0, is_sample: 1}
+  enum status: {order_created: 0, ordered: 1, cost_included: 2, warehouse_received: 3, calculated: 4, clarification: 5, clarified: 6, canceled: 7}
+  enum exchange: {cny: 0, usd: 1, eur: 2, rub: 3, jpy: 4, gbr: 5, mnt: 6}
+
+  attr_accessor :tab_index, :product_name, :option_rels
 
   validates :logistic_id, :code, :exchange, presence: true
   validates :code, uniqueness: true
 
-  enum status: {order_created: 0, ordered: 1, cost_included: 2, warehouse_received: 3, calculated: 4, clarification: 5, clarified: 6, canceled: 7}
-  enum exchange: {cny: 0, usd: 1, eur: 2, rub: 3, jpy: 4, gbr: 5, mnt: 6}
+  with_options :if => Proc.new {|m| m.is_sample? && m.tab_index.to_i == 0} do
+    validates :product_name, presence: true, length: {maximum: 255}
+    validates :link, presence: true
+    before_save :set_product
+  end
 
   scope :created_at_desc, -> {
     order(created_at: :desc)
   }
 
-  scope :search, ->(code, start, finish) {
-    items = created_at_desc
-    items = items.where('code LIKE :value', value: "%#{code}%") if code.present?
+  scope :search, ->(start, finish, supply_code, product_name, order_type) {
+    items = order("product_supply_orders.ordered_date": :desc)
+    items = items.where('product_supply_orders.code LIKE :value', value: "%#{supply_code}%") if supply_code.present?
     items = items.where('ordered_date >= :s AND ordered_date <= :f', s: "#{start}", f: "#{finish}") if start.present? && finish.present?
-    # items = items.where('payment = :value', value: "%#{payment}%") if payment.present?
-    # items = items.where('is_closed = :value', value: close ) if close.present?
-    items
-  }
-
-  scope :searchNotClosed, ->() {
-    items = created_at_desc
-    items = items.joins(:product_supply_order_items).distinct
-    items = items.where('is_closed = false')
+    items = items.joins(:products).where('products.code LIKE :value', value: "%#{product_name}%") if product_name.present?
+    items = items.where(order_type: order_type) if order_type.present?
     items
   }
 
@@ -54,6 +59,41 @@ class ProductSupplyOrder < ApplicationRecord
     exist_items = product_supply_order_items.by_status_lower(stat)
     unless exist_items.present?
       self.update_attributes(status: stat)
+    end
+  end
+
+  def get_product
+    if self.product_supply_order_items.present?
+      product_supply_order_item = self.product_supply_order_items.first
+      product_supply_order_item.product
+    end
+  end
+
+  def set_sum_price
+    sum = 0
+    product_supply_order_items.each do |order_item|
+      sum += order_item.sum_price
+    end
+
+    self.update_column(:sum_price, sum.to_f.round(1))
+  end
+
+  private
+
+  def set_product
+    if product_supply_order_items.present?
+      product = get_product
+      product.option_rels = option_rels
+      product.name = product_name
+      product.save
+    else
+      product = Product.new(draft: true,
+                            n_name: product_name,
+                            brand_id: 69,
+                            code: ApplicationController.helpers.get_code(Product.last),
+                            option_rels: option_rels)
+
+      self.product_supply_order_items << ProductSupplyOrderItem.new(product: product)
     end
   end
 end

@@ -7,23 +7,24 @@
         $(id).css('color', (((r * 0.299) + (g * 0.587) + (b * 0.114)) > 186) ? '#000' : '#fff');
     }
 </script>
-<%= form_with model: @product_sample, url: @product_sample.persisted? ? users_product_sample_path : users_product_samples_path,
-              method: @product_sample.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+<%= form_with model: product_supply, url: product_supply.persisted? ? users_product_supply_order_path : users_product_supply_orders_path,
+              method: product_supply.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
   <%= form_body do %>
     <%= f.hidden_field :tab_index, {value: 0} %>
     <div class="row">
       <div class="col-md-3">
+        <%= f.hidden_field :order_type, value: 'is_sample' %>
         <%= f.label :code, class: 'control-label' %>
-        <div class="<%= get_error_class(@product_sample, :code) %>">
-          <%= field_errors(@product_sample, :code) %>
-          <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product_sample.code') %>
+        <div class="<%= get_error_class(product_supply, :code) %>">
+          <%= field_errors(product_supply, :code) %>
+          <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product_supply_order.code') %>
         </div>
       </div>
       <div class="col-md-3">
         <%= f.label :ordered_date, class: 'control-label' %>
-        <div class="input-append input-group date <%= get_error_class(@product_sample, :ordered_date) %>" data-provide="datepicker">
-          <%= field_errors(@product_sample, :ordered_date) %>
-          <%= f.text_field :ordered_date, value: @product_sample.ordered_date.strftime('%F'), class: 'field form-control', placeholder: t('activerecord.attributes.product_sample.ordered_date') %>
+        <div class="input-append input-group date <%= get_error_class(product_supply, :ordered_date) %>" data-provide="datepicker">
+          <%= field_errors(product_supply, :ordered_date) %>
+          <%= f.text_field :ordered_date, value: product_supply.ordered_date.strftime('%F'), class: 'field form-control', placeholder: t('activerecord.attributes.product_supply_order.ordered_date') %>
           <div class="input-group-addon">
             <i class="fa fa-calendar"></i>
           </div>
@@ -31,16 +32,16 @@
       </div>
       <div class="col-md-3 field_div">
         <%= f.label :logistic_id, class: 'control-label' %>
-        <div class="<%= get_error_class(@product_sample, :logistic_id) %>">
-          <%= field_errors(@product_sample, :logistic_id) %>
+        <div class="<%= get_error_class(product_supply, :logistic_id) %>">
+          <%= field_errors(product_supply, :logistic_id) %>
           <%= f.collection_select :logistic_id, Logistic.all, :id, :name, {}, {class: 'form-control'} %>
         </div>
       </div>
       <div class="col-md-3 field_div">
         <%= f.label :exchange, class: 'control-label' %>
-        <div class="<%= get_error_class(@product_sample, :exchange) %>">
-          <%= field_errors(@product_sample, :exchange) %>
-          <%= f.select :exchange, ProductSample.exchanges_i18n.keys.map {|k| [ProductSample.exchanges_i18n[k], k]},
+        <div class="<%= get_error_class(product_supply, :exchange) %>">
+          <%= field_errors(product_supply, :exchange) %>
+          <%= f.select :exchange, ProductSupplyOrder.exchanges_i18n.keys.map {|k| [ProductSupplyOrder.exchanges_i18n[k], k]},
                        {}, {class: 'form-control'} %>
         </div>
       </div>
@@ -48,16 +49,16 @@
     <div class="row">
       <div class="col-md-6">
         <%= f.label :product_name, class: 'control-label' %>
-        <div class="<%= get_error_class(@product_sample, :product_name) %>">
-          <%= field_errors(@product_sample, :product_name) %>
-          <%= f.text_field :product_name, class: 'form-control', placeholder: t('activerecord.attributes.product_sample.product_name') %>
+        <div class="<%= get_error_class(product_supply, :product_name) %>">
+          <%= field_errors(product_supply, :product_name) %>
+          <%= f.text_field :product_name, class: 'form-control', placeholder: t('activerecord.attributes.product_supply_order.product_name') %>
         </div>
       </div>
       <div class="col-md-6">
         <%= f.label :link, class: 'control-label' %>
-        <div class="<%= get_error_class(@product_sample, :link) %>">
-          <%= field_errors(@product_sample, :link) %>
-          <%= f.text_field :link, class: 'form-control', placeholder: t('activerecord.attributes.product_sample.link') %>
+        <div class="<%= get_error_class(product_supply, :link) %>">
+          <%= field_errors(product_supply, :link) %>
+          <%= f.text_field :link, class: 'form-control', placeholder: t('activerecord.attributes.product_supply_order.link') %>
         </div>
       </div>
     </div>
@@ -66,8 +67,8 @@
         <%= f.label :product_sample_images, class: 'control-label' %>
       </div>
       <div class="cocoon-nested-form col-md-10">
-        <div id="div_product_sample_images" class="<%= get_error_class(@product_sample, :product_sample_images) %>">
-          <%= field_errors(@product_sample, :product_sample_images) %>
+        <div id="div_product_sample_images" class="<%= get_error_class(product_supply, :product_sample_images) %>">
+          <%= field_errors(product_supply, :product_sample_images) %>
           <%= f.fields_for :product_sample_images do |m| %>
             <%= render 'product_sample_image_fields', :f => m %>
           <% end %>
@@ -81,7 +82,7 @@
     </div>
     <div class="row">
       <div class="col-md-12 field_div m-t-20">
-        <%= field_errors(@product_sample, :product_feature_option_rels) %>
+        <%= field_errors(product_supply, :product_feature_option_rels) %>
         <% ProductFeature.skip_no.order_by_queue.each {|feature| %>
           <% if feature.id == 2 %>
             <div class="form-group">
@@ -110,7 +111,7 @@
                   </a>
                 <% end %>
                 <div class="col-sm-11">
-                  <div id="collapse<%= gr.id %>" class="panel-collapse collapse <%= (!@product_sample.persisted? && index == 0 || (@product_sample.persisted? && gr.check_option_selected(@product_sample.option_rels))) ? 'in' : '' %>">
+                  <div id="collapse<%= gr.id %>" class="panel-collapse collapse <%= (!product_supply.persisted? && index == 0 || (product_supply.persisted? && gr.check_option_selected(product_supply.option_rels))) ? 'in' : '' %>">
                     <% gr.product_feature_options.order_queue.each {|option| %>
                       <div class="col-md-2">
                         <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
@@ -136,9 +137,9 @@
     </div>
     <div class="form-group">
       <%= f.label :description, class: 'col-sm-1 control-label' %>
-      <div class="col-sm-11 <%= get_error_class(@product_sample, :description) %>">
-        <%= field_errors(@product_sample, :description) %>
-        <%= f.text_area :description, {class: 'form-control', placeholder: t('activerecord.attributes.product_sample.description')} %>
+      <div class="col-sm-11 <%= get_error_class(product_supply, :description) %>">
+        <%= field_errors(product_supply, :description) %>
+        <%= f.text_area :description, {class: 'form-control', placeholder: t('activerecord.attributes.product_supply_order.description')} %>
       </div>
     </div>
 

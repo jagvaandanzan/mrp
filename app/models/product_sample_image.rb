@@ -1,5 +1,5 @@
 class ProductSampleImage < ApplicationRecord
-  belongs_to :product_sample
+  belongs_to :product_supply_order
 
   has_attached_file :image, :path => ":rails_root/public/product_sample/image/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/product_sample/image/:id_partition/:style.:extension'
   validates_attachment :image,

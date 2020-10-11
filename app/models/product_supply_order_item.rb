@@ -1,6 +1,5 @@
 class ProductSupplyOrderItem < ApplicationRecord
-  belongs_to :product_supply_order, optional: true
-  belongs_to :product_sample, optional: true
+  belongs_to :product_supply_order
   belongs_to :logistic, optional: true
   belongs_to :product, -> {with_deleted}
   has_many :supply_features, :class_name => "ProductSupplyFeature", :foreign_key => "order_item_id", dependent: :destroy
@@ -15,17 +14,8 @@ class ProductSupplyOrderItem < ApplicationRecord
   end
 
   def get_currency(value)
-    ApplicationController.helpers.get_currency(value, Const::CURRENCY[get_model.exchange_before_type_cast.to_i], 0)
+    ApplicationController.helpers.get_currency(value, Const::CURRENCY[product_supply_order.exchange_before_type_cast.to_i], 0)
   end
-
-  scope :search_by_sample, ->(start, finish, supply_code, product_name) {
-    items = joins(:product_sample)
-    items = items.where('? <= product_samples.ordered_date AND product_samples.ordered_date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
-    items = items.where('product_samples.code LIKE :value', value: "%#{supply_code}%") if supply_code.present?
-    items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{product_name}%") if product_name.present?
-    items.order("product_samples.ordered_date": :desc)
-    items
-  }
 
   scope :search_by_order, ->(start, finish, supply_code, product_name) {
     items = joins(:product_supply_order)
@@ -41,15 +31,13 @@ class ProductSupplyOrderItem < ApplicationRecord
   }
 
   scope :search, ->(start, finish, supply_code, product_name) {
-    items = left_joins(:product_sample)
-                .left_joins(:product_supply_order)
+    items = left_joins(:product_supply_order)
     if start.present? && finish.present?
-      items = items.where('(product_samples.id IS NULL AND :start <= product_supply_orders.ordered_date AND product_supply_orders.ordered_date <= :finish) OR
-                            (product_supply_orders.id IS NULL AND :start <= product_samples.ordered_date AND product_samples.ordered_date <= :finish)',
+      items = items.where(':start <= product_supply_orders.ordered_date AND product_supply_orders.ordered_date <= :finish',
                           start: start.to_time, finish: finish.to_time + 1.days)
     end
     if supply_code.present?
-      items = items.where('(product_samples.id IS NULL AND product_supply_orders.code LIKE :value) OR (product_supply_orders.id IS NULL AND product_samples.code LIKE :value)', value: "%#{supply_code}%")
+      items = items.where('product_supply_orders.code LIKE :value', value: "%#{supply_code}%")
     end
     items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{product_name}%") if product_name.present?
     items.created_at_desc
@@ -69,7 +57,7 @@ class ProductSupplyOrderItem < ApplicationRecord
       sum += feature.quantity * feature.price
     end
 
-    self.update_attributes(sum_price: sum.to_f.round(1))
+    self.update_column(:sum_price, sum.to_f.round(1))
   end
 
   def set_sum_price_lo
@@ -81,11 +69,7 @@ class ProductSupplyOrderItem < ApplicationRecord
 
     if sum > 0
       self.update_attributes(status: 1, purchase_date: Time.current)
-      if product_sample.present?
-        product_sample.update_status(1)
-      else
-        product_supply_order.update_status(1)
-      end
+      product_supply_order.update_status(1)
     end
   end
 
@@ -101,10 +85,10 @@ class ProductSupplyOrderItem < ApplicationRecord
   end
 
   def get_order_type
-    if product_sample.present?
-      I18n.t('activerecord.attributes.product_supply_order_item.product_sample_id')
+    if product_supply_order.is_basic?
+      I18n.t('activerecord.models.product_supply_order')
     else
-      I18n.t('activerecord.attributes.product_supply_order_item.product_supply_order_id')
+      I18n.t('titles.product_sample')
     end
   end
 
@@ -118,14 +102,47 @@ class ProductSupplyOrderItem < ApplicationRecord
     "#{ApplicationController.helpers.yes_no(!order_created?)} #{q} / <b>#{q_lo}</b>"
   end
 
-  private
+  def purchase_date
+    self[:purchase_date].strftime('%F') if self[:purchase_date].present?
+  end
 
-  def get_model
-    if product_supply_order.present?
-      product_supply_order
+  def shipping_er_item
+    shipping_er_items = ShippingErItem.by_order_item_id(self.id)
+    if shipping_er_items.present?
+      date = shipping_er_items.first.shipping_er.date.strftime('%F')
+      costs = 0
+      cost_text = ""
+      received = 0
+      cargo = 0
+      shipping_er_items.each {|er|
+        costs += er.cost
+        received += er.received if er.received.present?
+        cargo += er.cargo if er.cargo.present?
+        cost_text += "#{er.product_supply_feature.feature_item.name}: #{er.s_type_i18n} #{self.get_currency er.cost}\n</br>"
+      }
+      [date, self.get_currency(costs), received, cargo, cost_text]
     else
-      product_sample
+      ["", "", "", "", ""]
     end
   end
 
+  def shipping_ub_item
+    shipping_ub_items = ShippingUbItem.by_order_item_id(self.id)
+    if shipping_ub_items.present?
+      date = shipping_ub_items.first.shipping_ub.date.strftime('%F')
+      costs = 0
+      cost_text = ""
+      loaded = 0
+      cargo = 0
+      shipping_ub_items.each {|er|
+        costs += er.cost
+        loaded += er.loaded if er.loaded.present?
+        cargo += er.cargo if er.cargo.present?
+        cost_text += "#{er.product_supply_feature.feature_item.name}: #{er.s_type_i18n} #{self.get_currency er.cost}\n</br>"
+      }
+      [date, self.get_currency(costs), loaded, cargo, cost_text]
+    else
+      ["", "", "", "", ""]
+    end
+  end
 end
