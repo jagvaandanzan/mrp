@@ -41,7 +41,39 @@
 
 <script>
     $(document).ready(function () {
-        load_image_preview("tr.nested-fields:not(:last)");
-        load_image_preview("#product_picture_div");
+        $('tr.nested-fields .selectpicker').selectpicker('refresh');
+        load_image_preview("#information");
+        load_image_preview("#image_video");
+
+        $('#btn_product_instructions').on('click', function () {
+            setTimeout(set_product_instructions, 300);
+        });
+        $('#btn_product_images').on('click', function () {
+            setTimeout(set_product_images, 300);
+        });
+        $('#btn_product_video').on('click', function () {
+            setTimeout(set_product_video, 300);
+        });
+        $('#btn_product_photos').on('click', function () {
+            setTimeout(set_product_photos, 300);
+        });
     });
+
+    function set_product_instructions() {
+        var last_tr = "#tb_product_instructions .nested-fields:last";
+        $(last_tr).find('.selectpicker').selectpicker('refresh');
+        load_image_preview(last_tr);
+    }
+
+    function set_product_images() {
+        load_image_preview("#div_product_images .nested-fields:last");
+    }
+
+    function set_product_video() {
+        load_image_preview("#tb_product_videos .nested-fields:last")
+    }
+
+    function set_product_photos() {
+        load_image_preview("#div_product_photos .nested-fields:last");
+    }
 </script>

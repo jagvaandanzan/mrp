@@ -58,7 +58,7 @@
             <% end %>
             <div class="links">
               <%= link_to_add_association f, :product_images, class: 'append-after' do %>
-                <%= nested_add_btn %>
+                <%= nested_add_btn('btn_product_images') %>
               <% end %>
             </div>
           </div>
@@ -86,7 +86,7 @@
           </div>
           <div class="links">
             <%= link_to_add_association f, :product_videos, data: {association_insertion_node: '#tb_product_videos', association_insertion_method: :append} do %>
-              <%= nested_add_btn %>
+              <%= nested_add_btn('btn_product_video') %>
             <% end %>
           </div>
         </div>
@@ -109,7 +109,7 @@
           <% end %>
           <div class="links">
             <%= link_to_add_association f, :product_photos, class: 'append-after' do %>
-              <%= nested_add_btn %>
+              <%= nested_add_btn('btn_product_photos') %>
             <% end %>
           </div>
         </div>
