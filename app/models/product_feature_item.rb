@@ -40,7 +40,9 @@ class ProductFeatureItem < ApplicationRecord
 
   scope :order_is_feature, ->() {
     joins(:option1)
+        .joins(:option2)
         .order("product_feature_options.queue")
+        .order("option2s_product_feature_items.queue")
   }
 
 
