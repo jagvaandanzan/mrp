@@ -262,7 +262,7 @@ class Product < ApplicationRecord
     product_balances.count > 0
   end
 
-  # private
+  private
 
   def valid_custom
     errors.add(:category_id, :blank) if category_id.present? && ProductCategory.search(category_id).count > 0
@@ -446,8 +446,8 @@ class Product < ApplicationRecord
       end
       # Rails.logger.debug(params)
       response = ApplicationController.helpers.api_request(url, method, params)
-      Rails.logger.debug("response.body #{response.body}")
-      puts "response.body #{response.body}"
+      # Rails.logger.debug("response.body #{response.body}")
+      # puts "response.body #{response.body}")
       if response.code.to_i == 201
         self.update_attributes(sync_at: Time.now, method_type: 'sync')
       end
