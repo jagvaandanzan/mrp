@@ -13,11 +13,10 @@ class ProductFilter < ApplicationRecord
   scope :by_filter_ids, ->(filter_ids) {
     where("category_filter_id IN (?)", filter_ids)
   }
-  scope :sync_nil, ->() {
-    where("id > ?", 12059)
+  scope :sync_by_p, ->(ids) {
+    where("product_id IN (?)", ids)
   }
-
-  private
+  # private
 
   def sync_web(method)
     self.method_type = method

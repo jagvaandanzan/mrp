@@ -28,6 +28,7 @@ mn:
       feature_type:
         is_feature: Шинж чанар
         is_size: Хэмжээ
+        is_no_choose: Сонголтгүй
     product:
       delivery_type:
         is_own: Маркетаас хүргэлт хийлгэх

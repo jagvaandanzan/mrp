@@ -16,10 +16,10 @@ class ProductSpecification < ApplicationRecord
     where(spec_item_id: spec_item_id)
   }
 
-  scope :sync_nil, ->() {
-    where("id > ?", 21229)
+  scope :sync_by_p, ->(ids) {
+    where("product_id IN (?)", ids)
   }
-  private
+  # private
 
   def sync_web(method)
     self.method_type = method

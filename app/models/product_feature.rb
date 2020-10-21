@@ -8,7 +8,7 @@ class ProductFeature < ApplicationRecord
   # after_destroy -> {sync_web('delete')}
   attr_accessor :method_type
 
-  enum feature_type: {is_feature: 0, is_size: 1}
+  enum feature_type: {is_feature: 0, is_size: 1, is_no_choose: 2}
   validates :feature_type, :queue, :name, presence: true
 
   scope :order_by_queue, -> {
