@@ -28,7 +28,7 @@ class ProductVideo < ApplicationRecord
     where("product_id IN (?)", ids)
   }
 
-  private
+  # private
 
   def sync_web(method)
     self.method_type = method

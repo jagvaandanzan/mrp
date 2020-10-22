@@ -16,7 +16,7 @@ class ProductFilter < ApplicationRecord
   scope :sync_by_p, ->(ids) {
     where("product_id IN (?)", ids)
   }
-  private
+  # private
 
   def sync_web(method)
     self.method_type = method
