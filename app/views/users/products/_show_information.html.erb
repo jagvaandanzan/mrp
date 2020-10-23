@@ -59,14 +59,14 @@
               <td><%= instruction.description %></td>
               <td>
                 <% if instruction.image.present? %>
-                  <%= link_to instruction.image.url, "data-lightbox": "roadtrip" do %>
+                  <%= link_to instruction.image.url, :"data-lightbox" => "roadtrip" do %>
                     <%= image_tag instruction.image.url(:tumb), class: 'tumb' %>
                   <% end %>
                 <% end %>
               </td>
               <td>
                 <% if instruction.video.present? %>
-                  <%= link_to t('titles.open'), instruction.video.url(:original, false) %>
+                  <%= link_to t('titles.open'), instruction.video.url(:original, false), target: '_blank' %>
                 <% end %>
               </td>
             </tr>

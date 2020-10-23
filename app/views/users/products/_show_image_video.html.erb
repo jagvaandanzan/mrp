@@ -67,7 +67,7 @@
               </td>
               <td class="va-mid">
                 <% if vid.video.present? %>
-                  <%= link_to "video-#{index + 1}", vid.video.url(:original, false) %>
+                  <%= link_to "video-#{index + 1}", vid.video.url(:original, false), target: '_blank' %>
                 <% end %>
               </td>
             </tr>

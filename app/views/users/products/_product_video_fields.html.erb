@@ -14,7 +14,7 @@
     <%= field_errors f.object, :video %>
     <%= f.file_field :video, accept: "video/*" %>
     <% if f.object.persisted? && f.object.video.present? %>
-      <%= link_to t('controls.button.watch'), f.object.video.url(:original, false) %>
+      <%= link_to t('controls.button.watch'), f.object.video.url(:original, false), target: '_blank' %>
     <% end %>
   </td>
   <td class="remove va-mid">
