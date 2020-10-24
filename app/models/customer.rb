@@ -13,7 +13,7 @@ class Customer < ApplicationRecord
   enum c_type: {is_organization: 0, is_individual: 1}
 
   validates :name, presence: true, length: {maximum: 255}
-  validates :c_type, :code, :logo, :queue, presence: true
+  validates :c_type, :code, :queue, presence: true
 
   scope :order_by_name, -> {
     order(:queue)
@@ -45,7 +45,7 @@ class Customer < ApplicationRecord
     end
 
     response = ApplicationController.helpers.api_request(url, method, params)
-    Rails.logger.info("#{response.body}")
+    # Rails.logger.info("#{response.body}")
     if response.code.to_i == 201
       self.update_attributes(sync_at: Time.now, method_type: 'sync')
     end
