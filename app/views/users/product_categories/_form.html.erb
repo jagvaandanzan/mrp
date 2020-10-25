@@ -2,7 +2,8 @@
   <%= stylesheet_link_tag "form" %>
 <% end %>
 <script>
-    var category_max_index = 0;
+    var cross_id_max_index = 0;
+    var parent_id_max_index = 0;
 </script>
 <div class="content-wrapper">
   <section class="content-header">
@@ -13,8 +14,6 @@
     <div class="box box-info">
       <%= form_with model: @category, url: @category.persisted? ? users_product_category_path : users_product_categories_path, method: @category.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
-          <%= f.hidden_field :parent_id %>
-
           <div class="form-group">
             <%= f.label :image, class: 'col-sm-3 control-label va-mid' %>
             <div class="col-sm-9 <%= get_error_class(@category, :image) %>" id="product_image_div">
@@ -47,32 +46,49 @@
               </div>
               <div class="col-md-3 field_div">
                 <%= f.label :cross_id, class: 'control-label' %>
-                <div class="<%= get_error_class(@category, :cross_id) %>" id="product_category_cross">
+                <div class="<%= get_error_class(@category, :cross_id) %>" id="div_category_cross_id">
                   <%= f.hidden_field :cross_id %>
                   <%= field_errors(@category, :cross_id) %>
                   <%= collection_select @category, :main_cross_id, ProductCategory.top_level, :id, :name,
-                                        {:prompt => t('controls.select.none'), selected: @headers.present? ? @headers.first.id : ""},
-                                        {class: 'form-control selectpicker', id: "category-0", ind: 0, onchange: 'callChildren(this)'} %>
+                                        {:prompt => t('controls.select.none'), selected: @cross_headers.present? ? @cross_headers.first.id : ""},
+                                        {class: 'form-control selectpicker', id: "cross_id-0", ind: 0, onchange: "callChildren(this,'cross_id')"} %>
 
-                  <% @headers.present? && @headers.each_with_index do |h, i| %>
-                    <% if h != @headers.first %>
-                      <div class="col-sm-12 sub_category" id="category-<%= i + 1 %>" style="padding: 10px 0 0 0;">
-                        <select class='form-control selectpicker' onchange='callChildren(this)' ind=<%= i + 1 %>>
+                  <% @cross_headers.present? && @cross_headers.each_with_index do |h, i| %>
+                    <% if h != @cross_headers.first %>
+                      <div class="col-sm-12 sub_category" id="cross_id-<%= i + 1 %>" style="padding: 10px 0 0 0;">
+                        <select class='form-control selectpicker' onchange="callChildren(this,'cross_id')" ind=<%= i + 1 %>>
                           <option value="<%= h.id %>"><%= h.name %></option>
                         </select>
                       </div>
                       <script type="text/javascript" charset="utf-8">
-                          category_max_index = <%= i + 1  %>;
+                          cross_id_max_index = <%= i + 1  %>;
                       </script>
                     <% end %>
                   <% end %>
                 </div>
               </div>
-              <% if @category.parent.presence %>
+              <% if @category.parent.present? %>
                 <div class="col-md-3 field_div">
-                  <%= f.label :parent, class: 'control-label' %>
-                  <div class="<%= get_error_class(@category, :parent) %>">
-                    <%= f.text_field :parent, class: 'form-control', value: @category.parent.name, disabled: true %>
+                  <%= f.label :parent_id, class: 'control-label' %>
+                  <div class="<%= get_error_class(@category, :parent_id) %>" id="div_category_parent_id">
+                    <%= f.hidden_field :parent_id %>
+                    <%= field_errors(@category, :parent_id) %>
+                    <%= collection_select @category, :main_parent_id, ProductCategory.top_level, :id, :name,
+                                          {:prompt => t('controls.select.none'), selected: @parent_headers.present? ? @parent_headers.first.id : ""},
+                                          {class: 'form-control selectpicker', id: "parent_id-0", ind: 0, onchange: "callChildren(this,'parent_id')"} %>
+
+                    <% @parent_headers.present? && @parent_headers.each_with_index do |h, i| %>
+                      <% if h != @parent_headers.first %>
+                        <div class="col-sm-12 sub_category" id="parent_id-<%= i + 1 %>" style="padding: 10px 0 0 0;">
+                          <select class='form-control selectpicker' onchange="callChildren(this,'parent_id')" ind=<%= i + 1 %>>
+                            <option value="<%= h.id %>"><%= h.name %></option>
+                          </select>
+                        </div>
+                        <script type="text/javascript" charset="utf-8">
+                            parent_id_max_index = <%= i + 1  %>;
+                        </script>
+                      <% end %>
+                    <% end %>
                   </div>
                 </div>
               <% end %>
@@ -161,16 +177,25 @@
   </section>
 </div>
 <script>
-    function callChildren(select) {
+    function callChildren(select,obj) {
+        // obj="cross_id";
         let val = $(select).val();
         let ind = parseInt($(select).attr('ind')) + 1;
-        for (let i = ind; i <= category_max_index; i++) {
-            $("#category-" + i).remove();
+        var max_index = cross_id_max_index;
+        if (obj === "parent_id") {
+            max_index = parent_id_max_index;
+        }
+        for (let i = ind; i <= max_index; i++) {
+            $("#" + obj + "-" + i).remove();
         }
 
         if (valid_id(val)) {
-            if (ind > category_max_index) {
-                category_max_index = ind;
+            if (ind > max_index) {
+                if (obj === "cross_id") {
+                    cross_id_max_index = ind;
+                } else {
+                    parent_id_max_index = ind;
+                }
             }
             Rails.ajax({
                 url: "<%= get_product_category_children_users_products_path %>",
@@ -180,9 +205,9 @@
 
                     let childrens = data.childrens;
                     if (childrens.length > 0) {
-                        $("#product_category_cross_id").val("");
-                        var divSelect = "<div class='col-sm-12 sub_category' id=category-" + ind + " style='padding: 10px 0 0 0;'>" +
-                            "<select class='form-control' onchange='callChildren(this)' ind=" + ind + ">" +
+                        $("#product_category_" + obj).val("");
+                        var divSelect = "<div class='col-sm-12 sub_category' id=" + obj + "-" + ind + " style='padding: 10px 0 0 0;'>" +
+                            "<select class='form-control' onchange=callChildren(this,'"+obj+"') ind=" + ind + ">" +
                             "<option value=''>Дэд ангилал сонгох</option>";
 
                         for (var i = 0; i < childrens.length; i++) {
@@ -190,10 +215,10 @@
                         }
                         divSelect += "</select>" + "</div>";
 
-                        $("#product_category_cross").append(divSelect);
-                        $('#product_category_cross select:last').selectpicker('refresh');
+                        $("#div_category_" + obj).append(divSelect);
+                        $("#div_category_" + obj + " select:last").selectpicker('refresh');
                     } else {
-                        $("#product_category_cross_id").val(val);
+                        $("#product_category_" + obj).val(val);
                     }
                 },
                 error: function (data) {
@@ -201,7 +226,7 @@
                 }
             });
         } else {
-            $("#product_category_id").val("");
+            $("#product_category_" + obj).val("");
         }
     }
 
