@@ -71,6 +71,16 @@ class Operators::FbCommentArchivesController < Operators::BaseController
     render 'users/fb_comment_archives/report'
   end
 
+  def get_message_url
+    alert, json = ApplicationController.helpers.fb_send_response("#{ENV['FB_API']}/#{ENV['FB_PAGE_ID']}/conversations?access_token=#{ENV['FB_TOKEN']}&user_id=#{params[:user_id]}",
+                                                                 'get', nil, nil)
+    if alert == :success
+      render json: {url: json['data'][0]['link']}
+    else
+      render json: {url: ""}
+    end
+  end
+
   private
 
   def set_fb_comment_archive

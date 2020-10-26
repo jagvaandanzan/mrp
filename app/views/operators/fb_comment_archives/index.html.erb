@@ -21,9 +21,9 @@
         </div>
       </div>
       <div class="col-md-1 search">
-        <%= f.select :start_hour, 0..23, {selected: @start_hour}, {class: '', style:'border-color: #d2d6de;'} %>
+        <%= f.select :start_hour, 0..23, {selected: @start_hour}, {class: '', style: 'border-color: #d2d6de;'} %>
         -
-        <%= f.select :end_hour, 0..23, {selected: @end_hour}, {class: '', style:'border-color: #d2d6de;'} %>
+        <%= f.select :end_hour, 0..23, {selected: @end_hour}, {class: '', style: 'border-color: #d2d6de;'} %>
       </div>
       <div class="col-md-2 search">
         <%= f.select :verb, FbCommentArchive.verbs_i18n.keys.map {|k| [FbCommentArchive.verbs_i18n[k], k]},
@@ -62,7 +62,15 @@
               <% @fb_comment_archives.each do |fb_comment_archive| %>
                 <tr>
                   <td class="va-mid underline"><%= fb_comment_archive.fb_post.full_name %></td>
-                  <td class="va-mid"><%= fb_comment_archive.user_name.presence || 'Market.mn' %></td>
+                  <td class="va-mid">
+                    <% if fb_comment_archive.user_name.present? %>
+                      <div>
+                        <a class="user_id" href="#" user_id="<%= fb_comment_archive.user_id %>"><%= fb_comment_archive.user_name %></a>
+                      </div>
+                    <% else %>
+                      Market.mn
+                    <% end %>
+                  </td>
                   <td class="va-mid">
                     <% if fb_comment_archive.message.present? %>
                       <%= fb_comment_archive.message %>
@@ -102,3 +110,26 @@
   </section>
 </div>
 <%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'start', finish_id: 'finish' %>
+<script type="text/javascript" charset="utf-8">
+    $('a.user_id').on('click', function () {
+        var a = $(this);
+        a.parent().append("<img src='/images/loading2.gif'>");
+        Rails.ajax({
+            url: "<%= current_user.present? ? get_message_url_users_fb_comment_archives_path : get_message_url_operators_fb_comment_archives_path %>",
+            type: "POST",
+            data: "user_id=" + a.attr('user_id'),
+            success: function (data) {
+                a.parent().find('img').remove();
+                if (data.url.length > 0) {
+                    window.open("https://www.facebook.com/" + data.url, '_blank')
+                } else {
+                    alert("Чат үүсээгүй байна!")
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    });
+
+</script>

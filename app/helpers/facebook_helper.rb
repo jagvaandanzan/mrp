@@ -3,10 +3,10 @@ module FacebookHelper
     response = api_send(http_url, method, param.nil? ? nil : param)
     case response
     when Net::HTTPSuccess then
-      [:success, send_alert]
+      [:success, send_alert.nil? ? JSON.parse(response.body) : send_alert]
     when Net::HTTPRequestTimeout, Net::HTTPGatewayTimeout then
       HttpRequestRepeat.create(url: http_url, method: 'post', param: param)
-      [:success, send_alert]
+      [:success, send_alert.nil? ? JSON.parse(response.body) : send_alert]
     else
       json = JSON.parse(response.body)
       [:alert, json.to_s]

@@ -55,7 +55,7 @@ class Operators::FbCommentsController < Operators::BaseController
           if answers.present?
             fb_comment_answer = answers.first
             fb_comment_answer.update_attribute(:used, fb_comment_answer.used + 1)
-            Rails.logger.info("greeting_answer: #{fb_comment_answer.id} => #{answer}")
+            # Rails.logger.info("greeting_answer: #{fb_comment_answer.id} => #{answer}")
           else
             fb_comment_answer = FbCommentAnswer.create(answer: @fb_comment.reply_text, operator: current_operator)
           end
@@ -80,7 +80,7 @@ class Operators::FbCommentsController < Operators::BaseController
       elsif @fb_comment.action_type == "image"
         upload = Upload.create(image: @fb_comment.reply_image)
         alert_i, msg = ApplicationController.helpers.fb_send_file(@fb_comment.comment_id, upload.image.url)
-        Rails.logger.info("fb_send_file: #{alert_i} => #{msg}")
+        # Rails.logger.info("fb_send_file: #{alert_i} => #{msg}")
         alert, msg_2 = ApplicationController.helpers.fb_reply_comment(@fb_comment.comment_id, @fb_comment.parent_id, @fb_comment.user_id, @fb_comment.reply_image_text)
         if alert_i == :success && alert == :success
           @fb_comment.verb = "is_send_image"

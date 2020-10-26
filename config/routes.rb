@@ -154,6 +154,7 @@ Rails.application.routes.draw do
     resources :fb_comment_archives, only: [:index, :show] do
       collection do
         get 'report'
+        post 'get_message_url'
       end
     end
     resources :bank_transactions, only: [:index]
@@ -190,6 +191,7 @@ Rails.application.routes.draw do
     resources :fb_comment_archives, only: [:index, :show] do
       collection do
         get 'report'
+        post 'get_message_url'
       end
     end
 
