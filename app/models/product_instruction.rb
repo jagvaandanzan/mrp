@@ -19,7 +19,7 @@ class ProductInstruction < ApplicationRecord
 
   has_attached_file :video, :path => ":rails_root/public/products/instruction/video/:id_partition/:style.:extension", :url => '/products/instruction/video/:id_partition/:style.:extension'
   validates_attachment :video,
-                       content_type: {content_type: ["video/mp4"], message: :content_type}, size: {less_than: 20.megabytes}
+                       content_type: {content_type: ["video/mp4"], message: :content_type}, size: {less_than: 40.megabytes}
 
   def image_url
     if image.present?
