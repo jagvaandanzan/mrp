@@ -1,0 +1,160 @@
+cn:
+  filters:
+    by_date: Огноо сонгох
+    by_code: Захиалгын кодоор
+    by_income_code: Орлогийн кодоор
+    by_product: Барааны [нэр/код]-р
+    by_payment: Төлбөрийн хэлбэрээр
+    by_phone: Утасаар
+    by_close: Хаагдсан
+  enums:
+    product_supply_order:
+      status:
+        order_created: Захиалга үүссэн
+        ordered: Захиалга хийсэн
+        cost_included: Тээврийн зардал орсон
+        warehouse_received: Агуулах хүлээж авсан
+        calculated: Тооцоо нийлсэн
+        clarification: Тодруулга хийх
+        clarified: Тодруулга хийсэн
+        canceled: Цуцалсан
+      exchange:
+        cny: Юань
+        usd: АНУ-ын доллар
+        eur: Евро
+        rub: Рубль
+        jpy: Иен
+        gbr: Английн фунт
+        mnt: Төгрөг
+      order_type:
+        is_basic: Үндсэн
+        is_sample: Дээж
+    product_supply_order_item:
+      status:
+        order_created: Захиалга үүссэн
+        ordered: Захиалга хийсэн
+        cost_included: Тээврийн зардал орсон
+        warehouse_received: Агуулах хүлээж авсан
+        calculated: Тооцоо нийлсэн
+        clarification: Тодруулга хийх
+        clarified: Тодруулга хийсэн
+        canceled: Цуцалсан
+    shipping_er_item:
+      s_type:
+        post_cargo: "Шуудан: Үйлд-Карго"
+        post_er: "Шуудан: Үйлд-Эрээн"
+        cargo_er: "Карго: Үйлд-Эрээн"
+        cargo_post: "Карго: Шуудан-Эрээн"
+    shipping_ub_item:
+      s_type:
+        simple: "Энгийн: Эрээн-УБ"
+        urgent: "Яаралтай: Эрээн-УБ"
+    product_income_item:
+      urgent_type:
+        engiin: Энгийн
+        yaaraltai: Яаралтай
+  activerecord:
+    models:
+      product: Бараа
+      product_supply_order: Үндсэн бараа
+      product_supply_order_item: Бараа захиалга
+      shipping_er: Үйлдвэр-Эрээн тээвэрлэлт
+      shipping_er_item: Бараанууд
+      shipping_ub: Эрээн-УБ тээвэрлэлт
+      shipping_ub_item: Бараанууд
+      logistic: Хангамжийн ажилтан
+    attributes:
+      logistic:
+        email: Имэйл
+        password: Нууц үг
+        name: Нэр
+        surname: Овог
+        gender: Хүйс
+        phone: Утас
+        password_confirmation: 'Нууц үг баталгаажуулалт'
+        new_password: Шинэ нууц үг
+        confirm_new_password: Шинэ нууц үг（Баталгаажуулах）
+        current_password: Одоо байгаа нууц үг
+      product_supply_order:
+        order_type: Төрөл
+        code: Дугаар
+        status: Төлөв
+        ordered_date: Огноо
+        logistic_id: Хангамжийн ажилтан
+        exchange: Валют
+        sum_price: Нийт дүн
+        link: Линк
+        description: Тайлбар
+        product_name: Барааны нэр
+        product_code: Барааны код
+        product_image: Зураг
+        product_feature: Өнгө, Хэмжээ
+        product_supply_order_items: Бараанууд
+        product_sample_images: Барааны зураг
+      product_supply_order_item:
+        status: Төлөв
+        supply_order_id: Худалдан авалт
+        product_id: Бараа
+        note: Тайлбар
+        sum_price: Нийт дүн
+        product_name: Барааны нэр
+        product_code: Бараа код
+        product_feature: Өнгө, Хэмжээ
+        product_supply_order_id: Үндсэн бараа
+        note_lo: Тайлбар
+        purchase: Худалдан авалт
+        purchase_date: Худалдан авсан
+        purchase_quantity: Худалдан авсан тоо
+        total_quantity: Захиалсан тоо
+        price: Үнийн дүн
+        shipping_er_date: Эрээнд ирсэн огноо
+        shipping_ub_date: Эрээнээс ачуулсан огноо
+      product_supply_feature:
+        image: Зураг
+        feature_item_id: Шинж чанар
+        order_item_id: Худалдан авалт
+        quantity: Тоо хэмжээ
+        price: Нэгж үнэ
+        note: Тайлбар
+        sum_price: Нийт дүн
+        quantity_lo: Тоо хэмжээ
+        price_lo: Нэгж үнэ
+        note_lo: Тайлбар
+      shipping_er:
+        logistic: Хангамжийн ажилтан
+        date: Хүлээж авсан огноо
+        description: Тайлбар
+        shipping_er_items: Бараа
+        shipping_er_item_count: Барааны тоо
+      shipping_er_item:
+        product_supply_feature_id: Шинж чанар
+        product_name: Бараа нэр
+        product_code: Бараа код
+        product_image: Зураг
+        product_feature: Өнгө хэмжээ
+        product_bought: Авсан үлдэгдэл
+        received: Хүлээн авсан барааны тоо
+        same_feature: Нэг хайрцагт
+        cargo: Ачааны тоо
+        s_type: Тээврийн төрөл, Чиглэл
+        cost: Зардал
+        number: Баримтын дугаар
+      shipping_ub:
+        logistic: Хангамжийн ажилтан
+        date: Эрээнээс ачуулсан огноо
+        description: Тайлбар
+        shipping_ub_items: Бараа
+        shipping_ub_item_count: Барааны тоо
+      shipping_ub_item:
+        product_bought: Худалдан авсан тоо
+        at_er: Эрээнд ирсэн огноо
+        loaded: Ачуулсан барааны тоо
+        same_feature: Нэг хайрцагт
+        cargo: Ачааны тоо
+        s_type: Тээврийн төрөл, Чиглэл
+        cost: Зардал
+    errors:
+      messages:
+        blank: " хоосон байна!"
+        too_long: " %{count}-с их байна"
+        too_short: " %{count}-с бага байна"

@@ -73,7 +73,7 @@ class Product < ApplicationRecord
     before_save :set_specifications
     before_save :set_filters
     after_save :set_filter_groups
-    validates :search_key, :description, :manufacturer_id, presence: true
+    validates :search_key, :manufacturer_id, presence: true
   end
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 3} do

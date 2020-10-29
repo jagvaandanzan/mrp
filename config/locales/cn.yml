@@ -1,0 +1,116 @@
+cn:
+  activerecord:
+    errors:
+      messages:
+        record_invalid: "Баталгаажуулалт буруу: %{errors}"
+        restrict_dependent_destroy:
+          has_one: "%{record} нь устгагдсан тул устгах боломжгүй"
+          has_many: "%{record} нь устгагдсан тул устгах боломжгүй"
+  controls:
+    input:
+      please_enter: Оруулна уу!
+    button:
+      change: Өөрчлөх
+      login: Нэвтрэх
+      send: Илгээх
+      create: Шинээр нэмэх
+      show: Харах
+      edit: Засах
+      delete: Устгах
+      search: Хайлт
+      searching: Хайх
+      delete_for_checked: Сонгоснуудыг устгах
+      save: Хадгалах
+      update: Өөрчлөх
+      back: Буцах
+      close: Хаах
+      write_reply: Хариу бичих
+      to_archive: Түүхрүү шилжүүлэх
+      download: Татах
+      to_equate: Адилтгах
+      watch: Үзэх
+    select:
+      none: Сонгох
+      alert: " сонгоно уу!"
+    link:
+      forget_password: Нууц үгээ мартсан
+      reset_pass_text_1: Бүртгүүлсэн имэйл хаягаа оруулна уу.
+      reset_pass_text_2: Бид таны нууц үгийг имэйлээр илгээнэ.
+      reset_mail_text_1: Таны  нууц үг солих хүсэлтийг хүлээн авлаа
+      reset_mail_text_2: Доорх холбоос дээр дарж нууц үгээ шинэчлэнэ үү
+  titles:
+    resetting_a_password: Нууц үг шинэчлэлт
+    reset_password: Нууц үг сэргээх
+    login: Нэвтрэх цонх
+    open: Нээх
+    view: Үзэх
+    add: " нэмэх"
+    edit: " засах"
+    back_to_list: Жагсаалтруу буцах
+    product_supply_ordering: 购买商品
+    color: Өнгө
+    product_sample: Дээж бараа
+  app_name: “MRP”
+  app_short_name: M
+  alert:
+    saved_successfully: Амжилттай хадгаллаа
+    deleted_successfully: Амжилттай устгагдсан
+    hide_successfully: Амжилттай нуулаа
+    like_successfully: Амжилттай Лайк дарлаа
+    info_updated: Мэдээлэл шинэчлэгдсэн
+    removed_successfully: Амжилттай хасагдсан
+    send_successfully: Амжилттай илгээлээ
+    to_archive: Амжилттай шилжлээ
+    downloaded_successfully: Амжилттай %{count} татагдлаа
+  are_you_sure: "Та устгахдаа итгэлтэй байна уу ?"
+  are_you_update: "Хадгалах уу ?"
+  are_sure_change: "Өөрчлөх үү ?"
+  are_you_sure_ok: "Та итгэлтэй байна уу ?"
+  are_you_sure_switch: "Шилжүүлэх үү ?"
+  currency: ₮
+  minute: минут
+  minute_s: мин
+  currency_name: Төгрөг
+  upload_file: Файл хуулах
+  upload_image: Зураг хуулах
+  errors:
+    format: "%{attribute}%{message}"
+    messages:
+      blank: " хоосон байна!"
+      confirmation: "%{attribute} баталгаажуулалт буруу байна"
+      empty: " хоосон байна!"
+      even: " тэгш тоо байх ёстой"
+      exclusion: は予約されています
+      greater_than: " %{count}-с их байх ёстой"
+      greater_than_or_equal_to: " %{count} той тэнцүү буюу их байх ёстой"
+      inclusion: は一覧にありません
+      invalid: " буруу байна"
+      less_than: は%{count}より小さい値にしてください
+      less_than_or_equal_to: " %{count} -c бага буюу тэнцүү байх ёстой"
+      model_invalid: "Баталгаажуулалт буруу: %{errors}"
+      not_a_number: " бүхэл тоо байх ёстой"
+      not_an_integer: は整数で入力してください
+      odd: " сондгой байх ёстой"
+      required: " шаардлагтай!"
+      taken: " давхардаж байна!"
+      too_long: бол %{count}-с дээр тэмдэгт байх ёстой
+      too_short: бол %{count}-с дээр тэмдэгт байх ёстой
+      wrong_length: "ны урт %{count} байх ёстой!"
+      other_than: は%{count}以外の値にしてください
+      over: " давсан байна"
+      over_quantity: " тоо хэмжээний үлдэгдэл хүрэхгүй байна"
+      taken_feature_rel: " шинж чанар давхардаж байна!"
+      stockkeeper_is_not_signed: "Нярав гарын үсэг зураагүй байна!"
+      not_have_a_product_sale: "Зарах бүгээдэхүүн байхгүй байна!"
+    template:
+      body: 次の項目を確認してください
+      header:
+        one: "%{model}にエラーが発生しました"
+        other: "%{model}に%{count}個のエラーが発生しました"
+  filters:
+    by_date: Огноо сонгох
+    status: Статус
+    name: Нэрээр
+    email: Имэйлээр
+    phone: Утсаар
+    id: ID-р
