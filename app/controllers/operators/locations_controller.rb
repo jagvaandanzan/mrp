@@ -6,6 +6,7 @@ class Operators::LocationsController < Operators::BaseController
     @search_name = params[:location_name]
     @loc_khoroo = LocKhoroo.find_by!(id: params[:id])
     @locations = Location.search(@loc_khoroo.id, @search_name).page(params[:page])
+    cookies[:location_page_number] = params[:page]
   end
 
   def new
@@ -47,7 +48,7 @@ class Operators::LocationsController < Operators::BaseController
     @location.attributes = location_params
     if @location.save
       flash[:success] = t('alert.info_updated')
-      redirect_to action: :index, id: @location.loc_khoroo_id
+      redirect_to action: :index, id: @location.loc_khoroo_id, page: cookies[:location_page_number]
       # redirect_to :action => 'show', id: @location.id
     else
       render 'edit'

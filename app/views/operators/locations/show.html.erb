@@ -14,7 +14,7 @@
       <%= link_to t('controls.button.edit'), edit_operators_location_path(@location), class: 'btn btn-info' %>
       <%= link_to t('controls.button.delete'), operators_location_path(@location), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <% end %>
-    <%= link_to t('titles.back_to_list'), operators_locations_path(id: @location.loc_khoroo_id, page: cookies[:page_number]), {class: "btn blck-btn"} %>
+    <%= link_to t('titles.back_to_list'), operators_locations_path(id: @location.loc_khoroo_id, page: cookies[:location_page_number]), {class: "btn blck-btn"} %>
   </div>
   <%= show_body do %>
     <div class="box">

@@ -250,7 +250,7 @@ mn:
         longitude: Уртраг
         locations: Байршил
         loc_khoroo_id: Хороо/сум
-        distance: Хол
+        distance: Бүс
       loc_district:
         name: Нэр
       loc_khoroo:
