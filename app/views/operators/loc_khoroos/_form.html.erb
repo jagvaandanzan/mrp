@@ -1,12 +1,12 @@
 <div class="content-wrapper">
   <%= render 'layouts/breadcrumbs', data: [
-      [users_loc_districts_path, t('titles.loc_districts')],
-      [users_loc_khoroos_path(id: @loc_khoroo.loc_district_id), @loc_khoroo.loc_district.name],
+      [operators_loc_districts_path, t('activerecord.models.loc_district')],
+      [operators_loc_khoroos_path(id: @loc_khoroo.loc_district_id), @loc_khoroo.loc_district.name],
       t('activerecord.models.loc_khoroo') + (@loc_khoroo.persisted? ? t('titles.edit') : t('titles.add'))] %>
 
   <section class="content">
     <div class="box box-info">
-      <%= form_for :loc_khoroo, url: @loc_khoroo.persisted? ? users_loc_khoroo_path : users_loc_khoroos_path, method: @loc_khoroo.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+      <%= form_for :loc_khoroo, url: @loc_khoroo.persisted? ? operators_loc_khoroo_path : operators_loc_khoroos_path, method: @loc_khoroo.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
           <%= f.hidden_field :loc_district_id %>
           <div class="form-group">

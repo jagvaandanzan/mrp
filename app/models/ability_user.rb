@@ -27,10 +27,6 @@ class AbilityUser
       when "operator"
         can role, Operator
         can role, Salesman
-      when "map_location"
-        can role, LocDistrict
-        can role, LocKhoroo
-        can role, Location
       when "product_supplier"
         can role, Customer
       when "product_location"

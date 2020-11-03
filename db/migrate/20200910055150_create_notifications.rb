@@ -1,26 +1,23 @@
 class CreateNotifications < ActiveRecord::Migration[5.2]
   def change
-    # create_table :notifications do |t|
-    #   t.references :user, foreign_key: true
-    #   t.references :salesman, foreign_key: true
-    #   t.references :salesman_travel, foreign_key: true
-    #   t.references :product_sale_item, foreign_key: true
-    #   t.string :title
-    #   t.string :body_s
-    #   t.string :body_u
-    #   t.integer :n_type, default: 0
-    #
+    # create_table :product_call_items do |t|
+    #   t.references :product_sale_call, null: false, foreign_key: true
+    #   t.references :product, null: false, foreign_key: true
+    #   t.references :feature_item, foreign_key: {to_table: :product_feature_items}
+    #   t.integer :quantity
+    #   t.integer :price
+    #   t.integer :sum_price
     #   t.timestamps
     # end
-    # add_column :product_feature_items, :real_img, :boolean, default: false, after: 'image_file_name'
-    # change_column :product_size_instructions, :instruction, :string
-    # add_column :customers, :c_type, :integer, after: 'id'
-    add_reference :product_sample_images, :product_supply_order, foreign_key: true, after: 'id'
-    remove_reference :product_sample_images, :product_sample
-    remove_reference :product_supply_order_items, :product_sample
-    add_column :product_supply_orders, :order_type, :integer, after: 'id'
-    add_column :product_supply_orders, :link, :text, after: 'exchange'
-    add_column :product_supply_orders, :description, :text, after: 'link'
+
+    # add_column :product_sale_calls, :status, :integer, after: 'id'
+    # add_column :product_sale_calls, :deleted_at, :datetime, after: 'operator_id'
+    # add_column :product_sale_calls, :sum_price, :integer, after: 'product_id'
+    #
+    # remove_reference :product_sale_calls, :product
+    # remove_column :product_sale_calls, :quantity
+    remove_reference :locations, :user
+    add_column :locations, :distance, :integer, after: 'longitude'
 
   end
 end

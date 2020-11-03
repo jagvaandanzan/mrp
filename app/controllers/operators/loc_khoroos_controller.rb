@@ -1,4 +1,4 @@
-class Users::LocKhoroosController < Users::BaseController
+class Operators::LocKhoroosController < Operators::BaseController
   load_and_authorize_resource
   before_action :set_loc_khoroo, only: [:edit, :update, :destroy]
 
@@ -11,6 +11,7 @@ class Users::LocKhoroosController < Users::BaseController
   def new
     @loc_khoroo = LocKhoroo.new
     @loc_khoroo.loc_district = LocDistrict.find_by!(id: params[:id])
+    @loc_khoroo.queue = LocKhoroo.by_district_id(params[:id]).size + 1
   end
 
   def create

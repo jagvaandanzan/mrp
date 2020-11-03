@@ -92,9 +92,6 @@ Rails.application.routes.draw do
       get 'vrptw'
     end
 
-    resources :locations, only: [:index, :create, :new, :show, :edit, :update, :destroy]
-    resources :loc_districts, only: [:index, :create, :new, :edit, :update, :destroy]
-    resources :loc_khoroos, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_categories, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :customers, only: [:index, :create, :new, :show, :edit, :update, :destroy]
     resources :product_feature_groups, only: [:index, :create, :new, :edit, :update, :destroy]
@@ -177,7 +174,6 @@ Rails.application.routes.draw do
         post 'get_location'
         post 'get_product_balance'
         patch 'update_status'
-        post 'get_prev_sales'
       end
     end
 
@@ -195,14 +191,18 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :product_sale_calls, only: [:index, :create, :new, :edit, :update, :destroy] do
+    resources :product_sale_calls, only: [:index, :create, :new, :edit, :update, :show] do
       collection do
-        post 'get_product_balance'
+        post 'auto_save'
+        post 'get_prev_sales'
       end
     end
 
     resources :bank_transactions, only: [:index]
     resources :sms_messages, only: [:index, :create, :new]
+    resources :loc_districts, only: [:index, :create, :new, :edit, :update, :destroy]
+    resources :loc_khoroos, only: [:index, :create, :new, :edit, :update, :destroy]
+    resources :locations, only: [:index, :create, :new, :show, :edit, :update, :destroy]
 
     match "*any", to: "base#routing_error", via: :all
   end

@@ -57,11 +57,8 @@ mn:
     total_tugrug: Нийт ₮
     user_sign_in: Нэвтрэх
     operator_sign_in: Нэвтрэх
-    locations: Байршилууд
     add: " нэмэх"
     edit: " засах"
-    loc_districts: Дүүргүүд
-    loc_khoroos: Хороод
     product_categories: Ангилалууд
     product_locations: Байршлууд
     product_suppliers: Нийлүүлэгчид
@@ -110,6 +107,7 @@ mn:
   currency_name: Төгрөг
   upload_file: Файл хуулах
   upload_image: Зураг хуулах
+  total_price: Нийт үнэ
   sms:
     to_customer: "Khanbank %{account}-%{name} dansaar %{amount} tug-g guilgeenii utga hesegt utasni dugaaraa bicheed shiljuulne uu. Tulbur orj irehed tanid zalgaj medegdene."
   product_form:

@@ -1,7 +1,7 @@
 <div class="content-wrapper index">
   <%= render 'layouts/breadcrumbs', data: [
-      [users_loc_districts_path, t('titles.loc_districts')],
-      [users_loc_khoroos_path(id: @loc_district.id), @loc_district.name], t('titles.loc_khoroos')] %>
+      [operators_loc_districts_path, t('activerecord.models.loc_district')],
+      [operators_loc_khoroos_path(id: @loc_district.id), @loc_district.name], t('activerecord.models.loc_khoroo')] %>
 
   <section class="content-header align-left with-breadcrumbs">
     <h4> (<%= t('titles.total') %>：<%= @loc_khoroos.total_count %>)</h4>
@@ -10,12 +10,12 @@
   <% is_manage = can? :manage, Location %>
 
   <div class="action-buttons">
-    <%= form_with url: users_loc_khoroos_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+    <%= form_with url: operators_loc_khoroos_path, method: "get", class: 'form-horizontal', local: true do |f| %>
       <%= hidden_field_tag :id, @loc_district.id %>
       <%= text_field_tag :loc_khoroo_name, @search_name, {class: 'form-control search'} %>
       <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn' %>
       <% if is_manage %>
-        <%= link_to t('controls.button.create'), new_users_loc_khoroo_path(id: @loc_district.id), class: 'btn btn-warning' %>
+        <%= link_to t('controls.button.create'), new_operators_loc_khoroo_path(id: @loc_district.id), class: 'btn btn-warning' %>
       <% end %>
     <% end %>
   </div>
@@ -38,15 +38,15 @@
               <% @loc_khoroos.each_with_index do |loc_khoroo, index| %>
                 <tr>
                   <td class="va-mid underline" style="width: 30px"><%= loc_khoroo.queue %></td>
-                  <td class="va-mid underline"><%= link_to loc_khoroo.name, users_locations_path(id: loc_khoroo.id) %></td>
+                  <td class="va-mid underline"><%= link_to loc_khoroo.name, operators_locations_path(id: loc_khoroo.id) %></td>
                   <% if is_manage %>
                     <td>
                       <div class="btn-loc_khoroo">
-                        <%= link_to edit_users_loc_khoroo_path(loc_khoroo), class: 'no-underline' do %>
+                        <%= link_to edit_operators_loc_khoroo_path(loc_khoroo), class: 'no-underline' do %>
                           <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
                         <% end %>
 
-                        <%= link_to users_loc_khoroo_path(loc_khoroo), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
+                        <%= link_to operators_loc_khoroo_path(loc_khoroo), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
                           <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
                         <% end %>
                       </div>

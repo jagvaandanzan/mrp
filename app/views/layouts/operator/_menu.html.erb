@@ -66,7 +66,13 @@
           <% end %>
         <% end %>
       <% end %>
-
+      <% if can? :read, Location %>
+        <%= content_tag :li, class: (controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations') ? 'active' : '' do %>
+          <%= link_to operators_loc_districts_path do %>
+            <i class="fa fa-map-marker"></i><span><%= t('activerecord.models.location') %></span>
+          <% end %>
+        <% end %>
+      <% end %>
     </ul>
   </section>
 </aside>

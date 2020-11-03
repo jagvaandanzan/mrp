@@ -11,10 +11,10 @@
 
   <div class="action-buttons">
     <% if can? :manage, Location %>
-      <%= link_to t('controls.button.edit'), edit_users_location_path(@location), class: 'btn btn-info' %>
-      <%= link_to t('controls.button.delete'), users_location_path(@location), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+      <%= link_to t('controls.button.edit'), edit_operators_location_path(@location), class: 'btn btn-info' %>
+      <%= link_to t('controls.button.delete'), operators_location_path(@location), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <% end %>
-    <%= link_to t('titles.back_to_list'), users_locations_path(id: @location.loc_khoroo_id, page: cookies[:page_number]), {class: "btn blck-btn"} %>
+    <%= link_to t('titles.back_to_list'), operators_locations_path(id: @location.loc_khoroo_id, page: cookies[:page_number]), {class: "btn blck-btn"} %>
   </div>
   <%= show_body do %>
     <div class="box">
@@ -26,6 +26,10 @@
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.location.name_la') %> :</div>
           <div class="col-data"><%= @location.name_la %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.location.distance') %> :</div>
+          <div class="col-data"><%= @location.distance.present? ? @location.distance_i18n : '---' %></div>
         </div>
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.location.latitude') %> :</div>

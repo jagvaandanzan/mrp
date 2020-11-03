@@ -60,4 +60,8 @@ module ApplicationHelper
       percent * price / 100
     end
   end
+
+  def only_number(str)
+    str.to_s.gsub(/[^0-9]/, '')
+  end
 end

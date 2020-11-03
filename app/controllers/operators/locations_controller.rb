@@ -1,4 +1,4 @@
-class Users::LocationsController < Users::BaseController
+class Operators::LocationsController < Operators::BaseController
   load_and_authorize_resource
   before_action :set_location, only: [:edit, :show, :update, :destroy]
 
@@ -12,7 +12,7 @@ class Users::LocationsController < Users::BaseController
     @location = Location.new
     @location.loc_khoroo = LocKhoroo.find_by!(id: params[:id])
 
-    loo = Location.where(user: current_user)
+    loo = Location.where(operator: current_operator)
 
     if loo.present?
       location_last = loo.last
@@ -68,7 +68,7 @@ class Users::LocationsController < Users::BaseController
 
   def location_params
     params.require(:location)
-        .permit(:loc_khoroo_id, :name, :name_la, :latitude, :longitude)
-        .merge(:user => current_user)
+        .permit(:loc_khoroo_id, :name, :name_la, :distance, :latitude, :longitude)
+        .merge(:operator => current_operator)
   end
 end

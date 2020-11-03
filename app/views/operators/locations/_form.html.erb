@@ -4,13 +4,13 @@
 <% end %>
 <div class="content-wrapper">
   <%= render 'layouts/breadcrumbs', data: [
-      [users_loc_districts_path, t('titles.loc_districts')],
-      [users_loc_khoroos_path(id: @location.loc_khoroo.loc_district_id), @location.loc_khoroo.loc_district.name],
-      [users_locations_path(id: @location.loc_khoroo.id), @location.loc_khoroo.name], t('activerecord.models.location') +t(@location.persisted? ? 'titles.edit' : 'titles.add')] %>
+      [operators_loc_districts_path, t('activerecord.models.loc_district')],
+      [operators_loc_khoroos_path(id: @location.loc_khoroo.loc_district_id), @location.loc_khoroo.loc_district.name],
+      [operators_locations_path(id: @location.loc_khoroo.id), @location.loc_khoroo.name], t('activerecord.models.location') +t(@location.persisted? ? 'titles.edit' : 'titles.add')] %>
 
   <section class="content">
     <div class="box box-info">
-      <%= form_with model: @location, url: @location.persisted? ? users_location_path : users_locations_path, method: @location.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+      <%= form_with model: @location, url: @location.persisted? ? operators_location_path : operators_locations_path, method: @location.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
           <%= f.hidden_field :loc_khoroo_id %>
           <div class="form-group">
@@ -25,6 +25,13 @@
             <div class="col-sm-9 <%= get_error_class(@location, :name_la) %>">
               <%= field_errors(@location, :name_la) %>
               <%= f.text_field :name_la, class: 'form-control', placeholder: t('activerecord.attributes.location.name_la') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :distance, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@location, :distance) %>">
+              <%= field_errors(@location, :distance) %>
+              <%= f.select :distance, Location.distances_i18n.keys.reject {|k| k == 'st_leave'}.map {|k| [Location.distances_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
             </div>
           </div>
           <div class="form-group">

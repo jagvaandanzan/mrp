@@ -10,6 +10,10 @@ class LocKhoroo < ApplicationRecord
         .order(:name)
   }
 
+  scope :by_district_id, ->(district_id) {
+    where(loc_district_id: district_id)
+  }
+
   def full_name
     name
   end

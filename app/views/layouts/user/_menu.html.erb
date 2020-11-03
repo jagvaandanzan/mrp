@@ -75,8 +75,7 @@
       <% end %>
 
       <% if (can? :read, Location) || (can? :read, Product) || (can? :read, ProductLocation) || (can? :read, Operator) || (can? :read, ProductSupplier) %>
-        <%= content_tag :li, class: controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations' ||
-            controller_name == 'product_categories' || controller_name == 'customers' ||
+        <%= content_tag :li, class: controller_name == 'product_categories' || controller_name == 'customers' ||
             controller_name == 'product_feature_groups' || controller_name == 'product_features' || controller_name == 'product_feature_options' ||
             controller_name == 'product_locations' || controller_name == 'category_filter_groups' ||
             controller_name == 'brands' || controller_name == 'manufacturers' || controller_name == 'technical_specifications' || controller_name == 'size_instructions' ||
@@ -89,13 +88,6 @@
           <% end %>
 
           <%= content_tag :ul, class: 'treeview-menu' do %>
-            <% if can? :read, Location %>
-              <%= content_tag :li, class: (controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations') ? 'active' : '' do %>
-                <%= link_to users_loc_districts_path do %>
-                  <i class="fa fa-map-marker"></i><span><%= t('titles.loc_districts') %></span>
-                <% end %>
-              <% end %>
-            <% end %>
             <% if can? :read, Product %>
               <%= content_tag :li, class: (controller_name == 'product_categories' || controller_name == 'category_filter_groups') ? 'active' : '' do %>
                 <%= link_to users_product_categories_path do %>

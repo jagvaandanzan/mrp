@@ -148,6 +148,21 @@ mn:
         user_remove: Хэрэглэгч устгасан
         to_archive: Хариулаагүй
         auto_phone: MRP бүртгэсэн
+    product_sale_call:
+      status:
+        st_leave: Дуусгаагүй
+        st_order: Захиалга
+        st_order_info: Захиалгын мэдээлэл
+        st_pro_info: Барааны мэдээлэл
+        st_staff: Дотоод ажилтан
+        st_return: Буцаалт, солилт
+        st_complaint: Гомдол
+    location:
+      distance:
+        distance_a: A
+        distance_b: B
+        distance_c: C
+        distance_d: D
   activerecord:
     models:
       admin_user: Админ
@@ -235,6 +250,7 @@ mn:
         longitude: Уртраг
         locations: Байршил
         loc_khoroo_id: Хороо/сум
+        distance: Хол
       loc_district:
         name: Нэр
       loc_khoroo:
@@ -523,12 +539,19 @@ mn:
         note: Тайлбар
       product_sale_call:
         phone: Утас
-        product_id: Бараа
-        code: Барааны код
-        quantity: Тоо хэмжээ
-        remainder: Үлдэгдэл
-        created_at: Огноо
+        status: Төлөв
         message: Нэмэлт тайлбар
+        sum_price: Нийт үнэ
+        product_call_items: Бараанууд
+        created_at: Огноо
+        operator: Оператор
+      product_call_item:
+        product_id: Бараа
+        feature_item_id: Шинж чанар
+        quantity: Тоо ширхэг
+        remainder: Үлдэгдэл
+        price: Үнэ
+        sum_price: Нийт үнэ
       user_permission_rel:
         user_permission_id: Хандах эрх
         role: Үйлдэл

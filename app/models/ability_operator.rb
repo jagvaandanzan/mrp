@@ -17,6 +17,10 @@ class AbilityOperator
         can :read, BankTransaction
       when "sms_message"
         can role, SmsMessage
+      when "map_location"
+        can role, LocDistrict
+        can role, LocKhoroo
+        can role, Location
       else
         puts "it was something else"
       end

@@ -26,14 +26,14 @@ function getDecimalPay(numval) {
     numval = numval + "";
     var cde = 1, vv = "";
     for (var i = 0; i < numval.length; i++) {
-        if (numval.charAt(i) != "'")vv += numval.charAt(i);
+        if (numval.charAt(i) != ",") vv += numval.charAt(i);
     }
     numval = vv;
     vv = "";
 
     for (i = numval.length - 1; i >= 0; i--) {
         if (i != 0 && cde == 3) {
-            vv += numval.charAt(i) + "'";
+            vv += numval.charAt(i) + ",";
             cde = 1
         } else {
             vv += numval.charAt(i);
@@ -44,12 +44,13 @@ function getDecimalPay(numval) {
     for (var i = vv.length - 1; i >= 0; i--) {
         numval += vv.charAt(i);
     }
-    return numval;
+    return numval + "₮";
 }
 
 function valid_id(id) {
     return id !== undefined && id !== null && id !== ""
 }
+
 function select_parent(select) {
     return $(select).parent().parent().hasClass('field_with_errors') ? $(select).parent().parent().parent().parent() : $(select).parent().parent().parent();
 }
