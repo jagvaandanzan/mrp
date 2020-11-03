@@ -34,6 +34,7 @@
                 <th class="text-center"><%= t('activerecord.attributes.location.distance') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.location.latitude') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.location.longitude') %></th>
+                <th></th>
               </tr>
               <% @locations.each do |l| %>
                 <tr>
@@ -42,6 +43,7 @@
                   <td class="text-center va-mid"><%= l.distance_i18n %></td>
                   <td class="text-center va-mid"><%= l.latitude %></td>
                   <td class="text-center va-mid"><%= l.longitude %></td>
+                  <td class="text-center va-mid"><%= link_to t('controls.button.edit'), edit_operators_location_path(l) %></td>
                 </tr>
               <% end %>
             </table>
