@@ -47,7 +47,8 @@ class Operators::LocationsController < Operators::BaseController
     @location.attributes = location_params
     if @location.save
       flash[:success] = t('alert.info_updated')
-      redirect_to :action => 'show', id: @location.id
+      redirect_to action: :index, id: @location.loc_khoroo_id
+      # redirect_to :action => 'show', id: @location.id
     else
       render 'edit'
     end
