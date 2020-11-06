@@ -17,6 +17,7 @@ class ProductSaleCall < ApplicationRecord
 
   with_options :if => Proc.new {|m| m.is_web.present?} do
     validates :status_id, presence: true
+    validate :check_phone_sale_status
   end
 
   with_options :if => Proc.new {|m| m.is_web.present? && m.status_id.present? && m.status_id > 3 && m.status_id < 7} do
@@ -69,6 +70,11 @@ class ProductSaleCall < ApplicationRecord
   end
 
   private
+
+  def check_phone_sale_status
+    product_sale = ProductSale.search(nil, nil, nil, phone, 2).first(1)
+    self.errors.add(:phone, :taken) if product_sale.present?
+  end
 
   def has_24_created
     ProductSaleCall.where(phone: phone)
