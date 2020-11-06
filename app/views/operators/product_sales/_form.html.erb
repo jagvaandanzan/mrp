@@ -28,6 +28,7 @@
       <%= form_with model: @product_sale, url: @product_sale.persisted? ? operators_product_sale_path : operators_product_sales_path,
                     method: @product_sale.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= f.hidden_field :status_user_type %>
+        <%= f.hidden_field :sale_call_id %>
         <%= form_body do %>
           <div class="col-md-12 p-0">
             <div class="row">
@@ -105,7 +106,7 @@
                   <%= field_errors(@product_sale, :product_sale_items) %>
                   <table class="table table-bordered" id="tb_product_sale_items">
                     <tr>
-                      <th><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
+                      <th><%= t('activerecord.attributes.product_feature_item.image') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
                       <th><%= t('activerecord.attributes.product_sale_item.to_see') %></th>
@@ -122,7 +123,7 @@
                 </div>
                 <div class="links item_append">
                   <%= link_to_add_association f, :product_sale_items, data: {association_insertion_node: '#tb_product_sale_items', association_insertion_method: :append} do %>
-                    <%= nested_add_btn %>
+                    <%= nested_add_btn('btn_product_sale_item') %>
                   <% end %>
                 </div>
               </div>
@@ -132,7 +133,9 @@
                 <div class=" col-md-4 field_div">
                   <%= f.label :sum_price, class: 'control-label' %>
                   <div class="">
-                    <%= f.text_field :sum_price, class: 'form-control', readonly: true, placeholder: t('activerecord.attributes.product_sale.sum_price') %>
+                    <%= f.hidden_field :sum_price %>
+                    <%= text_field_tag :sum_price, @product_sale.sum_price.present? ? get_currency_mn(@product_sale.sum_price) : nil,
+                                       {class: 'form-control field', readonly: true, placeholder: t('activerecord.attributes.product_sale.sum_price')} %>
                   </div>
                 </div>
                 <div class="col-md-4 field_div">
@@ -161,7 +164,7 @@
                     <%= field_errors(@product_sale, :main_status) %>
                     <%= f.collection_select :main_status_id, ProductSaleStatus.search(nil, @product_sale.status_user_type), :id, :name,
                                             {:prompt => t('controls.select.none')},
-                                            {class: 'form-control selectpicker', onchange: 'callChildren(this)', "data-live-search": "true"} %>
+                                            {class: 'form-control selectpicker', onchange: 'get_sub_status(this)', "data-live-search": "true"} %>
                   </div>
                 </div>
                 <div id="paid_div" class="col-md-4 field_div <%= (!@product_sale.persisted? || @product_sale.cash?) ? 'none' : '' %>">
@@ -207,19 +210,24 @@
     </div>
   </section>
 </div>
-<%= render 'shared/suggestion_search', id: 'product_sale_location_id', url: search_locations_operators_product_sales_path %>
-<% unless @product_sale.persisted? %>
-  <%= render 'previous_sales' %>
-<% end %>
+<%= render 'shared/suggestion_search' %>
 <script>
     var to_see = false;
 
-    function suggestion_search_enter(select) {
-        func_call_feature_rel(select);
-    }
-
     $(document).ready(function () {
-        $('.selectpicker').selectpicker('refresh');
+        $('tr.nested-fields .selectpicker').selectpicker('refresh');
+
+        $('#tb_product_sale_items .nested-fields select').each(function () {
+            select_input_press($(this), "<%= search_product_path %>", false);
+        });
+        $('#btn_product_sale_item').on('click', function () {
+            if ($('#tb_product_sale_items tbody tr').length > 0) {
+                let tr = $('#tb_product_sale_items tbody tr:last');
+                to_see = tr.find('td').eq(2).find('input[type=checkbox]').is(":checked");
+                setTimeout(set_column_value, 200);
+            }
+            setTimeout(set_product_sale_item, 300);
+        });
 
         $('#product_sale_location_id').on('change', function () {
             let id = $(this).val();
@@ -248,57 +256,50 @@
         initSelectedMap();
     });
 
-
-    function func_change_price(select) {
-        let price = $(select).find('option:selected').attr("price");
-        let product_id = $(select).find('option:selected').attr("product");
-        let parentTr = select_parent(select);
-        reset_input_vals(parentTr);
-        parentTr.find("input.item_price").val(price);
-
-        let feature_rel = $(select).val();
-        if (valid_id(feature_rel) && valid_id(product_id)) {
-            Rails.ajax({
-                url: "<%= get_product_balance_operators_product_sales_path %>",
-                type: "POST",
-                data: "product_id=" + product_id + "&feature_item_id=" + feature_rel,
-                success: function (data) {
-                    parentTr.find('.remainder').val(data.balance);
-                    parentTr.find('.image').html("<a href='" + data.img + "' data-lightbox='roadtrip'> <img src='" + data.tumb + "', class='tumb'></a>");
-                },
-                error: function (data) {
-                    console.log(data);
-                }
-            });
-        }
+    function set_product_sale_item() {
+        let last_tr = "#tb_product_sale_items .nested-fields:last";
+        $(last_tr).find('.selectpicker').selectpicker('refresh');
+        select_input_press($(last_tr + ' select:first'), "<%= search_product_path %>", true);
     }
 
-    function func_call_feature_rel(select) {
+    function set_column_value() {
+        let tr = $('#tb_product_sale_items tbody tr:last');
+        tr.find('td').eq(2).find('input[type=checkbox]').prop("checked", to_see);
+    }
+
+    function func_change_product(select) {
         let product_id = $(select).val();
         let parentTr = select_parent(select);
         parentTr.find("select.feature_item").html("").selectpicker("refresh");
         reset_input_vals(parentTr);
         if (valid_id(product_id)) {
-            // alert(product_id);
-
             Rails.ajax({
                 url: "<%= get_product_features_operators_product_sales_path %>",
                 type: "PATCH",
                 data: "product_id=" + product_id,
                 success: function (data) {
-                    var childrens = data.childrens;
-                    if (childrens != undefined && childrens.length > 0) {
+                    var features = data.features;
+                    if (features !== undefined && features.length > 0) {
                         var divSelect = "<option value=''>Сонгох</option>";
-
-                        for (var i = 0; i < childrens.length; i++) {
-                            divSelect += '<option value="' + childrens[i]["id"] + '" product="' + childrens[i]["product"] + '" price = "' + childrens[i]["price"] + '" >' + childrens[i]["name"] + '</option>';
+                        var first_feature_id = 0;
+                        for (var i = 0; i < features.length; i++) {
+                            if (i === 0) {
+                                first_feature_id = features[i]["id"];
+                            }
+                            divSelect += '<option value="' + features[i]["id"] + '" data-subtext="' + features[i]["balance"] + '" product="' + features[i]["product"] + '" >' + features[i]["name"] + '</option>';
                         }
-
-                        parentTr.find("select.feature_item").html(divSelect);
+                        let select = parentTr.find("select.feature_item");
+                        select.html(divSelect);
+                        if (features.length === 1) {
+                            select.val(first_feature_id);
+                            func_change_feature(select);
+                        }
+                        select.selectpicker("refresh");
                     }
-                    parentTr.find("input.item_price").val(data.price);
+                    parentTr.find('.image').html("<a href='<%= ENV['WEB_DOMAIN'] %>products/" + product_id + "' target='_blank'> <img src='" + data.tumb + "', class='tumb'></a>");
+                    parentTr.find("input.item_price").attr('price', data.price).val(getDecimalPay(data.price));
 
-                    parentTr.find("select.feature_item").selectpicker("refresh");
+                    calc_total_price();
                 },
                 error: function (data) {
                     console.log(data);
@@ -307,7 +308,55 @@
         }
     }
 
-    function callChildren(select) {
+    function reset_input_vals(tr) {
+        $("#total_price").val("");
+        tr.find("input.item_sum").val("");
+        tr.find("input.item_price").val("");
+    }
+
+    function func_change_feature(select) {
+        let product_id = $(select).find('option:selected').attr("product");
+        let parentTr = select_parent(select);
+        reset_input_vals(parentTr);
+
+        let feature_id = $(select).val();
+        if (valid_id(feature_id) && valid_id(product_id)) {
+            Rails.ajax({
+                url: "<%= get_product_balance_operators_product_sales_path %>",
+                type: "POST",
+                data: "product_id=" + product_id + "&feature_item_id=" + feature_id,
+                success: function (data) {
+                    parentTr.find("input.item_price").val(data.price);
+                    parentTr.find("input.item_price_show").val(getDecimalPay(data.price));
+                    parentTr.find('.remainder').val(data.balance);
+                    parentTr.find('.image a').html("<img src='" + data.tumb + "', class='tumb'>");
+                    calc_total_price();
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+    }
+
+    function calc_total_price() {
+        var total_price = 0;
+        $('#tb_product_sale_items tr.nested-fields').each(function () {
+            let tr = $(this);
+            let quantity = tr.find('.item_quantity').val();
+            if (quantity !== undefined && quantity.length > 0) {
+                let price = tr.find('.item_price').val();
+                let sum_price = price * parseInt(quantity);
+                tr.find('.item_sum').val(sum_price);
+                tr.find('.item_sum_show').val(getDecimalPay(sum_price));
+                total_price += sum_price;
+            }
+        });
+        $('#product_sale_sum_price').val(total_price);
+        $('#sum_price').val(getDecimalPay(total_price));
+    }
+
+    function get_sub_status(select) {
         let val = null;
         if (select !== undefined && select !== null) {
             val = $(select).val();
@@ -318,17 +367,16 @@
                     type: "PATCH",
                     data: "parent_id=" + val + "&status_user_type=<%= @product_sale.status_user_type %>",
                     success: function (data) {
-                        let childrens = data.childrens;
-                        if (childrens !== undefined && childrens.length > 0) {
+                        let subs = data.subs;
+                        if (subs !== undefined && subs.length > 0) {
                             let divSelect =
                                 "<select name='product_sale[status_id]' id=\"status_id\" class='form-control'>" +
                                 "<option value=''>Сонгох</option>";
 
-                            for (var i = 0; i < childrens.length; i++) {
-                                divSelect += '<option value="' + childrens[i]["id"] + '">' + childrens[i]["name"] + '</option>';
+                            for (var i = 0; i < subs.length; i++) {
+                                divSelect += '<option value="' + subs[i]["id"] + '">' + subs[i]["name"] + '</option>';
                             }
                             divSelect += "</select>";
-
                             $("#status").html(divSelect);
 
                             $("#status_id").selectpicker("refresh");
@@ -343,53 +391,6 @@
                 });
             } // val is undefined chek
         }// select is undefined check
-    }
-
-    function func_input_change(input, type) {
-        var value0 = $(input).val();
-        var value1 = 0;
-        var parentTr = $(input).parent().hasClass('field_with_errors') ? $(input).parent().parent().parent() : $(input).parent().parent();
-        if (!isNaN(parseFloat(value0))) {
-            if (type === "quantity" || type === "price") {
-                if (type === "quantity") {
-                    value1 = parentTr.find("input.item_price").val();
-                } else {
-                    value1 = parentTr.find("input.item_quantity").val();
-                }
-
-                if (!isNaN(parseFloat(value1))) {
-                    let sum = parseFloat(value1) * parseFloat(value0);
-                    parentTr.find("input.item_sum").val(sum);
-                    func_calc_sum();
-                }
-            } else {
-                func_calc_sum();
-            }
-        }
-    }
-
-    function func_calc_sum() {
-        var sum = 0;
-
-        $("#tb_product_sale_items tr td input.item_sum").each(function () {
-            let itemSum = $(this).val();
-            if (!isNaN(parseFloat(itemSum))) sum += parseFloat(itemSum);
-        });
-
-        let bonus = $("#product_sale_bonus").val();
-        if (!isNaN(parseFloat(bonus))) sum -= parseInt((parseFloat(bonus) * sum) / 100);
-
-        if (sum < 20000) {
-            sum += 2000;
-        }
-
-        $("#product_sale_sum_price").val(sum);
-    }
-
-    function reset_input_vals(tr) {
-        $("#product_sale_sum_price").val("");
-        tr.find("input.item_quantity").val("");
-        tr.find("input.item_sum").val("");
     }
 
     var selected_map = null, selected_marker;

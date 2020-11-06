@@ -37,7 +37,7 @@ mn:
       i_type:
         using: Хэрэглэх заавар
         installation: Угсарах заавар
-        washing: Угаас заавар
+        washing: Угаах заавар
     product_package:
       package: Баглаа, боодол
       bag:
@@ -148,15 +148,6 @@ mn:
         user_remove: Хэрэглэгч устгасан
         to_archive: Хариулаагүй
         auto_phone: MRP бүртгэсэн
-    product_sale_call:
-      status:
-        st_leave: Дуусгаагүй
-        st_order: Захиалга
-        st_order_info: Захиалгын мэдээлэл
-        st_pro_info: Барааны мэдээлэл
-        st_staff: Дотоод ажилтан
-        st_return: Буцаалт, солилт
-        st_complaint: Гомдол
     location:
       distance:
         distance_a: A
@@ -539,7 +530,8 @@ mn:
         note: Тайлбар
       product_sale_call:
         phone: Утас
-        status: Төлөв
+        status_id: Төлөв
+        status_sub_id: Дэд төлөв
         message: Нэмэлт тайлбар
         sum_price: Нийт үнэ
         product_call_items: Бараанууд

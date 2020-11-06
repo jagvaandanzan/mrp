@@ -1,0 +1,51 @@
+<% if sale_calls.present? %>
+  <div class="row">
+    <div class="col-sm-12">
+      <h4><%= t('activerecord.models.product_sale_call') %></h4>
+      <table class="table table-hover table-bordered">
+        <tr>
+          <th><%= t('activerecord.attributes.product_sale_call.phone') %></th>
+          <th><%= t('activerecord.attributes.product.code') %></th>
+          <th><%= t('activerecord.attributes.product_call_item.product_id') %></th>
+          <th><%= t('activerecord.attributes.product_call_item.feature_item_id') %></th>
+          <th><%= t('activerecord.attributes.product_call_item.quantity') %></th>
+          <th><%= t('activerecord.attributes.product_call_item.sum_price') %></th>
+          <th><%= t('activerecord.attributes.product_sale_call.message') %></th>
+          <th><%= t('activerecord.attributes.product_sale_call.created_at') %></th>
+          <th><%= t('activerecord.attributes.product_sale_call.status_id') %></th>
+        </tr>
+        <tbody>
+        <% sale_calls.each {|sale_call| %>
+          <%= render 'sale_call_row', sale_call: sale_call %>
+        <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
+<% if product_sales.present? %>
+  <div class="row">
+    <div class="col-sm-12">
+      <h4><%= t('activerecord.models.product_sale') %></h4>
+      <table class="table table-hover table-bordered">
+        <tr>
+          <th><%= t('activerecord.attributes.product_sale.product_sale_item') %></th>
+          <th><%= t('activerecord.attributes.product_sale.phone') %></th>
+          <th><%= t('activerecord.attributes.product_sale.delivery_end') %></th>
+          <th><%= t('activerecord.attributes.product_sale.location_id') %></th>
+          <th><%= t('activerecord.attributes.product_sale.loc_note') %></th>
+          <th><%= t('activerecord.attributes.product_sale.sum_price') %></th>
+          <th><%= t('activerecord.attributes.product_sale.status_id') %></th>
+          <th><%= t('activerecord.attributes.product_sale.created_operator_id') %></th>
+          <th><%= t('activerecord.attributes.product_sale.approved_operator_id') %></th>
+          <th><%= t('activerecord.attributes.product_sale.approved_date') %></th>
+        </tr>
+        <tbody>
+        <% product_sales.each {|product_sale| %>
+          <%= render 'operators/product_sales/product_sale', product_sale: product_sale %>
+        <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>

@@ -84,6 +84,7 @@ mn:
     product_supply_ordering: Бараа худалдан авалт
     color: Өнгө
     product_sample: Дээж бараа
+    show_history: Түүх харах
   app_name: “MRP”
   app_short_name: M
   alert:

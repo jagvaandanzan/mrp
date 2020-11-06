@@ -1,0 +1,4 @@
+<% if @product_sales.present? || @sale_calls.present?%>
+$('#prev-sales-data').html("<%= escape_javascript render(partial: 'operators/product_sale_calls/previous_sale_item', :locals => {product_sales: @product_sales, sale_calls: @sale_calls }) %>")
+$('#prev-sales-modal').modal('show');
+<% end %>

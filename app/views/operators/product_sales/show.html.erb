@@ -212,14 +212,14 @@
                     type: "PATCH",
                     data: "parent_id=" + val + "&status_user_type=<%= @product_sale.status_user_type %>",
                     success: function (data) {
-                        let childrens = data.childrens;
-                        if (childrens !== undefined && childrens.length > 0) {
+                        let subs = data.subs;
+                        if (subs !== undefined && subs.length > 0) {
                             let divSelect =
                                 "<select name='product_sale[status_id]' id=\"status_id\" class='form-control'>" +
                                 "<option value=''>Сонгох</option>";
 
-                            for (var i = 0; i < childrens.length; i++) {
-                                divSelect += '<option value="' + childrens[i]["id"] + '">' + childrens[i]["name"] + '</option>';
+                            for (var i = 0; i < subs.length; i++) {
+                                divSelect += '<option value="' + subs[i]["id"] + '">' + subs[i]["name"] + '</option>';
                             }
                             divSelect += "</select>";
 

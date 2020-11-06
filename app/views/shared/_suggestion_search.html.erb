@@ -1,18 +1,17 @@
 <script>
     $(window).on('load', function () {
-        select_input_press("<%= id %>", "<%= url %>", false);
     });
 
-    function select_input_press(id, url, callEnter) {
-        $('select#' + id).parent().find('.bs-searchbox').find('input').keydown(function (e) {
+    function select_input_press(select, url, callEnter) {
+        select.parent().find('.bs-searchbox').find('input').keydown(function (e) {
             if (e.which === 13) {
                 // e.preventDefault();
-                live_search($(this).val(), id, url);
+                live_search($(this).val(), select.attr('id'), url);
             }
         }).keyup(function (e) {
             if (e.which === 13) {
                 if (callEnter) {
-                    suggestion_search_enter($('select#' + id));
+                    suggestion_search_enter(select);
                 }
                 // e.preventDefault();
             } else if (65 <= e.which && e.which <= 90) { // a-z

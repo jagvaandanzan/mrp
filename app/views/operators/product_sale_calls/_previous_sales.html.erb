@@ -1,0 +1,27 @@
+<div class="modal fade" id="prev-sales-modal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span></button>
+        <h4 class="modal-title">Өмнөх түүх</h4>
+      </div>
+      <div class="box box-info">
+        <%= form_body do %>
+          <div id="prev-sales-data"></div>
+          <div class="modal-footer text-right">
+            <button type="button" class="btn btn-default" data-dismiss="modal"><%= t('controls.button.close') %></button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  #prev-sales-modal table th,
+  #prev-sales-modal table td {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    padding: 4px 6px !important;
+  }
+</style>

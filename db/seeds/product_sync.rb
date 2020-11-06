@@ -1,23 +1,23 @@
-# categories = ProductCategory.sync_nil
-# puts "categories: #{categories.count}"
-# categories.each do |category|
-#   puts "category: #{category.id}"
-#   category.sync_web('post')
-# end
+categories = ProductCategory.with_deleted.sync_nil
+puts "categories: #{categories.count}"
+categories.each do |category|
+  puts "category: #{category.id}"
+  category.sync_web('post')
+end
 
-# filter_groups = CategoryFilterGroup.sync_nil
-# puts "filter_groups: #{filter_groups.count}"
-# filter_groups.each do |filter_group|
-#   puts "filter_group: #{filter_group.id}"
-#   filter_group.sync_web('post')
-# end
+filter_groups = CategoryFilterGroup.sync_nil
+puts "filter_groups: #{filter_groups.count}"
+filter_groups.each do |filter_group|
+  puts "filter_group: #{filter_group.id}"
+  filter_group.sync_web('post')
+end
 
-# filters = CategoryFilter.sync_nil
-# puts "filters: #{filters.count}"
-# filters.each do |filter|
-#   puts "filter: #{filter.id}"
-#   filter.sync_web('post')
-# end
+filters = CategoryFilter.sync_nil
+puts "filters: #{filters.count}"
+filters.each do |filter|
+  puts "filter: #{filter.id}"
+  filter.sync_web('post')
+end
 
 products = Product.sync_nil
 puts "products: #{products.count}"

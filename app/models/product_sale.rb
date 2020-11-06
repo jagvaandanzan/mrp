@@ -7,6 +7,7 @@ class ProductSale < ApplicationRecord
   belongs_to :created_operator, :class_name => "Operator", optional: true
   belongs_to :approved_operator, :class_name => "Operator", optional: true
   belongs_to :salesman_travel, optional: true
+  belongs_to :sale_call, :class_name => "ProductSaleCall"
 
   has_many :product_sale_items
   has_many :product_sale_status_logs

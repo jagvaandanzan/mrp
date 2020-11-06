@@ -7,27 +7,48 @@ class Operators::ProductSalesController < Operators::BaseController
     @phone = params[:phone]
     @start = params[:start]
     @finish = params[:finish]
-
+    cookies[:product_sale_page_number] = params[:page]
     @product_sales = ProductSale.search(@product_name, @start, @finish, @phone, @status_id).page(params[:page])
   end
 
   def new
-    @product_sale = ProductSale.new
-    # Шинэ захиалга үүсгэх үед + товч дарагдсан гарч ирэх
-    @product_sale.product_sale_items.push(ProductSaleItem.new(product: Product.offset(rand(Product.count)).first))
-    time = Time.current
-    @product_sale.delivery_start = time
-    @product_sale.hour_start = time.hour
-    @product_sale.hour_now = time.hour
-    @product_sale.hour_end = time.hour + 2
-    @product_sale.status_user_type = 'operator'
+    if params[:sale_call_id].present?
+      @product_sale = ProductSale.new
+      sale_call = ProductSaleCall.find(params[:sale_call_id])
+      @product_sale.sale_call = sale_call
 
+      total_price = 0
+      sale_call.product_call_items.each do |call_item|
+        sale_item = ProductSaleItem.new(product: call_item.product)
+        if call_item.feature_item.present?
+          sale_item.feature_item = call_item.feature_item
+          sale_item.remainder = ProductBalance.balance(call_item.product_id, call_item.feature_item_id)
+          sale_item.quantity = call_item.quantity.presence || 0
+          sale_item.price = call_item.feature_item.price.presence || 0
+          sum_price = sale_item.price * sale_item.quantity
+          sale_item.sum_price = sum_price
+          total_price += sum_price
+        end
+        @product_sale.product_sale_items << sale_item
+      end
 
-    @product_sale.phone = '99' + 6.times.map {rand(9)}.join
-    @product_sale.main_status_id = 2
-    @product_sale.location = Location.offset(rand(Location.count)).first
-    @product_sale.building_code = 4.times.map {rand(9)}.join
-    @product_sale.loc_note = (4.times.map {rand(9)}.join) +', ' + (4.times.map {rand(9)}.join)
+      @product_sale.sum_price = total_price
+      @product_sale.phone = sale_call.phone
+
+      time = Time.current
+      @product_sale.delivery_start = time
+      @product_sale.hour_start = time.hour
+      @product_sale.hour_now = time.hour
+      @product_sale.hour_end = time.hour + 2
+      @product_sale.status_user_type = 'operator'
+      @product_sale.main_status_id = 2
+      @product_sale.location = Location.offset(rand(Location.count)).first
+      @product_sale.building_code = 4.times.map {rand(9)}.join
+      @product_sale.loc_note = (4.times.map {rand(9)}.join) + ', ' + (4.times.map {rand(9)}.join)
+      @product_sale.money = 0
+    else
+      redirect_to operators_product_sale_calls_path
+    end
   end
 
   def search_locations
@@ -47,8 +68,8 @@ class Operators::ProductSalesController < Operators::BaseController
     if @product_sale.save
       create_log(@product_sale)
       flash[:success] = t('alert.saved_successfully')
-
-      redirect_to action: 'show', id: @product_sale.id
+      redirect_to action: :index
+      # redirect_to action: 'show', id: @product_sale.id
     else
       logger.debug(@product_sale.errors.full_messages)
       render 'new'
@@ -106,22 +127,24 @@ class Operators::ProductSalesController < Operators::BaseController
       subs = ProductSaleStatus.search(params[:parent_id], params[:status_user_type])
     end
 
-    render json: {childrens: subs}
+    render json: {subs: subs}
   end
 
   def get_product_features
     features = []
     price = 0
+    img_url = "/images/orignal/missing.png"
+
     if params[:product_id].present?
-
-      feature_items = ProductFeatureItem.search(params[:product_id])
-
-      feature_items.each do |item|
-        features.push({id: item.id, name: item.name, price: item.price, product: params[:product_id]})
+      product = Product.find(params[:product_id])
+      img_url = product.picture.url(:tumb) if product.picture.present?
+      price = product.price if product.price.present?
+      product.product_feature_items.each do |item|
+        features.push({id: item.id, name: item.name, balance: ProductBalance.balance(product.id, item.id), product: product.id})
       end
     end
 
-    render json: {price: price, childrens: features}
+    render json: {price: price, features: features, tumb: img_url}
   end
 
   def add_location
@@ -176,14 +199,10 @@ class Operators::ProductSalesController < Operators::BaseController
     feature_item_id = params[:feature_item_id]
     product_balance = ProductBalance.balance(params[:product_id], feature_item_id)
     feature_item = ProductFeatureItem.find(feature_item_id)
-    render json: {balance: product_balance, img: feature_item.img.present? ? feature_item.img.url : '/assets/no-image.png', tumb: feature_item.img.present? ? feature_item.img.url(:tumb) : '/assets/no-image.png'}
-  end
-
-  def get_prev_sales
-    @product_sales = ProductSale.search(nil, nil, nil, params[:phone], nil).first(3)
-    respond_to do |format|
-      format.js {render 'previous_sales'}
-    end
+    render json: {balance: product_balance,
+                  price: feature_item.price.presence || 0,
+                  img: feature_item.img.present? ? feature_item.img.url : '/assets/no-image.png',
+                  tumb: feature_item.img.present? ? feature_item.img.url(:tumb) : '/assets/no-image.png'}
   end
 
   def auto
@@ -235,7 +254,7 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def product_sale_params
     params.require(:product_sale)
-        .permit(:phone, :delivery_start, :hour_start, :hour_end, :location_id, :building_code, :loc_note,
+        .permit(:sale_call_id, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :building_code, :loc_note,
                 :sum_price, :money, :paid, :bonus,
                 :main_status_id, :status_id, :status_note, :status_user_type,
                 product_sale_items_attributes: [:id, :product_id, :feature_item_id, :to_see, :quantity, :price, :sum_price, :remainder, :_destroy])

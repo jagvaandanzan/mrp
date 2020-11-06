@@ -1,0 +1,76 @@
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('activerecord.models.product_sale_call') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <%= link_to t('controls.button.edit'), edit_operators_product_sale_call_path(@sale_call), class: 'btn btn-info' %>
+    <%= link_to t('titles.back_to_list'), operators_product_sale_calls_path(page: cookies[:product_sale_call_page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body table-responsive no-padding">
+        <table class="table table-bordered">
+          <tr>
+            <td class="text-right" style="width: 20%"><%= t('activerecord.attributes.product_sale_call.phone') %> :</td>
+            <td><%= @sale_call.phone %></td>
+          </tr>
+          <tr>
+            <td class="text-right"><%= t('activerecord.attributes.product_sale_call.status_id') %> :</td>
+            <td><%= @sale_call.status_name %></td>
+          </tr>
+          <tr>
+            <td class="text-right"><%= t('activerecord.attributes.product_sale_call.product_call_items') %> :</td>
+            <td>
+              <table class="table table-bordered" id="tb_product_call_items">
+                <tr>
+                  <th><%= t('activerecord.attributes.product_feature_item.image') %></th>
+                  <th><%= t('activerecord.attributes.product.code') %></th>
+                  <th><%= t('activerecord.attributes.product_call_item.product_id') %></th>
+                  <th><%= t('activerecord.attributes.product_call_item.feature_item_id') %></th>
+                  <th><%= t('activerecord.attributes.product_call_item.quantity') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
+                </tr>
+                <% @sale_call.product_call_items.each {|item| %>
+                  <tr>
+                    <td class="image">
+                      <% if item.feature_item.present? %>
+                        <%= link_to item.feature_item.img.url, "data-lightbox": "roadtrip" do %>
+                          <%= image_tag item.feature_item.img.url(:tumb), class: 'tumb' %>
+                        <% end %>
+                      <% end %>
+                    </td>
+                    <td class="va-mid"><%= item.product.code %></td>
+                    <td class="va-mid"><%= item.product.name %></td>
+                    <td class="va-mid"><%= item.feature_item.present? ? item.feature_item.name : '' %></td>
+                    <td class="va-mid"><%= item.quantity %></td>
+                    <td class="va-mid"><%= item.price.present? ? get_currency_mn(item.price) : '' %></td>
+                    <td class="va-mid"><%= item.sum_price.present? ? get_currency_mn(item.sum_price) : '' %></td>
+                  </tr>
+                <% } %>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-right"><%= t('activerecord.attributes.product_sale_call.sum_price') %> :</td>
+            <td><%= get_currency_mn @sale_call.sum_price %></td>
+          </tr>
+          <tr class="<%= !@sale_call.status_id.present? || (@sale_call.status_id > 3 && @sale_call.status_id < 7) ? '' : 'none' %>">
+            <td class="text-right"><%= t('activerecord.attributes.product_sale_call.message') %> :</td>
+            <td><%= @sale_call.message %></td>
+          </tr>
+          <tr>
+            <td class="text-right"><%= t('activerecord.attributes.product_sale_call.operator') %> :</td>
+            <td><%= @sale_call.operator.present? ? @sale_call.operator.name : '' %></td>
+          </tr>
+          <tr>
+            <td class="text-right"><%= t('activerecord.attributes.product_sale_call.created_at') %> :</td>
+            <td><%= @sale_call.created_at.strftime("%F %R") %></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  <% end %>
+</div>

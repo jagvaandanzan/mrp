@@ -17,9 +17,12 @@
       <div class="col-md-2 search">
         <%= text_field_tag :product_name, @product_name, {class: 'form-control', placeholder: t('filters.by_product')} %>
       </div>
-
       <div class="col-md-2 search">
         <%= text_field_tag :phone, @phone, {class: 'form-control', placeholder: t('filters.by_phone')} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= f.collection_select :status, ProductCallStatus.parent_nil, :id, :name,
+                                {:selected => @status, :include_blank => t('activerecord.attributes.product_sale_call.status_id')}, {class: 'form-control selectpicker'} %>
       </div>
       <div class="col-md-2 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
@@ -39,30 +42,17 @@
             <table class="table table-hover table-bordered">
               <tr>
                 <th><%= t('activerecord.attributes.product_sale_call.phone') %></th>
-                <th><%= t('activerecord.attributes.product_sale_call.code') %></th>
-                <th><%= t('activerecord.attributes.product_sale_call.quantity') %></th>
+                <th><%= t('activerecord.attributes.product.code') %></th>
+                <th><%= t('activerecord.attributes.product_call_item.product_id') %></th>
+                <th><%= t('activerecord.attributes.product_call_item.feature_item_id') %></th>
+                <th><%= t('activerecord.attributes.product_call_item.quantity') %></th>
+                <th><%= t('activerecord.attributes.product_call_item.sum_price') %></th>
                 <th><%= t('activerecord.attributes.product_sale_call.message') %></th>
                 <th><%= t('activerecord.attributes.product_sale_call.created_at') %></th>
-                <th></th>
+                <th><%= t('activerecord.attributes.product_sale_call.status_id') %></th>
               </tr>
-              <% @sale_calls.each do |p| %>
-                <tr>
-                  <td class="va-mid"><%= p.phone %></td>
-                  <td class="va-mid"><%= p.code %></td>
-                  <td class="va-mid"><%= p.quantity %></td>
-                  <td class="va-mid"><%= p.message %></td>
-                  <td class="va-mid" style="white-space: nowrap"><%= p.created_at.strftime('%F %R') %></td>
-                  <td>
-                    <div class="btn-group">
-                      <%= link_to edit_operators_product_sale_call_path(p), class: 'no-underline' do %>
-                        <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info m-r-10" %>
-                      <% end %>
-                      <%= link_to operators_product_sale_call_path(p), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
-                        <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
-                      <% end %>
-                    </div>
-                  </td>
-                </tr>
+              <% @sale_calls.each do |sale_call| %>
+                <%= render 'sale_call_row', sale_call: sale_call %>
               <% end %>
             </table>
           </div>

@@ -1,3 +1,7 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "form" %>
+<% end %>
+
 <div class="content-wrapper">
   <section class="content-header">
     <h1><%= t('activerecord.models.product_sale_call') + t(@sale_call.persisted? ? 'titles.edit' : 'titles.add') %></h1>
@@ -5,38 +9,76 @@
 
   <section class="content">
     <div class="box box-info">
-      <%= form_with model: @sale_call, url: @sale_call.persisted? ? operators_product_sale_call_path : operators_product_sale_calls_path,
-                    method: @sale_call.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+      <%= form_with model: @sale_call, url: @sale_call.persisted? ? operators_product_sale_call_path : '/operator/product_sale_calls',
+                    method: :patch, local: true, :html => {class: 'form-horizontal', id: 'form_call'} do |f| %>
         <%= form_body do %>
+          <%= f.hidden_field :id %>
+          <%= f.hidden_field :is_web %>
           <div class="form-group">
             <%= f.label :phone, class: 'col-sm-3 control-label' %>
             <div class="col-sm-6 <%= get_error_class(@sale_call, :phone) %>">
               <%= field_errors(@sale_call, :phone) %>
               <%= f.text_field :phone, class: 'form-control', placeholder: t('activerecord.attributes.product_sale_call.phone') %>
             </div>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :code, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@sale_call, :code) %>">
-              <%= field_errors(@sale_call, :code) %>
-              <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product_sale_call.code') %>
+            <div class="col-sm-3">
+              <button id="show_history" type="button" class="btn-default btn"><%= t('titles.show_history') %></button>
             </div>
           </div>
-
-          <div class="form-group">
-            <%= f.label :quantity, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@sale_call, :quantity) %>">
-              <%= field_errors(@sale_call, :quantity) %>
-              <%= f.number_field :quantity, class: 'form-control', min: 0, step: 1, placeholder: t('activerecord.attributes.product_sale_call.quantity') %>
+          <div class="col-md-12 field_div" style="margin-bottom: 12px">
+            <div class="cocoon-nested-form">
+              <div class="<%= get_error_class(@sale_call, :product_call_items) %>">
+                <%= field_errors(@sale_call, :product_call_items) %>
+                <table class="table table-bordered" id="tb_product_call_items">
+                  <tr>
+                    <th><%= t('activerecord.attributes.product_feature_item.image') %></th>
+                    <th><%= t('activerecord.attributes.product.n_name') %></th>
+                    <th><%= t('activerecord.attributes.product_call_item.feature_item_id') %></th>
+                    <th><%= t('activerecord.attributes.product_call_item.quantity') %></th>
+                    <th><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                    <th><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
+                    <th><%= t('activerecord.attributes.product_sale_item.remainder') %></th>
+                    <th width="50px">
+                      <%= link_to_add_association f, :product_call_items, data: {association_insertion_node: '#tb_product_call_items', association_insertion_method: :append} do %>
+                        <%= nested_add_btn('btn_product_call_item') %>
+                      <% end %>
+                    </th>
+                  </tr>
+                  <%= f.fields_for :product_call_items do |m| %>
+                    <%= render 'product_call_item_fields', :f => m %>
+                  <% end %>
+                </table>
+              </div>
             </div>
           </div>
-
+          <div class="form-group" style="margin-top: 8px">
+            <%= f.label :sum_price, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6">
+              <%= f.hidden_field :sum_price %>
+              <%= text_field_tag :sum_price, @sale_call.sum_price.present? ? get_currency_mn(@sale_call.sum_price) : nil, {class: 'form-control field', readonly: true, placeholder: t('activerecord.attributes.product_sale.sum_price')} %>
+            </div>
+          </div>
           <div class="form-group">
+            <%= f.label :status_id, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@sale_call, :status_id) %>">
+              <%= field_errors(@sale_call, :status_id) %>
+              <%= f.collection_select :status_id, ProductCallStatus.parent_nil.by_not_ids([1, 2]), :id, :name,
+                                      {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+            </div>
+          </div>
+          <div class="form-group <%= @sale_call.status_id.present? && (@sale_call.status_id == 9) ? '' : 'none' %>" id="status_sub">
+            <%= f.label :status_sub_id, class: 'col-sm-3 control-label' do %>
+            <% end %>
+            <div class="col-sm-6 <%= get_error_class(@sale_call, :status_sub_id) %>">
+              <%= field_errors(@sale_call, :status_sub_id) %>
+              <%= f.collection_select :status_sub_id, ProductCallStatus.by_parent_id(9), :id, :name,
+                                      {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+            </div>
+          </div>
+          <div class="form-group <%= @sale_call.status_id.present? && (@sale_call.status_id > 3 && @sale_call.status_id < 7) ? '' : 'none' %>" id="status_message">
             <%= f.label :message, class: 'col-sm-3 control-label' %>
             <div class="col-sm-6 <%= get_error_class(@sale_call, :message) %>">
               <%= field_errors(@sale_call, :message) %>
-              <%= f.text_field :message, class: 'form-control', placeholder: t('activerecord.attributes.product_sale_call.message') %>
+              <%= f.text_area :message, class: 'form-control', placeholder: t('activerecord.attributes.product_sale_call.message') %>
             </div>
           </div>
 
@@ -48,23 +90,102 @@
     </div>
   </section>
 </div>
-<%= render 'shared/suggestion_search', id: 'product_sale_call_product_id', url: search_product_path %>
+<%= render 'shared/suggestion_search' %>
+<%= render 'previous_sales' %>
+
 <script>
-    function suggestion_search_enter(select) {
-        func_call_feature_rel(select);
+    $(document).ready(function () {
+        $('#form_call').on('submit', function () {
+            if ($('#product_sale_call_phone').val().length === 0) {
+                alert("Утасны дугаар оруулна уу!");
+                return false;
+            } else {
+                return true;
+            }
+        });
+        $('tr.nested-fields .selectpicker').selectpicker('refresh');
+
+        $('#tb_product_call_items .nested-fields select').each(function () {
+            select_input_press($(this), "<%= search_product_path %>", false);
+        });
+        $('#btn_product_call_item').on('click', function () {
+            setTimeout(set_product_call_item, 300);
+        });
+
+        $('#product_sale_call_status_id').on('change', function () {
+            let st = parseInt($(this).val());
+            auto_save($('#product_sale_call_phone').val(), $(this).val(), false);
+            if (st > 3 && st < 7) {
+                $('#status_message').removeClass('none');
+            } else {
+                $('#status_message').addClass('none');
+            }
+            if (st === 9) {
+                $('#status_sub').removeClass('none');
+            } else {
+                $('#status_sub').addClass('none');
+            }
+        });
+        $('#product_sale_call_phone').keyup(function () {
+            let phone = $(this).val();
+            if (!isNaN(parseInt(phone)) && phone.length === 8) {
+                auto_save(phone, $('#product_sale_call_status_id').val(), true);
+            }
+        });
+        $('#show_history').on('click', function () {
+            let phone = $('#product_sale_call_phone').val();
+            if (!isNaN(parseInt(phone)) && phone.length === 8) {
+                previous_sale(phone);
+            }
+        });
+    });
+
+    function set_product_call_item() {
+        let last_tr = "#tb_product_call_items .nested-fields:last";
+        $(last_tr).find('.selectpicker').selectpicker('refresh');
+        select_input_press($(last_tr + ' select:first'), "<%= search_product_path %>", true);
     }
 
-    function func_call_feature_rel(select) {
-        let product_id = $(select).val();
-        $("#product_sale_call_quantity").val("");
+    function reset_input_vals(tr) {
+        $("#total_price").val("");
+        tr.find("input.item_sum").val("");
+        tr.find("input.item_price").val("");
+    }
 
+    function func_change_product(select) {
+        let product_id = $(select).val();
+        let parentTr = select_parent(select);
+        parentTr.find("select.feature_item").html("").selectpicker("refresh");
+        reset_input_vals(parentTr);
         if (valid_id(product_id)) {
             Rails.ajax({
-                url: "<%= get_product_balance_operators_product_sale_calls_path %>",
-                type: "POST",
+                url: "<%= get_product_features_operators_product_sales_path %>",
+                type: "PATCH",
                 data: "product_id=" + product_id,
                 success: function (data) {
-                    $("#product_sale_call_remainder").val(data.balance);
+                    var features = data.features;
+                    if (features !== undefined && features.length > 0) {
+                        var divSelect = "<option value=''>Сонгох</option>";
+                        var first_feature_id = 0;
+                        for (var i = 0; i < features.length; i++) {
+                            if (i === 0) {
+                                first_feature_id = features[i]["id"];
+                            }
+                            divSelect += '<option value="' + features[i]["id"] + '" data-subtext="' + features[i]["balance"] + '" product="' + features[i]["product"] + '" >' + features[i]["name"] + '</option>';
+                        }
+                        let select = parentTr.find("select.feature_item");
+                        select.html(divSelect);
+                        if (features.length === 1) {
+                            select.val(first_feature_id);
+                            func_change_feature(select);
+                        }
+                        select.selectpicker("refresh");
+                    }
+                    parentTr.find('.image').html("<a href='<%= ENV['WEB_DOMAIN'] %>products/" + product_id + "' target='_blank'> <img src='" + data.tumb + "', class='tumb'></a>");
+                    parentTr.find("input.item_price").attr('price', data.price).val(getDecimalPay(data.price));
+
+
+                    calc_total_price();
                 },
                 error: function (data) {
                     console.log(data);
@@ -73,4 +194,72 @@
         }
     }
 
+    function func_change_feature(select) {
+        let product_id = $(select).find('option:selected').attr("product");
+        let parentTr = select_parent(select);
+        reset_input_vals(parentTr);
+
+        let feature_id = $(select).val();
+        if (valid_id(feature_id) && valid_id(product_id)) {
+            Rails.ajax({
+                url: "<%= get_product_balance_operators_product_sales_path %>",
+                type: "POST",
+                data: "product_id=" + product_id + "&feature_item_id=" + feature_id,
+                success: function (data) {
+                    parentTr.find("input.item_price").val(data.price);
+                    parentTr.find("input.item_price_show").val(getDecimalPay(data.price));
+                    parentTr.find('.remainder').val(data.balance);
+                    parentTr.find('.image a').html("<img src='" + data.tumb + "', class='tumb'>");
+                    calc_total_price();
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+    }
+
+    function calc_total_price() {
+        var total_price = 0;
+        $('#tb_product_call_items tr.nested-fields').each(function () {
+            let tr = $(this);
+            let quantity = tr.find('.item_quantity').val();
+            if (quantity !== undefined && quantity.length > 0) {
+                let price = tr.find('.item_price').val();
+                let sum_price = price * parseInt(quantity);
+                tr.find('.item_sum').val(sum_price);
+                tr.find('.item_sum_show').val(getDecimalPay(sum_price));
+                total_price += sum_price;
+            }
+        });
+        $('#product_sale_call_sum_price').val(total_price);
+        $('#sum_price').val(getDecimalPay(total_price));
+    }
+
+    function auto_save(phone, status, call_prev) {
+        <% unless  @sale_call.persisted? %>
+        Rails.ajax({
+            url: "<%= auto_save_operators_product_sale_calls_path %>",
+            type: "POST",
+            data: "id=" + $('#product_sale_call_id').val() + "&phone=" + phone + "&status_id=" + status,
+            success: function (data) {
+                if (data.id > 0) {
+                    $('#form_call').attr('action', '/operator/product_sale_calls/' + data.id);
+                    $('#product_sale_call_id').val(data.id);
+                    if (call_prev) {
+                        previous_sale(phone);
+                    }
+                }
+            }
+        });
+        <% end %>
+    }
+
+    function previous_sale(phone) {
+        Rails.ajax({
+            url: "<%= get_prev_sales_operators_product_sale_calls_path %>",
+            type: "POST",
+            data: "phone=" + phone + "&id=" + $('#product_sale_call_id').val()
+        });
+    }
 </script>

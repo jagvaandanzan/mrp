@@ -1,0 +1,37 @@
+<% if sale_call.product_call_items.present? %>
+  <% call_items = sale_call.product_call_items
+     len = call_items.size
+     call_item = call_items.first %>
+  <tr>
+    <td class="va-mid text-center" rowspan="<%= len %>"><%= link_to sale_call.phone, operators_product_sale_call_path(sale_call) %></td>
+    <td class="va-mid"><%= call_item.product.code %></td>
+    <td class="va-mid"><%= call_item.product.name %></td>
+    <td class="va-mid"><%= call_item.feature_item.present? ? call_item.feature_item.name : '' %></td>
+    <td class="va-mid"><%= call_item.quantity %></td>
+    <td class="va-mid" rowspan="<%= len %>"><%= get_currency_mn sale_call.sum_price %></td>
+    <td class="va-mid" rowspan="<%= len %>"><%= sale_call.message %></td>
+    <td class="va-mid no-wrap" rowspan="<%= len %>"><%= sale_call.created_at.strftime('%F %R') %></td>
+    <td class="va-mid" rowspan="<%= len %>"><%= sale_call.status_name %></td>
+  </tr>
+  <% call_items.each_with_index {|item, index|
+    if index > 0 %>
+      <tr>
+        <td class="va-mid"><%= item.product.code %></td>
+        <td class="va-mid"><%= item.product.name %></td>
+        <td class="va-mid"><%= item.feature_item.name %></td>
+        <td class="va-mid"><%= item.quantity %></td>
+      </tr>
+    <% end } %>
+<% else %>
+  <tr>
+    <td class="va-mid text-center"><%= link_to sale_call.phone, operators_product_sale_call_path(sale_call) %></td>
+    <td class="va-mid"><%= sale_call.code %></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td class="va-mid"><%= sale_call.message %></td>
+    <td class="va-mid no-wrap"><%= sale_call.created_at.strftime('%F %R') %></td>
+    <td class="va-mid"><%= sale_call.status_name %></td>
+  </tr>
+<% end %>

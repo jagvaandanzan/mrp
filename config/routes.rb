@@ -191,7 +191,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :product_sale_calls, only: [:index, :create, :new, :edit, :update, :show] do
+    resources :product_sale_calls, only: [:index, :new, :edit, :update, :show] do
       collection do
         post 'auto_save'
         post 'get_prev_sales'

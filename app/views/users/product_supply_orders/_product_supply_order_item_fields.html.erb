@@ -17,7 +17,7 @@
 <script>
     $(document).ready(function () {
         $('.selectpicker').selectpicker('refresh');
-        select_input_press($('tr.nested-fields:last select:first').attr('id'), "<%= search_product_path %>", false);
+        select_input_press($('tr.nested-fields:last select:first'), "<%= search_product_path %>", false);
     });
 
 </script>
