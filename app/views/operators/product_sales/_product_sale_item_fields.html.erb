@@ -1,10 +1,6 @@
 <tr class="nested-fields">
-  <th class="image">
-    <% if f.object.feature_item.present? %>
-      <%= link_to f.object.feature_item.img.url, "data-lightbox": "roadtrip" do %>
-        <%= image_tag f.object.feature_item.img.url(:tumb), class: 'tumb' %>
-      <% end %>
-    <% end %>
+  <th class="image va-mid">
+    <%= product_img_web_link(f.object) %>
   </th>
   <td class="va-mid">
     <%= field_errors f.object, :product_id %>

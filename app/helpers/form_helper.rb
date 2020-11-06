@@ -82,4 +82,18 @@ module FormHelper
     ('<i class="fa fa' + (checked ? "-check text-success" : "-times text-danger") + '" style="font-size: 16px;"></i>').html_safe
   end
 
+  def product_img_web_link(object)
+    if object.product.present?
+      link_to "#{ENV['WEB_DOMAIN']}products/#{object.product_id}", target: '_blank' do
+        if object.feature_item.present?
+          image_tag object.feature_item.img.url(:tumb), class: 'tumb'
+        else
+          t('controls.link.web')
+        end
+      end
+    else
+      ""
+    end
+  end
+
 end

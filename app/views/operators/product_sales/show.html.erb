@@ -136,15 +136,8 @@
                 <tbody>
                 <% @product_sale.product_sale_items.each do |i| %>
                   <tr>
-                    <td>
-                      <% feature_item = i.feature_item
-                        if feature_item.img.present? %>
-                        <%= link_to feature_item.img.url, "data-lightbox": "roadtrip" do %>
-                          <%= image_tag feature_item.img.url(:tumb), class: 'tumb' %>
-                        <% end %>
-                      <% else %>
-                        <%= image_tag 'no-image.png', class: 'tumb' %>
-                      <% end %>
+                    <td class="va-mid">
+                      <%= product_img_web_link(i) %>
                     </td>
                     <td class="va-mid"><%= i.product.name_with_code %></td>
                     <td class="va-mid"><%= i.feature_item.name %></td>

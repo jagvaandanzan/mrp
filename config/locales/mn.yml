@@ -36,6 +36,7 @@ mn:
       forget_password: Нууц үгээ мартсан
       facebook: fb post
       photo: Зураг линк
+      web: Веб линк
   titles:
     resetting_a_password: Нууц үг шинэчлэлт
     reset_password: Нууц үг сэргээх

@@ -35,15 +35,11 @@
                 </tr>
                 <% @sale_call.product_call_items.each {|item| %>
                   <tr>
-                    <td class="image">
-                      <% if item.feature_item.present? %>
-                        <%= link_to item.feature_item.img.url, "data-lightbox": "roadtrip" do %>
-                          <%= image_tag item.feature_item.img.url(:tumb), class: 'tumb' %>
-                        <% end %>
-                      <% end %>
+                    <td class="image" class="va-mid">
+                      <%= product_img_web_link(item) %>
                     </td>
-                    <td class="va-mid"><%= item.product.code %></td>
-                    <td class="va-mid"><%= item.product.name %></td>
+                    <td class="va-mid"><%= item.product.present? ? item.product.code : '' %></td>
+                    <td class="va-mid"><%= item.product.present? ? item.product.name : '' %></td>
                     <td class="va-mid"><%= item.feature_item.present? ? item.feature_item.name : '' %></td>
                     <td class="va-mid"><%= item.quantity %></td>
                     <td class="va-mid"><%= item.price.present? ? get_currency_mn(item.price) : '' %></td>
