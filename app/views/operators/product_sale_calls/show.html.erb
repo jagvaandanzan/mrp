@@ -57,7 +57,7 @@
             <td class="text-right"><%= t('activerecord.attributes.product_sale_call.sum_price') %> :</td>
             <td><%= get_currency_mn @sale_call.sum_price %></td>
           </tr>
-          <tr class="<%= !@sale_call.status_id.present? || (@sale_call.status_id > 3 && @sale_call.status_id < 7) ? '' : 'none' %>">
+          <tr class="<%= @sale_call.status_id == 1 || (@sale_call.status_id > 3 && @sale_call.status_id < 7) ? '' : 'none' %>">
             <td class="text-right"><%= t('activerecord.attributes.product_sale_call.message') %> :</td>
             <td><%= @sale_call.message %></td>
           </tr>
