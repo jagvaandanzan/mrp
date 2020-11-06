@@ -78,8 +78,11 @@ class ProductSaleCall < ApplicationRecord
   end
 
   def set_items
-    product_call_item = ProductCallItem.new(product_sale_call: self, product: Product.find_by_code(code))
-    product_call_item.save(validate: false)
+    product = Product.find_by_code(code)
+    if product.present?
+      product_call_item = ProductCallItem.new(product_sale_call: self, product: product)
+      product_call_item.save(validate: false)
+    end
   end
 
   def sent_itoms
