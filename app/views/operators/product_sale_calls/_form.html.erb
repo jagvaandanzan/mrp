@@ -16,7 +16,8 @@
           <%= f.hidden_field :is_web %>
           <div class="form-group">
             <%= f.label :phone, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@sale_call, :phone) %>">
+            <div id="phone" class="col-sm-6 <%= get_error_class(@sale_call, :phone) %>">
+              <small class="text-danger none" id="order_has_already"><%= t('alert.order_has_already') %></small>
               <%= field_errors(@sale_call, :phone) %>
               <%= f.text_field :phone, class: 'form-control', placeholder: t('activerecord.attributes.product_sale_call.phone') %>
             </div>
@@ -65,7 +66,7 @@
                                       {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
             </div>
           </div>
-          <div class="form-group <%= @sale_call.status_id.present? && (@sale_call.status_id == 9) ? '' : 'none' %>" id="status_sub">
+          <div class="form-group <%= @sale_call.status_id.present? && (@sale_call.status_id == 7) ? '' : 'none' %>" id="status_sub">
             <%= f.label :status_sub_id, class: 'col-sm-3 control-label' do %>
             <% end %>
             <div class="col-sm-6 <%= get_error_class(@sale_call, :status_sub_id) %>">
@@ -97,7 +98,7 @@
     $(document).ready(function () {
         $('#form_call').on('submit', function () {
             if ($('#product_sale_call_phone').val().length === 0) {
-                alert("Утасны дугаар оруулна уу!");
+                alert("<%= t('alert.enter_phone_number') %>");
                 return false;
             } else {
                 return true;
@@ -120,7 +121,7 @@
             } else {
                 $('#status_message').addClass('none');
             }
-            if (st === 9) {
+            if (st === 7) {
                 $('#status_sub').removeClass('none');
             } else {
                 $('#status_sub').addClass('none');
@@ -130,6 +131,7 @@
             let phone = $(this).val();
             if (!isNaN(parseInt(phone)) && phone.length === 8) {
                 auto_save(phone, $('#product_sale_call_status_id').val(), true);
+                check_sale_order(phone);
             }
         });
         $('#show_history').on('click', function () {
@@ -260,6 +262,20 @@
             url: "<%= get_prev_sales_operators_product_sale_calls_path %>",
             type: "POST",
             data: "phone=" + phone + "&id=" + $('#product_sale_call_id').val()
+        });
+    }
+
+    function check_sale_order(phone) {
+        Rails.ajax({
+            url: "<%= check_sale_order_operators_product_sale_calls_path %>",
+            type: "POST",
+            data: "phone=" + phone,
+            success: function (data) {
+                if (data.is_ordered === true) {
+                    $('#phone').addClass('has-error');
+                    $('#order_has_already').removeClass('none');
+                }
+            }
         });
     }
 </script>

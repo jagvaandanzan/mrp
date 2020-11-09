@@ -17,7 +17,6 @@ class ProductSaleCall < ApplicationRecord
 
   with_options :if => Proc.new {|m| m.is_web.present?} do
     validates :status_id, presence: true
-    validate :check_phone_sale_status
   end
 
   with_options :if => Proc.new {|m| m.is_web.present? && m.status_id.present? && m.status_id > 3 && m.status_id < 7} do
@@ -27,7 +26,7 @@ class ProductSaleCall < ApplicationRecord
     validates :product_call_items, length: {minimum: 1}
   end
 
-  with_options :if => Proc.new {|m| m.is_web.present? && m.status_id.present? && m.status_id == 9} do
+  with_options :if => Proc.new {|m| m.is_web.present? && m.status_id.present? && m.status_id == 7} do
     validates :status_sub_id, presence: true
   end
 
@@ -46,6 +45,18 @@ class ProductSaleCall < ApplicationRecord
     where("status_id NOT IN (?)", ids)
   }
 
+  scope :by_operator_id, ->(id) {
+    where(operator_id: id)
+  }
+
+  scope :by_phone, ->(phone) {
+    where(phone: phone)
+  }
+
+  scope :by_status_id, ->(id) {
+    where(status_id: id)
+  }
+
   scope :search, ->(start, finish, phone, code_name, status) {
     items = order(created_at: :desc)
     items = items.where('phone LIKE :value', value: "%#{phone}%") if phone.present?
@@ -59,7 +70,7 @@ class ProductSaleCall < ApplicationRecord
 
   def status_name
     if status_id.present?
-      if status_id == 9
+      if status_id == 7
         "#{status.name} -- #{status_sub.name}"
       else
         "#{status.name}"

@@ -98,6 +98,8 @@ mn:
     send_successfully: Амжилттай илгээлээ
     to_archive: Амжилттай шилжлээ
     downloaded_successfully: Амжилттай %{count} татагдлаа
+    enter_phone_number: Утасны дугаар оруулна уу!
+    order_has_already: Баталгаажсан захиалга үүссэн байна!
   are_you_sure: "Та устгахдаа итгэлтэй байна уу ?"
   are_you_update: "Хадгалах уу ?"
   are_sure_change: "Өөрчлөх үү ?"

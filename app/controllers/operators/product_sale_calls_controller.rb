@@ -11,7 +11,7 @@ class Operators::ProductSaleCallsController < Operators::BaseController
     @sale_calls = if @status.present?
                     ProductSaleCall.search(@start, @finish, @phone, @product_name, @status).page(params[:page])
                   else
-                    ProductSaleCall.by_status_not_ids([3, 7, 8])
+                    ProductSaleCall.by_status_not_ids([3])
                         .search(@start, @finish, @phone, @product_name, @status).page(params[:page])
                   end
   end
@@ -56,7 +56,10 @@ class Operators::ProductSaleCallsController < Operators::BaseController
       sale_call = if params[:id].present?
                     ProductSaleCall.find(params[:id])
                   else
-                    ProductSaleCall.new(status_id: 2)
+                    sale = ProductSaleCall.by_status_id(2)
+                               .by_phone(params[:phone])
+                               .by_operator_id(current_operator.id)
+                    sale.present? ? sale.first : ProductSaleCall.new(status_id: 2)
                   end
       sale_call.is_web = true
       sale_call.operator = current_operator
@@ -79,6 +82,11 @@ class Operators::ProductSaleCallsController < Operators::BaseController
     respond_to do |format|
       format.js {render 'previous_sales'}
     end
+  end
+
+  def check_sale_order
+    product_sale = ProductSale.search(nil, nil, nil, params[:phone], 2).first(1)
+    render json: {is_ordered: product_sale.present?}
   end
 
   private

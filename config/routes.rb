@@ -195,6 +195,7 @@ Rails.application.routes.draw do
       collection do
         post 'auto_save'
         post 'get_prev_sales'
+        post 'check_sale_order'
       end
     end
 
