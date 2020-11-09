@@ -63,10 +63,10 @@ class Operators::ProductSalesController < Operators::BaseController
   def create
     @product_sale = ProductSale.new(product_sale_params)
     @product_sale.created_operator = current_operator
+    @product_sale.operator = current_operator
     check_approved(@product_sale)
 
     if @product_sale.save
-      create_log(@product_sale)
       flash[:success] = t('alert.saved_successfully')
       redirect_to action: :index
       # redirect_to action: 'show', id: @product_sale.id
@@ -80,6 +80,10 @@ class Operators::ProductSalesController < Operators::BaseController
     @product_sale.status_user_type = 'operator'
     @product_sale.hour_start = @product_sale.delivery_start.hour
     @product_sale.hour_end = @product_sale.delivery_end.hour
+
+    if params[:rc].present?
+      @product_sale.main_status = @product_sale.status = ProductSaleStatus.find_by_alias("return_change")
+    end
   end
 
   def destroy
@@ -91,9 +95,9 @@ class Operators::ProductSalesController < Operators::BaseController
   def update
     @product_sale.attributes = product_sale_params
     check_approved(@product_sale)
+    @product_sale.operator = current_operator
 
     if @product_sale.save
-      create_log(@product_sale)
       flash[:success] = t('alert.info_updated')
       redirect_to action: :index
     else
@@ -104,10 +108,10 @@ class Operators::ProductSalesController < Operators::BaseController
   def update_status
     @product_sale.update_status = true
     @product_sale.attributes = params.require(:product_sale).permit(:main_status_id, :status_id, :status_note, :status_user_type)
+    @product_sale.operator = current_operator
     check_approved(@product_sale)
 
     if @product_sale.save
-      create_log(@product_sale)
       flash[:success] = t('alert.info_updated')
       redirect_to action: :index
     else
@@ -229,15 +233,6 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def set_product_sale
     @product_sale = ProductSale.find(params[:id])
-  end
-
-  def create_log(product_sale)
-    product_sale_status_log = ProductSaleStatusLog.new
-    product_sale_status_log.product_sale = product_sale
-    product_sale_status_log.operator = current_operator
-    product_sale_status_log.status = product_sale.status
-    product_sale_status_log.note = product_sale.status_note
-    product_sale_status_log.save
   end
 
   def check_approved(product_sale)

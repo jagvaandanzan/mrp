@@ -12,6 +12,7 @@
   </section>
 
   <div class="action-buttons">
+    <%= link_to t('controls.button.return_change'), edit_operators_product_sale_path(@product_sale, rc: true), class: 'btn btn-warning' %>
     <%= link_to t('controls.button.edit'), edit_operators_product_sale_path(@product_sale), class: 'btn btn-info' %>
     <%= link_to t('controls.button.delete'), operators_product_sale_path(@product_sale), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <%= link_to t('titles.back_to_list'), operators_product_sales_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
@@ -114,8 +115,9 @@
             <div class="col-md-4 field_div">
               <div class="div_input">
                 <b><%= t('activerecord.attributes.product_sale.money') %>:</b> <%= @product_sale.money_i18n %>
-                <% if @product_sale.paid.present?%>
-                , <b><%= t('activerecord.attributes.product_sale.paid') %>:</b> <%= get_currency_mn(@product_sale.paid) %>
+                <% if @product_sale.paid.present? %>
+                  , <b><%= t('activerecord.attributes.product_sale.paid') %>
+                :</b> <%= get_currency_mn(@product_sale.paid) %>
                 <% end %>
               </div>
             </div>
@@ -124,7 +126,7 @@
               <table style="background: white;" class="table table-bordered">
                 <thead>
                 <tr>
-                  <th style="width: 100px"><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
+                  <th style="width: 100px"><%= t('activerecord.attributes.product_feature_item.image') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.to_see') %></th>
@@ -141,7 +143,9 @@
                     </td>
                     <td class="va-mid"><%= i.product.name_with_code %></td>
                     <td class="va-mid"><%= i.feature_item.name %></td>
-                    <td class="va-mid"><% if i.to_see %> <i class="fa fa-check"></i> <% end %></td>
+                    <td class="va-mid">
+                      <% if i.to_see %> <i class="fa fa-check"></i>
+                      <% end %></td>
                     <td class="va-mid"><%= i.quantity %></td>
                     <td class="va-mid"><%= get_currency_mn(i.price) %></td>
                     <td class="va-mid"><%= get_currency_mn(i.sum_price) %></td>
@@ -153,7 +157,63 @@
           </div>
         <% end %>
 
-
+        <% if @product_sale.product_sale_exchanges.present? %>
+          <div class="col-md-12 group_div m-t-20">
+            <div class="col-md-12 field_div">
+              <b><%= t('activerecord.attributes.product_sale.product_sale_exchanges') %></b>
+            </div>
+            <div style="clear: both"></div>
+            <div class="col-md-12 field_div">
+              <table style="background: white;" class="table table-bordered">
+                <thead>
+                <tr>
+                  <th colspan="6">Байсан бараа</th>
+                  <th colspan="5">Сольсон бараа</th>
+                </tr>
+                <tr>
+                  <th style="width: 100px"><%= t('activerecord.attributes.product_feature_item.image') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_exchange.e_type') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                  <th style="width: 100px"><%= t('activerecord.attributes.product_feature_item.image') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_exchange.operator') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_exchange.created_at') %></th>
+                </tr>
+                </thead>
+                <tbody>
+                <% @product_sale.product_sale_exchanges.by_exchange_nil.each do |e| %>
+                  <tr>
+                    <td class="va-mid"><%= product_img_web_link(e) %></td>
+                    <td class="va-mid"><%= e.e_type_i18n %></td>
+                    <td class="va-mid"><%= e.product.name_with_code %></td>
+                    <td class="va-mid"><%= e.feature_item.name %></td>
+                    <td class="va-mid"><%= e.quantity %></td>
+                    <td class="va-mid"><%= get_currency_mn(e.price) %></td>
+                    <% if e.to_exchange.present?
+                         t = e.to_exchange %>
+                      <td class="va-mid"><%= product_img_web_link(t) %></td>
+                      <td class="va-mid"><%= t.product.name_with_code %></td>
+                      <td class="va-mid"><%= t.feature_item.name %></td>
+                      <td class="va-mid"><%= t.quantity %></td>
+                      <td class="va-mid"><%= get_currency_mn(t.price) %></td>
+                    <% else %>
+                    <td colspan="5"></td>
+                    <% end %>
+                    <td class="va-mid"><%= e.operator.name %></td>
+                    <td class="va-mid"><%= e.created_at.strftime('%F %R') %></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        <% end %>
         <% if @product_sale.product_sale_status_logs.present? %>
           <div class="col-md-12 group_div m-t-20">
             <div class="col-md-12 field_div">

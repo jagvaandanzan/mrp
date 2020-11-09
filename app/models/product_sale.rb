@@ -11,17 +11,19 @@ class ProductSale < ApplicationRecord
 
   has_many :product_sale_items
   has_many :product_sale_status_logs
+  has_many :product_sale_exchanges
   has_one :salesman_travel_route, dependent: :destroy
 
   accepts_nested_attributes_for :product_sale_items, allow_destroy: true
 
   enum money: {cash: 0, account: 1, mixed: 2}
 
-  attr_accessor :hour_now, :hour_start, :hour_end, :status_user_type, :update_status
+  attr_accessor :hour_now, :hour_start, :hour_end, :status_user_type, :update_status, :operator
 
   before_validation :validate_status
   before_validation :set_sum_price
   before_save :set_defaults
+  before_save :create_log
 
   with_options :if => Proc.new {|m| m.update_status == nil} do
     validates_numericality_of :hour_end, greater_than: Proc.new(&:hour_start)
@@ -123,4 +125,11 @@ class ProductSale < ApplicationRecord
       self.errors.add(:product_sale_items, :taken_feature_rel)
     end
   end
+
+  def create_log
+    self.product_sale_status_logs << ProductSaleStatusLog.new(operator: operator,
+                                                              status: status,
+                                                              note: status_note)
+  end
+
 end

@@ -16,6 +16,7 @@ mn:
       create: Шинээр нэмэх
       show: Харах
       edit: Засах
+      return_change: Буцаалт, солилт
       delete: Устгах
       search: Хайлт
       searching: Хайх
