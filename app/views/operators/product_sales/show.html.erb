@@ -39,10 +39,13 @@
                 </div>
               </div>
               <div class="row">
+                <div class="col-md-3 field_div">
+                  <b><%= t('activerecord.attributes.product_sale.country') %>:</b> <%= yes_no @product_sale.country %>
+                </div>
                 <div class="col-md-6 field_div">
                   <b><%= t('activerecord.attributes.product_sale.loc_note') %>:</b> <%= @product_sale.loc_note %>
                 </div>
-                <div class="col-md-6 field_div">
+                <div class="col-md-3 field_div">
                   <b><%= t('activerecord.attributes.product_sale.building_code') %>
                     :</b> <%= @product_sale.building_code %>
                 </div>

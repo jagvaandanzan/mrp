@@ -39,6 +39,11 @@ class Location < ApplicationRecord
     items.order(:name)
   }
 
+  scope :search_by_country, ->() {
+    where(country: true)
+        .order(:name)
+  }
+
   def full_name
     loc_khoroo.loc_district.name + ", " + loc_khoroo.name + ", " + name
   end

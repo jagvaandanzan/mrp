@@ -26,6 +26,8 @@ class CreateNotifications < ActiveRecord::Migration[5.2]
     # remove_reference :product_sale_calls, :product
     # remove_column :product_sale_calls, :quantity
     # add_reference :product_sales, :sale_call, foreign_key: {to_table: :product_sale_calls}, after: 'status_note'
-    add_column :product_call_statuses, :alias, :string, after: 'name'
+    # add_column :product_call_statuses, :alias, :string, after: 'name'
+    add_column :locations, :country, :boolean, after: 'distance'
+    add_column :product_sales, :country, :boolean, after: 'location_id', default: false
   end
 end

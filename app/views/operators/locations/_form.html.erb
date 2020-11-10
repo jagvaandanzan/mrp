@@ -35,6 +35,13 @@
             </div>
           </div>
           <div class="form-group">
+            <%= f.label :country, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@location, :country) %>">
+              <%= field_errors(@location, :country) %>
+              <%= f.check_box :country %>
+            </div>
+          </div>
+          <div class="form-group">
             <%= f.label :latitude, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@location, :latitude) %>">
               <%= field_errors(@location, :latitude) %>

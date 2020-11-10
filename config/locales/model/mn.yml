@@ -247,6 +247,7 @@ mn:
         locations: Байршил
         loc_khoroo_id: Хороо/сум
         distance: Бүс
+        country: Орон нутаг
       loc_district:
         name: Нэр
       loc_khoroo:
@@ -502,8 +503,9 @@ mn:
         hour_end: Хүргэх цаг
         phone: Утас
         location_id: Байршил
+        country: Орон нутаг
         building_code: Орцны код
-        loc_note: Хаяг тайлбар
+        loc_note: Орц, давхар, тоот
         delivery_date: Хүргэсэн огноо
         payment_delivery: Хүргэлтийн төлбөр
         money: Төлбөрийн хэлбэр

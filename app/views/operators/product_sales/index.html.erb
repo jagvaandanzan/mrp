@@ -51,7 +51,6 @@
                 <th><%= t('activerecord.attributes.product_sale.sum_price') %></th>
                 <th><%= t('activerecord.attributes.product_sale.status_id') %></th>
                 <th><%= t('activerecord.attributes.product_sale.created_operator_id') %></th>
-                <th><%= t('activerecord.attributes.product_sale.approved_operator_id') %></th>
                 <th><%= t('activerecord.attributes.product_sale.approved_date') %></th>
               </tr>
               <% @product_sales.each do |p| %>
@@ -59,12 +58,14 @@
                   <td class="va-mid text-center"><%= link_to p.product_sale_items.count, operators_product_sale_path(p) %></td>
                   <td class="va-mid"><%= link_to p.phone, operators_product_sale_path(p)  %></td>
                   <td class="va-mid" style="white-space: nowrap"><%= p.delivery_time.html_safe %></td>
-                  <td class="va-mid"><%= p.location.full_name %></td>
+                  <td class="va-mid"><%= p.location.full_name %>
+                    <% if p.country.present? && p.country %>
+                      <i class="fa fa-bus" style='font-size: 16px'></i>
+                    <% end %></td>
                   <td class="va-mid"><%= p.loc_note %></td>
                   <td class="va-mid"><%= get_currency_mn(p.sum_price) %></td>
                   <td class="va-mid"><%= p.status.name_with_parent%></td>
                   <td class="va-mid"><%= p.created_operator.present? ? p.created_operator.name : "" %></td>
-                  <td class="va-mid"><%= p.approved_operator.present? ? p.approved_operator.name : "" %></td>
                   <td class="va-mid"><%= p.approved_date.present? ? p.approved_date.strftime('%F %R') : "" %></td>
                   <td style="display: none">
                     <div class="btn-group">

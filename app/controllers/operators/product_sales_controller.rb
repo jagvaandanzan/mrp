@@ -42,7 +42,7 @@ class Operators::ProductSalesController < Operators::BaseController
       @product_sale.hour_end = time.hour + 2
       @product_sale.status_user_type = 'operator'
       @product_sale.main_status_id = 2
-      @product_sale.location = Location.offset(rand(Location.count)).first
+      # @product_sale.location = Location.offset(rand(Location.count)).first
       @product_sale.building_code = 4.times.map {rand(9)}.join
       @product_sale.loc_note = (4.times.map {rand(9)}.join) + ', ' + (4.times.map {rand(9)}.join)
       @product_sale.money = 0
@@ -52,7 +52,11 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def search_locations
-    @list = Location.search_by_name(params[:text])
+    @list = if params[:country].present?
+              Location.search_by_country
+            else
+              Location.search_by_name(params[:text])
+            end
     @select_id = params[:id]
 
     respond_to do |format|
@@ -249,7 +253,7 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def product_sale_params
     params.require(:product_sale)
-        .permit(:sale_call_id, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :building_code, :loc_note,
+        .permit(:sale_call_id, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :country, :building_code, :loc_note,
                 :sum_price, :money, :paid, :bonus,
                 :main_status_id, :status_id, :status_note, :status_user_type,
                 product_sale_items_attributes: [:id, :product_id, :feature_item_id, :to_see, :quantity, :price, :sum_price, :remainder, :_destroy])

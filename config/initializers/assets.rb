@@ -16,4 +16,5 @@ Rails.application.config.assets.precompile += %w( search.scss form.scss show.scs
 Rails.application.config.assets.precompile += %w( admin-lte/bower_components/raphael/raphael.min.js admin-lte/bower_components/morris.js/morris.min.js admin-lte/bower_components/morris.js/morris.css)
 Rails.application.config.assets.precompile += %w( summernote/dist/summernote-bs4.css summernote/dist/summernote-bs4.js summernote_upload.js summernote/dist/lang/summernote-mn-MN.min.js)
 Rails.application.config.assets.precompile += %w( admin-lte/bower_components/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css admin-lte/bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js)
+Rails.application.config.assets.precompile += %w( admin-lte/plugins/iCheck/all.css admin-lte/plugins/iCheck/icheck.min.js)
 
