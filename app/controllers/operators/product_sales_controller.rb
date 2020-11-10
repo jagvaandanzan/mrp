@@ -60,7 +60,7 @@ class Operators::ProductSalesController < Operators::BaseController
     @select_id = params[:id]
 
     respond_to do |format|
-      format.js {render 'shared/search_results'}
+      format.js {render 'operators/product_sales/search_results'}
     end
   end
 
