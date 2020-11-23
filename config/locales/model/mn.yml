@@ -198,7 +198,6 @@ mn:
       size_instruction: Хэмжээний заавар
       logistic: Хангамжийн ажилтан
       shipping_er: Үйлдвэр-Эрээн тээвэрлэлт
-      shipping_er_item: Бараанууд
       shipping_ub: Эрээн-УБ тээвэрлэлт
       shipping_ub_item: Бараанууд
     attributes:
@@ -444,22 +443,12 @@ mn:
       shipping_er:
         logistic: Хангамжийн ажилтан
         date: Хүлээж авсан огноо
-        description: Тайлбар
-        shipping_er_items: Бараа
-        shipping_er_item_count: Барааны тоо
-      shipping_er_item:
-        product_supply_feature_id: Шинж чанар
-        product_name: Бараа нэр
-        product_code: Бараа код
-        product_image: Зураг
-        product_feature: Өнгө хэмжээ
-        product_bought: Авсан үлдэгдэл
-        received: Хүлээн авсан барааны тоо
-        same_feature: Нэг хайрцагт
-        cargo: Ачааны тоо
-        s_type: Тээврийн төрөл, Чиглэл
         cost: Зардал
         number: Баримтын дугаар
+        s_type: Тээврийн төрөл
+        description: Тайлбар
+        shipping_er_products: Бараа
+        shipping_er_features: Барааны шинж чанар
       shipping_ub:
         logistic: Хангамжийн ажилтан
         date: Эрээнээс ачуулсан огноо
@@ -527,6 +516,7 @@ mn:
         product_id: Бараа
         feature_item_id: Шинж чанар
         to_see: Үзэх
+        add_stock: Нярав нэмсэн
         quantity: Тоо хэмжээ
         price: Үнэ
         sum_price: Нийт

@@ -154,7 +154,15 @@ mn:
       over_quantity: " тоо хэмжээний үлдэгдэл хүрэхгүй байна"
       taken_feature_rel: " шинж чанар давхардаж байна!"
       stockkeeper_is_not_signed: "Нярав гарын үсэг зураагүй байна!"
+      stockkeeper_is_signed: "Нярав гарын үсэг зурсан байна!"
+      barcode_not_checked: "Бар код уншуулж дуусаагүй байна!"
       not_have_a_product_sale: "Зарах бүгээдэхүүн байхгүй байна!"
+      access_delivery_item_first: "Эхлээд хүргэлтийн барааруу орно уу!"
+      available_quantity: "Боломжит үлдэгдэл хүрэлцэхгүй байна!"
+      not_available_product: "Буцаах бараа уншуулаагүй байна!"
+      please_check_all: "Бүх барааг уншуулаагүй байна!"
+      return_request_not_confirmed: "Буцаах хүсэлт батлаагүй байна!"
+      you_have_a_balance: "Таньд барааны үлдэгдэл байна!"
     template:
       body: 次の項目を確認してください
       header:
@@ -211,7 +219,8 @@ mn:
     distributing: Бараа авах хүсэлт
     user_sign: Гарын үсэг
     salesman_sign: Гарын үсэг
-    back_product: Бараа буцаалт
+    return_product: Бараа буцаах хүсэлт
+    returned_product: Бараа буцаах хүсэлтийг авлаа
     body:
       distributing_s: Хүсэлтийг %{routes} хүргэлттэйгээр хүлээн авлаа.
       distributing_u: "%{user}-с %{products} бараа авах хүсэлт ирлээ."
@@ -219,5 +228,5 @@ mn:
       user_sign_u: "%{user} -н %{products} ширхэг бараа авах хүсэлтэд гарын үсэг зурлаа"
       salesman_sign_s: "%{routes} хүргэлттэй хүсэлтэд гарын үзсэг зурлаа"
       salesman_sign_u: "%{user} %{products} ширхэг бараа хүлээн авлаа"
-      back_product_s: "%{user}, %{product} %{quantity}ш буцаалаа"
-      back_product_u: "%{user}-н %{product} %{quantity}ш буцаалаа"
+      return_product_s: "%{user}-c %{products}ш бараа буцаах хүсэлт ирлээ"
+      return_product_u: "%{user} таны %{products}ш бараа буцаах хүсэлтийг хүлээн авлаа"

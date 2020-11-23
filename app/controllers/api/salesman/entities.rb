@@ -15,6 +15,10 @@ module API
                :delivery_time, :payable, :loc_name, :phone, :product_count, :latitude, :longitude
       end
 
+      class ProductWarehouse < Grape::Entity
+        expose :id, :barcode, :name, :code, :feature, :image, :quantity, :load_at
+      end
+
       class ProductSaleItem < Grape::Entity
         expose :id, :quantity, :price, :sum_price, :bought_at, :bought_quantity, :product_name, :product_image, :product_feature, :back_quantity
       end
@@ -50,6 +54,14 @@ module API
 
       class Notification < Grape::Entity
         expose :created_at, :title, :body_s, :avatar_s, :salesman_travel_id, :product_sale_item_id
+      end
+
+      class SalesmanReturnSign < Grape::Entity
+        expose :id, :salesman_name, :products
+      end
+
+      class SalesmanReturn < Grape::Entity
+        expose :id, :quantity, :product_code, :product_name, :product_image, :product_feature, :product_barcode, :barcode
       end
 
     end

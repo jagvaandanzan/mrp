@@ -49,6 +49,10 @@ class SalesmanTravel < ApplicationRecord
     product_warehouse_locs.by_load_at(true).count
   end
 
+  def salesman_at_count
+    product_warehouse_locs.by_salesman_at(true).count
+  end
+
   def load_sum
     product_warehouse_locs.count
   end

@@ -25,6 +25,10 @@ class ProductWarehouseLoc < ApplicationRecord
     where("load_at is#{load ? ' NOT' : ''} ?", nil)
   }
 
+  scope :by_salesman_at, ->(salesman) {
+    where("salesman_at is#{salesman ? ' NOT' : ''} ?", nil)
+  }
+
 
   def feature
     feature_item.name

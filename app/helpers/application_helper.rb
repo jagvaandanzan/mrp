@@ -17,7 +17,7 @@ module ApplicationHelper
   end
 
   def get_currency(value, unit, precision)
-    number_to_currency(value, unit: unit, separator: ".", delimiter: ",", precision: precision, format: "%n %u")
+    number_to_currency(value, unit: unit, separator: ".", delimiter: ",", precision: precision, format: "%n%u")
   end
 
   def local_date(date)
@@ -63,5 +63,27 @@ module ApplicationHelper
 
   def only_number(str)
     str.to_s.gsub(/[^0-9]/, '')
+  end
+
+  def last_number(obj)
+    last = obj.all.last
+    last.present? ? last.id + 1 : 1
+  end
+
+  def show_id(id)
+    if id < 100000
+      (100000 + id).to_s
+    else
+      id.to_s
+    end
+  end
+
+  def get_code(obj)
+    if obj.present?
+      code = (100000 + obj.id + 1).to_s
+    else
+      code = (100001).to_s
+    end
+    code
   end
 end

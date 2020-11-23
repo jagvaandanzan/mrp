@@ -39,7 +39,7 @@ cn:
         clarification: Тодруулга хийх
         clarified: Тодруулга хийсэн
         canceled: Цуцалсан
-    shipping_er_item:
+    shipping_er:
       s_type:
         post_cargo: "Шуудан: Үйлд-Карго"
         post_er: "Шуудан: Үйлд-Эрээн"
@@ -59,7 +59,6 @@ cn:
       product_supply_order: Үндсэн бараа
       product_supply_order_item: Бараа захиалга
       shipping_er: Үйлдвэр-Эрээн тээвэрлэлт
-      shipping_er_item: Бараанууд
       shipping_ub: Эрээн-УБ тээвэрлэлт
       shipping_ub_item: Бараанууд
       logistic: Хангамжийн ажилтан
@@ -123,22 +122,23 @@ cn:
       shipping_er:
         logistic: Хангамжийн ажилтан
         date: Хүлээж авсан огноо
+        cost: Зардал
+        number: Баримтын дугаар
+        s_type: Тээврийн төрөл
         description: Тайлбар
-        shipping_er_items: Бараа
-        shipping_er_item_count: Барааны тоо
-      shipping_er_item:
-        product_supply_feature_id: Шинж чанар
+        shipping_er_products: Бараа
+        shipping_er_features: Барааны шинж чанар
+      shipping_er_product:
         product_name: Бараа нэр
         product_code: Бараа код
         product_image: Зураг
         product_feature: Өнгө хэмжээ
         product_bought: Авсан үлдэгдэл
-        received: Хүлээн авсан барааны тоо
-        same_feature: Нэг хайрцагт
+        quantity: Нийт барааны тоо
         cargo: Ачааны тоо
-        s_type: Тээврийн төрөл, Чиглэл
-        cost: Зардал
-        number: Баримтын дугаар
+      shipping_er_feature:
+        supply_feature_id: Шинж чанар
+        quantity: Хү.А барааны тоо
       shipping_ub:
         logistic: Хангамжийн ажилтан
         date: Эрээнээс ачуулсан огноо

@@ -10,51 +10,64 @@ module API
             present :travel, travel.first, with: API::SALESMAN::Entities::SalesmanTravels
           else
 
-            product_sales = ProductSale.by_salesman_nil
+            return_signs = SalesmanReturnSign.by_salesman(salesman.id)
+                               .by_user(nil)
 
-            location_ids = product_sales.map(&:location_id).to_a
-            if location_ids.length == 0
-              error!(I18n.t('errors.messages.not_have_a_product_sale'), 422)
+            if return_signs.present?
+              error!(I18n.t('errors.messages.return_request_not_confirmed'), 422)
             else
-              location_ids.unshift(1) # Агуулахаас эхлэнэ
-              # [1, 2687, 3727, 3, 16, 7, 2823]
+              sale_items = ProductSaleItem.sale_available(salesman.id)
+              if sale_items.present?
+                error!(I18n.t('errors.messages.you_have_a_balance'), 422)
+              else
 
-              locations = Location.search_by_ids(location_ids)
-              location_travels = save_travels(locations)
-              hash_location_travels = location_travels.map {|i| [i.location_from_id.to_s + "-" + i.location_to_id.to_s, i]}.to_h
-              routing = vrptw(location_ids, hash_location_travels).map(&:to_i)
-              # routing = [138, 0, 4, 3, 1, 5, 6, 2, 0].map(&:to_i)
+                product_sales = ProductSale.by_salesman_nil
 
-              travel = SalesmanTravel.new
-              travel.salesman = salesman
-              travel.distance = routing[0]
-              travel_duration = 0
-              loc_from_id = 1
-              routing.each_with_index {|r, i|
-                if i > 1 && r > 0
-                  product_sale = product_sales[r - 1]
-                  product_sale.salesman_travel = travel
-                  product_sale.save(validate: false)
-                  location = product_sale.location
-                  location_travel = hash_location_travels[loc_from_id.to_s + '-' + location.id.to_s]
-                  loc_from_id = location.id
+                location_ids = product_sales.map(&:location_id).to_a
+                if location_ids.length == 0
+                  error!(I18n.t('errors.messages.not_have_a_product_sale'), 422)
+                else
+                  location_ids.unshift(1) # Агуулахаас эхлэнэ
+                  # [1, 2687, 3727, 3, 16, 7, 2823]
 
-                  travel_route = SalesmanTravelRoute.new
-                  travel_route.queue = i - 2
-                  travel_route.distance = location_travel.distance
-                  travel_route.duration = location_travel.duration
-                  travel_duration = travel_duration + location_travel.duration
-                  travel_route.salesman_travel = travel
-                  travel_route.location = location
-                  travel_route.product_sale = product_sale
+                  locations = Location.search_by_ids(location_ids)
+                  location_travels = save_travels(locations)
+                  hash_location_travels = location_travels.map {|i| [i.location_from_id.to_s + "-" + i.location_to_id.to_s, i]}.to_h
+                  routing = vrptw(location_ids, hash_location_travels).map(&:to_i)
+                  # routing = [138, 0, 4, 3, 1, 5, 6, 2, 0].map(&:to_i)
 
-                  travel.salesman_travel_routes << travel_route
+                  travel = SalesmanTravel.new
+                  travel.salesman = salesman
+                  travel.distance = routing[0]
+                  travel_duration = 0
+                  loc_from_id = 1
+                  routing.each_with_index {|r, i|
+                    if i > 1 && r > 0
+                      product_sale = product_sales[r - 1]
+                      product_sale.salesman_travel = travel
+                      product_sale.save(validate: false)
+                      location = product_sale.location
+                      location_travel = hash_location_travels[loc_from_id.to_s + '-' + location.id.to_s]
+                      loc_from_id = location.id
+
+                      travel_route = SalesmanTravelRoute.new
+                      travel_route.queue = i - 2
+                      travel_route.distance = location_travel.distance
+                      travel_route.duration = location_travel.duration
+                      travel_duration = travel_duration + location_travel.duration
+                      travel_route.salesman_travel = travel
+                      travel_route.location = location
+                      travel_route.product_sale = product_sale
+
+                      travel.salesman_travel_routes << travel_route
+                    end
+                  }
+                  travel.duration = travel_duration
+                  travel.save
+                  travel.send_notification
+                  present :travel, travel, with: API::SALESMAN::Entities::SalesmanTravels
                 end
-              }
-              travel.duration = travel_duration
-              travel.save
-              travel.send_notification
-              present :travel, travel, with: API::SALESMAN::Entities::SalesmanTravels
+              end
             end
           end
 

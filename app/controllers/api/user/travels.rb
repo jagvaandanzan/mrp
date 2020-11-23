@@ -32,31 +32,12 @@ module API
                 product_sale_items = ProductFeatureItem.by_travel_id(salesman_travel.id)
                 product_sale_items.each {|item|
                   feature_item = ProductFeatureItem.find(item.feature_item_id)
-                  product_locations = ProductLocation.get_quantity(item.feature_item_id)
-                  quantity = 0
-                  product_locations.each {|loc|
-                    if quantity < item.quantity
-                      q = if loc.quantity >= (item.quantity - quantity)
-                            item.quantity - quantity
-                          else
-                            loc.quantity
-                          end
-                      quantity += q
-                      salesman_travel.product_warehouse_locs << ProductWarehouseLoc.new(product: feature_item.product,
-                                                                                        location_id: loc.id,
-                                                                                        feature_item_id: item.feature_item_id,
-                                                                                        quantity: q)
-                    else
-                      break
-                    end
-                  }
+                  create_warehouse_loc(item, params[:id], feature_item.product_id, feature_item.id)
                 }
                 salesman_travel.save(validate: false)
-
-                present :products, salesman_travel.product_warehouse_locs, with: API::USER::Entities::ProductWarehouse
-              else
-                present :products, ProductWarehouseLoc.by_travel(params[:id]), with: API::USER::Entities::ProductWarehouse
               end
+
+              present :products, ProductWarehouseLoc.by_travel(params[:id]), with: API::USER::Entities::ProductWarehouse
             end
           end
 
@@ -69,22 +50,26 @@ module API
               user = current_user
               salesman_travel = SalesmanTravel.find(params[:id])
               if user.is_stockkeeper? && salesman_travel.load_at.nil?
-                image = params[:image] || {}
-                travel_sign = SalesmanTravelSign.create({
-                                                            salesman_travel: salesman_travel,
-                                                            user: user,
-                                                            given: image[:tempfile],
-                                                            given_file_name: image[:filename]
-                                                        })
-                salesman_travel.on_sign(user)
-                present :sign_at, travel_sign.created_at
+                if salesman_travel.load_sum == salesman_travel.load_count
+                  image = params[:image] || {}
+                  travel_sign = SalesmanTravelSign.create({
+                                                              salesman_travel: salesman_travel,
+                                                              user: user,
+                                                              given: image[:tempfile],
+                                                              given_file_name: image[:filename]
+                                                          })
+                  salesman_travel.on_sign(user)
+                  present :sign_at, travel_sign.created_at
+                else
+                  error!(I18n.t('errors.messages.barcode_not_checked'), 422)
+                end
               else
                 error!("Couldn't find data", 422)
               end
             end
 
             resource :check do
-              desc "GET travels/:id/check"
+              desc "GET travels/:id/signature/check"
               get do
                 user = current_user
                 salesman_travel = SalesmanTravel.find(params[:id])
@@ -94,6 +79,51 @@ module API
                 else
                   error!("Couldn't find data", 422)
                 end
+              end
+            end
+          end
+
+          resource :routes do
+            desc "GET travels/:id/routes"
+            get do
+              salesman_travel = SalesmanTravel.find(params[:id])
+              present :routes, salesman_travel.salesman_travel_routes, with: API::USER::Entities::SalesmanTravelRoutes
+            end
+          end
+
+          resource :add_product do
+            desc "POST travels/:id/products/add_product"
+            params do
+              requires :product_sale_id, type: Integer
+              requires :feature_id, type: Integer
+              requires :quantity, type: Integer
+            end
+            post do
+              salesman_travel = SalesmanTravel.find(params[:id])
+              if salesman_travel.product_warehouse_locs.count > 0
+                if salesman_travel.load_at.nil?
+                  feature = ProductFeatureItem.find(params[:feature_id])
+
+                  sale_item = ProductSaleItem.new(product_sale_id: params[:product_sale_id],
+                                                  product_id: feature.product_id,
+                                                  feature_item: feature,
+                                                  quantity: params[:quantity],
+                                                  add_stock: true,
+                                                  price: feature.price,
+                                                  sum_price: feature.price * params[:quantity])
+
+                  if sale_item.save
+                    create_warehouse_loc(sale_item, params[:id], feature.product_id, feature.id, true)
+                    present :added, sale_item.created_at
+                  else
+                    error!(sale_item.errors.full_messages, 422)
+                  end
+
+                else
+                  error!(I18n.t('errors.messages.stockkeeper_is_signed'), 422)
+                end
+              else
+                error!(I18n.t('errors.messages.access_delivery_item_first'), 422)
               end
             end
           end
@@ -138,10 +168,73 @@ module API
                 present :load_at, warehouse_loc.load_at
               end
             end
+            # Шинэ бараа нэмж өгөхөд
+            resource :features do
+              desc "GET travels/products/:id/features"
+              get do
+                features = []
+                product = Product.find(params[:id])
+                img_url = if product.picture.present?
+                            product.picture.url(:tumb)
+                          else
+                            "/images/orignal/missing.png"
+                          end
+                price = if product.price.present?
+                          product.price
+                        else
+                          0
+                        end
+                product.product_feature_items.each do |item|
+                  features.push({id: item.id,
+                                 name: item.name,
+                                 balance: ProductBalance.balance(product.id, item.id),
+                                 price: ApplicationController.helpers.get_currency_mn(item.price)})
+                end
+
+                present :img_url, img_url
+                present :price, price
+                present :features, features, with: API::USER::Entities::ProductFeatures
+              end
+            end
+          end
+
+          resource :search do
+            desc "POST travels/products/search"
+            params do
+              requires :text, type: String
+            end
+            post do
+              products = Product.search_by_name(params[:text])
+
+              present :products, products, with: API::USER::Entities::Products
+            end
           end
         end
 
       end
     end
   end
+end
+
+def create_warehouse_loc(item, salesman_travel_id, product_id, feature_item_id, add_stock = false)
+  product_locations = ProductLocation.get_quantity(feature_item_id)
+  quantity = 0
+  product_locations.each {|loc|
+    if quantity < item.quantity
+      q = if loc.quantity >= (item.quantity - quantity)
+            item.quantity - quantity
+          else
+            loc.quantity
+          end
+      quantity += q
+      ProductWarehouseLoc.create(salesman_travel_id: salesman_travel_id,
+                                 product_id: product_id,
+                                 location_id: loc.id,
+                                 feature_item_id: feature_item_id,
+                                 quantity: q,
+                                 add_stock: add_stock)
+    else
+      break
+    end
+  }
 end

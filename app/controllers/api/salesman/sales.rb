@@ -3,15 +3,98 @@ module API
     class Sales < Grape::API
       resource :sales do
 
-        route_param :id do
-          resource :sale_items do
-            desc "GET sales/:id/sale_items"
-            get do
-              sale_items = ProductSaleItem.sale_available(params[:id])
-              present :sale_items, sale_items, with: API::SALESMAN::Entities::ProductSaleItem
+        resource :sale_items do
+          desc "GET sales/sale_items"
+          get do
+            sale_items = ProductSaleItem.sale_available(current_salesman.id)
+            present :sale_items, sale_items, with: API::SALESMAN::Entities::ProductSaleItemBarCode
+          end
+        end
+
+        resource :to_return do
+          desc "POST sales/to_return"
+          params do
+            requires :sale_item_id, type: Integer
+            requires :quantity, type: Integer
+          end
+          post do
+            sale_item = ProductSaleItem.find(params[:sale_item_id])
+            available_quantity = ProductFeatureItem.sale_available_item_quantity(current_salesman.id, sale_item.feature_item_id)
+            if available_quantity >= params[:quantity]
+              salesman_return = SalesmanReturn.by_sale_item_salesman(sale_item.id, current_salesman.id).first
+              if salesman_return.present?
+                salesman_return.update_column(:quantity, params[:quantity])
+              else
+                salesman_return = SalesmanReturn.create(salesman: current_salesman,
+                                                        product: sale_item.product,
+                                                        feature_item: sale_item.feature_item,
+                                                        sale_item: sale_item,
+                                                        quantity: params[:quantity])
+              end
+
+              present :salesman_return, salesman_return, with: API::SALESMAN::Entities::SalesmanReturn
+            else
+              error!(I18n.t('errors.messages.available_quantity'), 422)
+            end
+
+          end
+        end
+
+        resource :signature do
+          desc "POST sales/signature"
+          params do
+            requires :image, type: File
+          end
+          post do
+            image = params[:image] || {}
+            return_sign = SalesmanReturnSign
+                              .by_salesman(current_salesman.id)
+                              .by_user(nil)
+                              .first
+            if return_sign.present?
+              return_sign.given = image[:tempfile]
+              return_sign.given_file_name = image[:filename]
+              return_sign.save
+              present :sign_at, return_sign.updated_at
+            else
+              salesman_returns = SalesmanReturn.by_salesman(current_salesman.id)
+              if salesman_returns.count == 0
+                error!(I18n.t('errors.messages.not_available_product'), 422)
+              else
+                return_sign = SalesmanReturnSign.create(salesman: current_salesman,
+                                                        return_count: salesman_returns.count,
+                                                        given: image[:tempfile],
+                                                        given_file_name: image[:filename])
+                salesman_returns.each {|ret|
+                  ret.update_column(:sign_id, return_sign.id)
+                }
+                present :sign_at, return_sign.created_at
+              end
+            end
+
+          end
+        end
+
+        resource :return_requests do
+          desc "GET sales/return_requests"
+          get do
+            return_signs = SalesmanReturnSign.by_salesman(current_salesman.id)
+                               .by_user(nil)
+            present :return_requests, return_signs, with: API::SALESMAN::Entities::SalesmanReturnSign
+          end
+
+          route_param :id do
+            resource :products do
+              desc "GET sales/return_requests/:id/products"
+              get do
+                return_sign = SalesmanReturnSign.find(params[:id])
+
+                present :products, return_sign.salesman_returns, with: API::SALESMAN::Entities::SalesmanReturn
+              end
             end
           end
         end
+
 
         resource :products do
           resource :available do

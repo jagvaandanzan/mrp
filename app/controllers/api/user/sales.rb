@@ -20,6 +20,76 @@ module API
           end
         end
 
+        resource :return_requests do
+          desc "GET sales/return_requests"
+          get do
+            return_signs = SalesmanReturnSign.by_user(nil)
+            present :return_requests, return_signs, with: API::USER::Entities::SalesmanReturnSign
+          end
+
+          route_param :id do
+            resource :products do
+              desc "GET sales/return_requests/:id/products"
+              get do
+                return_sign = SalesmanReturnSign.find(params[:id])
+
+                present :products, return_sign.salesman_returns, with: API::SALESMAN::Entities::SalesmanReturn
+              end
+            end
+
+            resource :signature do
+              desc "POST sales/return_requests/:id/signature"
+              params do
+                requires :image, type: File
+              end
+              post do
+
+                return_sign = SalesmanReturnSign.find(params[:id])
+                if return_sign.received.present?
+                  present :sign_at, return_sign.updated_at
+                else
+                  image = params[:image] || {}
+
+                  salesman_returns = return_sign.salesman_returns
+                                         .by_user(current_user)
+                  if return_sign.salesman_returns.count != salesman_returns.count
+                    error!(I18n.t('errors.messages.please_check_all'), 422)
+                  else
+                    return_sign.received = image[:tempfile]
+                    return_sign.received_file_name = image[:filename]
+                    return_sign.user = current_user
+                    return_sign.save
+
+                    salesman_returns.each {|ret|
+                      sales_item = ret.sale_item
+                      sales_item.update_column(:back_quantity, sales_item.back_quantity.present? ? sales_item.back_quantity + ret.quantity : ret.quantity)
+                      product_balance = sales_item.product_balance
+                      product_balance.update_column(:quantity, product_balance.quantity + ret.quantity)
+                    }
+                    return_sign.send_notification_to_salesman
+                    present :sign_at, return_sign.updated_at
+                  end
+                end
+              end
+            end
+          end
+
+          resource :return_product do
+            desc "PATCH sales/return_requests/return_product"
+            params do
+              requires :product_id, type: Integer
+              requires :barcode, type: Boolean
+            end
+            patch do
+              salesman_return = SalesmanReturn.find(params[:product_id])
+              salesman_return.user = current_user
+              salesman_return.barcode = params[:barcode]
+              salesman_return.save
+              present :returned, salesman_return.updated_at
+            end
+          end
+        end
+
         resource :item do
           route_param :sale_item_id do
             resource :scan do
@@ -46,35 +116,6 @@ module API
                   present :sales_item, sales_item, with: API::SALESMAN::Entities::ProductSaleItem
                 else
                   error!("Couldn't find data", 422)
-                end
-              end
-            end
-
-            resource :load do
-              desc "PATCH sales/item/:sale_item_id/load"
-              params do
-                requires :quantity, type: Integer
-              end
-              patch do
-                message = ""
-                r_s = 200
-                sales_item = ProductSaleItem.find(params[:sale_item_id])
-
-                sales_item.update_column(:back_quantity, sales_item.back_quantity.present? ? sales_item.back_quantity + params[:quantity] : params[:quantity])
-                product_balance = sales_item.product_balance
-                product_balance.update_column(:quantity, product_balance.quantity + params[:quantity])
-                sales_item.send_notification(current_user, params[:quantity])
-                present :load_at, sales_item.updated_at
-                message = I18n.t('alert.removed_successfully')
-
-                if message.empty?
-                  error!("Couldn't find data", 404)
-                else
-                  if r_s == 200
-                    {message: message}
-                  else
-                    error!(message, r_s)
-                  end
                 end
               end
             end

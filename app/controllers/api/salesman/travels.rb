@@ -31,6 +31,25 @@ module API
             end
           end
 
+          resource :products do
+            desc "GET travels/:id/products"
+            get do
+              present :products, ProductWarehouseLoc.by_travel(params[:id]), with: API::SALESMAN::Entities::ProductWarehouse
+            end
+
+            route_param :pid do
+              resource :load do
+                desc "PATCH travels/:id/products/:pid/load"
+                patch do
+                  warehouse_loc = ProductWarehouseLoc.find(params[:pid])
+                  warehouse_loc.update_column(:salesman_at, Time.now)
+
+                  present :load_at, warehouse_loc.salesman_at
+                end
+              end
+            end
+          end
+
           resource :signature do
             desc "POST travels/:id/signature"
             params do
@@ -41,14 +60,18 @@ module API
               if salesman_travel.load_at.nil?
                 error!(I18n.t('errors.messages.stockkeeper_is_not_signed'), 422)
               elsif salesman_travel.sign_at.nil?
-                image = params[:image] || {}
-                travel_sign = salesman_travel.salesman_travel_sign
-                travel_sign.received = image[:tempfile]
-                travel_sign.received_file_name = image[:filename]
-                travel_sign.save
-                salesman_travel.salesman_sign
+                if salesman_travel.load_sum == salesman_travel.salesman_at_count
+                  image = params[:image] || {}
+                  travel_sign = salesman_travel.salesman_travel_sign
+                  travel_sign.received = image[:tempfile]
+                  travel_sign.received_file_name = image[:filename]
+                  travel_sign.save
+                  salesman_travel.salesman_sign
 
-                present :sign_at, salesman_travel.sign_at
+                  present :sign_at, salesman_travel.sign_at
+                else
+                  error!(I18n.t('errors.messages.barcode_not_checked'), 422)
+                end
               else
                 error!("Couldn't find data", 422)
               end

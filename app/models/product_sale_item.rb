@@ -83,21 +83,6 @@ class ProductSaleItem < ApplicationRecord
     feature_item.barcode
   end
 
-  def send_notification(user, quantity)
-    salesman = salesman_travel.salesman
-    notification = Notification.create(salesman: salesman,
-                                       salesman_travel: salesman_travel,
-                                       product_sale_item: self,
-                                       title: I18n.t("api.back_product"),
-                                       body_s: I18n.t("api.body.back_product_s", user: user.name, product: "#{product.n_name} #{feature_item.name}", quantity: quantity),
-                                       body_u: I18n.t("api.body.back_product_u", user: salesman.name, product: "#{product.n_name} #{feature_item.name}", quantity: quantity))
-    ApplicationController.helpers.send_noti_salesman(salesman,
-                                                     ApplicationController.helpers.push_options('back_product',
-                                                                                                self.id,
-                                                                                                notification.title,
-                                                                                                notification.body_s))
-  end
-
   private
 
   def set_defaults

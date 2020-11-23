@@ -20,25 +20,6 @@ module SearchHelper
 
     @headers
   end
-
-  def get_code(obj)
-    if obj.present?
-      code = (100000 + obj.id + 1).to_s
-    else
-      code = (100001).to_s
-    end
-    code
-  end
-
-  def get_all_location
-    @loc_arr = []
-    get_location_children_recursive(nil, ProductLocation.search(nil))
-    @loc_arr
-  end
-end
-
-def get_index(index)
-  (index + 1).to_s + ". "
 end
 
 def get_recursive_header(obj)
@@ -102,33 +83,4 @@ def get_name_recursive(obj)
     end # obj presence check
   end # main div end
 end
-
-def get_location_children_recursive(parent_name, locations)
-  if locations.present?
-    locations.each do |loc|
-      n = (parent_name.present? ? parent_name + " >> " : "") + loc.name_with_code
-      loc.name = n
-
-      # @loc_arr.push({id: loc.id, name: n})
-      @loc_arr.push(loc)
-      if loc.children.present?
-        get_location_children_recursive(n, loc.children)
-      end
-    end
-  end
-end
-# def get_supply_order_sum_price (obj)
-#   @items = ProductSupplyOrderItem.search(obj.id)
-#
-#   value = 0
-#   if @items.presence && @items.size > 0
-#     @items.each do |item|
-#       value += (item.quantity * item.price)*obj.exchange_value
-#     end
-#   end
-#
-#   content_tag :p, class: '' do
-#     value
-#   end
-# end
 

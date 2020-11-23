@@ -24,6 +24,7 @@ class ProductFeatureItem < ApplicationRecord
 
   with_options :unless => Proc.new {|m| m.tab_index.present?} do
     # validates :barcode, presence: true, length: {maximum: 255}
+    # validates_uniqueness_of :barcode
     validates :price, presence: true, :numericality => true
   end
 

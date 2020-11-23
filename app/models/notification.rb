@@ -2,6 +2,7 @@ class Notification < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :salesman, optional: true
   belongs_to :salesman_travel, optional: true
+  belongs_to :return_sign, :class_name => "SalesmanReturnSign", optional: true
   belongs_to :product_sale_item, optional: true
 
   scope :by_salesman, ->(salesman_id) {

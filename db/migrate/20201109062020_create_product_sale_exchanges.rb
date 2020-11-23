@@ -1,16 +1,7 @@
 class CreateProductSaleExchanges < ActiveRecord::Migration[5.2]
   def change
-    create_table :product_sale_exchanges do |t|
-      t.references :product_sale, null: false, foreign_key: true
-      t.integer :e_type
-      t.references :exchange, foreign_key: {to_table: :product_sale_exchanges}
-      t.references :product, null: false, foreign_key: true
-      t.references :feature_item, foreign_key: {to_table: :product_feature_items}
-      t.integer :quantity
-      t.float :price
-      t.float :sum_price, limit: 53
-      t.references :operator, foreign_key: true
-      t.timestamps
-    end
+    add_column :product_warehouse_locs, :salesman_at, :datetime, after: 'load_at'
+    add_column :product_sale_items, :add_stock, :boolean, after: 'to_see', default: 0
+    add_column :product_warehouse_locs, :add_stock, :boolean, after: 'salesman_at', default: 0
   end
 end
