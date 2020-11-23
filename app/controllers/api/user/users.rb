@@ -45,6 +45,25 @@ module API
           end
         end
 
+        resource :change do
+          resource :pin do
+            desc "PATCH users/change/pin"
+            params do
+              requires :pin_code, type: String
+            end
+            patch do
+              user = current_user
+              user.pin_code = params[:pin_code]
+
+              if user.save
+                present :updated_at, user.updated_at
+              else
+                error!(user.errors.full_messages, 422)
+              end
+            end
+          end
+        end
+
       end
     end
   end

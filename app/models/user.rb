@@ -10,6 +10,7 @@ class User < ApplicationRecord
 
   accepts_nested_attributes_for :user_permission_rels, reject_if: :all_blank, allow_destroy: true
 
+  before_create :set_pin_code
   after_destroy :destroy_email
   before_validation :generate_password, on: :create
   after_validation :remove_unnecessary_error_messages
@@ -19,6 +20,7 @@ class User < ApplicationRecord
   validates :surname, :name, :phone, presence: true, length: {maximum: 255}
   validates :gender, :user_position_id, :user_permission_rels, presence: true
   validates :email, uniqueness: {conditions: -> {with_deleted}}
+  validates :pin_code, length: {is: 4}, on: :update
   validate :permission_rel_should_be_uniq
 
   scope :search, ->(search_name, search_email, search_phone) {
@@ -102,5 +104,9 @@ class User < ApplicationRecord
     if user_permission_rels.length != uniq_by_permission_rel.length
       self.errors.add(:user_permission_rels, :taken)
     end
+  end
+
+  def set_pin_code
+    self.pin_code = 4.times.map {rand(10)}.join
   end
 end
