@@ -41,9 +41,10 @@ module API
               resource :load do
                 desc "PATCH travels/:id/products/:pid/load"
                 patch do
+                  salesman_travel = SalesmanTravel.find(params[:id])
                   warehouse_loc = ProductWarehouseLoc.find(params[:pid])
                   warehouse_loc.update_column(:salesman_at, Time.now)
-
+                  present :all_load, salesman_travel.load_sum == salesman_travel.salesman_at_count
                   present :load_at, warehouse_loc.salesman_at
                 end
               end
