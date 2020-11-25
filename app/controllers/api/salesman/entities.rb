@@ -33,7 +33,7 @@ module API
 
       class ProductSale < Grape::Entity
         expose :id, :phone, :main_status, :money, :paid, :sum_price, :loc_note, :building_code
-        expose :product_sale_items, using: API::SALESMAN::Entities::ProductSaleItem
+        expose :product_sale_items, using: API::SALESMAN::Entities::ProductSaleItemBarCode
       end
 
       class SalesmanTravelRoute < SalesmanTravelRoutes
