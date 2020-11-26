@@ -44,8 +44,6 @@ module API
                   routing.each_with_index {|r, i|
                     if i > 1 && r > 0
                       product_sale = product_sales[r - 1]
-                      product_sale.salesman_travel = travel
-                      product_sale.save(validate: false)
                       location = product_sale.location
                       location_travel = hash_location_travels[loc_from_id.to_s + '-' + location.id.to_s]
                       loc_from_id = location.id
@@ -65,6 +63,14 @@ module API
                   travel.duration = travel_duration
                   travel.save
                   travel.send_notification
+
+                  routing.each_with_index {|r, i|
+                    if i > 1 && r > 0
+                      product_sale = product_sales[r - 1]
+                      product_sale.update_column(:salesman_travel_id, travel.id)
+                    end
+                  }
+
                   present :travel, travel, with: API::SALESMAN::Entities::SalesmanTravels
                 end
               end
