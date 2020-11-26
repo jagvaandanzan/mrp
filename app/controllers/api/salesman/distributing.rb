@@ -62,7 +62,6 @@ module API
                   }
                   travel.duration = travel_duration
                   travel.save
-                  travel.send_notification
 
                   routing.each_with_index {|r, i|
                     if i > 1 && r > 0
@@ -70,6 +69,7 @@ module API
                       product_sale.update_column(:salesman_travel_id, travel.id)
                     end
                   }
+                  travel.send_notification
 
                   present :travel, travel, with: API::SALESMAN::Entities::SalesmanTravels
                 end
