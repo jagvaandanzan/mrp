@@ -92,19 +92,20 @@ module API
           end
 
           resource :add_product do
-            desc "POST travels/:id/products/add_product"
+            desc "POST travels/:id/add_product"
             params do
-              requires :product_sale_id, type: Integer
               requires :feature_id, type: Integer
               requires :quantity, type: Integer
             end
             post do
               salesman_travel = SalesmanTravel.find(params[:id])
+              product_sale = salesman_travel.product_sales.first
+
               if salesman_travel.product_warehouse_locs.count > 0
                 if salesman_travel.load_at.nil?
                   feature = ProductFeatureItem.find(params[:feature_id])
 
-                  sale_item = ProductSaleItem.new(product_sale_id: params[:product_sale_id],
+                  sale_item = ProductSaleItem.new(product_sale: product_sale,
                                                   product_id: feature.product_id,
                                                   feature_item: feature,
                                                   quantity: params[:quantity],
