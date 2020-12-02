@@ -18,7 +18,7 @@ class SalesmanReturn < ApplicationRecord
   }
 
   scope :by_sign_user, ->(user_id) {
-    items = joins(:sign)
+    items = left_joins(:sign)
     if user_id.nil?
       items = items.where("salesman_return_signs.id IS NULL OR salesman_return_signs.user_id IS ?", nil)
     else
