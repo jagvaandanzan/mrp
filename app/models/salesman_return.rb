@@ -17,8 +17,14 @@ class SalesmanReturn < ApplicationRecord
     where(salesman_id: salesman_id)
   }
 
-  scope :by_sign, ->(sign_id) {
-    where(sign_id: sign_id)
+  scope :by_sign_user, ->(user_id) {
+    items = joins(:sign)
+    if user_id.nil?
+      items = items.where("salesman_return_signs.user_id IS ?", nil)
+    else
+      items = items.where("salesman_return_signs.user_id = ?", user_id)
+    end
+    items
   }
 
   scope :by_user, ->(user_id) {

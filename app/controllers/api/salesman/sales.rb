@@ -57,7 +57,9 @@ module API
               return_sign.save
               present :sign_at, return_sign.updated_at
             else
-              salesman_returns = SalesmanReturn.by_salesman(current_salesman.id)
+              salesman_returns = SalesmanReturn.by_sign_user(nil)
+                                     .by_salesman(current_salesman.id)
+
               if salesman_returns.count == 0
                 error!(I18n.t('errors.messages.not_available_product'), 422)
               else
