@@ -7,8 +7,8 @@ class SalesmanReturn < ApplicationRecord
   belongs_to :sale_item, :class_name => "ProductSaleItem"
 
   scope :by_sale_item_salesman, ->(si_id, salesman_id) {
-    joins(:sign)
-        .where("salesman_return_signs.user_id IS ?", nil)
+    left_joins(:sign)
+        .where("salesman_return_signs.id IS NULL OR salesman_return_signs.user_id IS ?", nil)
         .where(sale_item_id: si_id)
         .where(salesman_id: salesman_id)
   }
@@ -20,7 +20,7 @@ class SalesmanReturn < ApplicationRecord
   scope :by_sign_user, ->(user_id) {
     items = joins(:sign)
     if user_id.nil?
-      items = items.where("salesman_return_signs.user_id IS ?", nil)
+      items = items.where("salesman_return_signs.id IS NULL OR salesman_return_signs.user_id IS ?", nil)
     else
       items = items.where("salesman_return_signs.user_id = ?", user_id)
     end
