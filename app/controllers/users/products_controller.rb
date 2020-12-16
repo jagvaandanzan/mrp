@@ -36,6 +36,9 @@ class Users::ProductsController < Users::BaseController
 
   def show
     category_headers
+    unless @product.product_package.present?
+      @product.product_package = ProductPackage.new
+    end
   end
 
   def edit
