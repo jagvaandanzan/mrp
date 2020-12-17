@@ -1,29 +1,23 @@
 class Users::ProductIncomesController < Users::BaseController
-  load_and_authorize_resource
-  before_action :set_product_income, only: [:edit, :update, :show, :destroy]
+  load_and_authorize_resource :except => [:insert_shipping_ub]
+  before_action :set_product_income, only: [:edit, :update, :show, :locations, :set_location, :destroy]
 
   def index
     @by_start = params[:by_start]
     @by_end = params[:by_end]
-    @by_income_code = params[:by_income_code]
-    @by_code = params[:by_code]
     @by_product_name = params[:by_product_name]
-
-    @product_income_items = ProductIncomeItem.search(@by_start, @by_end, @by_income_code, @by_code, @by_product_name).page(params[:page])
+    @product_income_products = ProductIncomeProduct.search(@by_start, @by_end, @by_product_name).page(params[:page])
   end
 
   def new
     @product_income = ProductIncome.new
     @product_income.income_date = Time.current
-    @product_income.code = ApplicationController.helpers.get_code(ProductIncome.last)
-
-    ShippingUbItem.find_to_incomes.each do |ub_item|
-      @product_income.product_income_items << ProductIncomeItem.new(shipping_ub_item: ub_item,
-                                                                    supply_feature: ub_item.product_supply_feature,
-                                                                    remainder: ub_item[:remainder],
-                                                                    product: ub_item.product,
-                                                                    feature_item: ub_item.product_supply_feature.feature_item)
-    end
+    @product_income.number = ApplicationController.helpers.last_number(ProductIncome)
+    # ShippingUbProduct.find_to_incomes.each do |ub_product|
+    #   @product_income.product_income_products << ProductIncomeProduct.new(shipping_ub_product_id: ub_product.id,
+    #                                                                       product_id: ub_product.product_id,
+    #                                                                       remainder: ub_product[:remainder])
+    # end
   end
 
   def create
@@ -33,21 +27,20 @@ class Users::ProductIncomesController < Users::BaseController
       redirect_to action: 'show', id: @product_income.id
     else
       logger.info("error: #{@product_income.errors.full_messages}")
+      @product_income.number = ApplicationController.helpers.last_number(ProductIncome)
       render 'new'
     end
   end
 
-  def edit
-    @product_income.product_income_items.each do |item|
-      item.remainder = item.shipping_ub_item.loaded
-      item.income_locations.each {|loc|
-        if loc.location.present?
-          loc.x = loc.location.x
-          loc.y = loc.location.y
-          loc.z = loc.location.z
-        end
-      }
+  def insert_shipping_ub
+    @shipping_ub_product = ShippingUbProduct.find_to_incomes(params[:id]).first
+    @rows = params[:rows].to_i
+    respond_to do |format|
+      format.js {render 'users/product_incomes/add_product'}
     end
+  end
+
+  def edit
   end
 
   def show
@@ -96,16 +89,43 @@ class Users::ProductIncomesController < Users::BaseController
     end
   end
 
+  def locations
+    @product_income.product_income_items.each do |item|
+      # item.remainder = item.shipping_ub_feature.quantity
+      item.income_locations.each {|loc|
+        if loc.location.present?
+          loc.x = loc.location.x
+          loc.y = loc.location.y
+          loc.z = loc.location.z
+        end
+      }
+    end
+  end
+
+  def set_location
+    @product_income.attributes = income_location_params
+    if @product_income.save
+      flash[:success] = t('alert.info_updated')
+      redirect_to action: 'index'
+    else
+      render 'locations'
+    end
+  end
+
   private
 
   def set_product_income
-    @product_income = ProductIncome.find(params[:id])
+
   end
 
   def product_income_params
-    params.require(:product_income).permit(:code, :income_date, :cargo_price, :logistic_id,
-                                           product_income_items_attributes: [:id, :product_id, :shipping_ub_item_id, :supply_feature_id, :feature_item_id, :remainder, :quantity, :cargo, :qr_printed, :problematic, :_destroy,
-                                                                             income_locations_attributes: [:id, :x, :y, :z, :quantity, :_destroy]])
+    params.require(:product_income).permit(:income_date, :cargo_price, :logistic_id,
+                                           product_income_products_attributes: [:id, :product_id, :shipping_ub_product_id, :remainder, :quantity, :cargo, :_destroy])
         .merge(:user => current_user)
+  end
+
+  def income_location_params
+    params.require(:product_income).permit(product_income_items_attributes: [:id, :qr_printed, :problematic, :_destroy,
+                                                                             income_locations_attributes: [:id, :x, :y, :z, :quantity, :_destroy]])
   end
 end

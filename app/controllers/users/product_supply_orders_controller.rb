@@ -53,6 +53,7 @@ class Users::ProductSupplyOrdersController < Users::BaseController
                                        product_supply_features.last
                                      end
             item.supply_features << ProductSupplyFeature.new(feature_item: feature_item,
+                                                             product_id: feature_item.product_id,
                                                              price: product_supply_feature.present? ? ApplicationController.helpers.get_f(product_supply_feature.price) : feature_item.price)
           }
         end

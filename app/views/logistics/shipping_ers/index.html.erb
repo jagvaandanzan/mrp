@@ -14,7 +14,7 @@
           </div>
         </div>
         <div class="col-md-4 search">
-          <%= text_field_tag :product_name, @product_name, {class: 'form-control search', placeholder: t('activerecord.attributes.product_supply_order.product_image')} %>
+          <%= text_field_tag :product_name, @product_name, {class: 'form-control search', placeholder: t('activerecord.attributes.product_supply_order.product_name')} %>
         </div>
         <div class="col-md-4 search">
           <%= submit_tag t('controls.button.searching') + " (" + @shipping_ers.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
@@ -34,18 +34,18 @@
             <table class="table table-hover">
               <thead>
               <tr>
-                <th class="th-center va-mid" style="width: 20%"><%= t('activerecord.attributes.shipping_er.date') %></th>
-                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.description') %></th>
-                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.shipping_er_items') %></th>
-                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.shipping_er_item_count') %></th>
+                <th class="th-center va-mid" style="width: 20%"><%= t('activerecord.attributes.shipping_er.number') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.date') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.cost') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.shipping_er_products') %></th>
               </tr>
               </thead>
               <% @shipping_ers.each do |shipping_er| %>
                 <tr>
-                  <td class="va-mid underline text-center"><%= link_to shipping_er.date.strftime('%F'), logistics_shipping_er_path(shipping_er) %></td>
-                  <td class="va-mid text-center"><%= shipping_er.description %></td>
-                  <td class="va-mid text-center"><%= shipping_er.shipping_er_items.count %></td>
-                  <td class="va-mid text-center"><%= shipping_er.shipping_er_item_count %></td>
+                  <td class="va-mid underline text-center"><%= link_to show_id(shipping_er.id), logistics_shipping_er_path(shipping_er) %></td>
+                  <td class="va-mid underline text-center"><%= shipping_er.date.strftime('%F') %></td>
+                  <td class="va-mid text-center"><%= get_currency(shipping_er.cost, Const::CURRENCY[0], 0) %></td>
+                  <td class="va-mid text-center"><%= shipping_er.product_names %></td>
                 </tr>
               <% end %>
             </table>

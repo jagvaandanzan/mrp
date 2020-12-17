@@ -1,0 +1,37 @@
+<tr class="nested-fields">
+  <% product = f.object.product %>
+  <%= f.hidden_field :product_id %>
+  <%= f.hidden_field :shipping_er_product_id %>
+  <%= f.hidden_field :remainder %>
+  <td class="va-mid"><%= product.name %></td>
+  <td class="va-mid"><%= product.code %></td>
+  <td class="va-mid">
+    <% if product.picture.present? %>
+      <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
+        <%= t('titles.view') %>
+      <% end %>
+    <% end %>
+  </td>
+  <td class="va-mid"><%= f.object.shipping_er_product.shipping_er_features.count %></td>
+  <td class="va-mid text-center"><%= f.object.shipping_er_product.product_bought %></td>
+  <td class="va-mid text-center"><%= f.object[:remainder] %></td>
+  <td class="va-mid text-center"><%= f.object.cargo %></td>
+  <td class="va-mid text-center"><%= f.object.shipping_er_product.shipping_er.date.strftime('%F') %></td>
+  <td class="va-mid">
+    <%= field_errors f.object, :quantity %>
+    <%= f.number_field :quantity, class: 'form-control field', min: 0, step: 1, placeholder: t('activerecord.attributes.shipping_ub_product.quantity') %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :cargo %>
+    <%= f.number_field :cargo, class: 'form-control field', min: 0, step: 1, placeholder: t('activerecord.attributes.shipping_ub_product.cargo') %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :cost %>
+    <%= f.number_field :cost, class: 'form-control field', min: 0, step: 1, placeholder: t('activerecord.attributes.shipping_ub_product.cost') %>
+  </td>
+  <td class="va-mid remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>

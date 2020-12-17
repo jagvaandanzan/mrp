@@ -1,0 +1,4 @@
+<% if @shipping_er_product.present?%>
+$('.tb_shipping_ub_products:last').append("<%= escape_javascript render(partial: 'logistics/shipping_ubs/add_product_partial',
+                    :locals => {shipping_er_product: @shipping_er_product, box_r: @box_r, row: @rows }) %>")
+<% end %>

@@ -1,0 +1,5 @@
+<% if @shipping_er_product.present?%>
+$('#tb_shipping_er_products tbody').append("<%= escape_javascript render(partial: 'logistics/shipping_ers/add_product_partial',
+                    :locals => {shipping_er_product: @shipping_er_product, product: @product, rows: @rows }) %>")
+set_quantity(".row-<%= @rows %> ");
+<% end %>

@@ -36,18 +36,22 @@
             <table class="table table-hover">
               <thead>
               <tr>
-                <th class="th-center va-mid" style="width: 20%"><%= t('activerecord.attributes.shipping_ub.date') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_ub.number') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_ub.date') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.shipping_er_products') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_ub.shipping_ub_features') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_ub.s_type') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_ub.description') %></th>
-                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_ub.shipping_ub_items') %></th>
-                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_ub.shipping_ub_item_count') %></th>
               </tr>
               </thead>
               <% @shipping_ubs.each do |shipping_ub| %>
                 <tr>
-                  <td class="va-mid underline text-center"><%= link_to shipping_ub.date.strftime('%F'), is_logistic ? logistics_shipping_ub_path(shipping_ub) : "/user/product_incomes/shipping_show/#{shipping_ub.id}" %></td>
+                  <td class="va-mid underline text-center"><%= link_to show_id(shipping_ub.id), is_logistic ? logistics_shipping_ub_path(shipping_ub) : "/user/product_incomes/shipping_show/#{shipping_ub.id}" %></td>
+                  <td class="va-mid"><%= shipping_ub.date.strftime('%F') %></td>
+                  <td class="va-mid"><%= shipping_ub.product_names %></td>
+                  <td class="va-mid text-center"><%= shipping_ub.shipping_ub_features %></td>
+                  <td class="va-mid text-center"><%= shipping_ub.s_type_i18n %></td>
                   <td class="va-mid text-center"><%= shipping_ub.description %></td>
-                  <td class="va-mid text-center"><%= shipping_ub.shipping_ub_items.count %></td>
-                  <td class="va-mid text-center"><%= shipping_ub.shipping_ub_item_count %></td>
                 </tr>
               <% end %>
             </table>

@@ -36,7 +36,7 @@ class Logistics::SupplyOrdersController < Logistics::BaseController
 
   def supply_order_item_params
     params.require(:product_supply_order_item).permit(:note_lo,
-                                                      supply_features_attributes: [:id, :quantity_lo, :price_lo, :note_lo, :_destroy])
+                                                      supply_features_attributes: [:id, :is_update, :quantity_lo, :price_lo, :note_lo, :_destroy])
         .merge(:logistic => current_logistic)
   end
 end

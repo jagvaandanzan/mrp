@@ -1,13 +1,18 @@
 class ShippingUb < ApplicationRecord
   belongs_to :logistic
 
-  has_many :shipping_ub_items, dependent: :destroy
-  has_many :products, through: :shipping_ub_items
+  has_many :shipping_ub_products, dependent: :destroy
+  has_many :shipping_ub_boxes, dependent: :destroy
+  has_many :products, through: :shipping_ub_products
 
-  accepts_nested_attributes_for :shipping_ub_items, allow_destroy: true
+  accepts_nested_attributes_for :shipping_ub_boxes, allow_destroy: true
 
-  validates :date, presence: true
-  validates :shipping_ub_items, :length => {:minimum => 1}
+  enum s_type: {simple: 0, urgent: 1}
+
+  validates :date, :s_type, presence: true
+  validates :shipping_ub_boxes, :length => {:minimum => 1}
+
+  attr_accessor :number
 
   scope :order_created_at, -> {
     order(:date)
@@ -21,12 +26,23 @@ class ShippingUb < ApplicationRecord
     items
   }
 
-  def shipping_ub_item_count
-    shipping_ub_items
-        .sum(:loaded)
+  def shipping_ub_features
+    shipping_ub_products
+        .sum(:quantity)
   end
 
   def cargo_price
-    shipping_ub_items.sum(:cost)
+    shipping_ub_products.sum(:cost)
+  end
+
+  def product_names
+    names = ""
+    products.each_with_index {|product, index|
+      if index > 0
+        names += ", "
+      end
+      names += product.full_name
+    }
+    names
   end
 end

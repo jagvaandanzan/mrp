@@ -9,10 +9,10 @@
     <div class="box box-info">
       <%= form_with model: @shipping_ub, url: @shipping_ub.persisted? ? logistics_shipping_ub_path : logistics_shipping_ubs_path, method: @shipping_ub.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
-          <div class="col-md-12">
-            <div class="form-group">
-              <%= f.label :date, class: 'col-sm-3 control-label' %>
-              <div class="col-sm-9 <%= get_error_class(@shipping_ub, :date) %>">
+          <div class="row">
+            <div class="col-md-12">
+              <div class=" col-md-6 field_div">
+                <%= f.label :date, class: 'control-label' %>
                 <div class="input-append input-group date <%= get_error_class(@shipping_ub, :date) %>" data-provide="datepicker">
                   <%= field_errors(@shipping_ub, :date) %>
                   <%= f.text_field :date, value: @shipping_ub.date.strftime('%F'), class: 'field form-control', placeholder: t('activerecord.attributes.shipping_ub.date') %>
@@ -21,58 +21,121 @@
                   </div>
                 </div>
               </div>
+              <div class="col-md-6 field_div">
+                <%= f.label :number, class: 'control-label' %>
+                <div>
+                  <%= text_field_tag :number, show_id(@shipping_ub.persisted? ? @shipping_ub.id : @shipping_ub.number), {class: 'form-control', readonly: true} %>
+                </div>
+              </div>
             </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4 field_div">
+                <%= f.label :s_type, class: 'control-label' %>
+                <div class="<%= get_error_class(@shipping_ub, :s_type) %>">
+                  <%= field_errors(@shipping_ub, :s_type) %>
+                  <%= f.select :s_type, ShippingUb.s_types_i18n.keys.map {|k| [ShippingUb.s_types_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+                </div>
+              </div>
+              <div class="col-md-8 field_div">
+                <%= f.label :description, class: 'control-label' %>
+                <div class="<%= get_error_class(@shipping_ub, :description) %>">
+                  <%= field_errors(@shipping_ub, :description) %>
+                  <%= f.text_area :description, class: 'form-control', placeholder: t('activerecord.attributes.shipping_ub.description') %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 field_div m-t-10">
+            <div class="cocoon-nested-form">
+              <div class="<%= get_error_class(@shipping_ub, :shipping_ub_boxes) %>">
+                <%= field_errors(@shipping_ub, :shipping_ub_boxes) %>
+
+                <% f.object.shipping_ub_boxes.each.with_index do |shipping_ub_box, index| %>
+                  <%= f.fields_for :shipping_ub_boxes, shipping_ub_box do |m| %>
+                    <%= render 'shipping_ub_box_fields', :f => m, index: index %>
+                  <% end %>
+                <% end %>
+
+                <div class="links" id="btn_shipping_ub_boxes" style="position: absolute">
+                  <%= link_to_add_association f, :shipping_ub_boxes do %>
+                    <button type="button" class="btn btn-success btn-xs" id="btn_shipping_ub_boxes">
+                      <i class="fa"><%= t('controls.button.add_box') %></i></button>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
           </div>
           <div class="col-md-12 field_div">
             <div class="cocoon-nested-form">
-              <div class="<%= get_error_class(@shipping_ub, :shipping_ub_items) %>">
-                <%= field_errors(@shipping_ub, :shipping_ub_items) %>
-                <table class="table table-bordered" id="tb_shipping_ub_items">
+              <div>
+                <table class="table table-bordered" id="tb_shipping_er_products">
                   <tr>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_name') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_code') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_image') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_feature') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_item.product_bought') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.received') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.cargo') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_item.at_er') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_item.loaded') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.same_feature') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_item.cargo') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_item.s_type') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_item.cost') %></th>
-                    <th width="50px"></th>
+                    <th colspan="6"><%= t('titles.ready_for_shipment') %></th>
+                    <th colspan="3"><%= t('titles.received') %></th>
+                    <th></th>
                   </tr>
-                  <% shipping_ub_items = @shipping_ub.shipping_ub_items
-                     shipping_ub_items.each.with_index do |shipping_ub_item, index| %>
-                    <%= f.fields_for :shipping_ub_items, shipping_ub_item do |m| %>
-                      <%= render 'shipping_ub_item_fields', :f => m, index: index, shipping_ub_items: shipping_ub_items %>
-                    <% end %>
-                  <% end %>
+                  <tr>
+                    <th class="va-mid text-center">№</th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_name') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_code') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_image') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_feature') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_product.product_bought') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_product.quantity') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_product.cargo') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_product.at_er') %></th>
+                    <th></th>
+                  </tr>
+                  <% ShippingErProduct.find_to_ub.each_with_index {|er_product, index|
+                    product = er_product.product %>
+                    <tr id="p-<%= er_product.id %>">
+                      <td class="va-mid text-center"><%= index + 1 %></td>
+                      <td class="va-mid"><%= product.name %></td>
+                      <td class="va-mid"><%= product.code %></td>
+                      <td class="va-mid">
+                        <% if product.picture.present? %>
+                          <%= link_to product.picture.url, :"data-lightbox" => "roadtrip" do %>
+                            <%= t('titles.view') %>
+                          <% end %>
+                        <% end %>
+                      </td>
+                      <td class="va-mid"><%= er_product.shipping_er_features.count %></td>
+                      <td class="va-mid"><%= er_product.product_bought %></td>
+                      <td class="va-mid"><%= er_product[:remainder] %></td>
+                      <td class="va-mid"><%= er_product.cargo %></td>
+                      <td class="va-mid"><%= er_product.shipping_er.date.strftime('%F') %></td>
+                      <td class="va-mid">
+                        <button class="btn btn-block btn-success btn-xs" type="button" onclick="add_product(<%= er_product.id %>)">
+                          <i class="fa fa-plus" style="color: white"></i></button>
+                      </td>
+                    </tr>
+                  <% } %>
                 </table>
               </div>
             </div>
-          </div>
-          <div class="col-md-12 m-t-10">
-            <div class="form-group">
-              <%= f.label :description, class: 'col-sm-3 control-label' %>
-              <div class="col-sm-9 <%= get_error_class(@shipping_ub, :description) %>">
-                <%= field_errors(@shipping_ub, :description) %>
-                <%= f.text_area :description, class: 'form-control', placeholder: t('activerecord.attributes.shipping_ub.description') %>
-              </div>
-            </div>
-          </div>
-          <div class="action-buttons">
-            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
           </div>
         <% end %>
       <% end %>
     </div>
   </section>
 </div>
-<style>
-  .filter-option-inner-inner {
-    font-size: 9px;
-  }
-</style>
+<script !src="">
+    function add_product(id) {
+        let row = $('.tb_shipping_ub_products:last .nested-fields').length;
+        let box_r = $('.box_r').length;
+        Rails.ajax({
+            url: "<%= add_product_logistics_shipping_ubs_path %>",
+            type: "POST",
+            data: "id=" + id + "&box_r=" + box_r + "&rows=" + row,
+            success: function () {
+                $('#tb_shipping_er_products tr#p-' + id).remove();
+            },
+        });
+    }
+</script>

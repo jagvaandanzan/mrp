@@ -45,7 +45,7 @@ cn:
         post_er: "Шуудан: Үйлд-Эрээн"
         cargo_er: "Карго: Үйлд-Эрээн"
         cargo_post: "Карго: Шуудан-Эрээн"
-    shipping_ub_item:
+    shipping_ub:
       s_type:
         simple: "Энгийн: Эрээн-УБ"
         urgent: "Яаралтай: Эрээн-УБ"
@@ -140,18 +140,18 @@ cn:
         supply_feature_id: Шинж чанар
         quantity: Хү.А барааны тоо
       shipping_ub:
+        number: Баримтын дугаар
         logistic: Хангамжийн ажилтан
         date: Эрээнээс ачуулсан огноо
+        s_type: Тээврийн чиглэл
         description: Тайлбар
-        shipping_ub_items: Бараа
-        shipping_ub_item_count: Барааны тоо
-      shipping_ub_item:
+        shipping_ub_products: Бараа
+        shipping_ub_features: Барааны тоо
+      shipping_ub_product:
         product_bought: Худалдан авсан тоо
         at_er: Эрээнд ирсэн огноо
-        loaded: Ачуулсан барааны тоо
-        same_feature: Нэг хайрцагт
+        quantity: Барааны тоо
         cargo: Ачааны тоо
-        s_type: Тээврийн төрөл, Чиглэл
         cost: Зардал
     errors:
       messages:

@@ -1,0 +1,30 @@
+<tr class="nested-fields">
+  <%= product = shipping_ub_product.product %>
+  <input type="hidden" value="<%= product.id %>" name="product_income[product_income_products_attributes][<%= row %>][product_id]" id="product_income_product_income_products_attributes_<%= row %>_product_id">
+  <input type="hidden" value="<%= shipping_ub_product.id %>" name="product_income[product_income_products_attributes][<%= row %>][shipping_ub_product_id]" id="product_income_product_income_products_attributes_<%= row %>_shipping_ub_product_id">
+  <input type="hidden" value="<%= shipping_ub_product[:remainder] %>" name="product_income[product_income_products_attributes][<%= row %>][remainder]" id="product_income_product_income_products_attributes_<%= row %>_remainder">
+  <td class="va-mid"><%= product.code %></td>
+  <td class="va-mid"><%= product.name %></td>
+  <td class="va-mid">
+    <% if product.picture.present? %>
+      <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
+        <%= t('titles.view') %>
+      <% end %>
+    <% end %>
+  </td>
+  <td class="va-mid text-center"><%= shipping_ub_product[:remainder] %></td>
+  <td>
+    <input class="form-control p-2 field" min="0" step="1" placeholder="Тоо" type="number" name="product_income[product_income_products_attributes][<%= row %>][quantity]"
+           id="product_income_product_income_products_attributes_<%= row %>_quantity">
+  </td>
+  <td>
+    <input class="form-control p-2 field" min="0" step="1" placeholder="Ачааны тоо" type="number" name="product_income[product_income_products_attributes][<%= row %>][cargo]"
+           id="product_income_product_income_products_attributes_<%= row %>_cargo">
+  </td>
+  <td class="va-mid"><%= get_currency(shipping_ub_product.cost, Const::CURRENCY[0], 0) %></td>
+  <td class="remove">
+    <input value="false" type="hidden" name="product_income[product_income_products_attributes][<%= row %>][_destroy]" id="product_income_product_income_products_attributes_<%= row %>__destroy">
+    <a data-confirm="Та устгахдаа итгэлтэй байна уу ?" class="remove_fields dynamic" href="#">
+      <i class="fa fa-fw fa-minus-circle"></i>
+    </a></td>
+</tr>

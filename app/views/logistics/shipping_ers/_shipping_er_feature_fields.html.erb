@@ -1,0 +1,33 @@
+<% product = f.object.product
+   feature_item = f.object.supply_feature.feature_item %>
+<tr class="nested-fields feature-<%= product.id %>">
+  <%= f.hidden_field :product_id %>
+  <%= f.hidden_field :supply_feature_id %>
+  <%= f.hidden_field :remainder %>
+  <% if index == 0 %>
+    <td class="va-mid"><%= product.name %></td>
+    <td class="va-mid code"><%= product.code %></td>
+  <% else %>
+    <td></td>
+    <td></td>
+  <% end %>
+  <td class="va-mid">
+    <% if feature_item.img.present? %>
+      <%= link_to feature_item.img.url, "data-lightbox": "roadtrip" do %>
+        <%= t('titles.view') %>
+      <% end %>
+    <% end %>
+  </td>
+  <td class="va-mid"><%= feature_item.name %></td>
+  <td class="va-mid text-center"><%= f.object.remainder %>
+  <td class="va-mid">
+    <%= field_errors f.object, :quantity %>
+    <%= f.number_field :quantity, class: 'form-control field quantity', p: product.id, min: 0, step: 1, placeholder: t('activerecord.attributes.shipping_er_feature.quantity') %>
+  </td>
+  <td></td>
+  <td class="va-mid remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>

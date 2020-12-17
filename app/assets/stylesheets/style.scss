@@ -702,3 +702,11 @@ img.tumb {
   height: 30px;
   width: 30px;
 }
+
+.t-list th,
+.t-list td{
+  padding: 2px!important;
+}
+.t-list .form-control {
+  padding: 1px!important;
+}

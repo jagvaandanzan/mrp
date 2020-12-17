@@ -29,6 +29,8 @@ cn:
       download: Татах
       to_equate: Адилтгах
       watch: Үзэх
+      add_box: Хайрцаг нэмэх
+      remove_box: Хайрцаг хасах
     select:
       none: Сонгох
       alert: " сонгоно уу!"
@@ -50,6 +52,9 @@ cn:
     product_supply_ordering: 购买商品
     color: Өнгө
     product_sample: Дээж бараа
+    ready_for_shipment: Тээвэрлэхэд бэлэн бараанууд
+    received: Хүлээн авсан
+    consignment: Ачуулсан
   app_name: “MRP”
   app_short_name: M
   alert:

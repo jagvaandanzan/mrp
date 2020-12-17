@@ -1,11 +1,6 @@
 <tr class="nested-fields">
   <% product = f.object.product
      feature_item = f.object.feature_item %>
-  <%= f.hidden_field :product_id %>
-  <%= f.hidden_field :shipping_ub_item_id %>
-  <%= f.hidden_field :supply_feature_id %>
-  <%= f.hidden_field :feature_item_id %>
-  <%= f.hidden_field :remainder %>
   <td class="va-mid"><%= product.code %></td>
   <td class="va-mid"><%= product.name %></td>
   <td class="va-mid">
@@ -17,39 +12,23 @@
   </td>
   <td class="va-mid"><%= feature_item.name %></td>
   <td class="va-mid"><%= f.object.supply_feature.quantity %></td>
-  <td class="va-mid"><%= f.object.shipping_ub_item.un_loaded %></td>
-  <td>
-    <%= field_errors f.object, :quantity %>
-    <%= f.number_field :quantity, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.quantity') %>
+  <td class="va-mid"><%= f.object.shipping_ub_feature.quantity %></td>
+  <td class="va-mid"><%= f.object.quantity %></td>
+  <td class="va-mid">
+    <%= field_errors f.object, :qr_printed %>
+    <%= f.number_field :qr_printed, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.qr_printed') %>
   </td>
-  <td>
-    <%= field_errors f.object, :cargo %>
-    <%= f.number_field :cargo, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.cargo') %>
+  <td class="va-mid">
+    <%= field_errors f.object, :problematic %>
+    <%= f.number_field :problematic, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.problematic') %>
   </td>
-  <td class="va-mid"><%= get_currency(f.object.shipping_cost, "￥", 0) %></td>
-  <% if is_edit %>
-    <td>
-      <%= field_errors f.object, :qr_printed %>
-      <%= f.number_field :qr_printed, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.qr_printed') %>
-    </td>
-    <td>
-      <%= field_errors f.object, :problematic %>
-      <%= f.number_field :problematic, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.problematic') %>
-    </td>
-    <td>
-      <%= field_errors f.object, :income_locations %>
-      <%= link_to_add_association f, :income_locations do %>
-        <%= nested_add_btn %>
-      <% end %>
-      <%= f.fields_for :income_locations do |m| %>
-        <%= render 'income_location_fields', :f => m %>
-      <% end %>
-    </td>
-  <% else %>
-    <td class="remove">
-      <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
-        <%= nested_remove_btn %>
-      <% end %>
-    </td>
-  <% end %>
+  <td class="va-mid">
+    <%= field_errors f.object, :income_locations %>
+    <%= link_to_add_association f, :income_locations do %>
+      <%= nested_add_btn %>
+    <% end %>
+    <%= f.fields_for :income_locations do |m| %>
+      <%= render 'income_location_fields', :f => m %>
+    <% end %>
+  </td>
 </tr>

@@ -2,13 +2,15 @@ class ProductIncome < ApplicationRecord
   belongs_to :user
   belongs_to :logistic
   has_many :product_income_items, dependent: :destroy
+  has_many :product_income_products, dependent: :destroy
 
   accepts_nested_attributes_for :product_income_items, allow_destroy: true
+  accepts_nested_attributes_for :product_income_products, allow_destroy: true
 
-  validates :code, :cargo_price, :income_date, presence: true
-  validates :code, uniqueness: true
-  validates :product_income_items, :length => {:minimum => 1}
-  # validate :valid_quantity
+  validates :cargo_price, :logistic_id, :income_date, presence: true
+  validates :product_income_products, :length => {:minimum => 1}
+
+  attr_accessor :number
 
   scope :income_date_desc, -> {
     order(income_date: :desc)

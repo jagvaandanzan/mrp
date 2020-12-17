@@ -1,0 +1,31 @@
+<tr class="nested-fields">
+  <% product = f.object.product
+     ub_product = f.object.shipping_ub_product %>
+  <%= f.hidden_field :product_id %>
+  <%= f.hidden_field :shipping_ub_product_id %>
+  <%= f.hidden_field :remainder %>
+  <td class="va-mid"><%= product.code %></td>
+  <td class="va-mid"><%= product.name %></td>
+  <td class="va-mid">
+    <% if product.picture.present? %>
+      <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
+        <%= t('titles.view') %>
+      <% end %>
+    <% end %>
+  </td>
+  <td class="va-mid text-center"><%= f.object.remainder %></td>
+  <td>
+    <%= field_errors f.object, :quantity %>
+    <%= f.number_field :quantity, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.quantity') %>
+  </td>
+  <td>
+    <%= field_errors f.object, :cargo %>
+    <%= f.number_field :cargo, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.cargo') %>
+  </td>
+  <td class="va-mid"><%= get_currency(ub_product.cost, Const::CURRENCY[0], 0) %></td>
+  <td class="remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>

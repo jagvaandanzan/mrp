@@ -1,0 +1,34 @@
+<% f.object.shipping_er_features.each.with_index do |shipping_er_feature, index| %>
+  <%= f.fields_for :shipping_er_features, shipping_er_feature do |m| %>
+    <%= render 'shipping_er_feature_fields', :f => m, index: index %>
+  <% end %>
+<% end %>
+<tr class="nested-fields">
+  <% product = f.object.product %>
+  <%= f.hidden_field :product_id %>
+  <td><%= field_errors f.object, :product_id %></td>
+  <td></td>
+  <td class="va-mid">
+    <% if product.picture.present? %>
+      <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
+        <%= t('titles.view') %>
+      <% end %>
+    <% end %>
+  </td>
+  <td colspan="2" class="text-right va-mid">
+    <strong><%= t('activerecord.attributes.shipping_er_product.quantity') %></strong>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :quantity %>
+    <%= f.number_field :quantity, class: 'form-control field sum', p: product.id, min: 0, step: 1, placeholder: t('activerecord.attributes.shipping_er_product.quantity') %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :cargo %>
+    <%= f.number_field :cargo, class: 'form-control field', min: 0, step: 1, placeholder: t('activerecord.attributes.shipping_er_product.cargo') %>
+  </td>
+  <td class="va-mid remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')}, class: 'product-remove', id: product.id do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>

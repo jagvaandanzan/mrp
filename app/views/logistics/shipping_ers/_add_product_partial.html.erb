@@ -1,0 +1,74 @@
+<% shipping_er_product.shipping_er_features.each_with_index {|feature, index|
+  product = feature.product
+  feature_item = feature.supply_feature.feature_item %>
+
+  <tr class="nested-fields feature-<%= product.id %> row-<%= rows %>">
+    <input type="hidden" value="<%= product.id %>"
+           name="shipping_er[shipping_er_products_attributes][<%= rows %>][shipping_er_features_attributes][<%= index %>][product_id]"
+           id="shipping_er_shipping_er_products_attributes_<%= rows %>_shipping_er_features_attributes_<%= index %>_product_id">
+    <input type="hidden" value="<%= feature.supply_feature_id %>" name="shipping_er[shipping_er_products_attributes][<%= rows %>][shipping_er_features_attributes][<%= index %>][supply_feature_id]"
+           id="shipping_er_shipping_er_products_attributes_<%= rows %>_shipping_er_features_attributes_<%= index %>_supply_feature_id">
+    <input type="hidden" value="<%= feature.remainder %>" name="shipping_er[shipping_er_products_attributes][<%= rows %>][shipping_er_features_attributes][<%= index %>][remainder]"
+           id="shipping_er_shipping_er_products_attributes_<%= rows %>_shipping_er_features_attributes_<%= index %>_remainder">
+    <% if index == 0 %>
+      <td class="va-mid"><%= product.name %></td>
+      <td class="va-mid code"><%= product.code %></td>
+    <% else %>
+      <td></td>
+      <td></td>
+    <% end %>
+    <td class="va-mid">
+      <% if feature_item.img.present? %>
+        <%= link_to feature_item.img.url, "data-lightbox": "roadtrip" do %>
+          <%= t('titles.view') %>
+        <% end %>
+      <% end %>
+    </td>
+    <td class="va-mid"><%= feature_item.name %></td>
+    <td class="va-mid text-center"><%= feature.remainder %>
+    <td class="va-mid">
+      <input class="form-control field quantity" p="<%= product.id %>" min="0" step="1" placeholder="<%= t('activerecord.attributes.shipping_er_feature.quantity') %>" type="number"
+             name="shipping_er[shipping_er_products_attributes][<%= rows %>][shipping_er_features_attributes][<%= index %>][quantity]"
+             id="shipping_er_shipping_er_products_attributes_<%= rows %>_shipping_er_features_attributes_<%= index %>_quantity">
+    </td>
+    <td></td>
+    <td class="va-mid remove">
+      <input value="false" type="hidden" name="shipping_er[shipping_er_products_attributes][<%= rows %>][shipping_er_features_attributes][<%= index %>][_destroy]"
+             id="shipping_er_shipping_er_products_attributes_<%= rows %>_shipping_er_features_attributes_<%= index %>__destroy">
+      <a data-confirm="Та устгахдаа итгэлтэй байна уу ?" class="remove_fields dynamic" href="#">
+        <i class="fa fa-fw fa-minus-circle"></i>
+      </a></td>
+  </tr>
+<% } %>
+
+<tr class="nested-fields row-<%= rows %>">
+  <input type="hidden" value="<%= product.id %>" name="shipping_er[shipping_er_products_attributes][<%= rows %>][product_id]"
+         id="shipping_er_shipping_er_products_attributes_<%= rows %>_product_id">
+  <td></td>
+  <td></td>
+  <td class="va-mid">
+    <% if product.picture.present? %>
+      <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
+        <%= t('titles.view') %>
+      <% end %>
+    <% end %>
+  </td>
+  <td colspan="2" class="text-right va-mid">
+    <strong><%= t('activerecord.attributes.shipping_er_product.quantity') %></strong>
+  </td>
+  <td class="va-mid">
+    <input class="form-control field sum" p="<%= product.id %>" min="0" step="1" placeholder="<%= t('activerecord.attributes.shipping_er_product.quantity') %>" type="number"
+           name="shipping_er[shipping_er_products_attributes][<%= rows %>][quantity]"
+           id="shipping_er_shipping_er_products_attributes_<%= rows %>_quantity">
+  </td>
+  <td class="va-mid">
+    <input class="form-control field" min="0" step="1" placeholder="<%= t('activerecord.attributes.shipping_er_product.cargo') %>" type="number"
+           name="shipping_er[shipping_er_products_attributes][<%= rows %>][cargo]"
+           id="shipping_er_shipping_er_products_attributes_<%= rows %>_cargo">
+  </td>
+  <td class="va-mid remove">
+    <input value="false" type="hidden" name="shipping_er[shipping_er_products_attributes][<%= rows %>][_destroy]"
+           id="shipping_er_shipping_er_products_attributes_<%= rows %>__destroy"><a data-confirm="Та устгахдаа итгэлтэй байна уу ?" class="remove_fields dynamic" href="#">
+    <i class="fa fa-fw fa-minus-circle"></i>
+  </a></td>
+</tr>

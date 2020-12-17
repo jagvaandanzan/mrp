@@ -11,10 +11,9 @@
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-3 field_div">
-                <%= f.label :code, class: 'control-label' %>
-                <div class="<%= get_error_class(@product_income, :code) %>">
-                  <%= field_errors(@product_income, :code) %>
-                  <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product_income.code') %>
+                <%= f.label :number, class: 'control-label' %>
+                <div>
+                  <%= text_field_tag :number, show_id(@product_income.persisted? ? @product_income.id : @product_income.number), {class: 'form-control', readonly: true} %>
                 </div>
               </div>
               <div class="col-md-3 field_div">
@@ -44,42 +43,107 @@
             </div>
           </div>
           <div class="col-md-12 field_div">
-            <%= f.label :product_income_items, class: 'control-label' %>
+            <%= f.label :product_income_products, class: 'control-label' %>
 
             <div class="cocoon-nested-form">
-              <div class="<%= get_error_class(@product_income, :product_income_items) %>">
-                <%= field_errors(@product_income, :product_income_items) %>
-                <table class="table table-bordered" id="tb_product_income_items">
+              <div class="<%= get_error_class(@product_income, :product_income_products) %>">
+                <%= field_errors(@product_income, :product_income_products) %>
+                <table class="table table-bordered" id="tb_product_income_products">
                   <tr>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_code') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_name') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_image') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_item.product_feature') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.order_number') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_code') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_name') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.product_income_item.quantity') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.product_income_item.cargo') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.product_income_item.shipping_cost') %></th>
-                    <% if @product_income.persisted? %>
-                      <th class="va-mid"><%= t('activerecord.attributes.product_income_item.qr_printed') %></th>
-                      <th class="va-mid"><%= t('activerecord.attributes.product_income_item.problematic') %></th>
-                      <th class="va-mid" style="width: 200px"><%= t('activerecord.attributes.product_income_item.shelf') %></th>
-                    <% else %>
-                      <th width="50px"></th>
-                    <% end %>
+                    <th width="50px"></th>
                   </tr>
-                  <%= f.fields_for :product_income_items do |m| %>
-                    <%= render 'product_income_item_fields', :f => m, is_edit: @product_income.persisted? %>
+                  <%= f.fields_for :product_income_products do |m| %>
+                    <%= render 'product_income_product_fields', :f => m %>
                   <% end %>
                 </table>
               </div>
             </div>
           </div>
+
           <div class="action-buttons">
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+
+          <div class="col-md-12 field_div cocoon-nested-form">
+            <table class="table table-bordered" id="tb_shipping_ub_products">
+              <tr>
+                <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_code') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_name') %></th>
+                <th class="va-mid"><%= t('activerecord.models.product_feature') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_supply_order_item.shipping_ub_date') %></th>
+                <th class="va-mid"><%= t('titles.cost') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
+                <th class="va-mid"><%= t('titles.cargo') %></th>
+                <th width="50px"></th>
+              </tr>
+              <% ShippingUbProduct.find_to_incomes.each do |ub_product| %>
+                <% shipping_ub = ub_product.shipping_ub
+                   product = ub_product.product %>
+                <tr class="p-<%= ub_product.id %>">
+                  <td class="va-mid"><%= product.code %></td>
+                  <td class="va-mid"><%= product.full_name %></td>
+                  <td></td>
+                  <td class="va-mid">
+                    <% if product.picture.present? %>
+                      <%= link_to product.picture.url, :"data-lightbox" => "roadtrip" do %>
+                        <%= t('titles.view') %>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <td class="va-mid"><%= shipping_ub.date.strftime('%F') %></td>
+                  <td class="va-mid"><%= get_currency(ub_product.cost, Const::CURRENCY[0], 0) %></td>
+                  <td class="va-mid text-center"><%= ub_product[:remainder] %></td>
+                  <td class="va-mid text-center"><%= ub_product.cargo %></td>
+                  <td class="va-mid">
+                    <button class="btn btn-block btn-success btn-xs" type="button" onclick="add_product(<%= ub_product.id %>)">
+                      <i class="fa fa-plus" style="color: white"></i></button>
+                  </td>
+                </tr>
+                <% ub_product.shipping_ub_features.each {|ub_feature|
+                  feature = ub_feature.feature_item %>
+                  <tr class="p-<%= ub_product.id %>">
+                    <td colspan="2"></td>
+                    <td class="va-mid"><%= feature.name %></td>
+                    <td class="va-mid">
+                      <% if feature.img.present? %>
+                        <%= link_to feature.img.url, :"data-lightbox" => "roadtrip" do %>
+                          <%= t('titles.view') %>
+                        <% end %>
+                      <% end %>
+                    </td>
+                    <td colspan="2"></td>
+                    <td class="va-mid"><%= ub_feature.quantity %></td>
+                    <td colspan="2"></td>
+                  </tr>
+                <% } %>
+              <% end %>
+            </table>
           </div>
         <% end %>
       <% end %>
     </div>
   </section>
 </div>
+<script>
+    function add_product(id) {
+        let row = $('#tb_product_income_products .nested-fields').length;
+        Rails.ajax({
+            url: "<%= insert_shipping_ub_users_product_incomes_path %>",
+            type: "PATCH",
+            data: "id=" + id + "&rows=" + row,
+            success: function () {
+                $('#tb_shipping_ub_products tr.p-' + id).each(function () {
+                    $(this).remove();
+                });
+            },
+        });
+    }
+</script>

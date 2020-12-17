@@ -1,14 +1,18 @@
 class ShippingEr < ApplicationRecord
   belongs_to :logistic
 
-  has_many :shipping_er_items, dependent: :destroy
-  has_many :products, through: :shipping_er_items
-  has_many :product_supply_features, through: :shipping_er_items
+  has_many :shipping_er_products, dependent: :destroy
+  has_many :product_supply_features, through: :shipping_er_products
+  has_many :products, through: :shipping_er_products
 
-  accepts_nested_attributes_for :shipping_er_items, allow_destroy: true
+  accepts_nested_attributes_for :shipping_er_products, allow_destroy: true
 
-  validates :date, presence: true
-  validates :shipping_er_items, :length => {:minimum => 1}
+  enum s_type: {post_cargo: 0, post_er: 1, cargo_er: 2, cargo_post: 3}
+
+  attr_accessor :number
+
+  validates :date, :cost, :s_type, presence: true
+  validate :product_should_be_uniq
 
   scope :order_created_at, -> {
     order(:date)
@@ -22,9 +26,25 @@ class ShippingEr < ApplicationRecord
     items
   }
 
-  def shipping_er_item_count
-    shipping_er_items
-        .sum('received')
+  def product_names
+    names = ""
+    products.each_with_index {|product, index|
+      if index > 0
+        names += ", "
+      end
+      names += product.full_name
+    }
+    names
+  end
+
+  private
+
+  def product_should_be_uniq
+    uniq_by_product_id = shipping_er_products.uniq(&:product_id)
+
+    if shipping_er_products.length != uniq_by_product_id.length
+      self.errors.add(:shipping_er_products, :taken)
+    end
   end
 
 end

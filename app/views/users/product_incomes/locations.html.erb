@@ -1,0 +1,44 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "form" %>
+<% end %>
+<div class="content-wrapper">
+  <section class="content">
+    <div class="box box-info">
+      <%= form_with model: @product_income, url: set_location_users_product_incomes_path(id: @product_income.id),
+                    method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <div class="col-md-12 field_div">
+            <%= f.label :product_income_items, class: 'control-label' %>
+
+            <div class="cocoon-nested-form">
+              <div class="<%= get_error_class(@product_income, :product_income_items) %>">
+                <%= field_errors(@product_income, :product_income_items) %>
+                <table class="table table-bordered" id="tb_product_income_items">
+                  <tr>
+                    <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_code') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_name') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.feature_item_id') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.order_number') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.quantity') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.qr_printed') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.problematic') %></th>
+                    <th class="va-mid" style="width: 200px"><%= t('activerecord.attributes.product_income_item.shelf') %></th>
+                  </tr>
+                  <%= f.fields_for :product_income_items do |m| %>
+                    <%= render 'product_income_item_fields', :f => m, is_edit: @product_income.persisted? %>
+                  <% end %>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>

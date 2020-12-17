@@ -12,12 +12,8 @@ class Logistics::ShippingUbsController < Logistics::BaseController
   def new
     @shipping_ub = ShippingUb.new
     @shipping_ub.date = Time.current
-    ShippingErItem.find_to_ub.each do |er_item|
-      @shipping_ub.shipping_ub_items << ShippingUbItem.new(shipping_er_item: er_item,
-                                                           product_supply_feature: er_item.product_supply_feature,
-                                                           remainder: er_item[:remainder],
-                                                           product: er_item.product)
-    end
+    @shipping_ub.number = ApplicationController.helpers.last_number(ShippingUb)
+    @shipping_ub.shipping_ub_boxes << ShippingUbBox.new
   end
 
   def create
@@ -28,7 +24,18 @@ class Logistics::ShippingUbsController < Logistics::BaseController
       redirect_to action: :index
     else
       logger.info("errors: #{@shipping_ub.errors.full_messages}")
+      @shipping_ub.date = Time.current
+      @shipping_ub.number = ApplicationController.helpers.last_number(ShippingUb)
       render 'new'
+    end
+  end
+
+  def add_product
+    @shipping_er_product = ShippingErProduct.find_to_ub(params[:id]).first
+    @rows = params[:rows].to_i
+    @box_r = params[:box_r].to_i - 1
+    respond_to do |format|
+      format.js {render 'logistics/shipping_ubs/add_product'}
     end
   end
 
@@ -36,9 +43,6 @@ class Logistics::ShippingUbsController < Logistics::BaseController
   end
 
   def edit
-    @shipping_ub.shipping_ub_items.each do |item|
-      item.remainder = (ShippingErItem.sum_received(item.product_supply_feature_id) - ShippingUbItem.sum_loaded(item.product_supply_feature_id)) + item.loaded
-    end
   end
 
   def update
@@ -65,8 +69,9 @@ class Logistics::ShippingUbsController < Logistics::BaseController
   end
 
   def shipping_ub_params
-    params.require(:shipping_ub).permit(:date, :description,
-                                        shipping_ub_items_attributes: [:id, :product_id, :product_supply_feature_id, :shipping_er_item_id, :remainder, :loaded, :same_item_id, :cargo, :s_type, :cost, :_destroy])
+    params.require(:shipping_ub).permit(:date, :s_type, :description,
+                                        shipping_ub_boxes_attributes: [:id, :_destroy,
+                                                                       shipping_ub_products_attributes: [:id, :product_id, :shipping_er_product_id, :remainder, :quantity, :cargo, :cost, :_destroy]])
         .merge(:logistic => current_logistic)
   end
 end

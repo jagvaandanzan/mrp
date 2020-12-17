@@ -118,10 +118,13 @@ Rails.application.routes.draw do
     resources :product_locations, only: [:index, :create, :new, :edit, :update, :destroy]
 
     get 'product_incomes/shipping_show/:id', to: 'product_incomes#shipping_show'
-    resources :product_incomes, only: [:index, :create, :new, :edit, :show, :update, :destroy] do
+    resources :product_incomes do
       collection do
         patch 'get_location_children'
         patch 'get_supply_order_info'
+        patch 'insert_shipping_ub'
+        get 'locations'
+        patch 'set_location'
       end
     end
     resources :operators, only: [:index, :create, :new, :show, :edit, :update, :destroy]
@@ -212,8 +215,16 @@ Rails.application.routes.draw do
     root "base#root"
 
     resources :supply_orders, only: [:index, :show, :edit, :update]
-    resources :shipping_ers
-    resources :shipping_ubs
+    resources :shipping_ers do
+      collection do
+        post 'add_product'
+      end
+    end
+    resources :shipping_ubs do
+      collection do
+        post 'add_product'
+      end
+    end
 
     match "*any", to: "base#routing_error", via: :all
   end

@@ -1,4 +1,5 @@
 <tr class="nested-fields field_div">
+  <%= f.hidden_field :is_update, value: true %>
   <% if is_supply_order %>
     <td class="va-mid text-center">
       <% if f.object.feature_item.img.present? %>

@@ -1,10 +1,11 @@
 class ProductSupplyFeature < ApplicationRecord
   belongs_to :order_item, :class_name => "ProductSupplyOrderItem"
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
+  belongs_to :product
   has_one :product_income_balance, :class_name => "ProductIncomeBalance", :foreign_key => "supply_feature_id", dependent: :destroy
-  has_many :shipping_er_items, dependent: :destroy
+  has_many :shipping_er_features, class_name: "ShippingErFeature", foreign_key: "supply_feature_id", dependent: :destroy
 
-  attr_accessor :is_create, :remainder
+  attr_accessor :is_create, :is_update, :remainder
 
   with_options :if => Proc.new {|m| m.is_create.present?} do
     validates :quantity, :price, presence: true
@@ -12,19 +13,30 @@ class ProductSupplyFeature < ApplicationRecord
     before_save :set_sum_price
   end
 
+  with_options :if => Proc.new {|m| m.is_update.present?} do
+    validates :quantity_lo, :price_lo, presence: true
+  end
+
   with_options :unless => Proc.new {|m| m.is_create.present?} do
     before_update :set_sum_price_lo
   end
 
-  scope :find_to_er, -> {
-    left_joins(:shipping_er_items)
-        .group("product_supply_features.id")
-        .having("SUM(shipping_er_items.received) IS NULL OR SUM(shipping_er_items.received) < product_supply_features.quantity_lo")
-        .select("product_supply_features.*, product_supply_features.quantity_lo - IFNULL(SUM(shipping_er_items.received), 0) as remainder")
+  scope :find_to_er, ->(product_id = nil) {
+    items = left_joins(:shipping_er_features)
+                .group("product_supply_features.id")
+                .having("product_supply_features.quantity_lo IS NOT NULL")
+                .having("SUM(shipping_er_features.quantity) IS NULL OR SUM(shipping_er_features.quantity) < product_supply_features.quantity_lo")
+                .select("product_supply_features.*, product_supply_features.quantity_lo - IFNULL(SUM(shipping_er_features.quantity), 0) as remainder")
+    items = items.where(product_id: product_id) unless product_id.nil?
+    items
   }
 
   scope :by_feature_item_id, ->(feature_item_id) {
     where(feature_item_id: feature_item_id)
+  }
+
+  scope :by_product_id, ->(product_id) {
+    where(product_id: product_id)
   }
 
   def price

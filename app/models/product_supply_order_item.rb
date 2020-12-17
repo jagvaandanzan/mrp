@@ -78,7 +78,8 @@ class ProductSupplyOrderItem < ApplicationRecord
       if supply_features.count != product.product_feature_items.count
         self.supply_features.destroy_all
         product.product_feature_items.each {|feature_item|
-          self.supply_features << ProductSupplyFeature.new(feature_item: feature_item)
+          self.supply_features << ProductSupplyFeature.new(feature_item: feature_item,
+                                                           product_id: feature_item.product_id)
         }
       end
     end
@@ -106,39 +107,38 @@ class ProductSupplyOrderItem < ApplicationRecord
     self[:purchase_date].strftime('%F') if self[:purchase_date].present?
   end
 
-  def shipping_er_item
-    shipping_er_items = ShippingErItem.by_order_item_id(self.id)
-    if shipping_er_items.present?
-      date = shipping_er_items.first.shipping_er.date.strftime('%F')
-      costs = 0
+  def shipping_er_feature
+    shipping_er_features = ShippingErFeature.by_order_item_id(self.id)
+    if shipping_er_features.present?
+      shipping_er_feature = shipping_er_features.first
+      er_product = shipping_er_feature.shipping_er_product
+      shipping_er = er_product.shipping_er
+
       cost_text = ""
-      received = 0
-      cargo = 0
-      shipping_er_items.each {|er|
-        costs += er.cost
-        received += er.received if er.received.present?
-        cargo += er.cargo if er.cargo.present?
-        cost_text += "#{er.product_supply_feature.feature_item.name}: #{er.s_type_i18n} #{self.get_currency er.cost}\n</br>"
+      shipping_er.shipping_er_products.each_with_index {|er, index|
+        cost_text += "; " if index > 0
+        cost_text += "#{er.product.full_name}"
       }
-      [date, self.get_currency(costs), received, cargo, cost_text]
+      [shipping_er.date.strftime('%F'), self.get_currency(shipping_er.cost), er_product.quantity, er_product.cargo, cost_text]
     else
       ["", "", "", "", ""]
     end
   end
 
-  def shipping_ub_item
-    shipping_ub_items = ShippingUbItem.by_order_item_id(self.id)
-    if shipping_ub_items.present?
-      date = shipping_ub_items.first.shipping_ub.date.strftime('%F')
+  def shipping_ub_product
+    shipping_ub_products = ShippingUbProduct.by_product_id(self.product_id)
+    if shipping_ub_products.present?
+      date = shipping_ub_products.first.shipping_ub.date.strftime('%F')
       costs = 0
       cost_text = ""
       loaded = 0
       cargo = 0
-      shipping_ub_items.each {|er|
+      shipping_ub_products.each_with_index {|er, index|
         costs += er.cost
-        loaded += er.loaded if er.loaded.present?
+        loaded += er.quantity if er.quantity.present?
         cargo += er.cargo if er.cargo.present?
-        cost_text += "#{er.product_supply_feature.feature_item.name}: #{er.s_type_i18n} #{self.get_currency er.cost}\n</br>"
+        cost_text += "; " if index > 0
+        cost_text += "#{er.product.full_name}"
       }
       [date, self.get_currency(costs), loaded, cargo, cost_text]
     else

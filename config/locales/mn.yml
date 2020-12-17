@@ -87,6 +87,8 @@ mn:
     color: Өнгө
     product_sample: Дээж бараа
     show_history: Түүх харах
+    cost: Зардал
+    cargo: Ачааны тоо
   app_name: “MRP”
   app_short_name: M
   alert:
@@ -131,7 +133,7 @@ mn:
       present: は入力しないでください
       confirmation: "%{attribute} баталгаажуулалт буруу байна"
       empty: " хоосон байна!"
-      equal_to: は%{count}にしてください
+      equal_to: " %{count} тэй тэнцүү байх ёстой"
       even: " тэгш тоо байх ёстой"
       exclusion: は予約されています
       greater_than: " %{count}-с их байх ёстой"

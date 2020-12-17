@@ -1,0 +1,39 @@
+<div class="nested-fields box_r">
+  <div class="<%= get_error_class(@shipping_ub, :shipping_ub_products) %>">
+    <%= field_errors(@shipping_ub, :shipping_ub_products) %>
+    <table class="table table-bordered t-list">
+      <thead>
+      <tr>
+        <th colspan="5"></th>
+        <th colspan="3" class="text-center"><%= t('titles.received') %></th>
+        <th colspan="3" class="text-center"><%= t('titles.consignment') %></th>
+        <th></th>
+      </tr>
+      <tr>
+        <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_name') %></th>
+        <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_er_product.product_code') %></th>
+        <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_er_product.product_image') %></th>
+        <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_er_product.product_feature') %></th>
+        <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.product_bought') %></th>
+        <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.quantity') %></th>
+        <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.cargo') %></th>
+        <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.at_er') %></th>
+        <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.quantity') %></th>
+        <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.cargo') %></th>
+        <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.cost') %></th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody class="tb_shipping_ub_products">
+      <%= f.fields_for :shipping_ub_products do |m| %>
+        <%= render 'shipping_ub_product_fields', :f => m %>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="remove" style="text-align: right!important;">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <i class="fa"><%= t('controls.button.remove_box') %></i>
+    <% end %>
+  </div>
+</div>

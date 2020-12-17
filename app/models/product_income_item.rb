@@ -1,6 +1,7 @@
 class ProductIncomeItem < ApplicationRecord
   belongs_to :product_income
-  belongs_to :shipping_ub_item
+  belongs_to :income_product, :class_name => "ProductIncomeProduct"
+  belongs_to :shipping_ub_feature
   belongs_to :supply_feature, :class_name => "ProductSupplyFeature"
   belongs_to :product
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
@@ -16,10 +17,9 @@ class ProductIncomeItem < ApplicationRecord
 
   validates :quantity, presence: true
   validates :quantity, numericality: {greater_than: 0}
-  validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
-  # validate :income_locations_count_check
-
-  attr_accessor :remainder
+  # validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
+  validate :income_locations_count_check
+  # attr_accessor :remainder
 
   scope :search, ->(start, finish, income_code, supply_code, product_name) {
     items = income_date_desc
@@ -68,14 +68,18 @@ class ProductIncomeItem < ApplicationRecord
     s = 0
     self.income_locations.each do |location|
       lq = location.quantity
-      if lq < 0
-        errors.add(:income_locations, :greater_than, count: 0)
-        return
+      if lq.present?
+        if lq < 0
+          errors.add(:income_locations, :greater_than, count: 0)
+          return
+        end
+        s += location.quantity
       end
-      s += location.quantity
     end
     if (self.quantity || 0) < s
       errors.add(:income_locations, :over)
+    elsif self.quantity > s
+      errors.add(:income_locations, :equal_to, count: self.quantity)
     end
   end
 

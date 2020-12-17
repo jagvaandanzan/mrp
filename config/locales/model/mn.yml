@@ -87,16 +87,6 @@ mn:
       c_type:
         is_organization: Байгууллага
         is_individual: Хувь хүн
-    shipping_er_item:
-      s_type:
-        post_cargo: "Шуудан: Үйлд-Карго"
-        post_er: "Шуудан: Үйлд-Эрээн"
-        cargo_er: "Карго: Үйлд-Эрээн"
-        cargo_post: "Карго: Шуудан-Эрээн"
-    shipping_ub_item:
-      s_type:
-        simple: "Энгийн: Эрээн-УБ"
-        urgent: "Яаралтай: Эрээн-УБ"
     product_income_item:
       urgent_type:
         engiin: Энгийн
@@ -197,9 +187,6 @@ mn:
       technical_spec_item: Техникийн үзүүлэлт
       size_instruction: Хэмжээний заавар
       logistic: Хангамжийн ажилтан
-      shipping_er: Үйлдвэр-Эрээн тээвэрлэлт
-      shipping_ub: Эрээн-УБ тээвэрлэлт
-      shipping_ub_item: Бараанууд
     attributes:
       admin_user:
         email: Имэйл
@@ -423,6 +410,7 @@ mn:
         price: Үнийн дүн
         shipping_er_date: Эрээнд ирсэн огноо
         shipping_ub_date: Эрээнээс ачуулсан огноо
+        shipping_products: Барааны тоо
       product_supply_feature:
         feature_item_id: Шинж чанар
         order_item_id: Худалдан авалт
@@ -434,35 +422,16 @@ mn:
         price_lo: Нэгж үнэ
         note_lo: Тайлбар
       product_income:
-        code: Код
+        number: Код
         logistic_id: Хангамжийн ажилтан
         income_date: Огноо
         product_income_items: Бараанууд
         cargo_price: Ачааны төлбөр
         sum_price: Нийт дүн (₮)
-      shipping_er:
-        logistic: Хангамжийн ажилтан
-        date: Хүлээж авсан огноо
-        cost: Зардал
-        number: Баримтын дугаар
-        s_type: Тээврийн төрөл
-        description: Тайлбар
-        shipping_er_products: Бараа
-        shipping_er_features: Барааны шинж чанар
-      shipping_ub:
-        logistic: Хангамжийн ажилтан
-        date: Эрээнээс ачуулсан огноо
-        description: Тайлбар
-        shipping_ub_items: Бараа
-        shipping_ub_item_count: Барааны тоо
-      shipping_ub_item:
-        product_bought: Худалдан авсан тоо
-        at_er: Эрээнд ирсэн огноо
-        loaded: Ачуулсан барааны тоо
-        same_feature: Нэг хайрцагт
+        product_income_products: Бараанууд
+      product_income_product:
+        quantity: Тоо
         cargo: Ачааны тоо
-        s_type: Тээврийн төрөл, Чиглэл
-        cost: Зардал
       product_income_item:
         order_code: Захиалгын код
         order_number: Захиалсан
