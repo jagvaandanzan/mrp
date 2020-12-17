@@ -62,6 +62,7 @@ cn:
       shipping_ub: Эрээн-УБ тээвэрлэлт
       shipping_ub_item: Бараанууд
       logistic: Хангамжийн ажилтан
+      shipping_ub_box: Хайрцаг
     attributes:
       logistic:
         email: Имэйл

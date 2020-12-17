@@ -1,5 +1,6 @@
 <tr class="nested-fields">
-  <% product = f.object.product %>
+  <% product = f.object.product
+     shipping_er_product = f.object.shipping_er_product %>
   <%= f.hidden_field :product_id %>
   <%= f.hidden_field :shipping_er_product_id %>
   <%= f.hidden_field :remainder %>
@@ -12,11 +13,11 @@
       <% end %>
     <% end %>
   </td>
-  <td class="va-mid"><%= f.object.shipping_er_product.shipping_er_features.count %></td>
-  <td class="va-mid text-center"><%= f.object.shipping_er_product.product_bought %></td>
-  <td class="va-mid text-center"><%= f.object[:remainder] %></td>
-  <td class="va-mid text-center"><%= f.object.cargo %></td>
-  <td class="va-mid text-center"><%= f.object.shipping_er_product.shipping_er.date.strftime('%F') %></td>
+  <td class="va-mid text-center"><%= shipping_er_product.shipping_er_features.count %></td>
+  <td class="va-mid text-center"><%= shipping_er_product.product_bought %></td>
+  <td class="va-mid text-center"><%= f.object[:remainder].presence || shipping_er_product.quantity %></td>
+  <td class="va-mid text-center"><%= shipping_er_product.cargo %></td>
+  <td class="va-mid text-center"><%= shipping_er_product.shipping_er.date.strftime('%F') %></td>
   <td class="va-mid">
     <%= field_errors f.object, :quantity %>
     <%= f.number_field :quantity, class: 'form-control field', min: 0, step: 1, placeholder: t('activerecord.attributes.shipping_ub_product.quantity') %>
