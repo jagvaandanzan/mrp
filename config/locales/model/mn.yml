@@ -606,6 +606,15 @@ mn:
         max: Дүн(max)
         summary: Дүн
         date: Огноо
+      bank_account:
+        code: Код
+        name: Нэр
+        name_en: Латин нэр
+        account: Данс
+      bank_dealing_account:
+        code: Код
+        name: Нэр
+        account: Данс
       sms_message:
         recipient: Дугаар
         message: Мессеж
