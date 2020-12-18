@@ -187,6 +187,8 @@ mn:
       technical_spec_item: Техникийн үзүүлэлт
       size_instruction: Хэмжээний заавар
       logistic: Хангамжийн ажилтан
+      bank_account: Харилцахын данс
+      bank_dealing_account: Харьцах данс
     attributes:
       admin_user:
         email: Имэйл
