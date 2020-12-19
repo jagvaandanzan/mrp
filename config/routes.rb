@@ -137,6 +137,9 @@ Rails.application.routes.draw do
         patch 'update_filter'
       end
     end
+
+    resources :bank_accounts, only: [:index, :create, :new, :edit, :update, :destroy]
+    resources :bank_dealing_accounts, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :brands, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :manufacturers, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :technical_specifications, only: [:index, :create, :new, :edit, :update, :destroy]
@@ -207,7 +210,6 @@ Rails.application.routes.draw do
     resources :loc_districts, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :loc_khoroos, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :locations, only: [:index, :create, :new, :show, :edit, :update, :destroy]
-
     match "*any", to: "base#routing_error", via: :all
   end
 

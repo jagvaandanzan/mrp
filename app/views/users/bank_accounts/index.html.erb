@@ -1,0 +1,72 @@
+<div class="content-wrapper">
+  <div class="col-md-12 m-t-10 m-b-10">
+    <div class="row">
+      <% is_manage = can? :manage, BankAccount %>
+      <%= form_with url: users_bank_accounts_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+        <div class="col-md-2 search">
+          <%= text_field_tag :code, @scode, {class: 'form-control search', placeholder: t('activerecord.attributes.bank_account.code')} %>
+        </div>
+        <div class="col-md-2 search">
+          <%= text_field_tag :name, @sname, {class: 'form-control search', placeholder: t('activerecord.attributes.bank_account.name')} %>
+        </div>
+        <div class="col-md-2 search">
+          <%= text_field_tag :name_en, @sname_en, {class: 'form-control search', placeholder: t('activerecord.attributes.bank_account.name_en')} %>
+        </div>
+        <div class="col-md-2 search">
+          <%= text_field_tag :account, @saccount, {class: 'form-control search', placeholder: t('activerecord.attributes.bank_account.account')} %>
+        </div>
+        <div class="col-md-4 search">
+          <%= submit_tag t('controls.button.searching') + " (" + @bank_accounts.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
+          <% if is_manage %>
+            <%= link_to t('controls.button.create'), new_users_bank_account_path, class: 'btn btn-warning pull-right' %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.bank_account.code') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.bank_account.name') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.bank_account.name_en') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.bank_account.account') %></th>
+                <th></th>
+              </tr>
+              </thead>
+              <% @bank_accounts.each do |bank_account| %>
+                <tr>
+                  <td class="td-center va-mid">
+                    <%= bank_account.code %></td>
+                  <td class="td-center  va-mid"><%= bank_account.name %></td>
+                  <td class="td-center  va-mid"><%= bank_account.name_en %></td>
+                  <td class="td-center  va-mid"><%= bank_account.account %></td>
+                  <% if is_manage %>
+                    <td class="th-center va-mid">
+                      <div class="btn-group">
+                        <%= link_to edit_users_bank_account_path(bank_account), class: 'no-underline m-r-10' do %>
+                          <%= button_tag t('controls.button.edit'), class: "btn-sm btn-info" %>
+                        <% end %>
+
+                        <%= link_to users_bank_account_path(bank_account), class: 'no-underline', :method => :delete, data: {confirm: t('are_you_sure')} do %>
+                          <%= button_tag t('controls.button.delete'), class: "btn-sm btn-danger" %>
+                        <% end %>
+                      </div>
+                    </td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+        <%= paginate @bank_accounts %>
+      </div>
+    </div>
+  </section>
+</div>
