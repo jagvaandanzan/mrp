@@ -87,7 +87,7 @@
           <div class="col-md-12 field_div">
             <div class="cocoon-nested-form">
               <div>
-                <table class="table table-bordered" id="tb_shipping_er_items">
+                <table class="table table-bordered" id="tb_products">
                   <tr>
                     <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_name') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_code') %></th>
@@ -143,7 +143,7 @@
             type: "POST",
             data: "product_id=" + id + "&rows=" + row,
             success: function () {
-                $('#tb_shipping_er_items tr.p-' + id).remove();
+                $('#tb_products tr.p-' + id).remove();
             },
         });
     }

@@ -43,17 +43,6 @@ class ProductIncomeItem < ApplicationRecord
     where(supply_order_item_id: supply_order_item_id).sum(:quantity)
   }
 
-  def shipping_cost
-    cost = 0
-    if shipping_ub_item.cost.present?
-      cost += shipping_ub_item.cost
-    end
-    if shipping_ub_item.shipping_er_item.cost.present?
-      cost += shipping_ub_item.shipping_er_item.cost
-    end
-    cost
-  end
-
   def get_balance
     ProductIncomeBalance.balance(product_id)
   end

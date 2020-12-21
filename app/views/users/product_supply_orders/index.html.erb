@@ -157,7 +157,7 @@
                       <td class="va-mid text-center bg-1"><%= total_quantity_lo > 0 ? total_quantity_lo : '' %></td>
                       <td class="va-mid text-center bg-1"><%= item.get_currency item.sum_price_lo %></td>
                       <td class="va-mid text-center bg-1"><%= item.note_lo %></td>
-                      <% date, costs, received, cargo, cost_text = item.shipping_er_item %>
+                      <% date, costs, received, cargo, cost_text = item.shipping_er_feature %>
                       <td class="va-mid text-center bg-2"><%= date %></td>
                       <td class="va-mid bg-2"><%= costs %>
                         <% if costs.present? %>
@@ -166,7 +166,7 @@
                       </td>
                       <td class="va-mid text-center bg-2"><%= received %></td>
                       <td class="va-mid text-center bg-2"><%= cargo %></td>
-                      <% date, costs, loaded, cargo, cost_text = item.shipping_ub_item %>
+                      <% date, costs, loaded, cargo, cost_text = item.shipping_ub_product %>
                       <td class="va-mid text-center bg-3"><%= date %></td>
                       <td class="va-mid bg-3"><%= costs %>
                         <% if costs.present? %>

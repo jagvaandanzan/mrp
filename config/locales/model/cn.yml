@@ -60,7 +60,6 @@ cn:
       product_supply_order_item: Бараа захиалга
       shipping_er: Үйлдвэр-Эрээн тээвэрлэлт
       shipping_ub: Эрээн-УБ тээвэрлэлт
-      shipping_ub_item: Бараанууд
       logistic: Хангамжийн ажилтан
       shipping_ub_box: Хайрцаг
     attributes:

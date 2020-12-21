@@ -187,6 +187,7 @@ mn:
       technical_spec_item: Техникийн үзүүлэлт
       size_instruction: Хэмжээний заавар
       logistic: Хангамжийн ажилтан
+      bank_transaction: Банкны гүйлгээ
       bank_account: Харилцахын данс
       bank_dealing_account: Харьцах данс
     attributes:
@@ -608,6 +609,10 @@ mn:
         max: Дүн(max)
         summary: Дүн
         date: Огноо
+        billing_date: Тооцооны огноо
+        salesman_id: Түгээгч
+        bank_account_id: Харилцахын данс
+        dealing_account_id: Харьцсан данс
       bank_account:
         code: Код
         name: Нэр
