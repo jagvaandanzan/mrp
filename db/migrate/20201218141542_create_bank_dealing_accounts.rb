@@ -1,14 +1,13 @@
 class CreateBankDealingAccounts < ActiveRecord::Migration[5.2]
   def change
-    create_table :bank_dealing_accounts do |t|
-      t.integer :code
-      t.string :name
-      t.string :account
-
-      t.timestamps
-    end
-
-    add_column :bank_accounts, :code, :integer, after: 'id'
+    # create_table :bank_dealing_accounts do |t|
+    #   t.integer :code
+    #   t.string :name
+    #   t.string :account
+    #
+    #   t.timestamps
+    # end
+    # add_column :bank_accounts, :code, :integer, after: 'id'
 
     add_reference :bank_transactions, :salesman, foreign_key: true, after: 'account'
     add_column :bank_transactions, :billing_date, :datetime, after: 'salesman_id'
