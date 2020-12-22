@@ -6,6 +6,11 @@ class BankAccount < ApplicationRecord
   scope :order_by_name, -> {
     order(:name)
   }
+
+  scope :order_code, -> {
+    order(:code)
+  }
+
   scope :search, ->(scode,sname,sname_en,saccount) {
     items = order_by_name
     items = items.where('code = ?', scode) if scode.present?

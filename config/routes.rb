@@ -160,7 +160,7 @@ Rails.application.routes.draw do
         post 'get_message_url'
       end
     end
-    resources :bank_transactions, only: [:index]
+    resources :bank_transactions
     resources :sms_messages, only: [:index, :create, :new]
 
     match "*any", to: "base#routing_error", via: :all

@@ -15,7 +15,9 @@ class Operators::BankTransactionsController < Operators::BaseController
                Salesman.all.map(&:phone).to_a
              end
 
-    @bank_transactions = BankTransaction.search(phones, @value, @account, @min, @max, @date).page(params[:page])
+    @bank_transactions = BankTransaction.is_income
+                             .by_manual
+                             .search(phones, @value, @account, @min, @max, @date).page(params[:page])
     cookies[:bank_transaction_page_number] = params[:page]
 
   end

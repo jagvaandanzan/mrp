@@ -154,7 +154,7 @@
           <% end %>
         <% end %>
       <% end %>
-      <% if can? :read, BankTransaction %>
+      <% if (can? :read, BankAccount) || (can? :read, BankDealingAccount) %>
         <%= content_tag :li, class: (controller_name == 'bank_accounts' || controller_name == 'bank_dealing_accounts') ? 'treeview active' : 'treeview' do %>
           <%= link_to "#" do %>
             <i class="fa fa-bank"></i><span><%= t('titles.bank_settings') %></span>
@@ -163,20 +163,21 @@
             </span>
           <% end %>
           <%= content_tag :ul, class: 'treeview-menu' do %>
-            <% if can? :read, BankAccount %>
+            <% if can? :manage, BankAccount %>
               <%= content_tag :li, class: controller_name == 'bank_accounts' ? 'active' : '' do %>
                 <%= link_to users_bank_accounts_path do %>
                   <i class="fa fa-universal-access"></i><span><%= t('activerecord.models.bank_account') %></span>
                 <% end %>
               <% end %>
-              <%= content_tag :li, class: controller_name == 'bank_dealing_accounts' ? 'active' : '' do %>
-                <%= link_to users_bank_dealing_accounts_path do %>
-                  <i class="fa fa-universal-access"></i><span><%= t('activerecord.models.bank_dealing_account') %></span>
+              <% if can? :manage, BankDealingAccount %>
+                <%= content_tag :li, class: controller_name == 'bank_dealing_accounts' ? 'active' : '' do %>
+                  <%= link_to users_bank_dealing_accounts_path do %>
+                    <i class="fa fa-universal-access"></i><span><%= t('activerecord.models.bank_dealing_account') %></span>
+                  <% end %>
                 <% end %>
               <% end %>
             <% end %>
-
-    <% end %>
+          <% end %>
         <% end %>
       <% end %>
     </ul>

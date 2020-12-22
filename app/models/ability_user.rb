@@ -37,9 +37,9 @@ class AbilityUser
         can :read, FbComment
         can role, FbCommentArchive
       when "bank_transactions"
-        can :manage , BankTransaction
-        can :manage , BankAccount
-        can :manage , BankDealingAccount
+        can role, BankTransaction
+        can role, BankAccount
+        can role, BankDealingAccount
       when "sms_message"
         can role, SmsMessage
       else

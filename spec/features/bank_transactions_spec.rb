@@ -73,7 +73,7 @@ describe "bank transaction check", type: :feature do
 
       transaction.it_is_new = it_is_new
 
-      if transaction.date.present? && transaction.summary > 0
+      if transaction.date.present?
         # хэрэв өмнө нь гүйлгээ байсан үед, тэрийг олтолоо гүйнэ
         unless it_is_new
           # өмнөх гүйлгээтэй ижил эсэхийг шалгаж байна
@@ -84,19 +84,20 @@ describe "bank transaction check", type: :feature do
               transaction_last.summary == transaction.summary &&
               transaction_last.account == transaction.account)
 
-          unless transaction_last.nil?
-            Rails.logger.debug("#{transaction_last.date.strftime('%F %R')} == #{transaction.date.strftime('%F %R')} == #{(transaction_last.date == transaction.date).to_s} ==> #{time_now.hour}")
-            Rails.logger.debug("#{transaction_last.value} == #{transaction.value} == #{(transaction_last.value == transaction.value).to_s}")
-            Rails.logger.debug("#{transaction_last.summary} == #{transaction.summary} == #{(transaction_last.summary == transaction.summary).to_s}")
-            Rails.logger.debug("#{transaction_last.account} == #{transaction.account} == #{(transaction_last.account == transaction.account).to_s}")
-          end
-          Rails.logger.debug("it_is_new_2=#{it_is_new}")
+          # unless transaction_last.nil?
+          #   Rails.logger.debug("#{transaction_last.date.strftime('%F %R')} == #{transaction.date.strftime('%F %R')} == #{(transaction_last.date == transaction.date).to_s} ==> #{time_now.hour}")
+          #   Rails.logger.debug("#{transaction_last.value} == #{transaction.value} == #{(transaction_last.value == transaction.value).to_s}")
+          #   Rails.logger.debug("#{transaction_last.summary} == #{transaction.summary} == #{(transaction_last.summary == transaction.summary).to_s}")
+          #   Rails.logger.debug("#{transaction_last.account} == #{transaction.account} == #{(transaction_last.account == transaction.account).to_s}")
+          # end
+          # Rails.logger.debug("it_is_new_2=#{it_is_new}")
         end
-        Rails.logger.debug("it_is_new_3=#{it_is_new}")
+        # Rails.logger.debug("it_is_new_3=#{it_is_new}")
         # шинэ гүйлгээ тул хадгална
         if transaction.it_is_new
           transaction.save
-          transactions << transaction
+          # орлого бол шалгана
+          transactions << transaction if transaction.summary > 0
           is_created_new = true
         end
       end

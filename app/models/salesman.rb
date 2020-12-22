@@ -33,6 +33,10 @@ class Salesman < ActiveRecord::Base
     order(created_at: :desc)
   }
 
+  scope :order_name, -> {
+    order(:name)
+  }
+
   def send_first_password_instructions
     send_devise_notification(:first_password_instructions, password, subject: '[Market.mn] Нэвтрэх нууц үгийн мэдээлэл', to: email)
   end
@@ -44,6 +48,10 @@ class Salesman < ActiveRecord::Base
 
   def id_number
     id.to_s.rjust(3, '0')
+  end
+
+  def full_name
+    "#{id_number} - #{name}"
   end
 
   def avatar_tumb

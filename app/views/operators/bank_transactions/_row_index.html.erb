@@ -3,4 +3,6 @@
   <td class="va-mid"><%= bank_transaction.value %></td>
   <td class="va-mid"><%= get_currency_mn(bank_transaction.summary) %></td>
   <td class="va-mid"><%= bank_transaction.account %></td>
+  <td class="va-mid"><%= bank_transaction.salesman.present? ? bank_transaction.salesman.full_name : '' %></td>
+  <td class="va-mid"><%= bank_transaction.billing_date.present? ? bank_transaction.billing_date.strftime('%F') : '' %></td>
 </tr>

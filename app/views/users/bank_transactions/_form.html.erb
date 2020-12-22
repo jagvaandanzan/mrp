@@ -1,0 +1,91 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1><%= t('activerecord.models.bank_transaction') + t(@bank_transaction.persisted? ? 'titles.edit' : 'titles.add') %></h1>
+  </section>
+  <section class="content">
+    <div class="box box-info">
+      <%= form_for :bank_transaction, url: @bank_transaction.persisted? ? users_bank_transaction_path : users_bank_transactions_path, method: @bank_transaction.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-4 field_div">
+                <%= f.label :date, class: 'control-label' %>
+                <div class="input-append input-group date datetimepicker <%= get_error_class(@bank_transaction, :date) %>">
+                  <%= field_errors(@bank_transaction, :date) %>
+                  <%= f.text_field :date, class: 'field form-control', placeholder: t('activerecord.attributes.bank_transaction.date') %>
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 field_div">
+                <%= f.label :salesman_id, class: 'control-label' %>
+                <div class="<%= get_error_class(@bank_transaction, :salesman_id) %>">
+                  <%= field_errors(@bank_transaction, :salesman_id) %>
+                  <%= f.collection_select :salesman_id, Salesman.all, :id, :full_name, {:prompt => t('activerecord.attributes.bank_transaction.salesman_id')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+                </div>
+              </div>
+              <div class="col-md-4 field_div">
+                <%= f.label :billing_date, class: 'control-label' %>
+                <div class="input-append input-group date <%= get_error_class(@bank_transaction, :billing_date) %>" data-provide="datepicker">
+                  <%= field_errors(@bank_transaction, :billing_date) %>
+                  <%= f.text_field :billing_date, class: 'field form-control', placeholder: t('activerecord.attributes.bank_transaction.billing_date') %>
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6 field_div">
+                <%= f.label :bank_account_id, class: 'control-label' %>
+                <div class="<%= get_error_class(@bank_transaction, :bank_account_id) %>">
+                  <%= field_errors(@bank_transaction, :bank_account_id) %>
+                  <%= f.collection_select :bank_account_id, BankAccount.order_code, :id, :full_name, {:prompt => t('activerecord.attributes.bank_transaction.bank_account_id')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+                </div>
+              </div>
+              <div class="col-md-6 field_div">
+                <%= f.label :dealing_account_id, class: 'control-label' %>
+                <div class="<%= get_error_class(@bank_transaction, :dealing_account_id) %>">
+                  <%= field_errors(@bank_transaction, :dealing_account_id) %>
+                  <%= f.collection_select :dealing_account_id, BankDealingAccount.order_code, :id, :full_name, {:prompt => t('activerecord.attributes.bank_transaction.dealing_account_id')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-8 field_div">
+                <%= f.label :value, class: 'control-label' %>
+                <div class="<%= get_error_class(@bank_transaction, :value) %>">
+                  <%= field_errors(@bank_transaction, :value) %>
+                  <%= f.text_area :value, placeholder: t('activerecord.attributes.bank_transaction.value'), class: 'form-control' %>
+                </div>
+              </div>
+              <div class="col-md-4 field_div">
+                <%= f.label :summary, class: 'control-label' %>
+                <div class="<%= get_error_class(@bank_transaction, :summary) %>">
+                  <%= field_errors(@bank_transaction, :summary) %>
+                  <%= f.number_field :summary, placeholder: t('activerecord.attributes.bank_transaction.summary'), class: 'form-control', step: 100 %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>
+<script !src="">
+    $(function () {
+        $('.datetimepicker').datetimepicker({
+            locale: 'mn',
+        });
+    });
+</script>
