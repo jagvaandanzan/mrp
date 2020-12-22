@@ -94,8 +94,6 @@ class BankTransaction < ApplicationRecord
               self.billing_date = Date.parse("#{Time.current.year}-#{m}-#{s}")
             end
           end
-        else
-          puts "not phone"
         end
 
       end
