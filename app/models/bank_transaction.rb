@@ -49,11 +49,11 @@ class BankTransaction < ApplicationRecord
     items = items.where("summary <= ?", max) if max.present?
     items = items.where('date >= ?', date)
                 .where('date < ?', date + 1.day) if date.present?
-    items = items.where(salesman_id: salesman) unless salesman.nil?
-    items = items.where(bank_account_id: bank_account) unless bank_account.nil?
-    items = items.where(dealing_account_id: dealing_account) unless dealing_account.nil?
+    items = items.where(salesman_id: salesman) if salesman.present?
+    items = items.where(bank_account_id: bank_account) if bank_account.present?
+    items = items.where(dealing_account_id: dealing_account) if dealing_account.present?
     items = items.where('billing_date >= ?', billing_date)
-                .where('billing_date < ?', billing_date + 1.day) unless billing_date.nil?
+                .where('billing_date < ?', billing_date + 1.day) if billing_date.present?
     items
   }
 
