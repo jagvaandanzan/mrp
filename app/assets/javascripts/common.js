@@ -18,5 +18,19 @@ function readURL(input, div) {
 }
 
 $(function () {
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
+
+    $('button#download-excel').on('click', function () {
+        $(this).attr('disabled', 'disabled');
+        var f = $('#search-form');
+        var act = f.attr('action');
+        f.attr('action', act + '.xlsx');
+        f.submit();
+        f.attr('action', act);
+        setTimeout(reset_excel_download_btn, 3000);
+    });
 });
+
+function reset_excel_download_btn() {
+    $('button#download-excel').removeAttr('disabled');
+}

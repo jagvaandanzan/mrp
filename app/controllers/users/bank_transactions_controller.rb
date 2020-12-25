@@ -23,6 +23,15 @@ class Users::BankTransactionsController < Users::BaseController
                              .page(params[:page])
     cookies[:bank_transaction_page_number] = params[:page]
 
+    respond_to do |format|
+      format.xlsx {
+        response.headers[
+            'Content-Disposition'
+        ] = "attachment; filename=" + "Банкны хуулга" + ".xlsx"
+      }
+
+      format.html {render :index}
+    end
   end
 
   def new
