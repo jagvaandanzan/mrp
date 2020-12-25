@@ -65,6 +65,16 @@ class BankTransaction < ApplicationRecord
     dealing_account.present?
   end
 
+  def t_type
+    if self.manual
+      2
+    elsif summary > 0
+      1
+    else
+      3
+    end
+  end
+
   private
 
   def check_salesman

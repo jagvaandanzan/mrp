@@ -35,6 +35,7 @@ t('activerecord.attributes.bank_transaction.salesman_id'),
 t('activerecord.attributes.bank_transaction.bank_account_id'),
 t('activerecord.attributes.bank_transaction.dealing_account_id'),
 t('activerecord.attributes.bank_transaction.billing_date'),
+t('activerecord.attributes.bank_transaction.t_type'),
 ],:style=>title
 # Create entries for each item
 
@@ -47,9 +48,10 @@ t('activerecord.attributes.bank_transaction.billing_date'),
                 bank_transaction.salesman.present? ? bank_transaction.salesman.full_name : "",
                 bank_transaction.bank_account.present? ? bank_transaction.bank_account.full_name : "",
                 bank_transaction.dealing_account.present? ? bank_transaction.dealing_account.full_name : "",
-                bank_transaction.billing_date.present? ? bank_transaction.billing_date.strftime('%F') : ""
+                bank_transaction.billing_date.present? ? bank_transaction.billing_date.strftime('%F') : "",
+                bank_transaction.t_type
     ],
-        style:[st,st,st,st,st,st,st,st]
+        style:[st,st,st,st,st,st,st,st,st]
 
   end
 end

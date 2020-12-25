@@ -85,6 +85,7 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.bank_account_id') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.dealing_account_id') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.billing_date') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.t_type') %></th>
               </tr>
               </thead>
               <tbody id="bank_transaction_index">
@@ -105,6 +106,7 @@
                   <td class="va-mid"><%= bank_transaction.bank_account.present? ? bank_transaction.bank_account.full_name : '' %></td>
                   <td class="va-mid"><%= bank_transaction.dealing_account.present? ? bank_transaction.dealing_account.full_name : '' %></td>
                   <td class="va-mid"><%= bank_transaction.billing_date.present? ? bank_transaction.billing_date.strftime('%F') : '' %></td>
+                  <td class="va-mid text-center"><%= bank_transaction.t_type %></td>
                 </tr>
               <% end %>
               </tbody>

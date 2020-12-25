@@ -610,6 +610,7 @@ mn:
         summary: Дүн
         date: Огноо
         billing_date: Тооцооны огноо
+        t_type: Гүйлгээний төрөл
         salesman_id: Түгээгч
         bank_account_id: Харилцахын данс
         dealing_account_id: Харьцсан данс
