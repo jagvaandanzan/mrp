@@ -77,7 +77,9 @@
           <div class="text-center"><%= bank_transaction.salesman.s_name %></div>
           <div class="text-center" style="border-bottom: 1px solid black"></div>
           <div class="text-center">(овог нэр)</div>
-          <div style="margin-top: 28px">Гүйлгээний утга</div>
+          <div style="margin-top: 28px">Гүйлгээний утга
+            <div class="dash"><%= bank_transaction.value %></div>
+          </div>
         </td>
       </tr>
       <tr>
@@ -95,7 +97,9 @@
         <td class="dash"></td>
       </tr>
       <tr>
-        <td>Гүйлгээний утга</td>
+        <td>Гүйлгээний утга
+          <div class="dash"><%= bank_transaction.value %></div>
+        </td>
         <td></td>
         <td class="b-l"></td>
         <td class="dash"></td>
