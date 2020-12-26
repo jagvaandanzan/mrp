@@ -58,6 +58,12 @@ class Salesman < ActiveRecord::Base
     avatar.url(:tumb)
   end
 
+  def s_name
+    s = ""
+    s = "#{surname[0]}." if surname.present?
+    "#{s}#{name}"
+  end
+
   def push_options(type, p_title, content)
     {
         data: {type: type, id: id},

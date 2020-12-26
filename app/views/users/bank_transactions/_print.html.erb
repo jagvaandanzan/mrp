@@ -1,0 +1,263 @@
+<div style="padding-left: 8px">
+  <div style="width:893px;height:893px">
+    <table style="width: 100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <td width="49%" class="text-right f-13">НХМаягт-1</td>
+        <td width="1%"></td>
+        <td width="1%" class="b-l"></td>
+        <td width="49%" class="text-center f-13"><strong>Аривайз ХХК</strong></td>
+      </tr>
+      <tr>
+        <td class="text-right p-t-10 f-13">Сангийн сайдын 2017 оны 12 дугаар сарын 5 өдрийн<br>347 тоот тушаалын
+          хавсралт
+        </td>
+        <td></td>
+        <td class="b-l"></td>
+        <td class="text-center p-t-10 f-13" style="vertical-align: top">(байгууллагын нэр)</td>
+      </tr>
+      <tr>
+        <td class="title text-center p-t-12">Бэлэн мөнгөний орлогын баримт</td>
+        <td></td>
+        <td class="b-l"></td>
+        <td class="title text-center p-t-12"><%= show_id(bank_transaction.id) %>-Р ОРЛОГЫН БАРИМТЫН</td>
+      </tr>
+      <tr>
+        <td class="title text-center">№ <%= show_id(bank_transaction.id) %></td>
+        <td></td>
+        <td class="b-l"></td>
+        <td class="title text-center">ТАСАЛБАР</td>
+      </tr>
+      <tr>
+        <td class="p-t-10">Байгууллагын нэр
+          <div class="dash text-center" style="width: 300px;display: inline-block"><strong>Аривайз
+            ХХК</strong>
+          </div>
+        </td>
+        <td></td>
+        <td class="b-l"></td>
+        <td class="text-right p-t-10"><%= bank_transaction.date_time %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td class="b-l"></td>
+        <td>Хаанаас</td>
+      </tr>
+      <tr>
+        <td><strong><%= bank_transaction.date_time %></strong></td>
+        <td></td>
+        <td class="b-l"></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>
+          <table class="table" cellpadding="0" cellspacing="0">
+            <tr>
+              <td>Харилцах данс</td>
+              <td>Дэлгэрэнгүй бүртгэлийн код</td>
+              <td>ДҮН</td>
+              <td class="b-r">Гүйлгээний утгын код</td>
+            </tr>
+            <tr>
+              <td><%= bank_transaction.dealing_account.code %></td>
+              <td></td>
+              <td><%= get_currency_mn bank_transaction.summary %></td>
+              <td class="b-r"><%= bank_transaction.bank_account.code %></td>
+            </tr>
+            <tr>
+              <td colspan="2" class="sum"></td>
+              <td class="text-center sum"><%= get_currency_mn bank_transaction.summary %></td>
+              <td class="sum"></td>
+            </tr>
+          </table>
+        </td>
+        <td></td>
+        <td class="b-l"></td>
+        <td style="vertical-align: top">
+          <div class="text-center"><%= bank_transaction.salesman.s_name %></div>
+          <div class="text-center" style="border-bottom: 1px solid black"></div>
+          <div class="text-center">(овог нэр)</div>
+          <div style="margin-top: 28px">Гүйлгээний утга</div>
+        </td>
+      </tr>
+      <tr>
+        <td>Хаанаас
+          <div class="dash text-center" style="width: 382px;display: inline-block"><%= bank_transaction.salesman.s_name %></div>
+        </td>
+        <td></td>
+        <td class="b-l"></td>
+        <td class="dash"></td>
+      </tr>
+      <tr>
+        <td class="text-center">(овог нэр)</td>
+        <td></td>
+        <td class="b-l"></td>
+        <td class="dash"></td>
+      </tr>
+      <tr>
+        <td>Гүйлгээний утга</td>
+        <td></td>
+        <td class="b-l"></td>
+        <td class="dash"></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td class="b-l"></td>
+        <td class="p-t-10">Гүйлгээний дүн (тоогоор)</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td class="b-l"></td>
+        <td><%= get_currency(bank_transaction.summary, '', 2) %> төгрөг</td>
+      </tr>
+      <tr>
+        <td>Гүйлгээний дүн (үсгээр)</td>
+        <td></td>
+        <td class="b-l"></td>
+        <td>Гүйлгээний дүн (үсгээр)</td>
+      </tr>
+      <tr>
+        <td class="dash">&nbsp;</td>
+        <td></td>
+        <td class="b-l"></td>
+        <td class="dash"></td>
+      </tr>
+      <tr>
+        <td class="dash">&nbsp;</td>
+        <td></td>
+        <td class="b-l"></td>
+        <td class="dash"></td>
+      </tr>
+      <tr>
+        <td class="dash">&nbsp;</td>
+        <td></td>
+        <td class="b-l"></td>
+        <td class="dash"></td>
+      </tr>
+      <tr>
+        <td class="p-t-10"><strong>Байгууллагын нэр</strong>
+          <div class="dash d-dash" style="width: 310px"></div>
+        </td>
+        <td></td>
+        <td></td>
+        <td class="p-t-10"><strong>Нягтлан бодогч</strong>
+          <div class="dash d-dash" style="width: 320px"></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="p-t-10"><strong>Ерөнхий (ахлах) ня-бо</strong>
+          <div class="dash d-dash" style="width: 285px"></div>
+        </td>
+        <td></td>
+        <td></td>
+        <td class="p-t-10">Кассын нярав
+          <div class="dash d-dash" style="width: 339px"></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="p-t-10"><strong>Нягтлан бодогч</strong>
+          <div class="dash d-dash" style="width: 326px"></div>
+        </td>
+        <td></td>
+        <td></td>
+        <td class="p-t-10">Хүлээлгэн өгсөн
+          <div class="dash d-dash" style="width: 320px"></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="p-t-10">Кассын нярав
+          <div class="dash d-dash" style="width: 343px"></div>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="p-t-10">Хүлээлгэн өгсөн
+          <div class="dash d-dash" style="width: 322px"></div>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="p-t-10">Хавсаргасан баримт
+          <div class="dash d-dash" style="width: 304px"></div>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+</div>
+<style>
+  @media print {
+    td {
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .dash {
+      border-bottom: 1px dashed black;
+    }
+
+    .d-dash {
+      display: inline-block
+    }
+
+    .table {
+      width: 100%;
+    }
+
+    .table td {
+      text-align: center;
+      vertical-align: middle;
+      padding: 2px 6px;
+      border-top: 1px solid black !important;
+      border-left: 1px solid black;
+    }
+
+    .table .sum {
+      border-right: none;
+      border-bottom: none;
+      border-left: none;
+      padding: 0;
+    }
+
+    .b-r {
+      border-right: 1px solid black;
+    }
+
+    .b-l {
+      border-left: 2px solid black;
+    }
+
+    .p-t-12 {
+      padding-top: 12px;
+    }
+
+    .title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .p-t-10 {
+      padding-top: 10px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .f-13 {
+      font-size: 13px;
+    }
+  }
+</style>

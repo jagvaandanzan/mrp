@@ -30,6 +30,7 @@ mn:
       download: Татах
       to_equate: Адилтгах
       watch: Үзэх
+      print: Хэвлэх
     select:
       none: Сонгох
       alert: " сонгоно уу!"
