@@ -36,7 +36,7 @@
         <div class="box" id="div_list">
           <div class="box-body table-responsive no-padding">
             <%= render 'layouts/flash_message' %>
-            <table id='supply_table' class="table table-hover table-bordered" style="width: 2500px">
+            <table id='supply_table' class="table table-hover table-bordered" style="width: 2700px">
               <tr>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.code') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.order_type') %></th>
@@ -45,13 +45,13 @@
                 <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_name') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_feature') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.exchange') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order_item.total_quantity') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order_item.price') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order_item.sum_price') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.description') %></th>
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order_item.purchase_date') %></th>
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order_item.purchase_quantity') %></th>
-                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order_item.sum_price') %></th>
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_feature.note') %></th>
                 <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.product_supply_order_item.shipping_er_date') %></th>
                 <th class="va-mid text-center bg-2"><%= t('titles.cost') %></th>
@@ -61,11 +61,14 @@
                 <th class="va-mid text-center bg-3"><%= t('titles.cost') %></th>
                 <th class="va-mid text-center bg-3"><%= t('activerecord.attributes.product_supply_order_item.shipping_products') %></th>
                 <th class="va-mid text-center bg-3"><%= t('titles.cargo') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order_item.ub_income_date') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.sum_price') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.calculated') %></th>
               </tr>
               <% @product_supply_orders.each do |i| %>
                 <% order_items = i.product_supply_order_items
                    order_items_count = order_items.count %>
-                <tr>
+                <tr id="supple_order_<%= i.id %>">
                   <td class="va-mid" rowspan="<%= order_items_count %>">
                     <%= link_to i.code, users_product_supply_order_path(i, tab_index: 0) %></td>
                   <td class="va-mid" rowspan="<%= order_items_count %>"><%= i.order_type_i18n %></td>
@@ -84,11 +87,13 @@
                     <% end %>
                   </td>
                   <td class="va-mid">
-                    <% total_quantity = 0
+                    <% feature_ids = []
+                       total_quantity = 0
                        total_quantity_lo = 0
                        total_price = ""
-                       order_item.supply_features.each_with_index {|supply_feature, index| %>
-                      <% total_quantity += supply_feature.quantity if supply_feature.quantity.present?
+                       order_item.supply_features.each_with_index {|supply_feature, index|
+                         feature_ids << supply_feature.id
+                         total_quantity += supply_feature.quantity if supply_feature.quantity.present?
                          total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
                          if index > 0
                            total_price += ", " %>,&nbsp;
@@ -97,9 +102,9 @@
                       <%= supply_feature.feature_item.name %>
                     <% } %>
                   </td>
-                  <td class="va-mid text-center"><%= total_quantity > 0 ? total_quantity : '' %></td>
+                  <td class="va-mid text-center"><%= i.exchange_i18n %></td>
+                  <td class="va-mid text-center"><%= total_quantity > 0 ? "#{total_quantity} / #{ProductIncomeItem.by_product_feature_ids(product.id, feature_ids).sum(:quantity)}" : '' %></td>
                   <td class="va-mid text-center"><%= total_price %></td>
-                  <td class="va-mid" rowspan="<%= order_items_count %>"><%= i.get_currency i.sum_price %></td>
                   <td class="va-mid"><%= i.is_basic? ? order_item.note : i.description %></td>
                   <td class="va-mid bg-1"><%= order_item.purchase_date %></td>
                   <td class="va-mid text-center bg-1"><%= total_quantity_lo > 0 ? total_quantity_lo : '' %></td>
@@ -123,6 +128,10 @@
                   </td>
                   <td class="va-mid text-center bg-3"><%= loaded %></td>
                   <td class="va-mid text-center bg-3"><%= cargo %></td>
+                  <% product_feature_ids = ProductIncomeItem.by_product_feature_ids(product.id, feature_ids) %>
+                  <td class="va-mid text-center"><%= product_feature_ids.present? ? product_feature_ids.first.product_income.income_date.strftime('%F') : '' %></td>
+                  <td class="va-mid" rowspan="<%= order_items_count %>"><%= get_currency_mn i.sum_price %></td>
+                  <td class="va-mid calculated" rowspan="<%= order_items_count %>" c_id="<%= i.id %>" code="<%= i.code %>"><%= i.calculated.present? ? i.calculated.strftime('%F') : '' %></td>
                 </tr>
                 <% order_items.each_with_index {|item, index|
                   if index > 0
@@ -138,11 +147,13 @@
                         <% end %>
                       </td>
                       <td class="va-mid">
-                        <% total_quantity = 0
+                        <% feature_ids = []
+                           total_quantity = 0
                            total_quantity_lo = 0
                            total_price = ""
-                           item.supply_features.each_with_index {|supply_feature, f_index| %>
-                          <% total_quantity += supply_feature.quantity if supply_feature.quantity.present?
+                           item.supply_features.each_with_index {|supply_feature, f_index|
+                             feature_ids << supply_feature.id
+                             total_quantity += supply_feature.quantity if supply_feature.quantity.present?
                              total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
                              if f_index > 0
                                total_price += ", " %>,&nbsp;
@@ -151,7 +162,9 @@
                           <%= supply_feature.feature_item.name %>
                         <% } %>
                       </td>
-                      <td class="va-mid text-center"><%= total_quantity > 0 ? total_quantity : '' %></td>
+                      <td class="va-mid text-center"><%= i.exchange_i18n %></td>
+                      <td class="va-mid text-center"><%= total_quantity > 0 ? "#{total_quantity} / #{ProductIncomeItem.by_product_feature_ids(product.id, feature_ids).sum(:quantity)}" : '' %></td>
+                      <td class="va-mid text-center"><%= total_price %></td>
                       <td class="va-mid"><%= item.note %></td>
                       <td class="va-mid bg-1"><%= item.purchase_date %></td>
                       <td class="va-mid text-center bg-1"><%= total_quantity_lo > 0 ? total_quantity_lo : '' %></td>
@@ -175,6 +188,8 @@
                       </td>
                       <td class="va-mid text-center bg-3"><%= loaded %></td>
                       <td class="va-mid text-center bg-3"><%= cargo %></td>
+                      <% product_feature_ids = ProductIncomeItem.by_product_feature_ids(product.id, feature_ids) %>
+                      <td class="va-mid text-center"><%= product_feature_ids.present? ? product_feature_ids.first.product_income.income_date.strftime('%F') : '' %></td>
                     </tr>
                   <% end } %>
               <% end %>
@@ -187,8 +202,77 @@
     </div>
   </section>
 </div>
+<div class="modal fade" id="set-data-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span></button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="box box-info">
+        <%= form_body do %>
+          <div class="form-group">
+            <label class="col-sm-5 control-label" for="set_date"><%= t('activerecord.attributes.product_supply_order.ordered_date') %></label>
+            <div class="col-sm-7 input-append input-group date" data-provide="datepicker">
+              <%= text_field_tag :set_date, nil, {class: 'field form-control', placeholder: t('activerecord.attributes.product_supply_order.ordered_date')} %>
+              <div class="input-group-addon">
+                <i class="fa fa-calendar"></i>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer text-right">
+            <button type="button" class="btn btn-default" data-dismiss="modal"><%= t('controls.button.close') %></button>
+            <button type="button" class="btn btn-warning" onclick="save_calculated()" id="save_btn"><%= t('controls.button.save') %></button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
 <%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>
+<script>
+    var product_supply_order_id = 0;
+    $(function () {
+        $('td.calculated').on('click', function () {
+            let date = $(this).html();
+            if (!date.trim()) {
+                date = $.datepicker.formatDate('yy-mm-dd', new Date());
+            }
+            product_supply_order_id = $(this).attr('c_id');
+            let modal = $('#set-data-modal');
+            modal.find('#set_date').val(date);
+            modal.find('label').html('Тооцоо нийлсэн огноо');
+            modal.find('.modal-title').html($(this).attr('code'));
+            modal.modal('show');
+        });
+    });
+
+    function save_calculated() {
+        let modal = $('#set-data-modal');
+        let date = modal.find('#set_date').val();
+        if (date.length > 0) {
+            let btn = modal.find('#save_btn');
+            btn.attr('disabled', 'disabled');
+            Rails.ajax({
+                url: "<%= set_calculated_users_product_supply_orders_path %>",
+                type: "PATCH",
+                data: "id=" + product_supply_order_id + "&date=" + date,
+                success: function () {
+                    $('tr#supple_order_' + product_supply_order_id + ' .calculated').html(date);
+                    btn.removeAttr('disabled');
+                    modal.modal('hide');
+                }
+            });
+        } else {
+            alert("<%= t('alert.please_select_date') %>")
+        }
+    }
+</script>
 <style>
+  td.is_calculated {
+    background-color: #a5eeb4;
+  }
 
   .bg-1 {
     font-weight: bold;

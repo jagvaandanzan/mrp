@@ -63,7 +63,7 @@
                   <td class="va-mid"><%= shipping_ub_product.quantity %></td>
                   <td class="va-mid"><%= i.quantity %></td>
                   <td class="va-mid"><%= i.cargo %></td>
-                  <td class="va-mid"><%= get_currency(shipping_ub_product.cost, "￥", 0) %></td>
+                  <td class="va-mid"><%= get_currency_mn(income.cargo_price) %></td>
                 </tr>
               <% end %>
             </table>

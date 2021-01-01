@@ -74,6 +74,7 @@
           <div class="col-md-12 field_div cocoon-nested-form">
             <table class="table table-bordered" id="tb_shipping_ub_products">
               <tr>
+                <th class="va-mid">Баримтын дугаар</th>
                 <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_code') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_name') %></th>
                 <th class="va-mid"><%= t('activerecord.models.product_feature') %></th>
@@ -88,6 +89,7 @@
                 <% shipping_ub = ub_product.shipping_ub
                    product = ub_product.product %>
                 <tr class="p-<%= ub_product.id %>">
+                  <td class="va-mid"><%= show_id(shipping_ub.id) %></td>
                   <td class="va-mid"><%= product.code %></td>
                   <td class="va-mid"><%= product.full_name %></td>
                   <td></td>

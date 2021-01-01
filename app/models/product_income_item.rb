@@ -43,6 +43,17 @@ class ProductIncomeItem < ApplicationRecord
     where(supply_order_item_id: supply_order_item_id).sum(:quantity)
   }
 
+  scope :sum_quantity_by_product_feature, ->(product_id, feature_ids) {
+    where(product_id: product_id)
+        .where("supply_feature_id IN (?)", feature_ids)
+        .sum(:quantity)
+  }
+
+  scope :by_product_feature_ids, ->(product_id, feature_ids) {
+    where(product_id: product_id)
+        .where("supply_feature_id IN (?)", feature_ids)
+  }
+
   def get_balance
     ProductIncomeBalance.balance(product_id)
   end

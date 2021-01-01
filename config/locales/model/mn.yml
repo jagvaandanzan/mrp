@@ -386,7 +386,8 @@ mn:
         ordered_date: Огноо
         logistic_id: Хангамжийн ажилтан
         exchange: Валют
-        sum_price: Нийт дүн
+        sum_price: Нийт дүн (₮)
+        calculated: Тооцоо нийлсэн
         link: Линк
         description: Тайлбар
         product_name: Барааны нэр
@@ -414,6 +415,7 @@ mn:
         shipping_er_date: Эрээнд ирсэн огноо
         shipping_ub_date: Эрээнээс ачуулсан огноо
         shipping_products: Барааны тоо
+        ub_income_date: УБ орлого хүлээн авсан
       product_supply_feature:
         feature_item_id: Шинж чанар
         order_item_id: Худалдан авалт

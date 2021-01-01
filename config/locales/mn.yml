@@ -105,6 +105,7 @@ mn:
     downloaded_successfully: Амжилттай %{count} татагдлаа
     enter_phone_number: Утасны дугаар оруулна уу!
     order_has_already: Баталгаажсан захиалга үүссэн байна!
+    please_select_date: Огноо сонгоно уу!
   are_you_sure: "Та устгахдаа итгэлтэй байна уу ?"
   are_you_update: "Хадгалах уу ?"
   are_sure_change: "Өөрчлөх үү ?"

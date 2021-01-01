@@ -1,5 +1,5 @@
 class Users::ProductSupplyOrdersController < Users::BaseController
-  load_and_authorize_resource
+  load_and_authorize_resource except: [:last_product_price, :set_calculated]
   before_action :set_product_supply_order, only: [:edit, :show, :update, :destroy]
 
   def index
@@ -123,6 +123,11 @@ class Users::ProductSupplyOrdersController < Users::BaseController
 
     render json: {price: price}
 
+  end
+
+  def set_calculated
+    supply_order = ProductSupplyOrder.find(params[:id])
+    supply_order.update_columns(calculated: params[:date], status: 4)
   end
 
   private
