@@ -149,6 +149,12 @@ mn:
         distance_b: B
         distance_c: C
         distance_d: D
+    bank_transaction:
+      exchange:
+        cny: Юань
+        usd: Доллар
+        eur: Евро
+        rub: Рубль
   activerecord:
     models:
       admin_user: Админ
@@ -616,6 +622,8 @@ mn:
         salesman_id: Түгээгч
         bank_account_id: Харилцахын данс
         dealing_account_id: Харьцсан данс
+        exchange: Валют
+        exc_rate: Ханш (₮)
       bank_account:
         code: Код
         name: Нэр

@@ -36,15 +36,17 @@ class Users::BankTransactionsController < Users::BaseController
 
   def new
     @bank_transaction = BankTransaction.new
+    @bank_transaction.date = Time.current
   end
 
   def create
     @bank_transaction = BankTransaction.new(bank_transaction_params)
     @bank_transaction.is_manual = true
+    @bank_transaction.user_id = current_user.id
 
     if @bank_transaction.save
       flash[:success] = t('alert.saved_successfully')
-      if @bank_transaction.manual
+      if @bank_transaction.manual && !@bank_transaction.is_logistic
         redirect_to users_bank_transaction_path(@bank_transaction, ask_print: 1)
       else
         redirect_to action: :index
@@ -88,7 +90,7 @@ class Users::BankTransactionsController < Users::BaseController
   end
 
   def bank_transaction_params
-    params.require(:bank_transaction).permit(:date, :salesman_id, :bank_account_id, :dealing_account_id, :billing_date, :value, :summary)
+    params.require(:bank_transaction).permit(:date, :salesman_id, :bank_account_id, :dealing_account_id, :billing_date, :value, :summary, :exchange, :exc_rate)
   end
 
 end

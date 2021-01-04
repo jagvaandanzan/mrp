@@ -46,6 +46,10 @@ class ProductSupplyOrderItem < ApplicationRecord
   scope :by_status_lower, ->(stat) {
     where("status < ?", stat)
   }
+  scope :sum_price_by_supply_order, ->(supply_order_id) {
+    where(product_supply_order_id: supply_order_id)
+        .sum(:sum_price_lo)
+  }
 
   def product_name_with_code
     "#{self.product.code} - #{self.product.name}"

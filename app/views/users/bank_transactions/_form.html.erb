@@ -38,19 +38,35 @@
             </div>
           </div>
           <div class="col-md-12">
+            <% show_exchange = @bank_transaction.present? && @bank_transaction.dealing_account_id == 2 %>
             <div class="row">
-              <div class="col-md-6 field_div">
+              <div class="col-md-<%= show_exchange ? '4' : '6' %> field_div exc_p">
                 <%= f.label :bank_account_id, class: 'control-label' %>
                 <div class="<%= get_error_class(@bank_transaction, :bank_account_id) %>">
                   <%= field_errors(@bank_transaction, :bank_account_id) %>
                   <%= f.collection_select :bank_account_id, BankAccount.order_code, :id, :full_name, {:prompt => t('activerecord.attributes.bank_transaction.bank_account_id')}, {class: 'form-control selectpicker', "data-live-search": true} %>
                 </div>
               </div>
-              <div class="col-md-6 field_div">
+              <div class="col-md-<%= show_exchange ? '4' : '6' %> field_div exc_p">
                 <%= f.label :dealing_account_id, class: 'control-label' %>
                 <div class="<%= get_error_class(@bank_transaction, :dealing_account_id) %>">
                   <%= field_errors(@bank_transaction, :dealing_account_id) %>
                   <%= f.collection_select :dealing_account_id, BankDealingAccount.order_code, :id, :full_name, {:prompt => t('activerecord.attributes.bank_transaction.dealing_account_id')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+                </div>
+              </div>
+              <div class="col-md-2 field_div exc <%= show_exchange ? '' : 'none' %>">
+                <%= f.label :exchange, class: 'control-label' %>
+                <div class="<%= get_error_class(@bank_transaction, :exchange) %>">
+                  <%= field_errors(@bank_transaction, :exchange) %>
+                  <%= f.select :exchange, BankTransaction.exchanges_i18n.keys.map {|k| [BankTransaction.exchanges_i18n[k], k]},
+                               {}, {class: 'form-control'} %>
+                </div>
+              </div>
+              <div class="col-md-2 field_div exc <%= show_exchange ? '' : 'none' %>">
+                <%= f.label :exc_rate, class: 'control-label' %>
+                <div class="<%= get_error_class(@bank_transaction, :exc_rate) %>">
+                  <%= field_errors(@bank_transaction, :exc_rate) %>
+                  <%= f.number_field :exc_rate, class: 'field form-control', step: 1, placeholder: t('activerecord.attributes.bank_transaction.exc_rate') %>
                 </div>
               </div>
             </div>
@@ -83,9 +99,31 @@
   </section>
 </div>
 <script !src="">
+    var show_exchange = <%= @bank_transaction.present? && @bank_transaction.dealing_account_id == 2 %>;
     $(function () {
         $('.datetimepicker').datetimepicker({
             locale: 'mn',
+        });
+        $('#bank_transaction_dealing_account_id').change(function () {
+            if (parseInt($(this).val()) === 2) {
+                show_exchange = true;
+                $('.exc_p').each(function () {
+                    $(this).removeClass("col-md-6")
+                        .addClass("col-md-4");
+                });
+                $('.exc').each(function () {
+                    $(this).removeClass("none");
+                });
+            } else if (show_exchange) {
+                show_exchange = false;
+                $('.exc_p').each(function () {
+                    $(this).addClass("col-md-6")
+                        .removeClass("col-md-4");
+                });
+                $('.exc').each(function () {
+                    $(this).addClass("none");
+                });
+            }
         });
     });
 </script>

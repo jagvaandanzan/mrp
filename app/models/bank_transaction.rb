@@ -3,19 +3,32 @@ class BankTransaction < ApplicationRecord
   belongs_to :bank_account, optional: true
   belongs_to :dealing_account, :class_name => "BankDealingAccount", optional: true
 
+  enum exchange: {cny: 0, usd: 1, eur: 2, rub: 3}
+
   with_options :if => Proc.new {|m| m.is_manual.present?} do
-    validates :salesman_id, presence: true
+    validates :date, presence: true
     validates :bank_account_id, presence: true
     validates :dealing_account_id, presence: true
-    validates :billing_date, presence: true
-    validates :value, presence: true, length: {maximum: 255}
     validates :summary, presence: true
     validates :summary, numericality: {greater_than: 1000, only_integer: true, message: :invalid}
   end
 
-  before_save :check_salesman
+  with_options :if => Proc.new {|m| m.is_manual.present? && m.dealing_account_id != 2} do
+    validates :salesman_id, presence: true
+    validates :billing_date, presence: true
+    validates :value, presence: true, length: {maximum: 255}
+  end
 
-  attr_accessor :it_is_new, :is_manual
+  with_options :if => Proc.new {|m| m.is_manual.present? && m.dealing_account_id == 2} do
+    validates :exchange, presence: true
+    validates :exc_rate, presence: true
+    validates :exc_rate, numericality: {greater_than: 1, only_integer: true, message: :invalid}
+  end
+
+  before_save :check_salesman
+  after_create :to_logistic
+
+  attr_accessor :it_is_new, :is_manual, :user_id
 
   scope :by_day, ->(day) {
     where("date >= ?", day)
@@ -67,12 +80,20 @@ class BankTransaction < ApplicationRecord
 
   def t_type
     if self.manual
-      2
+      if self.is_logistic
+        "#{exchange_i18n}  #{ApplicationController.helpers.get_currency_mn(exc_rate)}"
+      else
+        2
+      end
     elsif summary > 0
       1
     else
       3
     end
+  end
+
+  def is_logistic
+    dealing_account_id == 2
   end
 
   private
@@ -106,6 +127,37 @@ class BankTransaction < ApplicationRecord
           end
         end
 
+      end
+    end
+  end
+
+  def to_logistic
+    if self.is_logistic
+      logistic = Logistic.find(1)
+      product_supply_orders = ProductSupplyOrder.by_sum_price_nil
+      yuan = (summary / exc_rate).round(2)
+      yuan += logistic.balance if logistic.balance.present? && logistic.balance > 0
+
+      # Rails.logger.info("yuan = #{yuan}")
+      product_supply_orders.each do |supply_order|
+        s = ProductSupplyOrderItem.sum_price_by_supply_order(supply_order.id)
+        if s.present? && s > 0
+          # Rails.logger.info("#{supply_order.id} ==>#{s}==>#{yuan - s}")
+          if yuan - s >= 0
+            LogisticTransaction.create(bank_transaction: self,
+                                       user_id: user_id,
+                                       logistic: logistic,
+                                       supply_order: supply_order,
+                                       exc_rate: exc_rate,
+                                       summary: s)
+            supply_order.update_column(:sum_price, s * exc_rate)
+            yuan -= s
+          end
+        end
+      end
+
+      if yuan > 0
+        logistic.update_column(:balance, yuan)
       end
     end
   end

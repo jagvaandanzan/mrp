@@ -38,6 +38,10 @@ class ProductSupplyOrder < ApplicationRecord
     items
   }
 
+  scope :by_sum_price_nil, ->() {
+    where("sum_price IS ?", nil)
+  }
+
   def exchange_value
     ApplicationController.helpers.get_f(self[:exchange_value])
   end
