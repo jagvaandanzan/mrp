@@ -9,6 +9,7 @@ class ShippingEr < ApplicationRecord
 
   enum s_type: {post_cargo: 0, post_er: 1, cargo_er: 2, cargo_post: 3}
 
+  before_save :set_per_price
   attr_accessor :number
 
   validates :date, :cost, :s_type, presence: true
@@ -37,6 +38,10 @@ class ShippingEr < ApplicationRecord
     names
   end
 
+  def sum_quantity
+    shipping_er_products.sum(:quantity)
+  end
+
   private
 
   def product_should_be_uniq
@@ -45,6 +50,10 @@ class ShippingEr < ApplicationRecord
     if shipping_er_products.length != uniq_by_product_id.length
       self.errors.add(:shipping_er_products, :taken)
     end
+  end
+
+  def set_per_price
+    self.per_price = cost / sum_quantity
   end
 
 end

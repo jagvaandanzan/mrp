@@ -456,6 +456,9 @@ mn:
         remainder: Үлдэгдэл
         feature_item_id: Барааны шинж чанар
         income_locations: Агуулахын байршил
+        unit_price: Нэгж үнэ
+        ext_rate: Ханш
+        cost: Тээврийн өртөг
       product_income_location:
         quantity: Тоо
       product_income_feature_rel:

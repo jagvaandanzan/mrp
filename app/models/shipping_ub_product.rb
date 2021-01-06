@@ -6,13 +6,14 @@ class ShippingUbProduct < ApplicationRecord
   has_many :product_income_products
 
   has_many :shipping_ub_features, dependent: :destroy
-  before_save :set_shipping_ub
+  before_save :set_shipping_ub, :set_per_price
 
   attr_accessor :remainder
 
   validates :quantity, :cargo, :cost, presence: true
-  validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
-
+  with_options :if => Proc.new {|m| m.remainder.present?} do
+    validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
+  end
   scope :by_product_id, ->(product_id) {
     where(product: product_id)
   }
@@ -47,5 +48,11 @@ class ShippingUbProduct < ApplicationRecord
       break if is_break
     end
 
+  end
+
+  private
+
+  def set_per_price
+    self.per_price = cost / quantity
   end
 end

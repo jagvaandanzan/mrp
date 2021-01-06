@@ -23,6 +23,10 @@ class ProductIncome < ApplicationRecord
     items
   }
 
+  def sum_quantity
+    product_income_products.sum(:quantity)
+  end
+
   private
 
   def valid_quantity

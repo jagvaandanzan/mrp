@@ -5,12 +5,15 @@ class ProductIncomeProduct < ApplicationRecord
 
   attr_accessor :remainder
 
-  before_save :set_income_item
+  before_save :set_income_item, :set_unit_price
   has_many :product_income_items, :class_name => "ProductIncomeItem", foreign_key: "income_product_id", dependent: :destroy
+  has_many :supply_features, through: :product_income_items
+  has_one :shipping_er_product, through: :shipping_ub_product
 
   validates :quantity, :cargo, presence: true
-  validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
-
+  with_options :if => Proc.new {|m| m.remainder.present?} do
+    validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
+  end
   scope :date_desc, -> {
     order(created_at: :desc)
   }
@@ -43,7 +46,48 @@ class ProductIncomeProduct < ApplicationRecord
                                                          quantity: q)
       break if is_break
     end
+  end
 
+  def exc_rate
+    if self[:exc_rate].present?
+      self[:exc_rate]
+    else
+      supply_feature = supply_features.first
+      logistic_transactions = LogisticTransaction.by_supply_order_id(supply_feature.order_item_id)
+      if logistic_transactions.present?
+        logistic_transaction = logistic_transactions.first
+        logistic_transaction.exc_rate
+        self.update_column(:exc_rate, logistic_transaction.exc_rate)
+        logistic_transaction.exc_rate
+      else
+        0
+      end
+    end
+  end
+
+  def cost
+    if self[:cost].present?
+      self[:cost]
+    else
+      if self[:exc_rate].present?
+        c = shipping_er_product.shipping_er.per_price
+        c += shipping_ub_product.per_price
+        pi = self.product_income
+        v = (c * self[:exc_rate]) + pi.cargo_price / pi.sum_quantity
+        self.update_column(:cost, v)
+        v
+      else
+        0
+      end
+    end
+
+  end
+
+  private
+
+  def set_unit_price
+    self.unit_price = supply_features
+                          .average(:price_lo)
   end
 
 end
