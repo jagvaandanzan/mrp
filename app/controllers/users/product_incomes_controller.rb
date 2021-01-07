@@ -27,6 +27,12 @@ class Users::ProductIncomesController < Users::BaseController
       redirect_to action: 'show', id: @product_income.id
     else
       logger.info("error: #{@product_income.errors.full_messages}")
+      @product_income.product_income_products.each do |i_p|
+        logger.info("error p: #{i_p.errors.full_messages}")
+        i_p.product_income_items.each do |i|
+          logger.info("error i: #{i.errors.full_messages}")
+        end
+      end
       @product_income.number = ApplicationController.helpers.last_number(ProductIncome)
       render 'new'
     end
