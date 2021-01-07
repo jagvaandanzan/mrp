@@ -48,6 +48,17 @@ class ProductIncomeProduct < ApplicationRecord
     end
   end
 
+  def unit_price
+    if self[:unit_price].present?
+      self[:unit_price]
+    else
+      p = supply_features
+              .average(:price_lo)
+      self.unit_price = p
+      p
+    end
+  end
+
   def exc_rate
     if self[:exc_rate].present?
       self[:exc_rate]
@@ -81,13 +92,6 @@ class ProductIncomeProduct < ApplicationRecord
       end
     end
 
-  end
-
-  private
-
-  def set_unit_price
-    self.unit_price = supply_features
-                          .average(:price_lo)
   end
 
 end
