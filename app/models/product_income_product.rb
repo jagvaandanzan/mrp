@@ -5,7 +5,7 @@ class ProductIncomeProduct < ApplicationRecord
 
   attr_accessor :remainder
 
-  before_save :set_income_item, :set_unit_price
+  before_save :set_income_item
   has_many :product_income_items, :class_name => "ProductIncomeItem", foreign_key: "income_product_id", dependent: :destroy
   has_many :supply_features, through: :product_income_items
   has_one :shipping_er_product, through: :shipping_ub_product
