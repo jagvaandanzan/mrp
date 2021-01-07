@@ -18,8 +18,8 @@ class ProductIncomeItem < ApplicationRecord
   validates :quantity, presence: true
   validates :quantity, numericality: {greater_than: 0}
   # validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
-  validate :income_locations_count_check
-  # attr_accessor :remainder
+  validate :income_locations_count_check, on: :update
+  attr_accessor :is_income_order #,:remainder
 
   scope :search, ->(start, finish, income_code, supply_code, product_name) {
     items = income_date_desc
@@ -65,21 +65,23 @@ class ProductIncomeItem < ApplicationRecord
   private
 
   def income_locations_count_check
-    s = 0
-    self.income_locations.each do |location|
-      lq = location.quantity
-      if lq.present?
-        if lq < 0
-          errors.add(:income_locations, :greater_than, count: 0)
-          return
+    unless self.is_income_order.present?
+      s = 0
+      self.income_locations.each do |location|
+        lq = location.quantity
+        if lq.present?
+          if lq < 0
+            errors.add(:income_locations, :greater_than, count: 0)
+            return
+          end
+          s += location.quantity
         end
-        s += location.quantity
       end
-    end
-    if (self.quantity || 0) < s
-      errors.add(:income_locations, :over)
-    elsif self.quantity > s
-      errors.add(:income_locations, :equal_to, count: self.quantity)
+      if (self.quantity || 0) < s
+        errors.add(:income_locations, :over)
+      elsif self.quantity > s
+        errors.add(:income_locations, :equal_to, count: self.quantity)
+      end
     end
   end
 

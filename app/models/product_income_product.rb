@@ -38,7 +38,8 @@ class ProductIncomeProduct < ApplicationRecord
             self.quantity - q_sum
           end
 
-      self.product_income_items << ProductIncomeItem.new(shipping_ub_feature: f,
+      self.product_income_items << ProductIncomeItem.new(is_income_order: true,
+                                                         shipping_ub_feature: f,
                                                          product_income: product_income,
                                                          product: product,
                                                          supply_feature: f.supply_feature,
