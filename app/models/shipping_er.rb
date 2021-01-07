@@ -53,7 +53,11 @@ class ShippingEr < ApplicationRecord
   end
 
   def set_per_price
-    self.per_price = cost / sum_quantity
+    q = 0
+    shipping_er_products.each do |er_p|
+      q += er_p.quantity
+    end
+    self.per_price = cost / q
   end
 
 end
