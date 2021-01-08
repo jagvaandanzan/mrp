@@ -42,7 +42,7 @@ class Operators::ProductSalesController < Operators::BaseController
       @product_sale.hour_end = time.hour + 2
       @product_sale.status_user_type = 'operator'
       @product_sale.main_status_id = 2
-      # @product_sale.location = Location.offset(rand(Location.count)).first
+      @product_sale.location = Location.offset(rand(Location.count)).first
       @product_sale.building_code = 4.times.map {rand(9)}.join
       @product_sale.loc_note = (4.times.map {rand(9)}.join) + ', ' + (4.times.map {rand(9)}.join)
       @product_sale.money = 0
