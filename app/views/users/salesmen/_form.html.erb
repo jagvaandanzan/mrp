@@ -71,6 +71,32 @@
               <%= f.text_area :address, class: 'form-control', placeholder: t('activerecord.attributes.salesman.address') %>
             </div>
           </div>
+          <div class="form-group">
+            <%= f.label :price, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@salesman, :price) %>">
+              <%= field_errors(@salesman, :price) %>
+              <%= f.number_field :price, class: 'form-control', step: 1, placeholder: t('activerecord.attributes.salesman.price') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :distribution, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@salesman, :distribution) %>">
+              <%= field_errors(@salesman, :distribution) %>
+              <%= f.number_field :distribution, class: 'form-control', step: 1, placeholder: t('activerecord.attributes.salesman.distribution') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :price_at, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@salesman, :price_at) %>">
+              <div class="input-append date input-group date" data-provide="datepicker">
+                <%= field_errors(@salesman, :price_at) %>
+                <%= f.text_field :price_at, class: 'form-control', placeholder: t('activerecord.attributes.salesman.price_at') %>
+                <div class="input-group-addon">
+                  <i class="fa fa-calendar"></i>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div class="action-buttons">
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>

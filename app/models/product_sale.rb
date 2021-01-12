@@ -44,6 +44,11 @@ class ProductSale < ApplicationRecord
   scope :created_at_desc, -> {
     order(created_at: :desc)
   }
+
+  scope :order_phone, -> {
+    order(:phone)
+  }
+
   scope :search, ->(code_name, start, finish, phone, status_id) {
     items = joins(:status)
     items = items.where('phone LIKE :value', value: "%#{phone}%") if phone.present?
@@ -59,9 +64,16 @@ class ProductSale < ApplicationRecord
 
   scope :by_salesman_nil, ->() {
     where.not("approved_date IS ?", nil)
-        .where("main_status_id = ?", 2)
+        .where("main_status_id = 2 OR main_status_id = 4")
         .where("salesman_travel_id IS ?", nil)
         .order(:approved_date)
+  }
+
+  scope :by_travel_ids, ->(ids) {
+    where("salesman_travel_id IN (?)", ids)
+  }
+  scope :by_status, ->(status) {
+    where("main_status_id = ?", status)
   }
 
   def bonus
@@ -78,6 +90,24 @@ class ProductSale < ApplicationRecord
 
   def count_product
     product_sale_items.sum(:quantity)
+  end
+
+  def distribution
+    distributions = 0.0
+    product_sale_items.not_nil_bought_quantity.each do |sale_item|
+      distributions += if sale_item.price < Const::DISTRIBUTION[1]
+                         1
+                       elsif sale_item.bought_quantity > 2
+                         3
+                       else
+                         sale_item.bought_quantity
+                       end
+      if distributions > 2
+        distributions = 3
+        break
+      end
+    end
+    distributions
   end
 
 

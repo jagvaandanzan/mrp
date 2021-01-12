@@ -12,6 +12,7 @@ class Users::SalesmenController < Users::BaseController
 
   def new
     @salesman = Salesman.new
+    @salesman.price = Const::DISTRIBUTION[2]
   end
 
   def create
@@ -56,6 +57,6 @@ class Users::SalesmenController < Users::BaseController
   end
 
   def salesman_params
-    params.require(:salesman).permit(:avatar, :surname, :name, :gender, :register, :email, :phone, :address)
+    params.require(:salesman).permit(:avatar, :surname, :name, :gender, :register, :email, :phone, :address, :price, :distribution, :price_at)
   end
 end

@@ -51,6 +51,16 @@ class ProductSaleItem < ApplicationRecord
         .sum(:quantity)
   }
 
+  scope :not_nil_bought_quantity, ->() {
+    where("bought_quantity IS NOT ?", nil)
+  }
+
+  scope :not_buy_by_travel_ids, ->(travel_ids) {
+    joins(:salesman_travel)
+        .where("salesman_travels.id IN (?)", travel_ids)
+        .where("bought_quantity IS ?", nil)
+  }
+
   def price
     ApplicationController.helpers.get_f(self[:price])
   end

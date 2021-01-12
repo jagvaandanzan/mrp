@@ -495,6 +495,7 @@ mn:
         approved_operator_id: Батласан
         approved_date: Бат.Огноо
         sum_price: Нийт дүн
+        count_distribution: Тооцох хүргэлт
       product_sale_item:
         product_id: Бараа
         feature_item_id: Шинж чанар
@@ -548,6 +549,9 @@ mn:
         register: Регистерийн дугаар
         address: Хаяг
         pin_code: Пин код
+        distribution: Хүргэлт
+        price: Үнэлгээ
+        price_at: Үнэлгээ өөрчлөгдсөн
       product_sale_direct:
         phone: Утас
         price: Үнэ

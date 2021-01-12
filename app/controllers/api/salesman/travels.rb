@@ -154,13 +154,13 @@ module API
 
                     if travel.present? && salesman.id == travel.salesman_id
                       if product_sale_item.bought_at.present?
-                        product_sale_item.update_columns(bought_quantity: nil, bought_at: nil)
+                        product_sale_item.update_columns(bought_quantity: nil, bought_at: nil, bought_price: nil)
                         travel_route.calculate_payable # өгөх төлбөр болон хүргэлтийн огноо, хугацааг авна
                         message = I18n.t('alert.removed_successfully')
                       else
                         quantity_was = product_sale_item.quantity - (product_sale_item.back_quantity.presence || 0)
                         if params[:quantity] > 0 && params[:quantity] <= quantity_was
-                          product_sale_item.update_columns(bought_quantity: params[:quantity], bought_at: Time.now)
+                          product_sale_item.update_columns(bought_quantity: params[:quantity], bought_at: Time.now, bought_price: product_sale_item.price * params[:quantity])
                           travel_route.calculate_payable
                           message = I18n.t('alert.info_updated')
                         else
@@ -210,6 +210,7 @@ module API
                   if params[:status] <= 2 # Авсан
                     if travel_route.main_payable.present?
                       travel_route.calculate_delivery
+                      travel_route.calculate_wage
                       travel.calculate_delivery
                       status = ProductSaleStatus.find_by_alias("delivered")
                       product_sale = travel_route.product_sale

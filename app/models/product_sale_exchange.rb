@@ -12,4 +12,14 @@ class ProductSaleExchange < ApplicationRecord
     where("exchange_id IS ?", nil)
   }
 
+  scope :not_is_add, ->() {
+    where.not("e_type = ?", 1)
+  }
+
+  scope :by_sale_ids, ->(ids) {
+    joins(:product_sale)
+        .where("product_sale_id IN (?)", ids)
+        .order("product_sales.phone")
+  }
+
 end

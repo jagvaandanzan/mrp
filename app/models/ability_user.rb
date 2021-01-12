@@ -27,6 +27,7 @@ class AbilityUser
       when "operator"
         can role, Operator
         can role, Salesman
+        can role, :delivery_report
       when "product_supplier"
         can role, Customer
       when "product_location"

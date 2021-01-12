@@ -63,6 +63,18 @@
           <div class="align-left"><%= t('activerecord.attributes.salesman.pin_code') %> :</div>
           <div class="col-data"><%= @salesman.pin_code %></div>
         </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.salesman.price') %> :</div>
+          <div class="col-data"><%= get_currency_mn @salesman.price %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.salesman.distribution') %> :</div>
+          <div class="col-data"><%= @salesman.distribution %></div>
+        </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.salesman.price_at') %> :</div>
+          <div class="col-data"><%= @salesman.price_at.present? ? @salesman.price_at.strftime('%F %R') : '---' %></div>
+        </div>
       </div>
     </div>
   <% end %>

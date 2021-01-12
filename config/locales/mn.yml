@@ -91,6 +91,9 @@ mn:
     cost: Зардал
     cargo: Ачааны тоо
     bank_settings: Санхүү тохиргоо
+    delivery_reports: Хүргэлтийн тайлан
+    delivered_goods: Хүргэсэн бараа
+    salary_calculation: Цалин тооцох
   app_name: “MRP”
   app_short_name: M
   alert:

@@ -15,6 +15,28 @@
           <% end %>
         <% end %>
       <% end %>
+      <% if can? :read, :delivery_report %>
+        <%= content_tag :li, class: controller_name == 'delivery_reports' ? 'treeview active' : 'treeview' do %>
+          <%= link_to "#" do %>
+            <i class="fa fa-send"></i><span><%= t('titles.delivery_reports') %></span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          <% end %>
+          <%= content_tag :ul, class: 'treeview-menu' do %>
+            <%= content_tag :li, class: action_name == 'index' ? 'active' : '' do %>
+              <%= link_to users_delivery_reports_index_path do %>
+                <i class="fa fa-list"></i><span><%= t('titles.delivered_goods') %></span>
+              <% end %>
+            <% end %>
+            <%= content_tag :li, class: action_name == 'salary' ? 'active' : '' do %>
+              <%= link_to users_delivery_reports_salary_path do %>
+                <i class="fa fa-calculator"></i><span><%= t('titles.salary_calculation') %></span>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
       <% if can? :read, Product %>
         <%= content_tag :li, class: (controller_name == 'products' || controller_name == 'product_feature_rels') ? 'active' : '' do %>
           <%= link_to users_products_path do %>

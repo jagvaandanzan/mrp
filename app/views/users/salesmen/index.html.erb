@@ -39,6 +39,7 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.salesman.gender') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.salesman.email') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.salesman.phone') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.salesman.price') %></th>
               </tr>
               <% @salesmen.each do |salesman| %>
                 <tr>
@@ -57,6 +58,7 @@
                   <td class="td-center va-mid"><%= salesman.gender_i18n %></td>
                   <td class="td-center va-mid"><%= salesman.email %></td>
                   <td class="td-center va-mid"><%= salesman.phone %></td>
+                  <td class="td-center va-mid"><%= get_currency_mn salesman.price %></td>
                 </tr>
               <% end %>
             </table>

@@ -10,6 +10,17 @@ class SalesmanTravelRoute < ApplicationRecord
         .where(queue: queue)
   }
 
+  scope :not_ni_wage, ->() {
+    where("salesman_travel_routes.wage IS NOT ?", nil)
+  }
+
+  scope :search, ->(start, finish, salesman_id) {
+    joins(:salesman_travel)
+        .where('salesman_travels.delivery_at >= :s AND salesman_travels.delivery_at <= :f', s: "#{start}", f: "#{finish}")
+        .where('salesman_travels.salesman_id = ?', salesman_id)
+        .order("salesman_travel_routes.delivery_at")
+  }
+
   def loc_name
     location.name
   end
@@ -59,8 +70,43 @@ class SalesmanTravelRoute < ApplicationRecord
   end
 
   def calculate_delivery
-      self.delivered_at = Time.now
-      self.delivery_time = ApplicationController.helpers.get_minutes(delivered_at, load_at)
-    self.save
+    self.update_columns(delivered_at: Time.now, delivery_time: ApplicationController.helpers.get_minutes(delivered_at, load_at))
   end
+
+  def calculate_wage
+    # Үнэлгээ тооцох
+    salesman = salesman_travel.salesman
+    d = 1
+    if product_sale.product_sale_exchanges.count > 0
+      self.update_column(:wage, wage.present? ? wage + Const::DISTRIBUTION[0] : Const::DISTRIBUTION[0])
+    else
+
+      d = product_sale.distribution
+      if location.country.present? && location.country
+        d /= 3
+      end
+      w = if location.distance_d?
+            if d >= 3
+              d * salesman.price
+            else
+              d * Const::DISTRIBUTION[4 + d]
+            end
+          else
+            d * salesman.price
+          end
+      self.update_columns(wage: w, distribution: d)
+    end
+
+    distributions = (salesman.distribution.present? ? salesman.distribution : 0) + d
+    if distributions >= Const::DISTRIBUTION[7]
+      if (Time.current - salesman.price_at).to_i >= 180
+        salesman.update_columns(distribution: 0, price_at: Time.current, price: salesman.price == Const::DISTRIBUTION[2] ? Const::DISTRIBUTION[3] : Const::DISTRIBUTION[4])
+      else
+        salesman.update_column(:distribution, distributions)
+      end
+    else
+      salesman.update_column(:distribution, distributions)
+    end
+  end
+
 end

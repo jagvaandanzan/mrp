@@ -163,6 +163,10 @@ Rails.application.routes.draw do
     end
     resources :bank_transactions
     resources :sms_messages, only: [:index, :create, :new]
+    namespace :delivery_reports do
+      get 'index'
+      get 'salary'
+    end
 
     match "*any", to: "base#routing_error", via: :all
   end

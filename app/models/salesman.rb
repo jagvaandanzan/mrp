@@ -14,7 +14,7 @@ class Salesman < ActiveRecord::Base
   enum gender: {male: 0, female: 1}
 
   validates :surname, :name, :register, presence: true, length: {maximum: 255}
-  validates :gender, :email, :phone, :avatar, presence: true
+  validates :gender, :email, :phone, :avatar, :price, :price_at, :distribution, presence: true
   validates :pin_code, length: {is: 4}, on: :update
   validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
   has_attached_file :avatar, :path => ":rails_root/public/salesman/:id_partition/:style.:extension", styles: {original: "800x800>", tumb: "200x200>"}, :url => '/salesman/:id_partition/:style.:extension'
@@ -22,7 +22,7 @@ class Salesman < ActiveRecord::Base
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
 
   scope :search, ->(search_id, search_name, search_phone) {
-    items = created_at_desc
+    items = order_name
     items = items.where('id = ?', search_id) if search_id.present?
     items = items.where('name LIKE :value OR surname LIKE :value', value: "%#{search_name}%") if search_name.present?
     items = items.where('phone = ?', search_phone) if search_phone.present?
@@ -73,6 +73,13 @@ class Salesman < ActiveRecord::Base
             sound: "default"},
         priority: 'high',
     }
+  end
+
+  def update_distribution(date, distributions)
+
+    if Time.current.beginning_of_day == date.beginning_of_day
+
+    end
   end
 
   protected
