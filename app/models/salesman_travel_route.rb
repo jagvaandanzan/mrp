@@ -94,7 +94,7 @@ class SalesmanTravelRoute < ApplicationRecord
           else
             d * salesman.price
           end
-      self.update_columns(wage: w, distribution: d)
+      self.update_columns(wage: w.to_i, distribution: d)
     end
 
     distributions = (salesman.distribution.present? ? salesman.distribution : 0) + d
