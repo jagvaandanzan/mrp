@@ -70,7 +70,7 @@ class SalesmanTravelRoute < ApplicationRecord
   end
 
   def calculate_delivery
-    self.update_columns(delivered_at: Time.now, delivery_time: ApplicationController.helpers.get_minutes(delivered_at, load_at))
+    self.update_columns(delivered_at: Time.now, delivery_time: ApplicationController.helpers.get_minutes(Time.now, load_at))
   end
 
   def calculate_wage
