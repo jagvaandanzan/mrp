@@ -21,7 +21,7 @@ class ProductSale < ApplicationRecord
   attr_accessor :hour_now, :hour_start, :hour_end, :status_user_type, :update_status, :operator
 
   before_validation :validate_status
-  before_validation :set_sum_price
+  after_save :set_sum_price
   before_save :set_defaults
   before_save :create_log
 
@@ -133,7 +133,7 @@ class ProductSale < ApplicationRecord
 
     s += 2000 if s < 20000
 
-    self.sum_price = s
+    self.update_column(:sum_price, s)
   end
 
   def validate_status

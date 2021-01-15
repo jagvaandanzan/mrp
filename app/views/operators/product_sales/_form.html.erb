@@ -365,13 +365,15 @@
         var total_price = 0;
         $('#tb_product_sale_items tr.nested-fields').each(function () {
             let tr = $(this);
-            let quantity = tr.find('.item_quantity').val();
-            if (quantity !== undefined && quantity.length > 0) {
-                let price = tr.find('.item_price').val();
-                let sum_price = price * parseInt(quantity);
-                tr.find('.item_sum').val(sum_price);
-                tr.find('.item_sum_show').val(getDecimalPay(sum_price));
-                total_price += sum_price;
+            if (tr.is(':visible')) {
+                let quantity = tr.find('.item_quantity').val();
+                if (quantity !== undefined && quantity.length > 0) {
+                    let price = tr.find('.item_price').val();
+                    let sum_price = price * parseInt(quantity);
+                    tr.find('.item_sum').val(sum_price);
+                    tr.find('.item_sum_show').val(getDecimalPay(sum_price));
+                    total_price += sum_price;
+                }
             }
         });
         $('#product_sale_sum_price').val(total_price);
