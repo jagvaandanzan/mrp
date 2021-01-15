@@ -47,6 +47,9 @@ class Users::ProductIncomesController < Users::BaseController
   end
 
   def edit
+    @product_income.product_income_products.each do |income_product|
+      income_product.remainder = income_product.shipping_ub_product.quantity
+    end
   end
 
   def show

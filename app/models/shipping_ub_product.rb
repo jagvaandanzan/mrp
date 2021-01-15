@@ -27,24 +27,43 @@ class ShippingUbProduct < ApplicationRecord
     items
   }
 
+  scope :sum_quantity_by_er_product, ->(er_product_id) {
+    where(shipping_er_product_id: er_product_id)
+        .sum(:quantity)
+  }
+
   def set_shipping_ub
     self.shipping_ub_id = shipping_ub_box.shipping_ub_id
-    self.shipping_ub_features.destroy_all
+    was_ids = self.shipping_ub_features.map(&:shipping_er_feature_id).to_a
+    new_ids = shipping_er_product.shipping_er_features.find_to_ub(was_ids).map(&:id).to_a
+    self.shipping_ub_features.by_ids(was_ids - new_ids).destroy_all
+
     q_sum = 0
-    shipping_er_product.shipping_er_features.find_to_ub.each do |f|
+    shipping_er_product.shipping_er_features.find_to_ub(was_ids).each do |f|
       is_break = false
-      q = if q_sum + f[:remainder] <= self.quantity
-            q_sum += f[:remainder]
-            f[:remainder]
+      rem = f[:remainder]
+      shipping_ub_feature = nil
+      if was_ids.include?(f.id)
+        shipping_ub_features = self.shipping_ub_features
+                                   .by_shipping_er_feature(f.id)
+        shipping_ub_feature = shipping_ub_features.first
+        rem += shipping_ub_feature.quantity
+      end
+      q = if q_sum + rem <= self.quantity
+            q_sum += rem
+            rem
           else
             is_break = true
             self.quantity - q_sum
           end
-
-      self.shipping_ub_features << ShippingUbFeature.new(shipping_er_feature: f,
-                                                         product: product,
-                                                         supply_feature: f.supply_feature,
-                                                         quantity: q)
+      if was_ids.include?(f.id)
+        shipping_ub_feature.update_column(:quantity, q) unless shipping_ub_feature.nil?
+      else
+        self.shipping_ub_features << ShippingUbFeature.new(shipping_er_feature: f,
+                                                           product: product,
+                                                           supply_feature: f.supply_feature,
+                                                           quantity: q)
+      end
       break if is_break
     end
 

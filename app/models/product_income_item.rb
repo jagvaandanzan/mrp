@@ -53,6 +53,12 @@ class ProductIncomeItem < ApplicationRecord
     where(product_id: product_id)
         .where("supply_feature_id IN (?)", feature_ids)
   }
+  scope :by_shipping_ub_feature, ->(shipping_ub_feature_id) {
+    where(shipping_ub_feature_id: shipping_ub_feature_id)
+  }
+  scope :by_ids, ->(ids) {
+    where("id IN (?)", ids)
+  }
 
   def get_balance
     ProductIncomeBalance.balance(product_id)

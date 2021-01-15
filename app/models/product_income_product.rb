@@ -26,25 +26,40 @@ class ProductIncomeProduct < ApplicationRecord
   }
 
   def set_income_item
-    self.product_income_items.destroy_all
+    was_ids = self.product_income_items.map(&:shipping_ub_feature_id).to_a
+    new_ids = shipping_ub_product.shipping_ub_features.find_to_incomes(was_ids).map(&:id).to_a
+    self.product_income_items.by_ids(was_ids - new_ids).destroy_all
+
     q_sum = 0
-    shipping_ub_product.shipping_ub_features.find_to_incomes.each do |f|
+    shipping_ub_product.shipping_ub_features.find_to_incomes(was_ids).each do |f|
       is_break = false
-      q = if q_sum + f[:remainder] <= self.quantity
-            q_sum += f[:remainder]
-            f[:remainder]
+      rem = f[:remainder]
+      product_income_item = nil
+      if was_ids.include?(f.id)
+        product_income_items = self.product_income_items
+                                   .by_shipping_ub_feature(f.id)
+        product_income_item = product_income_items.first
+        rem += product_income_item.quantity
+      end
+      q = if q_sum + rem <= self.quantity
+            q_sum += rem
+            rem
           else
             is_break = true
             self.quantity - q_sum
           end
 
-      self.product_income_items << ProductIncomeItem.new(is_income_order: true,
-                                                         shipping_ub_feature: f,
-                                                         product_income: product_income,
-                                                         product: product,
-                                                         supply_feature: f.supply_feature,
-                                                         feature_item: f.feature_item,
-                                                         quantity: q)
+      if was_ids.include?(f.id)
+        product_income_item.update_column(:quantity, q) unless product_income_item.nil?
+      else
+        self.product_income_items << ProductIncomeItem.new(is_income_order: true,
+                                                           shipping_ub_feature: f,
+                                                           product_income: product_income,
+                                                           product: product,
+                                                           supply_feature: f.supply_feature,
+                                                           feature_item: f.feature_item,
+                                                           quantity: q)
+      end
       break if is_break
     end
   end

@@ -14,11 +14,20 @@ class ShippingErFeature < ApplicationRecord
         .where('product_supply_features.order_item_id = ?', order_item_id)
   }
 
-  scope :find_to_ub, -> {
-    left_joins(:shipping_ub_features)
-        .group("shipping_er_features.id")
-        .having("SUM(shipping_ub_features.quantity) IS NULL OR SUM(shipping_ub_features.quantity) < shipping_er_features.quantity")
-        .select("shipping_er_features.*, shipping_er_features.quantity - IFNULL(SUM(shipping_ub_features.quantity), 0) as remainder")
+  scope :find_to_ub, ->(not_er_feature_ids = nil) {
+    items = left_joins(:shipping_ub_features)
+                .group("shipping_er_features.id")
+    if not_er_feature_ids.nil? || !not_er_feature_ids.present?
+      items = items.having("SUM(shipping_ub_features.quantity) IS NULL OR SUM(shipping_ub_features.quantity) < shipping_er_features.quantity")
+    else
+      items = items.having("SUM(shipping_ub_features.quantity) IS NULL OR (SUM(shipping_ub_features.quantity) < shipping_er_features.quantity OR shipping_er_features.id IN (?))", not_er_feature_ids)
+    end
+    items.select("shipping_er_features.*, shipping_er_features.quantity - IFNULL(SUM(shipping_ub_features.quantity), 0) as remainder")
+  }
+
+  scope :sum_quantity, ->(er_feature_id) {
+    where(supply_feature_id: er_feature_id)
+        .sum(:quantity)
   }
 
 end

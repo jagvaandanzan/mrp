@@ -43,6 +43,11 @@ class Logistics::ShippingUbsController < Logistics::BaseController
   end
 
   def edit
+    @shipping_ub.shipping_ub_boxes.each do |ub_box|
+      ub_box.shipping_ub_products.each {|ub_product|
+        ub_product.remainder = ub_product.shipping_er_product.quantity - ShippingUbProduct.sum_quantity_by_er_product(ub_product.shipping_er_product_id) + ub_product.quantity
+      }
+    end
   end
 
   def update

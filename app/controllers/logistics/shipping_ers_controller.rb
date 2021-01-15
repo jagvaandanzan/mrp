@@ -34,6 +34,12 @@ class Logistics::ShippingErsController < Logistics::BaseController
   end
 
   def edit
+    @shipping_er.shipping_er_products.each do |er_product|
+      er_product.shipping_er_features.each {|er_feature|
+        # нийт худалдан авсан тооноос - нийт эрээн явуулсан тоо + өөрийнх тоо
+        er_feature.remainder = er_feature.supply_feature.quantity_lo - ShippingErFeature.sum_quantity(er_feature.supply_feature_id) + er_feature.quantity
+      }
+    end
   end
 
   def update
