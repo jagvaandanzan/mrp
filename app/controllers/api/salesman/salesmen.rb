@@ -47,7 +47,7 @@ module API
         end
 
         resource :track do
-          desc "GET salesmen/track"
+          desc "POST salesmen/track"
           params do
             requires :latitude, type: Float
             requires :longitude, type: Float
