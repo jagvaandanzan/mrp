@@ -46,6 +46,22 @@ module API
           end
         end
 
+        resource :track do
+          desc "GET salesmen/track"
+          params do
+            requires :latitude, type: Float
+            requires :longitude, type: Float
+          end
+          post do
+            SalesmanTrack.create(
+                salesman: current_salesman,
+                latitude: params[:latitude],
+                longitude: params[:longitude]
+            )
+            present :updated_at, Time.now
+          end
+        end
+
       end
     end
   end
