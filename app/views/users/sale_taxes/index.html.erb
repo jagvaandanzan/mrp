@@ -1,0 +1,61 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<div class="content-wrapper">
+  <div class="col-md-12 m-t-10 m-b-10">
+    <% is_manage = can? :manage, SaleTax %>
+    <%= form_with url: users_sale_taxes_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+      <div class="col-md-2 search">
+        <%= f.select :tax_type, SaleTax.tax_types_i18n.keys.map {|k| [SaleTax.tax_types_i18n[k], k]},
+                     {:prompt => t('activerecord.attributes.sale_tax.tax_type'), :selected => @tax_type}, {class: 'form-control'} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= text_field_tag :phone, @phone, {class: 'form-control search', placeholder: t('activerecord.attributes.sale_tax.phone')} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= text_field_tag :email, @email, {class: 'form-control search', placeholder: t('activerecord.attributes.sale_tax.email')} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= text_field_tag :register, @register, {class: 'form-control search', placeholder: t('activerecord.attributes.sale_tax.register')} %>
+      </div>
+      <div class="col-md-4 search">
+        <%= submit_tag t('controls.button.searching') + " (" + @sale_taxes.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
+      </div>
+    <% end %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th class="va-mid"><%= t('activerecord.attributes.sale_tax.created_at') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.sale_tax.price') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.sale_tax.tax_type') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.sale_tax.phone') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.sale_tax.email') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.sale_tax.register') %></th>
+              </tr>
+              </thead>
+              <% @sale_taxes.each do |sale_tax| %>
+                <tr>
+                  <td class="va-mid"><%= sale_tax.created_at.strftime('%F %R') %></td>
+                  <td class="va-mid"><%= get_currency_mn sale_tax.price %></td>
+                  <td class="va-mid"><%= sale_tax.tax_type_i18n %></td>
+                  <td class="va-mid"><%= sale_tax.phone %></td>
+                  <td class="va-mid"><%= sale_tax.email %></td>
+                  <td class="va-mid"><%= sale_tax.register %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+        <%= paginate @sale_taxes %>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,11 @@
+<%= image_tag 'https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=' + @qr + '&choe=UTF-8' %>
+<br>
+<div>Сугалааны код: <strong><%= @code %></strong></div>
+<br>
+<div>E-barimt дүн: <%= ApplicationController.helpers.get_currency_mn @price %></div>
+<br>
+<div>ДДТД: <%= @number %></div>
+<br>
+========================
+<br>
+<%= link_to 'http://market.mn', 'market.mn' %>

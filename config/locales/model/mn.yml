@@ -155,6 +155,10 @@ mn:
         usd: Доллар
         eur: Евро
         rub: Рубль
+    sale_tax:
+      tax_type:
+        individual: Хувь хүн
+        organization: Байгууллага
   activerecord:
     models:
       admin_user: Админ
@@ -196,6 +200,7 @@ mn:
       bank_transaction: Банкны гүйлгээ
       bank_account: Харилцахын данс
       bank_dealing_account: Харьцах данс
+      sale_tax: ebarimt
     attributes:
       admin_user:
         email: Имэйл
@@ -496,6 +501,7 @@ mn:
         approved_date: Бат.Огноо
         sum_price: Нийт дүн
         count_distribution: Тооцох хүргэлт
+        tax: НӨАТ авах
       product_sale_item:
         product_id: Бараа
         feature_item_id: Шинж чанар
@@ -647,13 +653,14 @@ mn:
         created_at: Огноо
         operator_id: Оператор
         bank_account_id: Данс
-      ali_category:
-        name_mn: Монгол
-        name: Англи
-        prod: Шалгасан
-        ali_filter_groups: Филтер
-        sub_categories: Дэд ангилалууд
-        sub_category_check: Дэд ангилалууд
+      sale_tax:
+        send_at: Илгээсэн огноо
+        created_at: Огноо
+        tax_type: Төрөл
+        phone: Утас
+        email: Имэйл
+        register: Регистр
+        price: Дүн
     errors:
       messages:
         blank: " хоосон байна!"

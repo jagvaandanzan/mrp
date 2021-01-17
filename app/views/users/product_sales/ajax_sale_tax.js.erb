@@ -1,0 +1,41 @@
+<% unless hide_modal %>
+$('#form_modal_body').html("<%= escape_javascript render(partial: 'users/product_sales/sale_tax') %>")
+<% end %>
+$('#form_modal').modal("<%= hide_modal ? 'hide':'show' %>");
+<% if hide_modal %>
+$('tr#tr-<%= @sale_tax.product_sale_id %>').addClass('to_tax')
+    .removeClass('cursor');
+<% else %>
+$("#form_modal input[name='sale_tax[tax_type]']").change(function () {
+    if ($(this).val() === "individual") {
+        $('#modal_register').addClass('none');
+        $('#modal_phone').removeClass('none');
+    } else {
+        $('#modal_register').removeClass('none');
+        $('#modal_phone').addClass('none');
+    }
+});
+$('#check_button').on('click', function () {
+    let register = $('#sale_tax_register').val();
+    if (register.length > 0) {
+        Rails.ajax({
+            url: "<%=ENV['DOMAIN_NAME']+'/api/v1/notifications/organization' %>",
+            type: "POST",
+            data: "register=" + register,
+            success: function (data) {
+                if (data.success) {
+                    $('#organization').addClass('text-success')
+                        .removeClass('text-danger')
+                        .html("<div>" + data.name + "</div>")
+                } else {
+                    $('#organization').addClass('text-danger')
+                        .removeClass('text-success')
+                        .html("<div>Байгууллага олдсонгүй!</div>")
+                }
+            }
+        });
+    } else {
+        alert("Регистр ээ оруулна уу!")
+    }
+});
+<% end %>

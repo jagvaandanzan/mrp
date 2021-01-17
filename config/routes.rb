@@ -167,6 +167,8 @@ Rails.application.routes.draw do
       get 'index'
       get 'salary'
     end
+    resources :sale_taxes, only: [:index, :create, :new, :edit, :update]
+    resources :product_sales, only: [:index]
 
     match "*any", to: "base#routing_error", via: :all
   end

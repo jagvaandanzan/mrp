@@ -10,6 +10,10 @@ module API
         expose :date_time, :value, :summary, :account
       end
 
+      class ProductSaleItem < Grape::Entity
+        expose :price, :bought_quantity
+      end
+
     end
   end
 end

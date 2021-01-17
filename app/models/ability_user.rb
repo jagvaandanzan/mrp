@@ -41,6 +41,7 @@ class AbilityUser
         can role, BankTransaction
         can role, BankAccount
         can role, BankDealingAccount
+        can role, SaleTax
       when "sms_message"
         can role, SmsMessage
       else

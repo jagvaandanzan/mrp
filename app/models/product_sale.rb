@@ -12,6 +12,7 @@ class ProductSale < ApplicationRecord
   has_many :product_sale_items
   has_many :product_sale_status_logs
   has_many :product_sale_exchanges
+  has_one :sale_tax
   has_one :salesman_travel_route, dependent: :destroy
 
   accepts_nested_attributes_for :product_sale_items, allow_destroy: true
@@ -47,6 +48,22 @@ class ProductSale < ApplicationRecord
 
   scope :order_phone, -> {
     order(:phone)
+  }
+
+  scope :by_tax, -> {
+    where(tax: true)
+  }
+
+  scope :send_tax, ->(send) {
+    if send.present?
+      items = joins(:sale_tax)
+      if send
+        items = items.where("sale_taxes.id IS NOT ?", nil)
+      else
+        items = items.where("sale_taxes.id IS ?", nil)
+      end
+      items
+    end
   }
 
   scope :search, ->(code_name, start, finish, phone, status_id) {
@@ -90,6 +107,10 @@ class ProductSale < ApplicationRecord
 
   def count_product
     product_sale_items.sum(:quantity)
+  end
+
+  def bought_price
+    product_sale_items.sum(:bought_price)
   end
 
   def distribution

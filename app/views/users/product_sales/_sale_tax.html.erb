@@ -1,0 +1,50 @@
+<%= form_with model: @sale_tax, url: @sale_tax.persisted? ? users_sale_tax_path : users_sale_taxes_path, method: @sale_tax.persisted? ? :patch : :post, remote: true, :html => {class: 'form-horizontal', id: 'send_tax_form'} do |f| %>
+  <%= form_body do %>
+    <%= f.hidden_field :product_sale_id %>
+    <div class="form-group">
+      <%= f.label :tax_type, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9 radio-group <%= get_error_class(@sale_tax, :tax_type) %>">
+        <%= field_errors(@sale_tax, :tax_type) %>
+        <%= f.collection_radio_buttons :tax_type, SaleTax.tax_types_i18n, :first, :second do |b| %>
+          <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
+        <% end %>
+      </div>
+    </div>
+    <div class="form-group <%= !@sale_tax.tax_type.present? || @sale_tax.organization? ? 'none' : '' %>" id="modal_phone">
+      <%= f.label :phone, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9 radio-group <%= get_error_class(@sale_tax, :phone) %>">
+        <%= field_errors(@sale_tax, :phone) %>
+        <%= f.number_field :phone, class: 'form-control', step: 1, placeholder: t('activerecord.attributes.sale_tax.phone') %>
+      </div>
+    </div>
+    <div class="form-group <%= !@sale_tax.tax_type.present? || @sale_tax.individual? ? 'none' : '' %>" id="modal_register">
+      <%= f.label :register, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-6 radio-group <%= get_error_class(@sale_tax, :register) %>">
+        <%= field_errors(@sale_tax, :register) %>
+        <%= f.number_field :register, class: 'form-control', step: 1, placeholder: t('activerecord.attributes.sale_tax.register') %>
+        <small id="organization"></small>
+      </div>
+      <div class="col-sm-3">
+        <button type="button" class="btn btn-primary" id="check_button"><%= t('controls.button.check') %></button>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :email, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9 <%= get_error_class(@sale_tax, :email) %>">
+        <%= field_errors(@sale_tax, :email) %>
+        <%= f.email_field :email, class: 'form-control', placeholder: t('activerecord.attributes.sale_tax.email') %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :price, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9">
+        <div class="form-control"><%= get_currency_mn @sale_tax.price %></div>
+        <%= f.hidden_field :price %>
+      </div>
+    </div>
+    <div class="modal-footer text-right">
+      <button type="button" class="btn btn-default" data-dismiss="modal"><%= t('controls.button.close') %></button>
+      <%= f.submit t('controls.button.send'), class: 'btn btn-warning' %>
+    </div>
+  <% end %>
+<% end %>

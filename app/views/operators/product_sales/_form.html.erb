@@ -155,11 +155,18 @@
                     <% end %>
                   </div>
                 </div>
-                <div class="col-md-4 field_div">
+                <div class="col-md-2 field_div">
                   <%= f.label :bonus, class: 'control-label' %>
                   <div class="<%= get_error_class(@product_sale, :bonus) %>">
                     <%= field_errors(@product_sale, :bonus) %>
                     <%= f.number_field :bonus, class: 'form-control', oninput: "func_calc_sum()", placeholder: t('activerecord.attributes.product_sale.bonus') %>
+                  </div>
+                </div>
+                <div class="col-md-2 field_div">
+                  <%= f.label :tax, class: 'control-label' %>
+                  <div class="<%= get_error_class(@product_sale, :tax) %>">
+                    <%= field_errors(@product_sale, :tax) %>
+                    <%= f.check_box :tax %>
                   </div>
                 </div>
               </div>

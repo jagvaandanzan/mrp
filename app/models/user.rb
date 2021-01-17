@@ -47,6 +47,10 @@ class User < ApplicationRecord
     send_devise_notification(:reset_password_app, email, url_token, subject: '[Market.mn] Нууц үг солих хүсэлт', to: email)
   end
 
+  def send_tax(email, price, code, number, qr)
+    send_devise_notification(:send_tax, price, code, number, qr, subject: '[Market.mn] И-баримт', to: email)
+  end
+
   def user_name
     "#{surname} #{name}"
   end

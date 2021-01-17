@@ -1,0 +1,104 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<div class="content-wrapper">
+  <div class="col-md-12 m-t-10 m-b-10">
+    <%= form_with url: users_product_sales_path, method: "get", class: "", local: true do |f| %>
+      <div class="col-md-2 search">
+        <div id="search-date" class="form-control search">
+          <i class="fa fa-calendar fa-lg p-r-0"></i>
+          <span><%= t("filters.by_date") %>...</span>
+          <%= f.hidden_field :start, value: @start %>
+          <%= f.hidden_field :finish, value: @finish %>
+        </div>
+      </div>
+      <div class="col-md-2 search">
+        <%= select_tag :send_tax, options_for_select([["НӨАТ", ""], ["НӨАТ: Илгээсэн", true], ["НӨАТ: Илгээгээгүй", false]], @send_tax), class: 'form-control' %>
+        <%= f.hidden_field :product_name %>
+      </div>
+
+      <div class="col-md-2 search">
+        <%= text_field_tag :phone, @phone, {class: 'form-control', placeholder: t('filters.by_phone')} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= f.collection_select :status_id, ProductSaleStatus.search(nil, nil), :id, :name,
+                                {:selected => @status_id, :include_blank => t('filters.status')},
+                                {class: 'form-control selectpicker', "data-live-search": "true", "data-container": ".box-info"} %>
+
+      </div>
+
+      <div class="col-md-2 search">
+        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
+      </div>
+      <div class="col-md-2 search text-right"></div>
+    <% end %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box" id="div_list">
+          <div class="box-body table-responsive no-padding table-search">
+            <%= render 'layouts/flash_message' %>
+            <table class="table table-hover table-bordered">
+              <tr>
+                <th><%= t('activerecord.attributes.product_sale.product_sale_item') %></th>
+                <th><%= t('activerecord.attributes.product_sale.phone') %></th>
+                <th><%= t('activerecord.attributes.product_sale.delivery_end') %></th>
+                <th><%= t('activerecord.attributes.product_sale.location_id') %></th>
+                <th><%= t('activerecord.attributes.product_sale.sum_price') %></th>
+                <th><%= t('activerecord.attributes.product_sale.status_id') %></th>
+                <th><%= t('activerecord.attributes.product_sale.created_operator_id') %></th>
+                <th><%= t('activerecord.attributes.sale_tax.send_at') %></th>
+              </tr>
+              <% @product_sales.each do |p| %>
+                <% sale_tax = p.sale_tax %>
+                <tr class="<%= sale_tax.present? ? 'to_tax' : 'cursor' %>" id="tr-<%= p.id %>" p_id="<%= p.id %>" price="<%= p.bought_price %>">
+                  <td class="va-mid text-center"><%= p.product_sale_items.count %></td>
+                  <td class="va-mid"><%= p.phone %></td>
+                  <td class="va-mid" style="white-space: nowrap"><%= p.delivery_time.html_safe %></td>
+                  <td class="va-mid"><%= p.location.full_name %>
+                    <% if p.country.present? && p.country %>
+                      <i class="fa fa-bus" style='font-size: 16px'></i>
+                    <% end %></td>
+                  <td class="va-mid"><%= get_currency_mn(p.bought_price) %></td>
+                  <td class="va-mid"><%= p.status.name_with_parent %></td>
+                  <td class="va-mid"><%= p.created_operator.present? ? p.created_operator.name : "" %></td>
+                  <td class="va-mid"><%= sale_tax.present? ? sale_tax.created_at.strftime('%F %R') : "" %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+
+        <%= paginate @product_sales %>
+      </div>
+    </div>
+  </section>
+</div>
+<%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'start', finish_id: 'finish' %>
+<%= render 'shared/form_modal', title: t('activerecord.models.sale_tax') %>
+<style>
+  .to_tax {
+    background-color: #97eeb8;
+  }
+
+  .cursor {
+    cursor: pointer;
+  }
+</style>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+        $('tr.cursor').on('click', function () {
+            let tr = $(this);
+            if (!tr.hasClass('to_tax')) {
+                Rails.ajax({
+                    url: "<%= new_users_sale_tax_path %>",
+                    type: "GET",
+                    data: "product_sale_id=" + tr.attr('p_id') + "&price=" + tr.attr('price')
+                });
+            }
+        });
+    });
+</script>
