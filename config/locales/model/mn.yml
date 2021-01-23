@@ -201,6 +201,7 @@ mn:
       bank_account: Харилцахын данс
       bank_dealing_account: Харьцах данс
       sale_tax: ebarimt
+      salesman_travel: Түгээлт
     attributes:
       admin_user:
         email: Имэйл

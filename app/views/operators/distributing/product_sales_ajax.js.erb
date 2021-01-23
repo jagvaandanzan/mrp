@@ -1,0 +1,6 @@
+var array = [];
+<% @product_sales.each { |product_sale| %>
+<% location = product_sale.location %>
+array.push([<%= product_sale.id %>, "<%= location.name %>", <%= location.latitude %>, <%= location.longitude %>, "<%= product_sale.phone %>", <%= product_sale.count_product %>, "<%= get_currency_mn product_sale.sum_price %>"]);
+<% } %>
+set_marker_sales(array);

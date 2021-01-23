@@ -5,9 +5,15 @@ class SalesmanTravelRoute < ApplicationRecord
   belongs_to :location
   belongs_to :product_sale
 
-  scope :by_queue, ->(travel_id, queue) {
+  scope :order_queue, ->() {
+    order(:queue)
+  }
+  scope :by_travel_id, ->(travel_id) {
     where(salesman_travel_id: travel_id)
-        .where(queue: queue)
+  }
+
+  scope :by_queue, ->(queue) {
+    where(queue: queue)
   }
 
   scope :not_ni_wage, ->() {
@@ -19,6 +25,14 @@ class SalesmanTravelRoute < ApplicationRecord
         .where('salesman_travels.delivery_at >= :s AND salesman_travels.delivery_at <= :f', s: "#{start}", f: "#{finish}")
         .where('salesman_travels.salesman_id = ?', salesman_id)
         .order("salesman_travel_routes.delivery_at")
+  }
+
+  scope :after_queue, ->(queue) {
+    where("queue >= ?", queue)
+  }
+
+  scope :nil_delivered_at, ->() {
+    where("delivered_at IS ?", nil)
   }
 
   def loc_name

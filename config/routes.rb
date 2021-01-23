@@ -217,6 +217,17 @@ Rails.application.routes.draw do
     resources :loc_districts, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :loc_khoroos, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :locations, only: [:index, :create, :new, :show, :edit, :update, :destroy]
+    namespace :distributing do
+      get 'index'
+      post 'set_travel'
+      post 'travel_routes'
+      post 'product_sales'
+      post 'add_product_sale'
+      post 'change_route_queue'
+      patch 'remove_route'
+      post 'distributing'
+      post 'salesman_track'
+    end
     match "*any", to: "base#routing_error", via: :all
   end
 

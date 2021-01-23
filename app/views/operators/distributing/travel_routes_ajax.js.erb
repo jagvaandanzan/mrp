@@ -1,0 +1,17 @@
+var array = [];
+<% @travel_routes.each { |travel_route| %>
+<% location = travel_route.location %>
+array.push([<%= travel_route.id %>, "<%= travel_route.queue + 1 %>", "#<%= travel_route.queue + 1 %>. <%= location.name %>", <%= location.latitude %>, <%= location.longitude %>, <%= travel_route.delivered_at.present? %>, <%= travel_route.load_at.present? %>]);
+<% } %>
+
+set_marker_travel(array);
+
+<% if @product_sale_id.present? %>
+remove_markers(marker_sales);
+marker_sales = [];
+<% end %>
+
+<% if @salesman_travels.present? %>
+$('select#salesman_travel_id').html("<%= escape_javascript options_for_select( @salesman_travels.collect{|l| [l.full_name, l.id]}.insert(0, [t('controls.select.none'),""]), @travel_selected) %>").selectpicker("refresh");
+alert("Амжилттай нэмэгдсэн");
+<% end %>

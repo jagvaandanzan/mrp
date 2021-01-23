@@ -53,11 +53,12 @@ module API
             requires :longitude, type: Float
           end
           post do
-            SalesmanTrack.create(
+            salesman_track = SalesmanTrack.create(
                 salesman: current_salesman,
                 latitude: params[:latitude],
                 longitude: params[:longitude]
             )
+            SalesmanTrackJob.perform_later(salesman_track.id)
             present :updated_at, Time.now
           end
         end

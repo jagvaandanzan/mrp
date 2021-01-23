@@ -1,0 +1,6 @@
+var array = [];
+<% @salesman_tracks.each { |track| %>
+<% salesman = track.salesman %>
+array.push([<%= salesman.id %>, "<%= salesman.id_number %>", "<%= salesman.full_name %>", <%= track.latitude %>, <%= track.longitude %>, "<%= track.created_at.strftime("%R") %>"]);
+<% } %>
+set_marker_tracks(array);

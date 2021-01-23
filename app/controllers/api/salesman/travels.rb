@@ -94,7 +94,9 @@ module API
                 location_from = if travel_route.queue == 0
                                   Location.find(1)
                                 else
-                                  salesman_travel_route = SalesmanTravelRoute.by_queue(travel_route.salesman_travel_id, travel_route.queue - 1).first
+                                  salesman_travel_route = SalesmanTravelRoute
+                                                              .by_travel_id(travel_route.salesman_travel_id)
+                                                              .by_queue(travel_route.queue - 1).first
                                   salesman_travel_route.location
                                 end
                 location_to = travel_route.location

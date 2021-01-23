@@ -12,6 +12,13 @@
           <i class="fa fa-shopping-cart"></i><span><%= t('titles.product_sales') %></span>
         <% end %>
       <% end %>
+      <% if can? :manage, :distributing %>
+        <%= content_tag :li, class: controller_name == 'distributing' ? 'active' : '' do %>
+          <%= link_to operators_distributing_index_path do %>
+            <i class="fa fa-car"></i><span><%= t('titles.distributing') %></span>
+          <% end %>
+        <% end %>
+      <% end %>
 
       <% if (can? :read, FbPost) || (can? :read, FbComment) || (can? :read, FbCommentAction) %>
         <%= content_tag :li, class: (controller_name == 'fb_posts' || controller_name == 'fb_comments' || controller_name == 'fb_comment_archives' ||

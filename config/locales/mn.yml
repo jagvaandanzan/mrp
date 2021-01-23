@@ -95,6 +95,7 @@ mn:
     delivery_reports: Хүргэлтийн тайлан
     delivered_goods: Хүргэсэн бараа
     salary_calculation: Цалин тооцох
+    distributing: Түгээлт
   app_name: “MRP”
   app_short_name: M
   alert:
@@ -171,7 +172,7 @@ mn:
       not_available_product: "Буцаах бараа уншуулаагүй байна!"
       please_check_all: "Бүх барааг уншуулаагүй байна!"
       return_request_not_confirmed: "Буцаах хүсэлт батлаагүй байна!"
-      you_have_a_balance: "Таньд барааны үлдэгдэл байна!"
+      you_have_a_balance: "Барааны үлдэгдэл байна!"
     template:
       body: 次の項目を確認してください
       header:

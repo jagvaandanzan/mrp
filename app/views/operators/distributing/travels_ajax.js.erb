@@ -1,0 +1,3 @@
+$('select#salesman_travel_id').html("<%= escape_javascript options_for_select @salesman_travels.collect{|l| [l.full_name, l.id]}.insert(0, [t('controls.select.none'),""])  %>").selectpicker("refresh");
+remove_markers(marker_routes);
+marker_routes = [];

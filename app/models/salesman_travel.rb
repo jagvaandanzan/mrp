@@ -37,6 +37,15 @@ class SalesmanTravel < ApplicationRecord
     end
   }
 
+  scope :by_salesman, ->(salesman_id) {
+    where(salesman_id: salesman_id)
+  }
+
+  scope :by_date, ->(date) {
+    where('created_at >= ?', date)
+        .where('created_at < ?', date + 1.days) if date.present?
+  }
+
   def id_number
     id.to_s.rjust(5, '0')
   end
@@ -63,6 +72,10 @@ class SalesmanTravel < ApplicationRecord
       total += r.product_count
     end
     total
+  end
+
+  def full_name
+    "#{created_at.strftime('%m/%d %H:%M')}, Нярав: #{load_at.present? ? load_at.strftime('%m/%d %H:%M') : "-"}, Түгээгч: #{sign_at.present? ? sign_at.strftime('%m/%d %H:%M') : "-"} (#{salesman_travel_routes.count})"
   end
 
   def on_sign(user)

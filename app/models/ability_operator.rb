@@ -17,6 +17,8 @@ class AbilityOperator
         can :read, BankTransaction
       when "sms_message"
         can role, SmsMessage
+      when "allocation"
+        can role, :distributing
       when "map_location"
         can role, LocDistrict
         can role, LocKhoroo
