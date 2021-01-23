@@ -110,13 +110,14 @@ class BankTransaction < ApplicationRecord
           if d.length == 2
             m = ""
             (1..2).each do |i|
-              if d[0][d[0].length - i].match(/[0-9]/)
-                m = "#{d[0][d[0].length - i]}#{m}"
+              dm = d[0][d[0].length - i]
+              if dm.present? && dm.match(/[0-9]/)
+                m = "#{dm}#{m}"
               end
             end
             s = ""
             (0..1).each do |i|
-              if d[1][i].match(/[0-9]/)
+              if d[1][i].present? && d[1][i].match(/[0-9]/)
                 s = "#{s}#{d[1][i]}"
               end
             end
