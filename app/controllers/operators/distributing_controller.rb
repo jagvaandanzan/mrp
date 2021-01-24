@@ -69,6 +69,7 @@ class Operators::DistributingController < Operators::BaseController
       travel_route.location = product_sale.location
       travel_route.product_sale = product_sale
       travel_route.save
+      product_sale.update_column(:salesman_travel_id, params[:travel_id])
 
       @travel_routes = SalesmanTravelRoute
                            .by_travel_id(params[:travel_id])
