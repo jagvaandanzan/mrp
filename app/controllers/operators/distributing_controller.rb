@@ -97,6 +97,7 @@ class Operators::DistributingController < Operators::BaseController
   def remove_route
     if can? :manage, :distributing
       travel_route = SalesmanTravelRoute.find(params[:route_id])
+      travel_route.product_sale.update_column(:salesman_travel, nil)
       travel_route.really_destroy!
 
       @travel_routes = SalesmanTravelRoute
