@@ -1,4 +1,4 @@
-class Distributing
+class Distribute
   include Singleton
 
   def create(salesman)

@@ -114,7 +114,7 @@ class Operators::DistributingController < Operators::BaseController
 
   def distributing
     if can? :manage, :distributing
-      d = Distributing.instance
+      d = Distribute.instance
       salesman = Salesman.find(params[:salesman_id])
       status, message, travel = d.create(salesman)
       if status == 201

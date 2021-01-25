@@ -9,7 +9,7 @@ module API
           if travel.present?
             present :travel, travel.first, with: API::SALESMAN::Entities::SalesmanTravels
           else
-            d = Distributing.instance
+            d = Distribute.instance
             status, message, travel = d.create(salesman)
 
             if status == 201
