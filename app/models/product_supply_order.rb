@@ -4,7 +4,7 @@ class ProductSupplyOrder < ApplicationRecord
   belongs_to :user
 
   has_many :product_sample_images
-  has_many :product_supply_order_items
+  has_many :product_supply_order_items, dependent: :destroy
   has_many :products, through: :product_supply_order_items
 
   accepts_nested_attributes_for :product_supply_order_items, allow_destroy: true
@@ -88,7 +88,6 @@ class ProductSupplyOrder < ApplicationRecord
     if product_supply_order_items.present?
       product = get_product
       product.option_rels = option_rels
-      product.name = product_name
       product.save
     else
       product = Product.new(draft: true,
