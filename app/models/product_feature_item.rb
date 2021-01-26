@@ -8,6 +8,7 @@ class ProductFeatureItem < ApplicationRecord
   has_many :product_supply_features, :class_name => "ProductSupplyFeature", :foreign_key => "feature_item_id", dependent: :destroy
   has_many :product_sales, through: :product_sale_items
   has_many :salesman_travel, through: :product_sales
+  has_one :product_income_balance, :class_name => "ProductIncomeBalance", :foreign_key => "feature_item_id", dependent: :destroy
 
   after_create -> {sync_web('post')}
   after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
