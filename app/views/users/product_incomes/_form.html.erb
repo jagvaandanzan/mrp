@@ -93,7 +93,7 @@
               <% box_id = 0
                  shipping_ub_products = ShippingUbProduct.find_to_incomes
                  box_id_array = shipping_ub_products.map(&:shipping_ub_box_id).to_a
-                 box_ids = box_id_array.tally
+                 box_ids = box_id_array.group_by(&:itself).transform_values(&:count)#tally
                  shipping_ub_products.each do |ub_product| %>
                 <% shipping_ub = ub_product.shipping_ub
                    product = ub_product.product
