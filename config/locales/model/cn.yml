@@ -136,9 +136,12 @@ cn:
         product_bought: Авсан үлдэгдэл
         quantity: Нийт барааны тоо
         cargo: Ачааны тоо
+        cost: Зардал
       shipping_er_feature:
         supply_feature_id: Шинж чанар
         quantity: Хү.А барааны тоо
+      shipping_ub_box:
+        cost: Зардал
       shipping_ub:
         number: Баримтын дугаар
         logistic: Хангамжийн ажилтан
@@ -151,7 +154,6 @@ cn:
         product_bought: Худалдан авсан тоо
         at_er: Эрээнд ирсэн огноо
         quantity: Барааны тоо
-        cargo: Ачааны тоо
         cost: Зардал
     errors:
       messages:

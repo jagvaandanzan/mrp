@@ -6,11 +6,11 @@ class ShippingUbProduct < ApplicationRecord
   has_many :product_income_products
 
   has_many :shipping_ub_features, dependent: :destroy
-  before_save :set_shipping_ub, :set_per_price
+  before_save :set_shipping_ub
 
   attr_accessor :remainder
 
-  validates :quantity, :cargo, :cost, presence: true
+  validates :quantity, presence: true
   with_options :if => Proc.new {|m| m.remainder.present?} do
     validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
   end
@@ -20,11 +20,12 @@ class ShippingUbProduct < ApplicationRecord
 
   scope :find_to_incomes, ->(id = nil) {
     items = left_joins(:product_income_products)
+                .left_joins(:shipping_ub_box)
                 .group("shipping_ub_products.id")
                 .having("SUM(product_income_products.quantity) IS NULL OR SUM(product_income_products.quantity) < shipping_ub_products.quantity")
                 .select("shipping_ub_products.*, shipping_ub_products.quantity - IFNULL(SUM(product_income_products.quantity), 0) as remainder")
     items = items.where("shipping_ub_products.id = ?", id) unless id.nil?
-    items
+    items.order("shipping_ub_boxes.id")
   }
 
   scope :sum_quantity_by_er_product, ->(er_product_id) {
@@ -69,9 +70,4 @@ class ShippingUbProduct < ApplicationRecord
 
   end
 
-  private
-
-  def set_per_price
-    self.per_price = cost / quantity
-  end
 end

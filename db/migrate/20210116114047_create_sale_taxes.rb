@@ -1,16 +1,10 @@
 class CreateSaleTaxes < ActiveRecord::Migration[5.2]
   def change
-    create_table :sale_taxes do |t|
-      t.references :product_sale, null: false, foreign_key: true
-      t.integer :tax_type
-      t.integer :phone
-      t.string :email
-      t.integer :register
-      t.integer :price
-
-      t.timestamps
-    end
-
-    add_column :product_sales, :tax, :boolean, after: 'salesman_travel_id'
+    add_column :shipping_er_products, :cost, :float, after: 'cargo'
+    add_column :shipping_ub_boxes, :cost, :float, after: 'shipping_ub_id'
+    remove_column :shipping_ub_products, :cargo, :integer
+    change_column :shipping_ub_products, :cost, :float
+    remove_reference :product_income_items, :income_product
+    add_reference :product_income_items, :product_income_product, after: 'product_income_id'
   end
 end

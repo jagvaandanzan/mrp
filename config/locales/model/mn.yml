@@ -54,6 +54,7 @@ mn:
         w_kg: Кг
     product_supply_order:
       status:
+        draft: Драфт
         order_created: Захиалга үүссэн
         ordered: Захиалга хийсэн
         cost_included: Тээврийн зардал орсон
@@ -75,6 +76,7 @@ mn:
         is_sample: Дээж
     product_supply_order_item:
       status:
+        draft: Драфт
         order_created: Захиалга үүссэн
         ordered: Захиалга хийсэн
         cost_included: Тээврийн зардал орсон

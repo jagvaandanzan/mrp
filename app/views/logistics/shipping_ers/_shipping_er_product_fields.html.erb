@@ -26,6 +26,10 @@
     <%= field_errors f.object, :cargo %>
     <%= f.number_field :cargo, class: 'form-control field', min: 0, step: 1, placeholder: t('activerecord.attributes.shipping_er_product.cargo') %>
   </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :cost %>
+    <%= f.number_field :cost, class: 'form-control field', min: 0, step: 0.01, placeholder: t('activerecord.attributes.shipping_er_product.cost') %>
+  </td>
   <td class="va-mid remove">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')}, class: 'product-remove', id: product.id do %>
       <%= nested_remove_btn %>

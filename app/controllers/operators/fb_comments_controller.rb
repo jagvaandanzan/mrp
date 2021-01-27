@@ -115,7 +115,7 @@ class Operators::FbCommentsController < Operators::BaseController
   def hide
     alert, msg = ApplicationController.helpers.fb_hide_comment(@fb_comment.comment_id)
     flash[alert] = msg
-    @fb_comment.update_attributes(is_visible: false, operator_id: current_operator.id)
+    @fb_comment.update_columns(is_visible: false, operator_id: current_operator.id)
     redirect_to action: :index
   end
 

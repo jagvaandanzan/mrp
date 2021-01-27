@@ -24,7 +24,13 @@
           <div class="col-md-2 field_div">
             <b><%= t('activerecord.attributes.product_supply_order.code') %>:</b> <%= supply_order.code %>
           </div>
-          <div class="col-md-5 field_div">
+          <% if supply_order.link.present? %>
+            <div class="col-md-2 field_div">
+              <b><%= t('activerecord.attributes.product_supply_order.link') %>:</b>
+              <%= link_to t('controls.button.watch'), supply_order.link, target: '_blank' %>
+            </div>
+          <% end %>
+          <div class="col-md-<%= supply_order.link.present? ? '3' : '5' %> field_div">
             <b><%= t('activerecord.attributes.product_supply_order_item.note') %>:</b>
             <% if @supply_order_item.product_supply_order.present? %>
               <%= @supply_order_item.note %>

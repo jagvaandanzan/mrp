@@ -31,7 +31,7 @@ class Manufacturer < ApplicationRecord
 
     response = ApplicationController.helpers.api_request(url, method, params)
     if response.code.to_i == 201
-      self.update_attributes(sync_at: Time.now, method_type: 'sync')
+      self.update_columns(sync_at: Time.now, method_type: 'sync')
     end
   end
 

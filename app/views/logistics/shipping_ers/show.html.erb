@@ -16,20 +16,18 @@
       <!--      no-padding-->
       <div class="box-body">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-3">
             <b><%= t('activerecord.attributes.shipping_er.number') %>:</b> <%= show_id @shipping_er.id %>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-3">
             <b><%= t('activerecord.attributes.shipping_er.date') %>:</b> <%= @shipping_er.date.strftime('%F') %>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <b><%= t('activerecord.attributes.shipping_er.cost') %>
-              :</b> <%= get_currency(@shipping_er.cost, Const::CURRENCY[0], 0) %>
-          </div>
-          <div class="col-md-6">
+          <div class="col-md-3">
             <b><%= t('activerecord.attributes.shipping_er.s_type') %>:</b> <%= @shipping_er.s_type_i18n %>
+          </div>
+          <div class="col-md-3">
+            <b><%= t('activerecord.attributes.shipping_er.cost') %>
+              :</b> <%= get_currency(@shipping_er.cost, Const::CURRENCY[0], 2) %>
           </div>
         </div>
         <div class="col-md-12">
@@ -42,6 +40,7 @@
               <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_feature') %></th>
               <th class="va-mid"><%= t('activerecord.attributes.shipping_er_feature.quantity') %></th>
               <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.cargo') %></th>
+              <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.cost') %></th>
             </tr>
             </thead>
             <tbody>
@@ -67,6 +66,7 @@
                   <td class="va-mid"><%= feature_item.name %></td>
                   <td class="va-mid"><%= er_feature.quantity %></td>
                   <td></td>
+                  <td></td>
                 </tr>
               <% end %>
               <tr>
@@ -85,6 +85,7 @@
                 </td>
                 <td class="va-mid"><%= er_product.quantity %></td>
                 <td class="va-mid"><%= er_product.cargo %></td>
+                <td class="va-mid"><%= get_currency(er_product.cost, Const::CURRENCY[0], 2) %></td>
               </tr>
             <% } %>
             </tbody>

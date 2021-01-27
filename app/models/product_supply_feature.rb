@@ -52,7 +52,7 @@ class ProductSupplyFeature < ApplicationRecord
   end
 
   def get_currency(value)
-    ApplicationController.helpers.get_currency(value, Const::CURRENCY[get_model.exchange_before_type_cast.to_i], 0)
+    ApplicationController.helpers.get_currency(value, Const::CURRENCY[get_model.exchange_before_type_cast.to_i], 2)
   end
 
   private

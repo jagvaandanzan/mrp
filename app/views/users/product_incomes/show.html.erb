@@ -50,9 +50,14 @@
 
         <% if @product_income.product_income_items.present? %>
           <div class="col-md-12 group_div m-t-20">
-            <b><%= t('activerecord.attributes.product_income.product_income_items') %></b>
             <table class="table table-bordered">
               <thead>
+              <tr>
+                <th colspan="5" class="text-center"><%= t('activerecord.attributes.product_income.product_income_products') %></th>
+                <th colspan="1" class="text-center"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
+                <th colspan="2" class="text-center"><%= t('titles.received') %></th>
+                <th colspan="3"></th>
+              </tr>
               <tr>
                 <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_code') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_name') %></th>
@@ -62,7 +67,6 @@
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_product.quantity') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_product.cargo') %></th>
-                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.shipping_cost') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_item.qr_printed') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_item.problematic') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_item.shelf') %></th>
@@ -87,7 +91,6 @@
                   <td class="va-mid"><strong><%= shipping_ub_product.quantity %></strong></td>
                   <td class="va-mid"><strong><%= i.quantity %></strong></td>
                   <td class="va-mid"><%= i.cargo %></td>
-                  <td class="va-mid"><%= get_currency(shipping_ub_product.cost, "￥", 0) %></td>
                   <td colspan="3"></td>
                 </tr>
                 <% i.product_income_items.each {|item|
@@ -105,7 +108,7 @@
                     <td class="va-mid"><%= item.supply_feature.quantity %></td>
                     <td class="va-mid"><%= item.shipping_ub_feature.quantity %></td>
                     <td class="va-mid"><%= item.quantity %></td>
-                    <td colspan="2"><%= item.quantity %></td>
+                    <td colspan="2"></td>
                     <td class="va-mid"><%= item.qr_printed %></td>
                     <td class="va-mid"><%= item.problematic %></td>
                     <td class="va-mid">

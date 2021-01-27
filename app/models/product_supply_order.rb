@@ -11,13 +11,13 @@ class ProductSupplyOrder < ApplicationRecord
   accepts_nested_attributes_for :product_sample_images, allow_destroy: true
 
   enum order_type: {is_basic: 0, is_sample: 1}
-  enum status: {order_created: 0, ordered: 1, cost_included: 2, warehouse_received: 3, calculated: 4, clarification: 5, clarified: 6, canceled: 7}
+  enum status: {draft: 0, order_created: 1, ordered: 2, cost_included: 3, warehouse_received: 4, calculated: 5, clarification: 6, clarified: 7, canceled: 8}
   enum exchange: {cny: 0, usd: 1, eur: 2, rub: 3, jpy: 4, gbr: 5, mnt: 6}
 
   attr_accessor :tab_index, :product_name, :option_rels
 
-  validates :logistic_id, :code, :exchange, presence: true
-  validates :code, uniqueness: true
+  after_create :set_default
+  validates :logistic_id, :exchange, presence: true
 
   with_options :if => Proc.new {|m| m.is_sample? && m.tab_index.to_i == 0} do
     validates :product_name, presence: true, length: {maximum: 255}
@@ -47,7 +47,7 @@ class ProductSupplyOrder < ApplicationRecord
   end
 
   def get_currency(value)
-    ApplicationController.helpers.get_currency(value, Const::CURRENCY[exchange_before_type_cast.to_i], 0)
+    ApplicationController.helpers.get_currency(value, Const::CURRENCY[exchange_before_type_cast.to_i], 2)
   end
 
   def code_with_info
@@ -62,7 +62,7 @@ class ProductSupplyOrder < ApplicationRecord
     # Бүгд дор хаяж тэнцүү болсон үед солино
     exist_items = product_supply_order_items.by_status_lower(stat)
     unless exist_items.present?
-      self.update_attributes(status: stat)
+      self.update_column(:status, stat)
     end
   end
 
@@ -82,6 +82,10 @@ class ProductSupplyOrder < ApplicationRecord
     self.update_column(:sum_price, sum.to_f.round(1))
   end
 
+  def set_status(status)
+    self.update_column(:status, status) if status > ProductSupplyOrder.statuses[self.status]
+  end
+
   private
 
   def set_product
@@ -98,5 +102,9 @@ class ProductSupplyOrder < ApplicationRecord
 
       self.product_supply_order_items << ProductSupplyOrderItem.new(product: product)
     end
+  end
+
+  def set_default
+    self.update_column(:code, ApplicationController.helpers.show_id(id))
   end
 end

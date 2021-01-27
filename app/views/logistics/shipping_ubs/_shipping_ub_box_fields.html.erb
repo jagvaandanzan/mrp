@@ -6,7 +6,7 @@
       <tr>
         <th colspan="5"></th>
         <th colspan="3" class="text-center"><%= t('titles.received') %></th>
-        <th colspan="3" class="text-center"><%= t('titles.consignment') %></th>
+        <th class="text-center"><%= t('titles.consignment') %></th>
         <th></th>
       </tr>
       <tr>
@@ -16,11 +16,9 @@
         <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_er_product.product_feature') %></th>
         <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.product_bought') %></th>
         <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.quantity') %></th>
-        <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.cargo') %></th>
+        <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_er_product.cargo') %></th>
         <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.at_er') %></th>
         <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.quantity') %></th>
-        <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.cargo') %></th>
-        <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.cost') %></th>
         <th></th>
       </tr>
       </thead>
@@ -31,6 +29,15 @@
       </tbody>
     </table>
   </div>
+
+  <div class="form-group" style="margin-bottom: 0;margin-top: 2px">
+    <%= f.label :cost, class: 'col-sm-10 control-label' %>
+    <div class="col-sm-2 <%= get_error_class(f.object, :cost) %>">
+      <%= field_errors(f.object, :cost) %>
+      <%= f.number_field :cost, class: 'form-control', min: 0, step: 0.01, placeholder: t('activerecord.attributes.shipping_ub_box.cost') %>
+    </div>
+  </div>
+
   <div class="remove" style="text-align: right!important;">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
       <i class="fa"><%= t('controls.button.remove_box') %></i>

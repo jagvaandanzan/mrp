@@ -20,18 +20,16 @@
       <div class="box-body table-responsive no-padding">
         <div class="col-md-12">
           <div class="row">
-            <div class="col-md-6">
-              <b><%= t('activerecord.attributes.shipping_ub.number') %>:</b> <%= show_id @shipping_ub.id %>
-            </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
               <b><%= t('activerecord.attributes.shipping_ub.date') %>:</b> <%= @shipping_ub.date.strftime('%F') %>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-3">
+              <b><%= t('activerecord.attributes.shipping_ub.number') %>:</b> <%= show_id @shipping_ub.id %>
+            </div>
+            <div class="col-md-3">
               <b><%= t('activerecord.attributes.shipping_ub.s_type') %>:</b> <%= @shipping_ub.s_type_i18n %>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
               <b><%= t('activerecord.attributes.shipping_ub.description') %>:</b> <%= @shipping_ub.description %>
             </div>
           </div>
@@ -42,8 +40,7 @@
             <tr>
               <th colspan="5"></th>
               <th colspan="3" class="text-center"><%= t('titles.received') %></th>
-              <th colspan="3" class="text-center"><%= t('titles.consignment') %></th>
-              <th></th>
+              <th colspan="2" class="text-center"><%= t('titles.consignment') %></th>
             </tr>
             <tr>
               <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_name') %></th>
@@ -52,12 +49,10 @@
               <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_er_product.product_feature') %></th>
               <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.product_bought') %></th>
               <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.quantity') %></th>
-              <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.cargo') %></th>
+              <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_er_product.cargo') %></th>
               <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.at_er') %></th>
               <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.quantity') %></th>
-              <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.cargo') %></th>
               <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_ub_product.cost') %></th>
-              <th></th>
             </tr>
             </thead>
             <tbody>
@@ -65,9 +60,9 @@
               <tr>
                 <td class="2"><%= t('activerecord.models.shipping_ub_box') %>: <%= b_i + 1 %></td>
               </tr>
-              <% box.shipping_ub_products.each {|ub|
+              <% box.shipping_ub_products.each_with_index {|ub, index|
                 product = ub.product
-                shipping_er_product = ub.shipping_er_product%>
+                shipping_er_product = ub.shipping_er_product %>
                 <tr>
                   <td class="va-mid"><%= product.name %></td>
                   <td class="va-mid"><%= product.code %></td>
@@ -84,8 +79,9 @@
                   <td class="va-mid text-center"><%= shipping_er_product.cargo %></td>
                   <td class="va-mid text-center"><%= shipping_er_product.shipping_er.date.strftime('%F') %></td>
                   <td class="va-mid text-center"><%= ub.quantity %></td>
-                  <td class="va-mid text-center"><%= ub.cargo %></td>
-                  <td class="va-mid text-center"><%= get_currency(ub.cost, Const::CURRENCY[0], 0) %></td>
+                  <% if index == 0 %>
+                    <td class="va-mid text-center" rowspan="<%= box.shipping_ub_products.count %>"><%= get_currency(box.cost, Const::CURRENCY[0], 2) %></td>
+                  <% end %>
                 </tr>
               <% }
                  } %>

@@ -27,7 +27,7 @@
                     <th class="va-mid" style="width: 200px"><%= t('activerecord.attributes.product_income_item.shelf') %></th>
                   </tr>
                   <%= f.fields_for :product_income_items do |m| %>
-                    <%= render 'product_income_item_fields', :f => m, is_edit: @product_income.persisted? %>
+                    <%= render 'product_income_item_fields', :f => m, is_edit: @product_income.persisted?, is_income_order: false %>
                   <% end %>
                 </table>
               </div>

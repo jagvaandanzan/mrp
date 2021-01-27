@@ -5,7 +5,7 @@ class ProductSupplyOrderItem < ApplicationRecord
   has_many :supply_features, :class_name => "ProductSupplyFeature", :foreign_key => "order_item_id", dependent: :destroy
   accepts_nested_attributes_for :supply_features, allow_destroy: true
 
-  enum status: {order_created: 0, ordered: 1, cost_included: 2, warehouse_received: 3, calculated: 4, clarification: 5, clarified: 6, canceled: 7}
+  enum status: {draft: 0, order_created: 1, ordered: 2, cost_included: 3, warehouse_received: 4, calculated: 5, clarification: 6, clarified: 7, canceled: 8}
 
   attr_accessor :tab_index
 
@@ -14,7 +14,7 @@ class ProductSupplyOrderItem < ApplicationRecord
   end
 
   def get_currency(value)
-    ApplicationController.helpers.get_currency(value, Const::CURRENCY[product_supply_order.exchange_before_type_cast.to_i], 0)
+    ApplicationController.helpers.get_currency(value, Const::CURRENCY[product_supply_order.exchange_before_type_cast.to_i], 2)
   end
 
   scope :search_by_order, ->(start, finish, supply_code, product_name) {
@@ -32,6 +32,7 @@ class ProductSupplyOrderItem < ApplicationRecord
 
   scope :search, ->(start, finish, supply_code, product_name) {
     items = left_joins(:product_supply_order)
+                .where("product_supply_orders.status > ?", 0)
     if start.present? && finish.present?
       items = items.where(':start <= product_supply_orders.ordered_date AND product_supply_orders.ordered_date <= :finish',
                           start: start.to_time, finish: finish.to_time + 1.days)
@@ -72,8 +73,8 @@ class ProductSupplyOrderItem < ApplicationRecord
     self.update_attribute(:sum_price_lo, sum.to_f.round(1))
 
     if sum > 0
-      self.update_attributes(status: 1, purchase_date: Time.current)
-      product_supply_order.update_status(1)
+      self.update_columns(status: 2, purchase_date: Time.current)
+      product_supply_order.update_status(2)
     end
   end
 
@@ -148,5 +149,9 @@ class ProductSupplyOrderItem < ApplicationRecord
     else
       ["", "", "", "", ""]
     end
+  end
+
+  def set_status(status)
+    self.update_column(:status, status) if status > ProductSupplyOrderItem.statuses[self.status]
   end
 end

@@ -24,7 +24,7 @@
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :price_lo %>
-    <%= f.number_field :price_lo, class: 'form-control field price', placeholder: t('activerecord.attributes.product_supply_feature.price_lo') %>
+    <%= f.number_field :price_lo, class: 'form-control field price', step: 0.01, placeholder: t('activerecord.attributes.product_supply_feature.price_lo') %>
   </td>
   <td class="va-mid">
     <%= f.object.note %>

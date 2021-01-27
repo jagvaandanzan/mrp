@@ -5,15 +5,15 @@ class ProductIncomeProduct < ApplicationRecord
 
   attr_accessor :remainder
 
-  before_save :set_income_item
-  has_many :product_income_items, :class_name => "ProductIncomeItem", foreign_key: "income_product_id", dependent: :destroy
+  has_many :product_income_items, dependent: :destroy
   has_many :supply_features, through: :product_income_items
   has_one :shipping_er_product, through: :shipping_ub_product
 
-  validates :quantity, :cargo, presence: true
-  with_options :if => Proc.new {|m| m.remainder.present?} do
-    validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
-  end
+  accepts_nested_attributes_for :product_income_items, allow_destroy: true
+
+  before_save :set_default
+
+  validates :cargo, presence: true
   scope :date_desc, -> {
     order(created_at: :desc)
   }
@@ -25,44 +25,44 @@ class ProductIncomeProduct < ApplicationRecord
     items
   }
 
-  def set_income_item
-    was_ids = self.product_income_items.map(&:shipping_ub_feature_id).to_a
-    new_ids = shipping_ub_product.shipping_ub_features.find_to_incomes(was_ids).map(&:id).to_a
-    self.product_income_items.by_ids(was_ids - new_ids).destroy_all
-
-    q_sum = 0
-    shipping_ub_product.shipping_ub_features.find_to_incomes(was_ids).each do |f|
-      is_break = false
-      rem = f[:remainder]
-      product_income_item = nil
-      if was_ids.include?(f.id)
-        product_income_items = self.product_income_items
-                                   .by_shipping_ub_feature(f.id)
-        product_income_item = product_income_items.first
-        rem += product_income_item.quantity
-      end
-      q = if q_sum + rem <= self.quantity
-            q_sum += rem
-            rem
-          else
-            is_break = true
-            self.quantity - q_sum
-          end
-
-      if was_ids.include?(f.id)
-        product_income_item.update_column(:quantity, q) unless product_income_item.nil?
-      else
-        self.product_income_items << ProductIncomeItem.new(is_income_order: true,
-                                                           shipping_ub_feature: f,
-                                                           product_income: product_income,
-                                                           product: product,
-                                                           supply_feature: f.supply_feature,
-                                                           feature_item: f.feature_item,
-                                                           quantity: q)
-      end
-      break if is_break
-    end
-  end
+  # def set_income_item
+  #   was_ids = self.product_income_items.map(&:shipping_ub_feature_id).to_a
+  #   new_ids = shipping_ub_product.shipping_ub_features.find_to_incomes(was_ids).map(&:id).to_a
+  #   self.product_income_items.by_ids(was_ids - new_ids).destroy_all
+  #
+  #   q_sum = 0
+  #   shipping_ub_product.shipping_ub_features.find_to_incomes(was_ids).each do |f|
+  #     is_break = false
+  #     rem = f[:remainder]
+  #     product_income_item = nil
+  #     if was_ids.include?(f.id)
+  #       product_income_items = self.product_income_items
+  #                                  .by_shipping_ub_feature(f.id)
+  #       product_income_item = product_income_items.first
+  #       rem += product_income_item.quantity
+  #     end
+  #     q = if q_sum + rem <= self.quantity
+  #           q_sum += rem
+  #           rem
+  #         else
+  #           is_break = true
+  #           self.quantity - q_sum
+  #         end
+  #
+  #     if was_ids.include?(f.id)
+  #       product_income_item.update_column(:quantity, q) unless product_income_item.nil?
+  #     else
+  #       self.product_income_items << ProductIncomeItem.new(is_income_order: true,
+  #                                                          shipping_ub_feature: f,
+  #                                                          product_income: product_income,
+  #                                                          product: product,
+  #                                                          supply_feature: f.supply_feature,
+  #                                                          feature_item: f.feature_item,
+  #                                                          quantity: q)
+  #     end
+  #     break if is_break
+  #   end
+  # end
 
   def unit_price
     if self[:unit_price].present?
@@ -110,4 +110,14 @@ class ProductIncomeProduct < ApplicationRecord
 
   end
 
+  private
+
+  def set_default
+    q = 0
+    product_income_items.each do |item|
+      q += item.quantity
+    end
+    self.quantity = q
+
+  end
 end

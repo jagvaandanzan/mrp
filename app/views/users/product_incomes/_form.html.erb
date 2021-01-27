@@ -42,22 +42,27 @@
               </div>
             </div>
           </div>
-          <div class="col-md-12 field_div">
-            <%= f.label :product_income_products, class: 'control-label' %>
-
+          <div class="col-md-12 field_div m-t-10">
             <div class="cocoon-nested-form">
               <div class="<%= get_error_class(@product_income, :product_income_products) %>">
                 <%= field_errors(@product_income, :product_income_products) %>
                 <table class="table table-bordered" id="tb_product_income_products">
                   <tr>
+                    <th colspan="5" class="text-center"><%= t('activerecord.attributes.product_income.product_income_products') %></th>
+                    <th colspan="1" class="text-center"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
+                    <th colspan="2" class="text-center"><%= t('titles.received') %></th>
+                    <th width="50px"></th>
+                  </tr>
+                  <tr>
                     <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_code') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_name') %></th>
+                    <th class="va-mid"><%= t('activerecord.models.product_feature') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_supply_order_item.shipping_ub_date') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.quantity') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.product_income_item.quantity') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.product_income_item.cargo') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.shipping_cost') %></th>
-                    <th width="50px"></th>
+                    <th></th>
                   </tr>
                   <%= f.fields_for :product_income_products do |m| %>
                     <%= render 'product_income_product_fields', :f => m %>
@@ -80,19 +85,23 @@
                 <th class="va-mid"><%= t('activerecord.models.product_feature') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_supply_order_item.shipping_ub_date') %></th>
-                <th class="va-mid"><%= t('titles.cost') %></th>
+                <th class="va-mid"><%= t('titles.box') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
                 <th class="va-mid"><%= t('titles.cargo') %></th>
                 <th width="50px"></th>
               </tr>
-              <% ShippingUbProduct.find_to_incomes.each do |ub_product| %>
+              <% box_id = 0
+                 ShippingUbProduct.find_to_incomes.each do |ub_product| %>
                 <% shipping_ub = ub_product.shipping_ub
-                   product = ub_product.product %>
+                   product = ub_product.product
+                   shipping_ub_box = ub_product.shipping_ub_box
+                   b_id = shipping_ub_box.id
+                   box_products = shipping_ub_box.shipping_ub_products.count %>
                 <tr class="p-<%= ub_product.id %>">
                   <td class="va-mid"><%= show_id(shipping_ub.id) %></td>
                   <td class="va-mid"><%= product.code %></td>
                   <td class="va-mid"><%= product.full_name %></td>
-                  <td></td>
+                  <td><%= ub_product.shipping_ub_features.by_quantity(0).count %></td>
                   <td class="va-mid">
                     <% if product.picture.present? %>
                       <%= link_to product.picture.url, :"data-lightbox" => "roadtrip" do %>
@@ -101,31 +110,17 @@
                     <% end %>
                   </td>
                   <td class="va-mid"><%= shipping_ub.date.strftime('%F') %></td>
-                  <td class="va-mid"><%= get_currency(ub_product.cost, Const::CURRENCY[0], 0) %></td>
+                  <td class="va-mid"><%= box_products > 1 ? 'Тийм' : '' %></td>
                   <td class="va-mid text-center"><%= ub_product[:remainder] %></td>
-                  <td class="va-mid text-center"><%= ub_product.cargo %></td>
+                  <% if box_id != b_id
+                       box_id = b_id %>
+                    <td class="va-mid" rowspan="<%= box_products %>"><%= box_products != 1 ? '1' : '' %></td>
+                  <% end %>
                   <td class="va-mid">
                     <button class="btn btn-block btn-success btn-xs" type="button" onclick="add_product(<%= ub_product.id %>)">
                       <i class="fa fa-plus" style="color: white"></i></button>
                   </td>
                 </tr>
-                <% ub_product.shipping_ub_features.each {|ub_feature|
-                  feature = ub_feature.feature_item %>
-                  <tr class="p-<%= ub_product.id %>">
-                    <td colspan="2"></td>
-                    <td class="va-mid"><%= feature.name %></td>
-                    <td class="va-mid">
-                      <% if feature.img.present? %>
-                        <%= link_to feature.img.url, :"data-lightbox" => "roadtrip" do %>
-                          <%= t('titles.view') %>
-                        <% end %>
-                      <% end %>
-                    </td>
-                    <td colspan="2"></td>
-                    <td class="va-mid"><%= ub_feature.quantity %></td>
-                    <td colspan="2"></td>
-                  </tr>
-                <% } %>
               <% end %>
             </table>
           </div>

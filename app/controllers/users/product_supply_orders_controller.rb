@@ -92,18 +92,20 @@ class Users::ProductSupplyOrdersController < Users::BaseController
     @order_item.attributes = form_feature_params
     if @order_item.save
       @order_item.set_sum_price
-
       flash[:success] = t('alert.info_updated')
       product_supply_order = @order_item.product_supply_order
-      Rails.logger.info("#{product_supply_order.product_supply_order_items.count} ==> #{@order_item.tab_index.to_i}")
+      # Rails.logger.info("#{product_supply_order.product_supply_order_items.count} ==> #{@order_item.tab_index.to_i}")
 
       if product_supply_order.product_supply_order_items.count == @order_item.tab_index.to_i
+        product_supply_order.set_status(1)
+        @order_item.set_status(1)
         redirect_to action: 'index'
       else
+        @order_item.set_status(1)
         redirect_to action: :edit, id: params[:id], tab_index: @order_item.tab_index.to_i + 1
       end
     else
-      render 'edit', id: params[:id]
+      redirect_to action: "edit", id: @product_supply_order.id, tab_index: @order_item.tab_index.to_i
     end
   end
 
@@ -137,7 +139,7 @@ class Users::ProductSupplyOrdersController < Users::BaseController
   end
 
   def product_supply_order_params
-    params.require(:product_supply_order).permit(:order_type, :code, :ordered_date, :logistic_id, :exchange, :product_name, :link, :description, option_rels: [],
+    params.require(:product_supply_order).permit(:order_type, :ordered_date, :logistic_id, :exchange, :product_name, :link, :description, option_rels: [],
                                                  product_supply_order_items_attributes: [:id, :product_id, :note, :_destroy],
                                                  product_sample_images_attributes: [:id, :image, :_destroy])
         .merge(:user => current_user)

@@ -11,7 +11,7 @@
         <%= form_body do %>
           <div class="row">
             <div class="col-md-12">
-              <div class=" col-md-6 field_div">
+              <div class=" col-md-4 field_div">
                 <%= f.label :date, class: 'control-label' %>
                 <div class="input-append input-group date <%= get_error_class(@shipping_er, :date) %>" data-provide="datepicker">
                   <%= field_errors(@shipping_er, :date) %>
@@ -21,24 +21,13 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-6 field_div">
+              <div class="col-md-4 field_div">
                 <%= f.label :number, class: 'control-label' %>
                 <div>
                   <%= text_field_tag :number, show_id(@shipping_er.persisted? ? @shipping_er.id : @shipping_er.number), {class: 'form-control', readonly: true} %>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <div class=" col-md-6 field_div">
-                <%= f.label :cost, class: 'control-label' %>
-                <div class="<%= get_error_class(@shipping_er, :cost) %>">
-                  <%= field_errors(@shipping_er, :cost) %>
-                  <%= f.number_field :cost, class: 'form-control', step: 0.1 %>
-                </div>
-              </div>
-              <div class="col-md-6 field_div">
+              <div class="col-md-4 field_div">
                 <%= f.label :s_type, class: 'control-label' %>
                 <div class="<%= get_error_class(@shipping_er, :s_type) %>">
                   <%= field_errors(@shipping_er, :s_type) %>
@@ -61,6 +50,8 @@
                     <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_bought') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.shipping_er_feature.quantity') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.cargo') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.cost') %></th>
+                    <th></th>
                   </tr>
                   </thead>
                   <tbody>

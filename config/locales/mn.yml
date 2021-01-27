@@ -91,11 +91,13 @@ mn:
     show_history: Түүх харах
     cost: Зардал
     cargo: Ачааны тоо
+    box: Хайрцаг
     bank_settings: Санхүү тохиргоо
     delivery_reports: Хүргэлтийн тайлан
     delivered_goods: Хүргэсэн бараа
     salary_calculation: Цалин тооцох
     distributing: Түгээлт
+    received: Хүлээж авсан
   app_name: “MRP”
   app_short_name: M
   alert:

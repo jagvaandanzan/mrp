@@ -24,6 +24,10 @@ class ShippingUbFeature < ApplicationRecord
     where("id IN (?)", ids)
   }
 
+  scope :by_quantity, ->(q) {
+    where("quantity > ? ", q)
+  }
+
   scope :by_shipping_er_feature, ->(shipping_er_feature_id) {
     where(shipping_er_feature_id: shipping_er_feature_id)
   }

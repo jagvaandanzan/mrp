@@ -14,9 +14,19 @@ class Users::ProductIncomesController < Users::BaseController
     @product_income.income_date = Time.current
     @product_income.number = ApplicationController.helpers.last_number(ProductIncome)
     # ShippingUbProduct.find_to_incomes.each do |ub_product|
-    #   @product_income.product_income_products << ProductIncomeProduct.new(shipping_ub_product_id: ub_product.id,
-    #                                                                       product_id: ub_product.product_id,
-    #                                                                       remainder: ub_product[:remainder])
+    #   income_product = ProductIncomeProduct.new(shipping_ub_product_id: ub_product.id,
+    #                                             product_id: ub_product.product_id,
+    #                                             remainder: ub_product[:remainder])
+    #   ub_product.shipping_ub_features
+    #       .by_quantity(0).each {|ub_feature|
+    #     income_product.product_income_items << ProductIncomeItem.new(is_income_order: true,
+    #                                                                  shipping_ub_feature: ub_feature,
+    #                                                                  product_id: ub_product.product_id,
+    #                                                                  supply_feature: ub_feature.supply_feature,
+    #                                                                  feature_item: ub_feature.feature_item,
+    #                                                                  remainder: ub_feature.quantity)
+    #   }
+    #   @product_income.product_income_products << income_product
     # end
   end
 
@@ -129,7 +139,8 @@ class Users::ProductIncomesController < Users::BaseController
 
   def product_income_params
     params.require(:product_income).permit(:income_date, :cargo_price, :logistic_id,
-                                           product_income_products_attributes: [:id, :product_id, :shipping_ub_product_id, :remainder, :quantity, :cargo, :_destroy])
+                                           product_income_products_attributes: [:id, :product_id, :shipping_ub_product_id, :cargo, :_destroy,
+                                                                                product_income_items_attributes: [:id, :is_income_order, :product_id, :shipping_ub_feature_id, :supply_feature_id, :feature_item_id, :remainder, :quantity, :_destroy]])
         .merge(:user => current_user)
   end
 

@@ -1,6 +1,6 @@
 class ProductIncomeItem < ApplicationRecord
   belongs_to :product_income
-  belongs_to :income_product, :class_name => "ProductIncomeProduct"
+  belongs_to :product_income_product
   belongs_to :shipping_ub_feature
   belongs_to :supply_feature, :class_name => "ProductSupplyFeature"
   belongs_to :product
@@ -13,13 +13,16 @@ class ProductIncomeItem < ApplicationRecord
   accepts_nested_attributes_for :income_locations, allow_destroy: true
 
   before_save :set_product_balance
+  before_validation :set_default
   # before_validation :set_remainder
 
   validates :quantity, presence: true
   validates :quantity, numericality: {greater_than: 0}
-  # validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
+  with_options :if => Proc.new {|m| m.remainder.present?} do
+    validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
+  end
   validate :income_locations_count_check, on: :update
-  attr_accessor :is_income_order #,:remainder
+  attr_accessor :is_income_order, :remainder
 
   scope :search, ->(start, finish, income_code, supply_code, product_name) {
     items = income_date_desc
@@ -119,6 +122,10 @@ class ProductIncomeItem < ApplicationRecord
                                                    quantity: quantity)
     end
 
+  end
+
+  def set_default
+    self.product_income = product_income_product.product_income
   end
 
   def set_remainder

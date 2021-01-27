@@ -44,7 +44,7 @@
                 <tr>
                   <td class="va-mid underline text-center"><%= link_to show_id(shipping_er.id), logistics_shipping_er_path(shipping_er) %></td>
                   <td class="va-mid underline text-center"><%= shipping_er.date.strftime('%F') %></td>
-                  <td class="va-mid text-center"><%= get_currency(shipping_er.cost, Const::CURRENCY[0], 0) %></td>
+                  <td class="va-mid text-center"><%= get_currency(shipping_er.cost, Const::CURRENCY[0], 2) %></td>
                   <td class="va-mid text-center"><%= shipping_er.product_names %></td>
                 </tr>
               <% end %>

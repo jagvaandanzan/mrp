@@ -12,7 +12,7 @@ class ShippingEr < ApplicationRecord
   before_save :set_per_price
   attr_accessor :number
 
-  validates :date, :cost, :s_type, presence: true
+  validates :date, :s_type, presence: true
   validate :product_should_be_uniq
 
   scope :order_created_at, -> {
@@ -54,10 +54,13 @@ class ShippingEr < ApplicationRecord
 
   def set_per_price
     q = 0
+    co = 0
     shipping_er_products.each do |er_p|
       q += er_p.quantity
+      co += er_p.cost
     end
-    self.per_price = cost / q
+    self.cost = co
+    self.per_price = co / q
   end
 
 end
