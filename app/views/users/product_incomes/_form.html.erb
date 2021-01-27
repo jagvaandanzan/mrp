@@ -91,12 +91,15 @@
                 <th width="50px"></th>
               </tr>
               <% box_id = 0
-                 ShippingUbProduct.find_to_incomes.each do |ub_product| %>
+                 shipping_ub_products = ShippingUbProduct.find_to_incomes
+                 box_id_array = shipping_ub_products.map(&:shipping_ub_box_id).to_a
+                 box_ids = box_id_array.tally
+                 shipping_ub_products.each do |ub_product| %>
                 <% shipping_ub = ub_product.shipping_ub
                    product = ub_product.product
                    shipping_ub_box = ub_product.shipping_ub_box
                    b_id = shipping_ub_box.id
-                   box_products = shipping_ub_box.shipping_ub_products.count %>
+                   box_products = box_ids[b_id] %>
                 <tr class="p-<%= ub_product.id %>">
                   <td class="va-mid"><%= show_id(shipping_ub.id) %></td>
                   <td class="va-mid"><%= product.code %></td>
