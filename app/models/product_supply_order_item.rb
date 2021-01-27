@@ -141,7 +141,6 @@ class ProductSupplyOrderItem < ApplicationRecord
       shipping_ub_products.each_with_index {|er, index|
         costs += er.cost
         loaded += er.quantity if er.quantity.present?
-        cargo += er.cargo if er.cargo.present?
         cost_text += "; " if index > 0
         cost_text += "#{er.product.full_name}"
       }
