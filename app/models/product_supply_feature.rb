@@ -9,6 +9,7 @@ class ProductSupplyFeature < ApplicationRecord
 
   with_options :if => Proc.new {|m| m.is_create.present?} do
     validates :quantity, :price, presence: true
+    validates_numericality_of :quantity, greater_than: 0
     before_save :set_product_balance
     before_save :set_sum_price
   end

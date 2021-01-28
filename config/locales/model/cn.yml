@@ -154,6 +154,7 @@ cn:
         product_bought: Худалдан авсан тоо
         at_er: Эрээнд ирсэн огноо
         quantity: Барааны тоо
+        cargo: Ачааны тоо
         cost: Зардал
     errors:
       messages:

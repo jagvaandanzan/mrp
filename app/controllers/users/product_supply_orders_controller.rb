@@ -105,6 +105,7 @@ class Users::ProductSupplyOrdersController < Users::BaseController
         redirect_to action: :edit, id: params[:id], tab_index: @order_item.tab_index.to_i + 1
       end
     else
+      Rails.logger.info("order_item: #{@order_item.errors.full_messages}")
       redirect_to action: "edit", id: @product_supply_order.id, tab_index: @order_item.tab_index.to_i
     end
   end

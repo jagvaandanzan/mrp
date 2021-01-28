@@ -1,11 +1,11 @@
 <%= product = shipping_er_product.product %>
 <tr class="nested-fields">
   <input type="hidden" value="<%= product.id %>" name="shipping_ub[shipping_ub_boxes_attributes][<%= box_r %>][shipping_ub_products_attributes][<%= row %>][product_id]"
-         id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row  %>_product_id">
+         id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row %>_product_id">
   <input type="hidden" value="<%= shipping_er_product.id %>" name="shipping_ub[shipping_ub_boxes_attributes][<%= box_r %>][shipping_ub_products_attributes][<%= row %>][shipping_er_product_id]"
-         id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row  %>_shipping_er_product_id">
+         id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row %>_shipping_er_product_id">
   <input type="hidden" value="<%= shipping_er_product[:remainder] %>" name="shipping_ub[shipping_ub_boxes_attributes][<%= box_r %>][shipping_ub_products_attributes][<%= row %>][remainder]"
-         id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row  %>_remainder">
+         id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row %>_remainder">
   <td class="va-mid"><%= product.name %></td>
   <td class="va-mid"><%= product.code %></td>
   <td class="va-mid">
@@ -22,11 +22,15 @@
   <td class="va-mid text-center"><%= shipping_er_product.shipping_er.date.strftime('%F') %></td>
   <td class="va-mid">
     <input class="form-control field" min="0" step="1" placeholder="<%= t('activerecord.attributes.shipping_ub_product.quantity') %>" type="number" name="shipping_ub[shipping_ub_boxes_attributes][<%= box_r %>][shipping_ub_products_attributes][<%= row %>][quantity]"
-           id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row  %>_quantity">
+           id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row %>_quantity">
+  </td>
+  <td class="va-mid">
+    <input class="form-control field" value="<%= box_r > 0 ? 1 : '' %>" min="0" step="1" placeholder="<%= t('activerecord.attributes.shipping_ub_product.cargo') %>" type="number" name="shipping_ub[shipping_ub_boxes_attributes][<%= box_r %>][shipping_ub_products_attributes][<%= row %>][cargo]"
+           id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row %>_cargo">
   </td>
   <td class="va-mid remove">
     <input value="false" type="hidden" name="shipping_ub[shipping_ub_boxes_attributes][<%= box_r %>][shipping_ub_products_attributes][<%= row %>][_destroy]"
-           id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row  %>__destroy"><a data-confirm="<%= t('are_you_sure') %>" class="remove_fields dynamic" href="#">
+           id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row %>__destroy"><a data-confirm="<%= t('are_you_sure') %>" class="remove_fields dynamic" href="#">
     <i class="fa fa-fw fa-minus-circle"></i>
   </a>
   </td>
