@@ -57,9 +57,11 @@
             </thead>
             <tbody>
             <% @shipping_ub.shipping_ub_boxes.each_with_index {|box, b_i| %>
-              <tr>
-                <td class="2"><%= t('activerecord.models.shipping_ub_box') %>: <%= b_i + 1 %></td>
-              </tr>
+              <% if box.is_box %>
+                <tr>
+                  <td class="2" colspan="10"><%= t('activerecord.models.shipping_ub_box') %>: <%= b_i %></td>
+                </tr>
+              <% end %>
               <% box.shipping_ub_products.each_with_index {|ub, index|
                 product = ub.product
                 shipping_er_product = ub.shipping_er_product %>

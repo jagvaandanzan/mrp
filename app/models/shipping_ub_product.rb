@@ -14,6 +14,9 @@ class ShippingUbProduct < ApplicationRecord
   with_options :if => Proc.new {|m| m.remainder.present?} do
     validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
   end
+
+  validates :cargo, presence: true
+
   scope :by_product_id, ->(product_id) {
     where(product: product_id)
   }

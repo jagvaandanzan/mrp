@@ -13,7 +13,7 @@ class Logistics::ShippingUbsController < Logistics::BaseController
     @shipping_ub = ShippingUb.new
     @shipping_ub.date = Time.current
     @shipping_ub.number = ApplicationController.helpers.last_number(ShippingUb)
-    @shipping_ub.shipping_ub_boxes << ShippingUbBox.new
+    @shipping_ub.shipping_ub_boxes << ShippingUbBox.new(is_box: false)
   end
 
   def create
@@ -33,7 +33,7 @@ class Logistics::ShippingUbsController < Logistics::BaseController
   def add_product
     @shipping_er_product = ShippingErProduct.find_to_ub(params[:id]).first
     @rows = params[:rows].to_i
-    @box_r = params[:box_r].to_i - 1
+    @box_r = params[:box_r].to_i
     respond_to do |format|
       format.js {render 'logistics/shipping_ubs/add_product'}
     end
@@ -75,8 +75,8 @@ class Logistics::ShippingUbsController < Logistics::BaseController
 
   def shipping_ub_params
     params.require(:shipping_ub).permit(:date, :s_type, :description,
-                                        shipping_ub_boxes_attributes: [:id, :cost, :_destroy,
-                                                                       shipping_ub_products_attributes: [:id, :product_id, :shipping_er_product_id, :remainder, :quantity, :cargo, :_destroy]])
+                                        shipping_ub_boxes_attributes: [:id, :is_box, :cost, :_destroy,
+                                                                       shipping_ub_products_attributes: [:id, :product_id, :shipping_er_product_id, :remainder, :quantity, :cargo, :cost, :_destroy]])
         .merge(:logistic => current_logistic)
   end
 end

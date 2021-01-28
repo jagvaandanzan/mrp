@@ -25,8 +25,14 @@
            id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row %>_quantity">
   </td>
   <td class="va-mid">
-    <input class="form-control field" value="<%= box_r > 0 ? 1 : '' %>" min="0" step="1" placeholder="<%= t('activerecord.attributes.shipping_ub_product.cargo') %>" type="number" name="shipping_ub[shipping_ub_boxes_attributes][<%= box_r %>][shipping_ub_products_attributes][<%= row %>][cargo]"
+    <input class="form-control field" value="<%= box_r > 0 ? 1 : '' %>" <%= box_r > 0 ? 'readonly' : '' %> min="0" step="1" placeholder="<%= t('activerecord.attributes.shipping_ub_product.cargo') %>" type="number" name="shipping_ub[shipping_ub_boxes_attributes][<%= box_r %>][shipping_ub_products_attributes][<%= row %>][cargo]"
            id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row %>_cargo">
+  </td>
+  <td class="va-mid">
+    <% if box_r == 0 %>
+      <input class="form-control field" min="0" step="0.01" placeholder="<%= t('activerecord.attributes.shipping_ub_product.cost') %>" type="number" name="shipping_ub[shipping_ub_boxes_attributes][<%= box_r %>][shipping_ub_products_attributes][<%= row %>][cost]"
+             id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row %>_cost">
+    <% end %>
   </td>
   <td class="va-mid remove">
     <input value="false" type="hidden" name="shipping_ub[shipping_ub_boxes_attributes][<%= box_r %>][shipping_ub_products_attributes][<%= row %>][_destroy]"
