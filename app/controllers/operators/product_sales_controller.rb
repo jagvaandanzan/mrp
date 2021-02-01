@@ -162,6 +162,7 @@ class Operators::ProductSalesController < Operators::BaseController
         loc_khoroo_id: params[:khoroo_id],
         name: params[:name],
         name_la: params[:name_la],
+        distance: params[:distance],
         latitude: params[:latitude],
         longitude: params[:longitude])
 

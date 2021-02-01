@@ -16,17 +16,23 @@
         <%= form_body do %>
           <div class="row">
             <div class="col-md-12">
-              <div class="col-md-6 field_div">
+              <div class="col-md-4 field_div">
                 <label class="control-label" for="location_district_id"><%= t('activerecord.models.loc_district') %></label>
                 <div>
                   <%= select_tag :location_district_id, options_from_collection_for_select(LocDistrict.search, :id, :name), :prompt => t('controls.select.none'),
                                  class: 'form-control selectpicker', "data-live-search": "true" %>
                 </div>
               </div>
-              <div class="col-md-6 field_div">
+              <div class="col-md-4 field_div">
                 <label class="control-label" for="location_loc_khoroo_id"><%= t('activerecord.attributes.location.loc_khoroo_id') %></label>
                 <div id="khoroo_id">
                   <%= select_tag :location_loc_khoroo_id, options_for_select([]), :prompt => t('controls.select.none'), class: 'form-control selectpicker', "data-live-search": "true" %>
+                </div>
+              </div>
+              <div class="col-md-4 field_div">
+                <label class="control-label" for="location_loc_khoroo_id"><%= t('activerecord.attributes.location.distance') %></label>
+                <div id="khoroo_id">
+                  <%= select_tag :distance, options_for_select(Location.distances_i18n.keys.reject {|k| k == 'st_leave'}.map {|k| [Location.distances_i18n[k], k]}), :prompt => t('controls.select.none'), class: 'form-control selectpicker' %>
                 </div>
               </div>
             </div>
@@ -150,6 +156,7 @@
             let khoroo_id = $('#location_loc_khoroo_id').val();
             let loc_name = $('#location_name').val();
             let loc_name_la = $('#location_name_la').val();
+            let distance = $('#distance').val();
 
             if ($('#location_district_id').val().length === 0) {
                 alert("<%= t('activerecord.models.loc_district')+t('controls.select.alert')%>");
@@ -159,13 +166,15 @@
                 alert("<%= t('activerecord.attributes.location.name')+t('activerecord.errors.messages.blank')%>");
             } else if (loc_name_la.length === 0) {
                 alert("<%= t('activerecord.attributes.location.name_la')+t('activerecord.errors.messages.blank')%>");
+            } else if (distance.length === 0) {
+                alert("<%= t('activerecord.attributes.location.distance')+t('activerecord.errors.messages.blank')%>");
             } else {
                 let btn = $(this);
                 btn.attr('disabled', 'disabled');
                 Rails.ajax({
                     url: "<%= add_location_operators_product_sales_path %>",
                     type: "POST",
-                    data: "khoroo_id=" + khoroo_id + "&name=" + loc_name + "&name_la=" + loc_name_la + "&latitude=" + latitude + "&longitude=" + longitude,
+                    data: "khoroo_id=" + khoroo_id + "&name=" + loc_name + "&distance=" + distance + "&name_la=" + loc_name_la + "&latitude=" + latitude + "&longitude=" + longitude,
                     success: function (data) {
                         btn.removeAttr('disabled');
                         if (data.status === "ok") {
