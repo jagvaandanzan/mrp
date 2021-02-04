@@ -30,6 +30,10 @@ mn:
         is_size: Хэмжээ
         is_no_choose: Сонголтгүй
     product:
+      p_type:
+        type_sample: Дээж
+        type_basic: Захиалгын
+        type_customer: Харицлагч
       delivery_type:
         is_own: Маркетаас хүргэлт хийлгэх
         is_customer: Харилцагчийн агуулхаас

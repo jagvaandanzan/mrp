@@ -49,7 +49,7 @@ class Users::ProductIncomesController < Users::BaseController
   end
 
   def insert_shipping_ub
-    @shipping_ub_product = ShippingUbProduct.find_to_incomes(params[:id]).first
+    @shipping_ub_products = ShippingUbProduct.find_to_incomes(params[:is_box] == "true", params[:id].to_i)
     @rows = params[:rows].to_i
     respond_to do |format|
       format.js {render 'users/product_incomes/add_product'}

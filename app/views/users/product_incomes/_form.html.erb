@@ -49,7 +49,7 @@
                 <table class="table table-bordered" id="tb_product_income_products">
                   <tr>
                     <th colspan="5" class="text-center"><%= t('activerecord.attributes.product_income.product_income_products') %></th>
-                    <th colspan="1" class="text-center"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
+                    <th colspan="2" class="text-center"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
                     <th colspan="2" class="text-center"><%= t('titles.received') %></th>
                     <th width="50px"></th>
                   </tr>
@@ -60,6 +60,7 @@
                     <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.product_supply_order_item.shipping_ub_date') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.product_income_item.quantity') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_income_item.cargo') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.product_income_item.quantity') %></th>
                     <th class="va-mid"><%= t('activerecord.attributes.product_income_item.cargo') %></th>
                     <th></th>
@@ -98,31 +99,35 @@
                 <% shipping_ub = ub_product.shipping_ub
                    product = ub_product.product
                    shipping_ub_box = ub_product.shipping_ub_box
+                   is_box = shipping_ub_box.is_box
                    b_id = shipping_ub_box.id
                    box_products = box_ids[b_id] %>
-                <tr class="p-<%= ub_product.id %>">
-                  <td class="va-mid"><%= show_id(shipping_ub.id) %></td>
+                <tr class="<%= is_box ? 'box' : 'pro' %>-<%= is_box ? b_id : ub_product.id %>">
+                  <td class="va-mid"><%= show_id(shipping_ub.id) %>: <%= box_products %> => <%= b_id %></td>
                   <td class="va-mid"><%= product.code %></td>
                   <td class="va-mid"><%= product.full_name %></td>
                   <td><%= ub_product.shipping_ub_features.by_quantity(0).count %></td>
                   <td class="va-mid">
                     <% if product.picture.present? %>
-                      <%= link_to product.picture.url, :"data-lightbox" => "roadtrip" do %>
+                      <%= link_to product.picture.url, :"data-lightbox" => "roadtr  ip" do %>
                         <%= t('titles.view') %>
                       <% end %>
                     <% end %>
                   </td>
                   <td class="va-mid"><%= shipping_ub.date.strftime('%F') %></td>
-                  <td class="va-mid"><%= box_products > 1 ? 'Тийм' : '' %></td>
-                  <td class="va-mid text-center"><%= ub_product[:remainder] %></td>
-                  <% if box_id != b_id
-                       box_id = b_id %>
-                    <td class="va-mid" rowspan="<%= box_products %>"><%= box_products != 1 ? '1' : '' %></td>
+                  <% if box_id != b_id || !is_box %>
+                    <td class="va-mid text-center" rowspan="<%= is_box ? box_products : '1' %>"><%= shipping_ub_box.number %></td>
                   <% end %>
-                  <td class="va-mid">
-                    <button class="btn btn-block btn-success btn-xs" type="button" onclick="add_product(<%= ub_product.id %>)">
-                      <i class="fa fa-plus" style="color: white"></i></button>
-                  </td>
+                  <td class="va-mid text-center"><%= ub_product[:remainder] %></td>
+                  <% if box_id != b_id || !is_box
+                       box_id = b_id %>
+                    <td class="va-mid text-center" rowspan="<%= is_box ? box_products : 1 %>"><%= ub_product.cargo %></td>
+                    <td class="va-mid" rowspan="<%= is_box ? box_products : 1 %>">
+                      <button class="btn btn-block btn-success btn-xs" type="button" onclick="add_product(<%= is_box %>, <%= is_box ? b_id : ub_product.id  %>)">
+                        <i class="fa fa-plus" style="color: white"></i>
+                      </button>
+                    </td>
+                  <% end %>
                 </tr>
               <% end %>
             </table>
@@ -133,14 +138,14 @@
   </section>
 </div>
 <script>
-    function add_product(id) {
+    function add_product(is_box, id) {
         let row = $('#tb_product_income_products .nested-fields').length;
         Rails.ajax({
             url: "<%= insert_shipping_ub_users_product_incomes_path %>",
             type: "PATCH",
-            data: "id=" + id + "&rows=" + row,
+            data: "is_box=" + is_box + "&id=" + id + "&rows=" + row,
             success: function () {
-                $('#tb_shipping_ub_products tr.p-' + id).each(function () {
+                $("#tb_shipping_ub_products tr." + (is_box ? 'box' : 'pro') + "-" + id).each(function () {
                     $(this).remove();
                 });
             },

@@ -1,62 +1,67 @@
-<tr class="nested-fields">
-  <%= product = shipping_ub_product.product %>
-  <input type="hidden" value="<%= product.id %>" name="product_income[product_income_products_attributes][<%= row %>][product_id]" id="product_income_product_income_products_attributes_<%= row %>_product_id">
-  <input type="hidden" value="<%= shipping_ub_product.id %>" name="product_income[product_income_products_attributes][<%= row %>][shipping_ub_product_id]" id="product_income_product_income_products_attributes_<%= row %>_shipping_ub_product_id">
-  <td class="va-mid"><%= product.code %></td>
-  <td class="va-mid"><%= product.name %></td>
-  <td></td>
-  <td class="va-mid">
-    <% if product.picture.present? %>
-      <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
-        <%= t('titles.view') %>
-      <% end %>
-    <% end %>
-  </td>
-  <td class="va-mid"><%= shipping_ub_product.shipping_ub.date.strftime('%F') %></td>
-  <td class="va-mid text-center"><%= shipping_ub_product[:remainder] %></td>
-  <td></td>
-  <td>
-    <input class="form-control p-2 field" min="0" step="1" placeholder="Ачааны тоо" type="number" name="product_income[product_income_products_attributes][<%= row %>][cargo]"
-           id="product_income_product_income_products_attributes_<%= row %>_cargo">
-  </td>
-  <td class="remove">
-    <input value="false" type="hidden" name="product_income[product_income_products_attributes][<%= row %>][_destroy]" id="product_income_product_income_products_attributes_<%= row %>__destroy">
-    <a data-confirm="Та устгахдаа итгэлтэй байна уу ?" class="remove_fields dynamic" href="#">
-      <i class="fa fa-fw fa-minus-circle"></i>
-    </a></td>
-</tr>
-<% shipping_ub_product.shipping_ub_features
-   .by_quantity(0).each_with_index {|ub_feature, index| %>
-  <% feature_item = ub_feature.feature_item %>
+<% shipping_ub_products.each {|shipping_ub_product| %>
   <tr class="nested-fields">
-    <input type="hidden" value="true" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][is_income_order]"
-           id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_is_income_order">
-    <input type="hidden" value="<%= shipping_ub_product.product_id %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][product_id]"
-           id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_product_id">
-    <input type="hidden" value="<%= ub_feature.id %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][shipping_ub_feature_id]"
-           id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_shipping_ub_feature_id">
-    <input type="hidden" value="<%= ub_feature.supply_feature_id %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][supply_feature_id]"
-           id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_supply_feature_id">
-    <input type="hidden" value="<%= feature_item.id %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][feature_item_id]"
-           id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_feature_item_id">
-    <input type="hidden" value="<%= ub_feature.quantity %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][remainder]"
-           id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_remainder">
+    <%= product = shipping_ub_product.product %>
+    <input type="hidden" value="<%= product.id %>" name="product_income[product_income_products_attributes][<%= row %>][product_id]" id="product_income_product_income_products_attributes_<%= row %>_product_id">
+    <input type="hidden" value="<%= shipping_ub_product.id %>" name="product_income[product_income_products_attributes][<%= row %>][shipping_ub_product_id]" id="product_income_product_income_products_attributes_<%= row %>_shipping_ub_product_id">
+    <td class="va-mid"><%= product.code %></td>
+    <td class="va-mid"><%= product.name %></td>
     <td></td>
-    <td></td>
-    <td class="va-mid"><%= feature_item.name %></td>
     <td class="va-mid">
-      <% if feature_item.img.present? %>
-        <%= link_to feature_item.img.url, "data-lightbox": "roadtrip" do %>
+      <% if product.picture.present? %>
+        <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
           <%= t('titles.view') %>
         <% end %>
-      <% end %></td>
-    <td class="va-mid"></td>
-    <td class="va-mid"><%= ub_feature.quantity %></td>
-    <td class="va-mid">
-      <input class="form-control p-2 field" min="0" step="1" placeholder="Тоо" type="number" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][quantity]"
-             id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_quantity">
+      <% end %>
     </td>
+    <td class="va-mid"><%= shipping_ub_product.shipping_ub.date.strftime('%F') %></td>
+    <td class="va-mid text-center"><%= shipping_ub_product[:remainder] %></td>
+    <td class="va-mid text-center"><%= shipping_ub_product.cargo %></td>
     <td></td>
-    <td></td>
+    <td>
+      <input class="form-control p-2 field" min="0" step="1" placeholder="Ачааны тоо" type="number" name="product_income[product_income_products_attributes][<%= row %>][cargo]"
+             id="product_income_product_income_products_attributes_<%= row %>_cargo">
+    </td>
+    <td class="remove">
+      <input value="false" type="hidden" name="product_income[product_income_products_attributes][<%= row %>][_destroy]" id="product_income_product_income_products_attributes_<%= row %>__destroy">
+      <a data-confirm="Та устгахдаа итгэлтэй байна уу ?" class="remove_fields dynamic" href="#">
+        <i class="fa fa-fw fa-minus-circle"></i>
+      </a></td>
   </tr>
-<% } %>
+  <% shipping_ub_product.shipping_ub_features
+     .by_quantity(0).each_with_index {|ub_feature, index| %>
+    <% feature_item = ub_feature.feature_item %>
+    <tr class="nested-fields">
+      <input type="hidden" value="true" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][is_income_order]"
+             id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_is_income_order">
+      <input type="hidden" value="<%= shipping_ub_product.product_id %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][product_id]"
+             id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_product_id">
+      <input type="hidden" value="<%= ub_feature.id %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][shipping_ub_feature_id]"
+             id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_shipping_ub_feature_id">
+      <input type="hidden" value="<%= ub_feature.supply_feature_id %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][supply_feature_id]"
+             id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_supply_feature_id">
+      <input type="hidden" value="<%= feature_item.id %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][feature_item_id]"
+             id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_feature_item_id">
+      <input type="hidden" value="<%= ub_feature.quantity %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][remainder]"
+             id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_remainder">
+      <td></td>
+      <td></td>
+      <td class="va-mid"><%= feature_item.name %></td>
+      <td class="va-mid">
+        <% if feature_item.img.present? %>
+          <%= link_to feature_item.img.url, "data-lightbox": "roadtrip" do %>
+            <%= t('titles.view') %>
+          <% end %>
+        <% end %></td>
+      <td class="va-mid"></td>
+      <td class="va-mid"><%= ub_feature.quantity %></td>
+      <td class="va-mid">
+      <td class="va-mid">
+        <input class="form-control p-2 field" min="0" step="1" placeholder="Тоо" type="number" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][quantity]"
+               id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_quantity">
+      </td>
+      <td></td>
+      <td></td>
+    </tr>
+  <% }
+     row += 1
+     } %>

@@ -107,7 +107,7 @@ class ProductCategory < ApplicationRecord
     where("id > ?", 11752)
     .where("sync_at IS ?", nil)
   }
-  # private
+  private
 
   # def filter_should_be_uniq
   #   uniq_by_filters = product_category_filters.uniq(&:category_filter_group_id)

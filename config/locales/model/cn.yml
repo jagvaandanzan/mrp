@@ -141,6 +141,7 @@ cn:
         supply_feature_id: Шинж чанар
         quantity: Хү.А барааны тоо
       shipping_ub_box:
+        number: Дугаар
         cost: Зардал
       shipping_ub:
         number: Баримтын дугаар

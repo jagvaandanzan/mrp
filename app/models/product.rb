@@ -32,6 +32,7 @@ class Product < ApplicationRecord
   accepts_nested_attributes_for :product_images, allow_destroy: true
   accepts_nested_attributes_for :product_videos, allow_destroy: true
 
+  enum p_type: {type_sample: 0, type_basic: 1, type_customer: 2}
   enum delivery_type: {is_own: 0, is_customer: 1}
 
   after_create -> {sync_web('post')}
@@ -54,6 +55,7 @@ class Product < ApplicationRecord
   end
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 0 && m.is_own == 0} do
+    before_save :set_product_type
     validates :customer_id, presence: true
   end
 
@@ -262,7 +264,7 @@ class Product < ApplicationRecord
     product_balances.count > 0
   end
 
-  # private
+  private
 
   def valid_custom
     errors.add(:category_id, :blank) if category_id.present? && ProductCategory.search(category_id).count > 0
@@ -426,6 +428,10 @@ class Product < ApplicationRecord
     end
   end
 
+  def set_product_type
+    self.p_type = 2 if is_own == 0
+  end
+
   def sync_web(method)
     unless draft
       self.method_type = method
@@ -434,7 +440,7 @@ class Product < ApplicationRecord
         params = nil
         url += "/" + id.to_s
       else
-        params = self.to_json(methods: [:method_type, :picture_url], except: [:draft, :picture_updated_at, :picture_file_size, :picture_content_type, :picture_file_name,
+        params = self.to_json(methods: [:method_type, :picture_url], except: [:draft, :p_type, :picture_updated_at, :picture_file_size, :picture_content_type, :picture_file_name,
                                                                               :deleted_at, :created_at, :updated_at, :sync_at],
                               include: {
                                   :product_feature_option_rels => {

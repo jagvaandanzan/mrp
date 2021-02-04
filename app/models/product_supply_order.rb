@@ -95,6 +95,7 @@ class ProductSupplyOrder < ApplicationRecord
       product.save
     else
       product = Product.new(draft: true,
+                            p_type: 0,
                             n_name: product_name,
                             brand_id: 69,
                             code: ApplicationController.helpers.get_code(Product.last),
@@ -106,5 +107,9 @@ class ProductSupplyOrder < ApplicationRecord
 
   def set_default
     self.update_column(:code, ApplicationController.helpers.show_id(id))
+    if self.is_basic?
+      product = get_product
+      product.update_column(:p_type, 1) if !product.p_type.present? || product.type_sample?
+    end
   end
 end
