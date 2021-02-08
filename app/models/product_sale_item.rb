@@ -38,7 +38,7 @@ class ProductSaleItem < ApplicationRecord
   }
 
   scope :status_not_confirmed, ->() {
-    join(:product_sale)
+    joins(:product_sale)
         .where.not("product_sales.main_status_id = ?", 2)
   }
 
