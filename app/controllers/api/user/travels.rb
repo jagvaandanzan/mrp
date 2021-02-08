@@ -29,18 +29,20 @@ module API
               salesman_travel = SalesmanTravel.find(params[:id])
               product_sale_items = ProductFeatureItem.by_travel_id(salesman_travel.id)
 
-              if salesman_travel.product_warehouse_locs.count == 0
-                # Тавиурын хаана байгаа дарааллыг бодож гаргана
-                product_sale_items.each {|item|
-                  feature_item = ProductFeatureItem.find(item.feature_item_id)
+
+              # Тавиурын хаана байгаа дарааллыг бодож гаргана
+              product_sale_items.each {|item|
+                feature_item = ProductFeatureItem.find(item.feature_item_id)
+                if feature_item.product_warehouse_locs.count == 0
                   create_warehouse_loc(item, params[:id], feature_item.product_id, feature_item.id)
-                }
-                salesman_travel.save(validate: false)
-              end
+                end
+              }
+              salesman_travel.save(validate: false)
 
               if salesman_travel.product_warehouse_locs.count == 0
                 error!(I18n.t('errors.messages.not_placed_on_desk'), 422)
               else
+                # ямар нэг барааг тавиурт байршуулаагүйг тус бүр шалгана
                 product_name = nil
                 product_sale_items.each {|item|
                   feature_item = ProductFeatureItem.find(item.feature_item_id)
