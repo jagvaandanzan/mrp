@@ -31,6 +31,10 @@ module API
         expose :product_barcode
       end
 
+      class ProductSaleItemReturn < ProductSaleItemBarCode
+        expose :back_request
+      end
+
       class ProductSale < Grape::Entity
         expose :id, :phone, :main_status, :money, :paid, :sum_price, :loc_note, :building_code
         expose :product_sale_items, using: API::SALESMAN::Entities::ProductSaleItemBarCode

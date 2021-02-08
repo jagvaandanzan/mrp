@@ -68,7 +68,7 @@ class SalesmanTravelRoute < ApplicationRecord
   end
 
   def status
-    product_sale.status_i18n
+    product_sale.main_status.name
   end
 
   def calculate_payable

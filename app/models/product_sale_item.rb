@@ -3,6 +3,7 @@ class ProductSaleItem < ApplicationRecord
   belongs_to :product
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
 
+  has_many :salesman_returns, :class_name => "SalesmanReturn", :foreign_key => "sale_item_id", dependent: :destroy
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "sale_item_id", dependent: :destroy
   has_one :salesman_travel, through: :product_sale
 
@@ -34,6 +35,10 @@ class ProductSaleItem < ApplicationRecord
         .where("quantity - IFNULL(bought_quantity, 0) - IFNULL(back_quantity, 0) > ?", 0)
         .order("products.code")
         .order("products.n_name")
+  }
+
+  scope :status_confirmed, ->() {
+    where("products.main_status_id = ?", 2)
   }
 
   scope :report_sale_delivered, ->(salesman_id, start_time, end_time) {
@@ -91,6 +96,10 @@ class ProductSaleItem < ApplicationRecord
 
   def product_barcode
     feature_item.barcode
+  end
+
+  def back_request
+    salesman_returns.count > 0
   end
 
   private
