@@ -2,118 +2,118 @@ cn:
   activerecord:
     errors:
       messages:
-        record_invalid: "Баталгаажуулалт буруу: %{errors}"
+        record_invalid: "验证不正确/ 正确错误: %{errors}"
         restrict_dependent_destroy:
-          has_one: "%{record} нь устгагдсан тул устгах боломжгүй"
-          has_many: "%{record} нь устгагдсан тул устгах боломжгүй"
+          has_one: "%{record} ％{记录}已被删除，无法删除"
+          has_many: "%{record} ％{记录}已被删除，无法删除"
   controls:
     input:
-      please_enter: Оруулна уу!
+      please_enter: 请输入!
     button:
-      change: Өөрчлөх
-      login: Нэвтрэх
-      send: Илгээх
-      create: Шинээр нэмэх
-      show: Харах
-      edit: Засах
-      delete: Устгах
-      search: Хайлт
-      searching: Хайх
-      delete_for_checked: Сонгоснуудыг устгах
-      save: Хадгалах
-      update: Өөрчлөх
-      back: Буцах
-      close: Хаах
-      write_reply: Хариу бичих
-      to_archive: Түүхрүү шилжүүлэх
-      download: Татах
-      to_equate: Адилтгах
-      watch: Үзэх
-      add_box: Хайрцаг нэмэх
-      remove_box: Хайрцаг хасах
+      change: 更改
+      login:  登记
+      send: 发送
+      create: 添新
+      show: 看
+      edit: 修改
+      delete: 删除
+      search: 搜索
+      searching: 搜寻
+      delete_for_checked: 选择所有的删除
+      save: 保存
+      update: 更改
+      back: 返回
+      close: 关
+      write_reply: 写回应
+      to_archive: 回存档
+      download: 下载
+      to_equate: 等于
+      watch: 看
+      add_box: 添加框 /盒子
+      remove_box: 取出框/ 盒子
     select:
-      none: Сонгох
-      alert: " сонгоно уу!"
+      none: 选着
+      alert: " 请选着!"
     link:
-      forget_password: Нууц үгээ мартсан
-      reset_pass_text_1: Бүртгүүлсэн имэйл хаягаа оруулна уу.
-      reset_pass_text_2: Бид таны нууц үгийг имэйлээр илгээнэ.
-      reset_mail_text_1: Таны  нууц үг солих хүсэлтийг хүлээн авлаа
-      reset_mail_text_2: Доорх холбоос дээр дарж нууц үгээ шинэчлэнэ үү
+      forget_password: 忘记密码
+      reset_pass_text_1: 请登记电子邮件.
+      reset_pass_text_2: 我们将通过电子邮件发送您的密码.
+      reset_mail_text_1: 请您的密码更改求已收到
+      reset_mail_text_2: 请点击下面的链接更新您的密码
   titles:
-    resetting_a_password: Нууц үг шинэчлэлт
-    reset_password: Нууц үг сэргээх
-    login: Нэвтрэх цонх
-    open: Нээх
-    view: Үзэх
-    add: " нэмэх"
-    edit: " засах"
-    back_to_list: Жагсаалтруу буцах
+    resetting_a_password: 更新密码
+    reset_password: 重设密码
+    login: 登记
+    open: 开
+    view: 视图
+    add: " 加上"
+    edit: "改变"
+    back_to_list: 返回目录
     product_supply_ordering: 购买商品
-    color: Өнгө
-    product_sample: Дээж бараа
-    ready_for_shipment: Тээвэрлэхэд бэлэн бараанууд
-    received: Хүлээн авсан
-    consignment: Ачуулсан
+    color: 颜色
+    product_sample: 首次购买产品
+    ready_for_shipment: 准备发货的货物
+    received: 已收到
+    consignment: 已出货
   app_name: “MRP”
   app_short_name: M
   alert:
-    saved_successfully: Амжилттай хадгаллаа
-    deleted_successfully: Амжилттай устгагдсан
-    hide_successfully: Амжилттай нуулаа
-    like_successfully: Амжилттай Лайк дарлаа
-    info_updated: Мэдээлэл шинэчлэгдсэн
-    removed_successfully: Амжилттай хасагдсан
-    send_successfully: Амжилттай илгээлээ
-    to_archive: Амжилттай шилжлээ
-    downloaded_successfully: Амжилттай %{count} татагдлаа
-  are_you_sure: "Та устгахдаа итгэлтэй байна уу ?"
-  are_you_update: "Хадгалах уу ?"
-  are_sure_change: "Өөрчлөх үү ?"
-  are_you_sure_ok: "Та итгэлтэй байна уу ?"
-  are_you_sure_switch: "Шилжүүлэх үү ?"
+    saved_successfully: 保存成功
+    deleted_successfully: 成功删除
+    hide_successfully: 成功隐藏
+    like_successfully: 成功点击喜
+    info_updated: 更新信息
+    removed_successfully: 成功移除
+    send_successfully: 成功发送
+    to_archive: 成功转移
+    downloaded_successfully: 成功下载
+  are_you_sure: " 你确定要删除吗? ?"
+  are_you_update: "保存吗?"
+  are_sure_change: "更换吗 ?"
+  are_you_sure_ok: "你确定吗？ ?"
+  are_you_sure_switch: "您转让吗？ ?"
   currency: ₮
-  minute: минут
-  minute_s: мин
-  currency_name: Төгрөг
-  upload_file: Файл хуулах
-  upload_image: Зураг хуулах
+  minute: 分钟
+  minute_s: 分钟
+  currency_name: 图格鲁格
+  upload_file: 复制文件
+  upload_image: 复制照片
   errors:
     format: "%{attribute}%{message}"
     messages:
-      blank: " хоосон байна!"
-      confirmation: "%{attribute} баталгаажуулалт буруу байна"
-      empty: " хоосон байна!"
-      even: " тэгш тоо байх ёстой"
+      blank: " 是空的!"
+      confirmation: "%{attribute} 验证不正确"
+      empty: " 是空的!"
+      even: " 必须是偶数"
       exclusion: は予約されています
-      greater_than: " %{count}-с их байх ёстой"
-      greater_than_or_equal_to: " %{count} той тэнцүү буюу их байх ёстой"
+      greater_than: " 必须大于{count}％"
+      greater_than_or_equal_to: " 必须等于或大于{count}"
       inclusion: は一覧にありません
-      invalid: " буруу байна"
+      invalid: " 错误"
       less_than: は%{count}より小さい値にしてください
-      less_than_or_equal_to: " %{count} -c бага буюу тэнцүү байх ёстой"
-      model_invalid: "Баталгаажуулалт буруу: %{errors}"
-      not_a_number: " бүхэл тоо байх ёстой"
+      less_than_or_equal_to: " ％{count} -c必须小于或等于"
+      model_invalid: "验证不正确: %{errors}"
+      not_a_number: " 验证不正确"
       not_an_integer: は整数で入力してください
-      odd: " сондгой байх ёстой"
-      required: " шаардлагтай!"
-      taken: " давхардаж байна!"
-      too_long: бол %{count}-с дээр тэмдэгт байх ёстой
-      too_short: бол %{count}-с дээр тэмдэгт байх ёстой
-      wrong_length: "ны урт %{count} байх ёстой!"
+      odd: " 必须是一个奇数"
+      required: " 需要!"
+      taken: " 重叠!"
+      too_long: 必须是％{count}以上的字符
+      too_short: 必须是％{count}以上的字符
+      wrong_length: "应该是％{count}!"
       other_than: は%{count}以外の値にしてください
-      over: " давсан байна"
-      over_quantity: " тоо хэмжээний үлдэгдэл хүрэхгүй байна"
-      taken_feature_rel: " шинж чанар давхардаж байна!"
+      over: " 超过了"
+      over_quantity: " 数量余额不足"
+      taken_feature_rel: " 属性重叠!"
     template:
       body: 次の項目を確認してください
       header:
         one: "%{model}にエラーが発生しました"
         other: "%{model}に%{count}個のエラーが発生しました"
   filters:
-    by_date: Огноо сонгох
-    status: Статус
-    name: Нэрээр
-    email: Имэйлээр
-    phone: Утсаар
-    id: ID-р
+    by_date: 选择一个日期
+    status: 状态
+    name: 按名字
+    email: 通过电子邮件
+    phone: 电话
+    id: 编号

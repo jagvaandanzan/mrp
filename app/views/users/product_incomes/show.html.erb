@@ -54,7 +54,7 @@
               <thead>
               <tr>
                 <th colspan="5" class="text-center"><%= t('activerecord.attributes.product_income.product_income_products') %></th>
-                <th colspan="1" class="text-center"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
+                <th colspan="2" class="text-center"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
                 <th colspan="2" class="text-center"><%= t('titles.received') %></th>
                 <th colspan="3"></th>
               </tr>
@@ -65,7 +65,7 @@
                 <th class="va-mid"><%= t('activerecord.models.product_feature') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_item.order_number') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
-                <th class="va-mid"><%= t('activerecord.attributes.product_income_product.quantity') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.quantity') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_product.cargo') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_item.qr_printed') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_item.problematic') %></th>
@@ -108,7 +108,7 @@
                     <td class="va-mid"><%= item.supply_feature.quantity %></td>
                     <td class="va-mid"><%= item.shipping_ub_feature.quantity %></td>
                     <td class="va-mid"><%= item.quantity %></td>
-                    <td colspan="2"></td>
+                    <td></td>
                     <td class="va-mid"><%= item.qr_printed %></td>
                     <td class="va-mid"><%= item.problematic %></td>
                     <td class="va-mid">

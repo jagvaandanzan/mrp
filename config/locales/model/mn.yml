@@ -460,7 +460,7 @@ mn:
         order_number: Захиалсан
         loaded: Ачуулсан
         cargo: Ачааны тоо
-        quantity: Тоо
+        quantity: Барааны тоо
         shipping_cost: Ачааны зардал
         qr_printed: QR код хэвлэсэн тоо
         problematic: Асуудалтай барааны тоо

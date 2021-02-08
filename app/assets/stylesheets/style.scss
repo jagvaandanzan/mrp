@@ -710,3 +710,9 @@ img.tumb {
 .t-list .form-control {
   padding: 1px!important;
 }
+
+.multi input[type=text],
+.multi input[type=number],
+.multi .btn-default {
+  background-color: lightyellow;
+}

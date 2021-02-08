@@ -1,164 +1,164 @@
 cn:
   filters:
-    by_date: Огноо сонгох
-    by_code: Захиалгын кодоор
-    by_income_code: Орлогийн кодоор
-    by_product: Барааны [нэр/код]-р
-    by_payment: Төлбөрийн хэлбэрээр
-    by_phone: Утасаар
-    by_close: Хаагдсан
+    by_date: 选择日期
+    by_code: 订购产品的号码
+    by_income_code: 产品收入号码
+    by_product: 产品名字和产品的号码
+    by_payment: 付款
+    by_phone: 电话
+    by_close: 关闭
   enums:
     product_supply_order:
       status:
-        order_created: Захиалга үүссэн
-        ordered: Захиалга хийсэн
-        cost_included: Тээврийн зардал орсон
-        warehouse_received: Агуулах хүлээж авсан
-        calculated: Тооцоо нийлсэн
-        clarification: Тодруулга хийх
-        clarified: Тодруулга хийсэн
-        canceled: Цуцалсан
+        order_created: 订单已创建
+        ordered: 订单产品
+        cost_included: 包含费用
+        warehouse_received: 仓库收到
+        calculated: 计算合并/会计核对仓库收到的订购商品的价格，数量和运输成本，并同意对帐。
+        clarification: 会计师应在订单的评论部分中阐明不可接受的原因和问题
+        clarified: 会计师出于无法接受的原因和问题在订单的说明部分做出了澄清
+        canceled: 取消了
       exchange:
-        cny: Юань
-        usd: АНУ-ын доллар
-        eur: Евро
-        rub: Рубль
-        jpy: Иен
-        gbr: Английн фунт
-        mnt: Төгрөг
+        cny: 元
+        usd: 美元
+        eur: 欧元
+        rub: 卢布
+        jpy: 日元
+        gbr: 英镑
+        mnt: 蒙古图格鲁格
       order_type:
-        is_basic: Үндсэн
-        is_sample: Дээж
+        is_basic: 基本产品
+        is_sample: 样品货 第一次购买的的产品
     product_supply_order_item:
       status:
-        order_created: Захиалга үүссэн
-        ordered: Захиалга хийсэн
-        cost_included: Тээврийн зардал орсон
-        warehouse_received: Агуулах хүлээж авсан
-        calculated: Тооцоо нийлсэн
-        clarification: Тодруулга хийх
-        clarified: Тодруулга хийсэн
-        canceled: Цуцалсан
+        order_created: 订单已创建
+        ordered: 已经订单产品
+        cost_included: 包含费用
+        warehouse_received: 仓库收到
+        calculated: 计算合并/会计核对仓库收到的订购商品的价格，数量和运输成本，并同意对帐
+        clarification: 会计师应在订单的评论部分中阐明不可接受的原因和问题
+        clarified: 会计师出于无法接受的原因和问题在订单的说明部分做出了澄清
+        canceled: 取消
     shipping_er:
       s_type:
-        post_cargo: "Шуудан: Үйлд-Карго"
-        post_er: "Шуудан: Үйлд-Эрээн"
-        cargo_er: "Карго: Үйлд-Эрээн"
-        cargo_post: "Карго: Шуудан-Эрээн"
+        post_cargo: "快递 广场-货物"
+        post_er: "快递 广场-二连浩特"
+        cargo_er: "物流 广场-二连浩特"
+        cargo_post: "物流 快递-二连浩特"
     shipping_ub:
       s_type:
-        simple: "Энгийн: Эрээн-УБ"
-        urgent: "Яаралтай: Эрээн-УБ"
+        simple: "简单的运输 二连浩特-乌兰巴托"
+        urgent: "紧急运输 二连浩特-乌兰巴托"
     product_income_item:
       urgent_type:
-        engiin: Энгийн
-        yaaraltai: Яаралтай
+        engiin: 简单的产品
+        yaaraltai: 紧急的产品
   activerecord:
     models:
-      product: Бараа
-      product_supply_order: Үндсэн бараа
-      product_supply_order_item: Бараа захиалга
-      shipping_er: Үйлдвэр-Эрээн тээвэрлэлт
-      shipping_ub: Эрээн-УБ тээвэрлэлт
-      logistic: Хангамжийн ажилтан
-      shipping_ub_box: Хайрцаг
+      product: 产品
+      product_supply_order: 基本产品
+      product_supply_order_item: 产品供应订单项
+      shipping_er: 运输 广场-二连浩特
+      shipping_ub: 运输 二连浩特-乌兰巴托
+      logistic: 供应人员
+      shipping_ub_box: 运输盒
     attributes:
       logistic:
-        email: Имэйл
-        password: Нууц үг
-        name: Нэр
-        surname: Овог
-        gender: Хүйс
-        phone: Утас
-        password_confirmation: 'Нууц үг баталгаажуулалт'
-        new_password: Шинэ нууц үг
-        confirm_new_password: Шинэ нууц үг（Баталгаажуулах）
-        current_password: Одоо байгаа нууц үг
+        email: 邮局
+        password: 密码
+        name: 名字
+        surname: 姓名
+        gender: 性别
+        phone: 电话
+        password_confirmation: '确认密码'
+        new_password: 新密码
+        confirm_new_password: 确认新密码
+        current_password: 现在的密码
       product_supply_order:
-        order_type: Төрөл
-        code: Дугаар
-        status: Төлөв
-        ordered_date: Огноо
-        logistic_id: Хангамжийн ажилтан
-        exchange: Валют
-        sum_price: Нийт дүн
-        link: Линк
-        description: Тайлбар
-        product_name: Барааны нэр
-        product_code: Барааны код
-        product_image: Зураг
-        product_feature: Өнгө, Хэмжээ
-        product_supply_order_items: Бараанууд
-        product_sample_images: Барааны зураг
+        order_type: 产品类型
+        code: 电话号码
+        status: 状态
+        ordered_date: 订单日期
+        logistic_id: 供应人员
+        exchange: 交换
+        sum_price: 总价格
+        link: 链接
+        description: 描述
+        product_name: 产品名
+        product_code: 产品号码
+        product_image: 产品照片
+        product_feature: 颜色， 尺寸
+        product_supply_order_items: 产品
+        product_sample_images: 产品的照片
       product_supply_order_item:
-        status: Төлөв
-        supply_order_id: Худалдан авалт
-        product_id: Бараа
-        note: Тайлбар
-        sum_price: Нийт дүн
-        product_name: Барааны нэр
-        product_code: Бараа код
-        product_feature: Өнгө, Хэмжээ
-        product_supply_order_id: Үндсэн бараа
-        note_lo: Тайлбар
-        purchase: Худалдан авалт
-        purchase_date: Худалдан авсан
-        purchase_quantity: Худалдан авсан тоо
-        total_quantity: Захиалсан тоо
-        price: Үнийн дүн
-        shipping_er_date: Эрээнд ирсэн огноо
-        shipping_ub_date: Эрээнээс ачуулсан огноо
+        status: 状态
+        supply_order_id: 购买产品
+        product_id: 产品
+        note: 描述
+        sum_price: 总价格
+        product_name: 产品名
+        product_code: 产品号码
+        product_feature: 颜色， 尺寸
+        product_supply_order_id: 基本产品
+        note_lo: 描述
+        purchase: 购买产品
+        purchase_date: 买产品日期
+        purchase_quantity: 购买产品数量
+        total_quantity: 订单产品
+        price: 价格
+        shipping_er_date: 产品到二连浩特的日期
+        shipping_ub_date: 从二连浩特发货日期
       product_supply_feature:
-        image: Зураг
-        feature_item_id: Шинж чанар
-        order_item_id: Худалдан авалт
-        quantity: Тоо хэмжээ
-        price: Нэгж үнэ
-        note: Тайлбар
-        sum_price: Нийт дүн
-        quantity_lo: Тоо хэмжээ
-        price_lo: Нэгж үнэ
-        note_lo: Тайлбар
+        image: 照片
+        feature_item_id: 产品性质
+        order_item_id: 购买产品
+        quantity:  数量
+        price: 单价格
+        note: 描述
+        sum_price: 总价格
+        quantity_lo: 总数量
+        price_lo: 单价格
+        note_lo: 描述
       shipping_er:
-        logistic: Хангамжийн ажилтан
-        date: Хүлээж авсан огноо
-        cost: Зардал
-        number: Баримтын дугаар
-        s_type: Тээврийн төрөл
-        description: Тайлбар
-        shipping_er_products: Бараа
-        shipping_er_features: Барааны шинж чанар
+        logistic: 供应人员
+        date: 产品已收到的日期
+        cost: 成本
+        number: 事实的编号
+        s_type: 运输方式
+        description: 描述
+        shipping_er_products: 产品
+        shipping_er_features: 产品的
       shipping_er_product:
-        product_name: Бараа нэр
-        product_code: Бараа код
-        product_image: Зураг
-        product_feature: Өнгө хэмжээ
-        product_bought: Авсан үлдэгдэл
-        quantity: Нийт барааны тоо
-        cargo: Ачааны тоо
-        cost: Зардал
+        product_name: 产品名
+        product_code: 产品的偏号
+        product_image: 产品照片
+        product_feature: 产品的颜色和尺码
+        product_bought: 收到余额л
+        quantity: 总产品的数量о
+        cargo: 货物数量
+        cost: 成本
       shipping_er_feature:
-        supply_feature_id: Шинж чанар
-        quantity: Хү.А барааны тоо
+        supply_feature_id: 产品特性
+        quantity: 数量
       shipping_ub_box:
-        number: Дугаар
-        cost: Зардал
+        cost: 成本
+        number: 事实的编号
       shipping_ub:
-        number: Баримтын дугаар
-        logistic: Хангамжийн ажилтан
-        date: Эрээнээс ачуулсан огноо
-        s_type: Тээврийн чиглэл
-        description: Тайлбар
-        shipping_ub_products: Бараа
-        shipping_ub_features: Барааны тоо
+        number: 事实的编号
+        logistic: 供应人员
+        date:  从二连浩特发货产品的日期
+        s_type: 运输方向
+        description: 描述
+        shipping_ub_products: 产品
+        shipping_ub_features: 产品的数量
       shipping_ub_product:
-        product_bought: Худалдан авсан тоо
-        at_er: Эрээнд ирсэн огноо
-        quantity: Барааны тоо
-        cargo: Ачааны тоо
-        cost: Зардал
+        product_bought: 购买产品的数量
+        at_er: 到二连浩特的日期
+        quantity:  产品数量
+        cargo: 发货数量， 产品数量
+        cost: 成本
     errors:
       messages:
-        blank: " хоосон байна!"
-        too_long: " %{count}-с их байна"
-        too_short: " %{count}-с бага байна"
+        blank: " 是空白!"
+        too_long: " 超过％{count}"
+        too_short: " 少于％{count}"

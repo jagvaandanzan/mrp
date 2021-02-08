@@ -5,7 +5,7 @@
   <section class="content-header">
     <h1><%= t('activerecord.models.shipping_ub') + t(@shipping_ub.persisted? ? 'titles.edit' : 'titles.add') %></h1>
   </section>
-  <section class="content">
+  <section class="content multi">
     <div class="box box-info">
       <%= form_with model: @shipping_ub, url: @shipping_ub.persisted? ? logistics_shipping_ub_path : logistics_shipping_ubs_path, method: @shipping_ub.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>

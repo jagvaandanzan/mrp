@@ -2,7 +2,7 @@
   <%= stylesheet_link_tag "form" %>
 <% end %>
 <div class="content-wrapper">
-  <section class="content">
+  <section class="content multi">
     <div class="box box-info">
       <%= form_with model: @product_income, url: @product_income.persisted? ? users_product_income_path : users_product_incomes_path,
                     method: @product_income.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
