@@ -86,6 +86,7 @@ class ProductIncomeItem < ApplicationRecord
           s += location.quantity
         end
       end
+      s = s + self.problematic if problematic.present?
       if (self.quantity || 0) < s
         errors.add(:income_locations, :over)
       elsif self.quantity > s

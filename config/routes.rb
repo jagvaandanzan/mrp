@@ -168,7 +168,12 @@ Rails.application.routes.draw do
       get 'salary'
     end
     resources :sale_taxes, only: [:index, :create, :new, :edit, :update]
-    resources :product_sales, only: [:index]
+    resources :product_sales, only: [:index] do
+      collection do
+        post 'check_register'
+        post 'tax'
+      end
+    end
 
     match "*any", to: "base#routing_error", via: :all
   end

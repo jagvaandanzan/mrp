@@ -19,7 +19,7 @@ $('#check_button').on('click', function () {
     let register = $('#sale_tax_register').val();
     if (register.length > 0) {
         Rails.ajax({
-            url: "<%=ENV['DOMAIN_NAME']+'/api/v1/notifications/organization' %>",
+            url: "<%= check_register_users_product_sales_path %>",
             type: "POST",
             data: "register=" + register,
             success: function (data) {

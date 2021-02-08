@@ -65,21 +65,6 @@ module API
           end
         end
 
-        resource :organization do
-          desc "POST notifications/organization"
-          params do
-            requires :register, type: Integer
-          end
-          post do
-            if params[:register].to_s.length == 7
-              present :success, true
-              present :name, "Ихгүр инженеринг ХХК"
-            else
-              present :success, false
-            end
-          end
-        end
-
         resource :tax do
           desc "POST notifications/tax"
           post do

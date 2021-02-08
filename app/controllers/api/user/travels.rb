@@ -27,9 +27,10 @@ module API
             desc "GET travels/:id/products"
             get do
               salesman_travel = SalesmanTravel.find(params[:id])
+              product_sale_items = ProductFeatureItem.by_travel_id(salesman_travel.id)
+
               if salesman_travel.product_warehouse_locs.count == 0
                 # Тавиурын хаана байгаа дарааллыг бодож гаргана
-                product_sale_items = ProductFeatureItem.by_travel_id(salesman_travel.id)
                 product_sale_items.each {|item|
                   feature_item = ProductFeatureItem.find(item.feature_item_id)
                   create_warehouse_loc(item, params[:id], feature_item.product_id, feature_item.id)
@@ -40,7 +41,19 @@ module API
               if salesman_travel.product_warehouse_locs.count == 0
                 error!(I18n.t('errors.messages.not_placed_on_desk'), 422)
               else
-                present :products, ProductWarehouseLoc.by_travel(params[:id]), with: API::USER::Entities::ProductWarehouse
+                product_name = nil
+                product_sale_items.each {|item|
+                  feature_item = ProductFeatureItem.find(item.feature_item_id)
+                  if feature_item.product_warehouse_locs.count == 0
+                    product_name = "#{feature_item.product.full_name}, #{feature_item.name}"
+                    break
+                  end
+                }
+                if product_name.nil?
+                  present :products, ProductWarehouseLoc.by_travel(params[:id]), with: API::USER::Entities::ProductWarehouse
+                else
+                  error!("#{product_name}: #{I18n.t('errors.messages.not_placed_on_desk')}", 422)
+                end
               end
             end
           end

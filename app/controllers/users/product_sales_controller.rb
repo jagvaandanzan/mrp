@@ -14,4 +14,22 @@ class Users::ProductSalesController < Users::BaseController
                          .page(params[:page])
   end
 
+  def check_register
+    if params[:register].to_s.length == 7
+
+      response = ApplicationController.helpers.sent_market_web("http://info.ebarimt.mn/rest/merchant/info?regno=#{params[:register]}", 'get', nil)
+      json = JSON.parse(response.body)
+      if response.code.to_i == 200 && json['name'].present?
+        render json: {success: true, name: json['name']}
+      else
+        render json: {success: false}
+      end
+    else
+      render json: {success: false}
+    end
+  end
+
+  def tax
+
+  end
 end
