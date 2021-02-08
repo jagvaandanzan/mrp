@@ -39,7 +39,7 @@ class ProductSaleItem < ApplicationRecord
 
   scope :status_not_confirmed, ->() {
     join(:product_sale)
-        .where("product_sales.main_status_id != ?", 2)
+        .where("product_sales.main_status_id != 2")
   }
 
   scope :report_sale_delivered, ->(salesman_id, start_time, end_time) {
