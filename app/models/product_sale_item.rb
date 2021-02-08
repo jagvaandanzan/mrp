@@ -37,8 +37,8 @@ class ProductSaleItem < ApplicationRecord
         .order("products.n_name")
   }
 
-  scope :status_confirmed, ->() {
-    where("products.main_status_id = ?", 2)
+  scope :status_not_confirmed, ->() {
+    where("products.main_status_id != ?", 2)
   }
 
   scope :report_sale_delivered, ->(salesman_id, start_time, end_time) {

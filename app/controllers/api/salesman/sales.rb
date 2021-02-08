@@ -7,7 +7,7 @@ module API
           desc "GET sales/sale_items"
           get do
             sale_items = ProductSaleItem.sale_available(current_salesman.id)
-                             .status_confirmed
+                             .status_not_confirmed
             present :sale_items, sale_items, with: API::SALESMAN::Entities::ProductSaleItemReturn
           end
         end
