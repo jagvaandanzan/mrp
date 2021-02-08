@@ -20,7 +20,7 @@ module API
       end
 
       class ProductSaleItem < Grape::Entity
-        expose :id, :quantity, :price, :sum_price, :bought_at, :bought_quantity, :product_name, :product_image, :product_feature, :back_quantity
+        expose :id, :quantity, :to_see, :price, :sum_price, :bought_at, :bought_quantity, :product_name, :product_image, :product_feature, :back_quantity
       end
 
       class ProductSaleItemDetail < ProductSaleItem
