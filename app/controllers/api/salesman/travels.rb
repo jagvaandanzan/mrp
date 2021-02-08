@@ -7,7 +7,18 @@ module API
           get do
             salesman = current_salesman
             travels = SalesmanTravel.open_delivery(salesman.id)
-            present :travel, travels.first, with: API::SALESMAN::Entities::SalesmanTravels
+            if travels.present?
+              travel = travels.first
+              if travel.load_at.nil?
+                error!(I18n.t('errors.messages.stockkeeper_is_not_signed'), 422)
+              elsif travel.sign_at.nil?
+                error!(I18n.t('errors.messages.salesman_is_not_signed'), 422)
+              else
+                present :travel, travels.first, with: API::SALESMAN::Entities::SalesmanTravels
+              end
+            else
+              error!(I18n.t('errors.messages.not_found'), 422)
+            end
           end
         end
 
@@ -17,7 +28,8 @@ module API
         end
         post do
           salesman = current_salesman
-          travels = SalesmanTravel.travels(salesman.id, ApplicationController.helpers.local_date(params[:date]))
+          travels = SalesmanTravel.by_signed
+                        .travels(salesman.id, ApplicationController.helpers.local_date(params[:date]))
           present :travels, travels, with: API::SALESMAN::Entities::SalesmanTravels
         end
 

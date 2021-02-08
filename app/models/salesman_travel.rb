@@ -25,6 +25,10 @@ class SalesmanTravel < ApplicationRecord
     where(salesman_id: salesman_id)
         .where(id: id)
   }
+  scope :by_signed, ->() {
+    where("load_at IS NOT ?", nil)
+        .where("sign_at IS NOT ?", nil)
+  }
 
   scope :by_load_at, ->(loaded, date) {
     if loaded

@@ -67,6 +67,10 @@ class SalesmanTravelRoute < ApplicationRecord
     product_sale.count_product
   end
 
+  def status
+    product_sale.status_i18n
+  end
+
   def calculate_payable
     s = 0
     if product_sale.present? && product_sale.product_sale_items.present?

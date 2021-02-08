@@ -37,7 +37,11 @@ module API
                 salesman_travel.save(validate: false)
               end
 
-              present :products, ProductWarehouseLoc.by_travel(params[:id]), with: API::USER::Entities::ProductWarehouse
+              if salesman_travel.product_warehouse_locs.count == 0
+                error!(I18n.t('errors.messages.not_placed_on_desk'), 422)
+              else
+                present :products, ProductWarehouseLoc.by_travel(params[:id]), with: API::USER::Entities::ProductWarehouse
+              end
             end
           end
 
@@ -220,6 +224,7 @@ end
 def create_warehouse_loc(item, salesman_travel_id, product_id, feature_item_id, add_stock = false)
   product_locations = ProductLocation.get_quantity(feature_item_id)
   quantity = 0
+  is_added = false
   product_locations.each {|loc|
     if quantity < item.quantity
       q = if loc.quantity >= (item.quantity - quantity)
@@ -234,8 +239,10 @@ def create_warehouse_loc(item, salesman_travel_id, product_id, feature_item_id, 
                                  feature_item_id: feature_item_id,
                                  quantity: q,
                                  add_stock: add_stock)
+      is_added = true
     else
       break
     end
   }
+  is_added
 end
