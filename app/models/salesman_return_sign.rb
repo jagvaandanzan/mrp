@@ -39,7 +39,7 @@ class SalesmanReturnSign < ApplicationRecord
     notification = Notification.create(user: self.user,
                                        return_sign: self,
                                        title: I18n.t("api.returned_product"),
-                                       body_u: I18n.t("api.body.return_product_u", user: self.user.name, product: "#{salesman_returns.count}"))
+                                       body_u: I18n.t("api.body.return_product_u", user: self.user.name, products: "#{salesman_returns.count}"))
     ApplicationController.helpers.send_noti_salesman(self.salesman,
                                                      ApplicationController.helpers.push_options('returned_product',
                                                                                                 self.id,
