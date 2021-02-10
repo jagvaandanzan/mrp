@@ -6,6 +6,7 @@ class ProductWarehouseLoc < ApplicationRecord
   has_one :product_location_balance, :class_name => "ProductLocationBalance", :foreign_key => "warehouse_loc_id", dependent: :destroy
 
   before_create :set_location_balance
+  attr_accessor :code
 
   scope :by_travel, ->(travel_id, id = nil) {
     items = select("products.n_name as name,
