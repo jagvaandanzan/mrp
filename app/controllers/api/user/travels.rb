@@ -26,14 +26,15 @@ module API
           resource :products do
             desc "GET travels/:id/products"
             get do
-              salesman_travel = SalesmanTravel.find(params[:id])
+              travel_id = params[:id]
+              salesman_travel = SalesmanTravel.find(travel_id)
               product_sale_items = ProductFeatureItem.by_travel_id(salesman_travel.id)
 
 
               # Тавиурын хаана байгаа дарааллыг бодож гаргана
               product_sale_items.each {|item|
                 feature_item = ProductFeatureItem.find(item.feature_item_id)
-                if feature_item.product_warehouse_locs.count == 0
+                if feature_item.product_warehouse_locs.by_travel(travel_id).count == 0
                   create_warehouse_loc(item, params[:id], feature_item.product_id, feature_item.id)
                 end
               }
@@ -46,7 +47,7 @@ module API
                 product_name = nil
                 product_sale_items.each {|item|
                   feature_item = ProductFeatureItem.find(item.feature_item_id)
-                  if feature_item.product_warehouse_locs.count == 0
+                  if feature_item.product_warehouse_locs.by_travel(travel_id).count == 0
                     product_name = "#{feature_item.product.full_name}, #{feature_item.name}"
                     break
                   end
