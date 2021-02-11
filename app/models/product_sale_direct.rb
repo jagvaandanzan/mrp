@@ -64,11 +64,12 @@ class ProductSaleDirect < ApplicationRecord
     if sale_item_balances.present?
       sale_item_balance = sale_item_balances.first
       sale_item_quantity = sale_item.quantity - quantity
-      Rails.logger.debug("sale_item_quantity==" + sale_item_quantity.to_s)
+      # Rails.logger.debug("sale_item_quantity==" + sale_item_quantity.to_s)
       if sale_item_quantity == 0
         sale_item_balance.destroy
       else
-        sale_item_balance.update_columns(quantity: sale_item_quantity)
+        sale_item_balance.quantity = sale_item_quantity
+        sale_item_balance.save
       end
     end
 
