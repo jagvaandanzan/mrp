@@ -1,5 +1,5 @@
 class ProductLocationBalance < ApplicationRecord
-    belongs_to :product_location
+  belongs_to :product_location
   belongs_to :product_feature_item
   belongs_to :income_item, :class_name => "ProductIncomeItem", optional: true
   belongs_to :income_location, :class_name => "ProductIncomeLocation", optional: true
