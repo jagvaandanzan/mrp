@@ -145,10 +145,23 @@
 
     function add_feature() {
         if (parseInt(product_id) > 0) {
+            var barcode = "", price = "", balance = "", location_balance = "";
+            if (select_itoms !== 0) {
+                let itoms = $('#itoms_body #itoms-' + select_itoms);
+                balance = itoms.find('.c2qty').text();
+                barcode = itoms.find('.barcode').text();
+                price = itoms.find('.price').text();
+                location_balance = itoms.find('.taviur1').text();
+            }
+
             Rails.ajax({
                 url: "<%= new_users_product_feature_item_path %>",
                 type: "GET",
-                data: "product_id=" + product_id
+                data: "product_id=" + product_id +
+                    "&barcode=" + barcode +
+                    "&price=" + price +
+                    "&balance=" + balance +
+                    "&location_balance=" + location_balance,
             });
         } else {
             alert("Бараа сонгогдоогүй байна!");

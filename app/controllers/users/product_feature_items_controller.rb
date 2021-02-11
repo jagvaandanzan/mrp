@@ -4,6 +4,28 @@ class Users::ProductFeatureItemsController < Users::BaseController
   def new
     @feature_item = ProductFeatureItem.new
     @feature_item.product_id = params[:product_id]
+    @feature_item.barcode = params[:barcode] if params[:barcode].present?
+    @feature_item.price = params[:price] if params[:price].present?
+    @feature_item.c_balance = params[:balance] if params[:balance].present?
+    location_balances = params[:location_balance]
+    if location_balances.present?
+      lbs = location_balances.split('#')
+      lbs.each do |lb|
+        locs = lb.split('=')
+        loc = locs[0]
+        q = locs[1].to_i
+        index_x = loc.index('x')
+        index_y = loc.index('y')
+        index_z = loc.index('z')
+
+        x = loc[(index_x + 1)..(index_y - 1)].to_i
+        y = loc[(index_y + 1)..(index_z - 1)].to_i
+        z = loc.from(index_z + 1).to_i
+
+        @feature_item.product_location_balances << ProductLocationBalance.new(x: x, y: y, z: z,
+                                                                              quantity: q)
+      end
+    end
     respond_to do |format|
       format.js {render 'feature_add_ajax', locals: {hide_modal: false}}
     end
