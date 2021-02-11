@@ -17,8 +17,8 @@
             <th></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.price') %></th>
-            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
-            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
+            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8_p') %></th>
+            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_p') %></th>
             <% if @product.is_customer? %>
               <th class="text-center"><%= t('activerecord.attributes.product_feature_item.c_balance') %></th>
             <% end %>
@@ -30,8 +30,8 @@
               <td><%= item.name %></td>
               <td><%= item.barcode %></td>
               <td><%= get_currency_mn(item.price) %></td>
-              <td><%= get_currency_mn item.p_6_8 %></td>
-              <td><%= get_currency_mn item.p_9_ %></td>
+              <td><%= item.p_6_8_p %></td>
+              <td><%= item.p_9_p %></td>
               <% if @product.is_customer? %>
                 <td><%= item.c_balance %></td>
               <% end %>
@@ -41,7 +41,7 @@
         </table>
       </div>
     </div>
-    <% feature_options = @product.product_feature_option_rels.by_size_feature_option%>
+    <% feature_options = @product.product_feature_option_rels.by_size_feature_option %>
     <% if feature_options.present? %>
       <div class="form-group">
         <%= label_tag :product_size_instructions, t('activerecord.attributes.product.product_size_instructions'), class: 'col-sm-3 control-label' %>
