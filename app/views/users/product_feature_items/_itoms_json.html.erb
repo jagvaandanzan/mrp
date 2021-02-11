@@ -1,0 +1,9 @@
+<%= json.each_with_index {|j, index| %>
+  <tr class="product" index="<%= index %>" id="itoms-<%= index %>">
+    <td class="va-mid serialno"><%= j['serialno'] %></td>
+    <td class="va-mid barcode"><%= j['barcode'] %></td>
+    <td class="va-mid price"><%= j['price'] %></td>
+    <td class="va-mid c2qty"><%= j['c2qty'] %></td>
+    <td class="va-mid taviur1"><%= j['taviur1'] %></td>
+  </tr>
+<% } %>

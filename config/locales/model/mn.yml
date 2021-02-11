@@ -296,6 +296,7 @@ mn:
         n_material: Материал
         n_advantage: Бусад давуу талууд
         code: Код
+        p_type: Төрөл
         category: Ангилал
         category_id: Ангилал
         product_feature_option_rels: Барааны шинж чанарууд
@@ -321,6 +322,7 @@ mn:
         picture: Нүүр зураг
         product_discounts: Хямдралууд
         price: Үнэ
+        balance: Үлдэгдэл
         price_min: Үнэ(бага)
         price_max: Үнэ(их)
       product_feature_option_rel:
@@ -346,15 +348,21 @@ mn:
         product_feature_id: Шинж чанар
         product_feature: Шинж чанар
       product_feature_item:
+        option1_id: Өнгө
+        option2_id: Хэмжээ
         price: Зарах үнэ
-        p_6_8: 6-8 ширхэг(%)
-        p_9_: 9-с дээш(%)
+        p_6_8: 6-8 ширхэг
+        p_9_: 9-с дээш
+        p_6_8_p: 6-8 ширхэг (%)
+        p_9_p: 9-с дээш (%)
         c_balance: Эхний үлдэгдэл
         feature_item_id: Шинж чанар
         same_item_id: Адил шинж чанар
         image: Зураг
         barcode: Баркод
         real_img: Бодит зураг
+        product_location_balances: Агуулахын байршил
+        location_balances: Агуулахын байршил
       product_instruction:
         i_type: Төрөл
         description: Заавар

@@ -25,11 +25,7 @@ class Users::SaleTaxesController < Users::BaseController
     @sale_tax.user = current_user
     respond_to do |format|
       format.js {
-        if @sale_tax.save
-          render 'users/product_sales/ajax_sale_tax', locals: {hide_modal: true}
-        else
-          render 'users/product_sales/ajax_sale_tax', locals: {hide_modal: false}
-        end
+        render 'users/product_sales/ajax_sale_tax', locals: {hide_modal: @sale_tax.save}
       }
     end
   end

@@ -120,7 +120,9 @@
 .no-underline {
   text-decoration: none !important;
 }
-.no-wrap {
+
+.no-wrap,
+.nowrap {
   white-space: nowrap;
 }
 .box-body a {
@@ -650,8 +652,7 @@ div .breadcrumb-container .box .breadcrumb {
   user-select: none;
   -o-user-select: none;
 }
-
-.content .preview {
+ .preview {
   cursor: pointer;
   width: 100px;
   height: 100px;
@@ -659,7 +660,7 @@ div .breadcrumb-container .box .breadcrumb {
   background-color: lightgray;
   display: table;
 }
-.content .preview .text{
+.preview .text{
   vertical-align:middle;
   display: table-cell;
 }
@@ -715,4 +716,7 @@ img.tumb {
 .multi input[type=number],
 .multi .btn-default {
   background-color: lightyellow;
+}
+.w-100{
+  width: 100%;
 }

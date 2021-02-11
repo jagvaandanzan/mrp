@@ -37,6 +37,13 @@ class ProductFeatureOption < ApplicationRecord
     where("id IN (?)", ids)
   }
 
+  scope :order_feature, ->(no_feature_type) {
+    items = joins(:product_feature)
+    items = items.where("product_features.feature_type != ?", no_feature_type) if no_feature_type.present?
+    items.order("product_features.queue")
+        .order("product_feature_options.name")
+  }
+
   private
 
   def sync_web(method)

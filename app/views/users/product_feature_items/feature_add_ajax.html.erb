@@ -1,0 +1,8 @@
+<% if hide_modal %>
+  load_features();
+<% else %>
+  $('#form_modal_body').html("<%= escape_javascript render(partial: 'product_feature_item_form') %>")
+  $('#form_modal_body .selectpicker').selectpicker('refresh');
+  load_image_preview("#form_modal_body");
+<% end %>
+$('#form_modal').modal("<%= hide_modal ? 'hide':'show' %>");

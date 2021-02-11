@@ -19,6 +19,7 @@ class Product < ApplicationRecord
   has_many :product_videos
   has_many :product_discounts
   has_many :product_balances
+  has_many :product_location_balances, through: :product_feature_items
   has_one :product_package
 
   has_many :supply_order_items, :class_name => "ProductSupplyOrderItem", :foreign_key => "product_id"
@@ -130,6 +131,19 @@ class Product < ApplicationRecord
     end
 
     items.order_by_name
+  }
+
+  scope :by_balance, ->(balance, barcode, desk) {
+    items = order_by_name
+    items = items.left_joins(:product_feature_items)
+                .where("product_feature_items.barcode IS NOT ?", nil) if barcode.present?
+
+    items = items.left_joins(:product_balances)
+                .where("SUM(product_feature_items.quantity) > ?", 0) if balance.present?
+
+    items = items.left_joins(:product_location_balances)
+                .where("SUM(product_feature_items.quantity) > ?", 0) if desk.present?
+    items
   }
   scope :search_by_id, ->(id) {
     if id.present?
@@ -262,6 +276,10 @@ class Product < ApplicationRecord
 
   def check_balance
     product_balances.count > 0
+  end
+
+  def balance
+    ProductBalance.balance(id)
   end
 
   private

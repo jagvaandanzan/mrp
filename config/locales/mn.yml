@@ -55,6 +55,7 @@ mn:
     operator: Оператор
     operator_show: Операторын мэдээлэл
     back_to_list: Жагсаалтруу буцах
+    list: Жагсаалт
     back: Буцах
     back_to_parent: Эцэг ангилал
     total: Нийт
@@ -98,6 +99,7 @@ mn:
     salary_calculation: Цалин тооцох
     distributing: Түгээлт
     received: Хүлээж авсан
+    balance: Үлдэгдэл
   app_name: “MRP”
   app_short_name: M
   alert:

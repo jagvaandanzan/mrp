@@ -1,0 +1,99 @@
+<%= form_with model: @feature_item, url: @feature_item.persisted? ? users_product_feature_item_path : users_product_feature_items_path, method: @feature_item.persisted? ? :patch : :post, remote: true, :html => {class: 'form-horizontal', id: 'feature_item_form'} do |f| %>
+  <%= form_body do %>
+    <%= f.hidden_field :product_id %>
+    <div class="form-group">
+      <%= f.label :option1_id, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9 <%= get_error_class(@feature_item, :option1_id) %>">
+        <%= field_errors(@feature_item, :option1_id) %>
+        <%= f.collection_select :option1_id, ProductFeatureOption.order_feature(1), :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :option2_id, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9 <%= get_error_class(@feature_item, :option2_id) %>">
+        <%= field_errors(@feature_item, :option2_id) %>
+        <%= f.collection_select :option2_id, ProductFeatureOption.order_feature(0), :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :image, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9 <%= get_error_class(@feature_item, :image) %>">
+        <%= f.file_field :image, accept: "image/*", class: 'image-file none-force' %>
+        <%= field_errors(@feature_item, :image) %>
+        <div class="preview noselect height50">
+          <% if @feature_item.image.present? %>
+            <%= image_tag @feature_item.image.url(:tumb), class: 'preview-img height50' %>
+          <% else %>
+            <span class="text"><%= t('upload_image') %></span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :real_img, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9">
+        <%= field_errors f.object, :real_img %>
+        <%= f.check_box :real_img %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :same_item_id, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9">
+        <%= field_errors f.object, :same_item_id %>
+        <%= f.collection_select :same_item_id, @feature_item.product.product_feature_items, :id, :name, {:prompt => t('controls.select.none')},
+                                {class: 'form-control selectpicker', "data-live-search": true} %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :barcode, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9 <%= get_error_class(@feature_item, :barcode) %>">
+        <%= field_errors(@feature_item, :barcode) %>
+        <%= f.text_field :barcode, class: 'form-control', placeholder: t('activerecord.attributes.product_feature_item.barcode') %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :price, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9 <%= get_error_class(@feature_item, :price) %>">
+        <%= field_errors(@feature_item, :price) %>
+        <%= f.number_field :price, class: 'form-control', step: 1, placeholder: t('activerecord.attributes.product_feature_item.price') %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :p_6_8_p, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9 <%= get_error_class(@feature_item, :p_6_8_p) %>">
+        <%= field_errors(@feature_item, :p_6_8_p) %>
+        <%= f.number_field :p_6_8_p, class: 'form-control', step: 1, placeholder: t('activerecord.attributes.product_feature_item.p_6_8_p') %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :p_9_p, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9 <%= get_error_class(@feature_item, :p_9_p) %>">
+        <%= field_errors(@feature_item, :p_9_p) %>
+        <%= f.number_field :p_9_p, class: 'form-control', step: 1, placeholder: t('activerecord.attributes.product_feature_item.p_9_p') %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :c_balance, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9 <%= get_error_class(@feature_item, :c_balance) %>">
+        <%= field_errors(@feature_item, :c_balance) %>
+        <%= f.number_field :c_balance, class: 'form-control', step: 1, placeholder: t('activerecord.attributes.product_feature_item.c_balance') %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :product_location_balances, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9" id="product_location_balances">
+        <%= field_errors f.object, :product_location_balances %>
+        <%= link_to_add_association f, :product_location_balances,data: {association_insertion_node: '#product_location_balances', association_insertion_method: :append} do %>
+          <button type="button" class="btn btn-success btn-xs" id="btn-append"><i class="fa fa-plus" style="color: white"></i></button>
+        <% end %>
+        <%= f.fields_for :product_location_balances do |m| %>
+          <%= render 'users/product_feature_items/product_location_balance_fields', :f => m %>
+        <% end %>
+      </div>
+    </div>
+    <div class="modal-footer text-right">
+      <button type="button" class="btn btn-default" data-dismiss="modal"><%= t('controls.button.close') %></button>
+      <%= f.submit t('controls.button.send'), class: 'btn btn-warning' %>
+    </div>
+  <% end %>
+<% end %>

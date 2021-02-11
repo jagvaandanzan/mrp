@@ -1,0 +1,202 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<style>
+  tr.product {
+    cursor: pointer;
+  }
+
+  tr.selected,
+  tr.selected:hover {
+    background-color: lightyellow;
+  }
+
+  .field {
+    width: 100%;
+    border: none;
+  }
+</style>
+<div class="content-wrapper index">
+  <div class="col-md-12 m-t-10 m-b-10">
+    <div class="col-xs-5 search">
+      <%= text_field_tag :name, @name, {class: 'form-control search', readonly: true} %>
+    </div>
+    <div class="col-xs-2 search">
+      <%= text_field_tag :code, @code, {class: 'form-control search', placeholder: t('activerecord.attributes.product.code')} %>
+    </div>
+    <div class="col-xs-3 search">
+      <%= button_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left', id: 'btn_search' %>
+    </div>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-7" style="padding-right: 4px">
+        <div class="box">
+          <div class="p-l-10"><strong>MRP</strong></div>
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-hover table-bordered">
+              <thead>
+              <tr>
+                <th><%= t('activerecord.models.product_feature') %></th>
+                <th><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
+                <th><%= t('activerecord.attributes.product_feature_item.price') %></th>
+                <th><%= t('activerecord.attributes.product_feature_item.p_6_8_p') %></th>
+                <th><%= t('activerecord.attributes.product_feature_item.p_9_p') %></th>
+                <th><%= t('activerecord.attributes.product.balance') %></th>
+                <th><%= t('activerecord.attributes.product_income_item.income_locations') %></th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody id="mpr_body" class="cocoon-nested-form"></tbody>
+            </table>
+            <div class="w-100 text-right">
+              <button type="button" onclick="add_feature()" class="btn btn-block btn-success btn-xs w-auto" style="float: right;margin: 4px;">
+                <i class="fa fa-plus" style="color: white"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-5" style="padding-left: 4px">
+        <table class="w-100">
+          <tr>
+            <td>
+              <button type="button" class="btn btn-success" id="copy_data" style="padding: 2px 4px"><<</button>
+            </td>
+            <td>
+              <div class="box">
+                <div class="p-l-10">Санхүүгийн систем дээрх мэдээлэл: <span id="itoms_name"></span></div>
+                <div class="box-body table-responsive no-padding">
+                  <table class="table table-hover table-bordered">
+                    <thead>
+                    <tr>
+                      <th><%= t('activerecord.models.product_feature') %></th>
+                      <th><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
+                      <th><%= t('activerecord.attributes.product_feature_item.price') %></th>
+                      <th><%= t('activerecord.attributes.product.balance') %></th>
+                      <th><%= t('activerecord.attributes.product_income_item.income_locations') %></th>
+                    </tr>
+                    </thead>
+                    <tbody id="itoms_body"></tbody>
+                  </table>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>
+<%= render 'shared/form_modal', title: "#{t('activerecord.models.product_feature')}#{t('titles.add')}", modal_class: 'modal-lg' %>
+<script>
+    var select_mrp = 0, select_itoms = 0, product_id = "";
+    $(function () {
+        $('#btn_search').on('click', function () {
+            let code = $('#code').val();
+            if (code.length > 0) {
+                load_itoms(code);
+            } else {
+                alert("Хайх кодоо оруулна уу!")
+            }
+        });
+        <% if @code.present? %>
+        load_itoms("<%= @code %>");
+        <% end %>
+
+        $('#copy_data').on('click', function () {
+            if (select_mrp === 0) {
+                alert("MRP хүснэгтээс мөр сонгоно уу!")
+            } else if (select_itoms === 0) {
+                alert("Санхүүгийн систем дээрх мэдээллээс мөр сонгоно уу!")
+            } else {
+                let mrp = $('#mpr_body #item-' + select_mrp);
+                let itoms = $('#itoms_body #itoms-' + select_itoms);
+                let quantity = parseInt(itoms.find('.c2qty').text());
+                mrp.find('#barcode').val(itoms.find('.barcode').text());
+                mrp.find('#price').val(itoms.find('.price').text());
+                mrp.find('#balance').val(quantity);
+                mrp.find('#location_balance').val(itoms.find('.taviur1').text() + "=" + quantity);
+            }
+        });
+    });
+
+    function load_features() {
+        let load_html = "<div class='text-center m-t-20 w-100'><img src='/images/loading2.gif'></div>";
+        $('#mpr_body').html(load_html);
+        Rails.ajax({
+            url: "<%= load_features_users_product_feature_items_path %>",
+            type: "POST",
+            data: "product_id=" + product_id
+        });
+    }
+
+    function load_itoms(code) {
+        let load_html = "<div class='text-center m-t-20 w-100'><img src='/images/loading2.gif'></div>";
+        $('#mpr_body').html(load_html);
+        $('#itoms_body').html(load_html);
+        Rails.ajax({
+            url: "<%= itoms_users_product_feature_items_path %>",
+            type: "POST",
+            data: "code=" + code + "&product_id=" + product_id
+        });
+    }
+
+    function add_feature() {
+        if (parseInt(product_id) > 0) {
+            Rails.ajax({
+                url: "<%= new_users_product_feature_item_path %>",
+                type: "GET",
+                data: "product_id=" + product_id
+            });
+        } else {
+            alert("Бараа сонгогдоогүй байна!");
+        }
+    }
+
+    function remove_feature(item_id) {
+        if (confirm("<%= t('are_you_sure') %>")) {
+            Rails.ajax({
+                url: "/user/product_feature_items/" + item_id,
+                type: "DELETE",
+                success: function (data) {
+                    if (data.success) {
+                        load_features();
+                    } else {
+                        alert(data.errors);
+                    }
+                }
+            });
+        }
+    }
+
+    function update_feature(i, item_id) {
+        if (confirm("Хадгалах уу?")) {
+            let mrp = $('#mpr_body #item-' + item_id);
+            i.addClass('none');
+            let img = i.parent('img');
+            img.removeClass('none');
+            Rails.ajax({
+                url: "<%= update_feature_users_product_feature_items_path %>",
+                type: "PATCH",
+                data: "item_id=" + item_id +
+                    "&barcode=" + mrp.find('#barcode').val() +
+                    "&price=" + mrp.find('#price').val() +
+                    "&p_6_8_p=" + mrp.find('#p_6_8_p').val() +
+                    "&p_9_p=" + mrp.find('#p_9_p').val() +
+                    "&balance=" + mrp.find('#balance').val() +
+                    "&location_balance=" + mrp.find('#location_balance').val(),
+                success: function (data) {
+                    img.addClass('none');
+                    i.removeClass('none');
+                    if (data.success) {
+                        alert("<%= t('alert.saved_successfully') %>");
+                    } else {
+                        alert(data.errors);
+                    }
+                }
+            });
+        }
+    }
+</script>

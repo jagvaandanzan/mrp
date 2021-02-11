@@ -3,7 +3,7 @@ div.search {
   padding-right: 5px !important;
 }
 
-div.search input, div.search select, div.search a, div.search .dropdown-toggle {
+div.search input[type=text], div.search select, div.search a, div.search .dropdown-toggle {
   font-size: smaller !important;
   height: 30px !important;
   padding-top: 6px;
@@ -20,7 +20,7 @@ div.search input, div.search select, div.search a, div.search .dropdown-toggle {
   font-size: smaller;
 }
 
-div.search input, div.search select, div.search a {
+div.search input[type=text], div.search select, div.search a {
   font-size: smaller !important;
   height: 30px !important;
   padding-top: 6px;

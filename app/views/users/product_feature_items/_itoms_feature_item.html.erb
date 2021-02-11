@@ -1,0 +1,18 @@
+<% product_feature_items.each do |item| %>
+  <tr class="product " id="item-<%= item.id %>" item_id="<%= item.id %>">
+    <td class="va-mid"><%= item.name %></td>
+    <td class="va-mid"><%= text_field_tag :barcode, item.barcode, {class: 'field'} %></td>
+    <td class="va-mid"><%= number_field_tag :price, item.price, {class: 'field', min: 0, autocomplete: 'off'} %></td>
+    <td class="va-mid"><%= number_field_tag :p_6_8_p, item.p_6_8_p, {class: 'field', min: 0, autocomplete: 'off'} %></td>
+    <td class="va-mid"><%= number_field_tag :p_9_p, item.p_9_p, {class: 'field', min: 0, autocomplete: 'off'} %></td>
+    <td class="va-mid"><%= number_field_tag :balance, item.balance, {class: 'field', min: 0, autocomplete: 'off'} %></td>
+    <td class="va-mid"><%= text_field_tag :location_balance, item.location_balance, {class: 'field'} %></td>
+    <td class="va-mid nowrap action">
+      <%= image_tag '/images/loading2.gif',class: 'none' %>
+      <i class="fa fa-fw fa-save" style="font-size: 18px;color: #46a2e1" onclick="update_feature($(this), <%= item.id%>)"></i>
+      <%= link_to '#', onclick: "remove_feature(#{item.id})" do %>
+        <i class="fa fa-fw fa-minus-circle" style="font-size: 15px;color: red"></i>
+      <% end %>
+    </td>
+  </tr>
+<% end %>

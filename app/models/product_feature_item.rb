@@ -9,29 +9,46 @@ class ProductFeatureItem < ApplicationRecord
   has_many :product_sales, through: :product_sale_items
   has_many :salesman_travel, through: :product_sales
   has_many :product_warehouse_locs, :class_name => "ProductWarehouseLoc", :foreign_key => "feature_item_id", dependent: :destroy
-  has_one :product_income_balance, :class_name => "ProductIncomeBalance", :foreign_key => "feature_item_id", dependent: :destroy
+  has_many :product_balances, :class_name => "ProductBalance", :foreign_key => "feature_item_id", dependent: :destroy
+  has_many :product_income_balances, :class_name => "ProductIncomeBalance", :foreign_key => "feature_item_id", dependent: :destroy
+  has_many :product_location_balances, dependent: :destroy
+
+  accepts_nested_attributes_for :product_location_balances, allow_destroy: true
+
+  before_save :set_default
 
   after_create -> {sync_web('post')}
   after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
   after_destroy -> {sync_web('delete')}
-  attr_accessor :method_type
+  attr_accessor :method_type, :is_add, :is_update, :location_balances
 
   has_attached_file :image, :path => ":rails_root/public/product_feature_items/image/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/product_feature_items/image/:id_partition/:style.:extension'
   validates_attachment :image,
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
 
-  with_options :if => Proc.new {|m| m.product.is_customer?} do
+  with_options :if => Proc.new {|m| m.product.is_customer? || m.is_add.present?} do
     validates :c_balance, numericality: {greater_than: 0, only_integer: true, message: :invalid}
   end
 
-  with_options :unless => Proc.new {|m| m.tab_index.present?} do
+  with_options :unless => Proc.new {|m| m.tab_index.present? || m.is_add.present?} do
     # validates :barcode, presence: true, length: {maximum: 255}
     # validates_uniqueness_of :barcode
     validates :price, presence: true, :numericality => true
   end
 
-  with_options :if => Proc.new {|m| m.tab_index == 3 && !m.same_item.present?} do
+  with_options :if => Proc.new {|m| (m.tab_index == 3 || m.is_add.present?) && !m.same_item.present?} do
     validates :image, presence: true
+  end
+
+  with_options :if => Proc.new {|m| m.is_add.present?} do
+    validates :option1_id, :option2_id, :barcode, presence: true
+    validate :product_locations_count_check
+  end
+
+  with_options :if => Proc.new {|m| m.is_update.present?} do
+    before_validation :parse_location_balance
+    validates :price, :barcode, :c_balance, :location_balances, presence: true
+    validate :product_locations_count_check
   end
 
   attr_accessor :tab_index
@@ -49,6 +66,9 @@ class ProductFeatureItem < ApplicationRecord
   }
 
 
+  scope :by_product_id, ->(product_id) {
+    where(product_id: product_id)
+  }
   scope :search, ->(product_id) {
     if product_id.nil?
       []
@@ -111,7 +131,91 @@ class ProductFeatureItem < ApplicationRecord
     end
   end
 
+  def location_balance
+    s = ""
+    product_location_balances.each_with_index {|loc_bal, index|
+      location = loc_bal.product_location
+      if index > 0
+        s += "#"
+      end
+      s += "x#{location.x}y#{location.y}z#{location.y}=#{loc_bal.quantity}"
+    }
+    s
+  end
+
   private
+
+  def set_default
+    self.p_6_8 = price - ((price * p_6_8_p) / 100) if p_6_8_p.present?
+    self.p_9_ = price - ((price * p_9_p) / 100) if p_9_p.present?
+
+    if is_add.present?
+      was_option_ids = product.product_feature_option_rels.map(&:feature_option_id).to_a
+
+      unless was_option_ids.include? option1_id
+        ProductFeatureOptionRel.create(product_id: product_id, feature_option_id: option1_id)
+      end
+      unless was_option_ids.include? option2_id
+        ProductFeatureOptionRel.create(product_id: product_id, feature_option_id: option2_id)
+      end
+
+      self.product_balances << ProductBalance.new(product: product,
+                                                  quantity: c_balance)
+    end
+  end
+
+  def parse_location_balance
+    if location_balances.present?
+      quantity = c_balance - balance
+      if quantity != 0
+        product_balances << ProductBalance.new(product: product,
+                                               quantity: quantity)
+      end
+
+      lbs = location_balances.split('#')
+      self.product_location_balances.destroy_all
+      lbs.each do |lb|
+        locs = lb.split('=')
+        loc = locs[0]
+        q = locs[1].to_i
+        index_x = loc.index('x')
+        index_y = loc.index('y')
+        index_z = loc.index('z')
+
+        x = loc[(index_x + 1)..(index_y - 1)].to_i
+        y = loc[(index_y + 1)..(index_z - 1)].to_i
+        z = loc.from(index_z + 1).to_i
+
+        product_locations = ProductLocation.by_xyz(x, y, z)
+        product_location = if product_locations.present?
+                             product_locations.first
+                           else
+                             ProductLocation.create(x: x, y: y, z: z)
+                           end
+        self.product_location_balances << ProductLocationBalance.new(product_location: product_location,
+                                                                     quantity: q)
+      end
+    end
+  end
+
+  def product_locations_count_check
+    s = 0
+    self.product_location_balances.each do |location|
+      lq = location.quantity
+      if lq.present?
+        if lq < 0
+          errors.add(:product_location_balances, :greater_than, count: 0)
+          return
+        end
+        s += location.quantity
+      end
+    end
+    if (self.c_balance || 0) < s
+      errors.add(:product_location_balances, :over)
+    elsif self.c_balance > s
+      errors.add(:product_location_balances, :equal_to, count: self.c_balance)
+    end
+  end
 
   def sync_web(method)
     self.method_type = method
@@ -120,6 +224,19 @@ class ProductFeatureItem < ApplicationRecord
     if method == 'delete'
       params = nil
       url += "/" + id.to_s
+
+      # product_feature_option_rels г устгах ёстой
+      delete_ids = []
+      items = product.product_feature_items
+                  .by_product_id(product_id)
+                  .by_option_ids([self.option1_id])
+      delete_ids << self.option1_id unless items.present?
+      items = product.product_feature_items
+                  .by_product_id(product_id)
+                  .by_option_ids([self.option2_id])
+      delete_ids << self.option2_id unless items.present?
+
+      product.product_feature_option_rels.by_feature_option_ids(delete_ids).destroy_all
     else
 
       params = self.to_json(only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :c_balance, :same_item_id], :methods => [:method_type, :image_url])
@@ -127,4 +244,5 @@ class ProductFeatureItem < ApplicationRecord
 
     ApplicationController.helpers.api_request(url, method, params)
   end
+
 end

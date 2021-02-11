@@ -1,8 +1,8 @@
 class CreateSaleTaxes < ActiveRecord::Migration[5.2]
   def change
-    # add_column :shipping_er_products, :cost, :float, after: 'cargo'
-    # add_column :shipping_ub_boxes, :cost, :float, after: 'shipping_ub_id'
-    add_column :products, :p_type, :integer, after: 'is_own'
-    add_column :shipping_ub_boxes, :number, :string, after: 'cost'
+    add_column :product_feature_items, :p_6_8_p, :integer, after: 'p_6_8'
+    add_column :product_feature_items, :p_9_p, :integer, after: 'p_9_'
+    add_reference :product_location_balances, :product_feature_item, after:'feature_item_id'
+    # remove_reference :product_location_balances,:feature_item
   end
 end

@@ -20,6 +20,12 @@ class ProductBalance < ApplicationRecord
         .where(sale_item_id: sale_item_id)
   }
 
+  scope :balance, -> (product_id, feature_item_id = nil) {
+    items = where(product_id: product_id)
+    items = items.where(feature_item_id: feature_item_id) if feature_item_id.present?
+    items.sum(:quantity)
+  }
+
   private
 
   def sync_web
@@ -28,8 +34,9 @@ class ProductBalance < ApplicationRecord
       balance = ProductBalance.balance(product_id, feature_item_id)
 
       params = {product_id: product_id, feature_item_id: feature_item_id, balance: balance}.to_json
-      response = ApplicationController.helpers.api_request(url, 'patch', params)
-      Rails.logger.info("response: #{response.body}")
+      ApplicationController.helpers.api_request(url, 'patch', params)
+      # response =
+      # Rails.logger.info("response: #{response.body}")
     end
 
   end

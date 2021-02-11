@@ -1,0 +1,13 @@
+<div style="white-space: nowrap;margin-bottom: 4px">
+  <%= field_errors f.object, :x %>
+  <%= f.select :x, (1..22).map {|m| ["x#{m}", m]}, {prompt: 'X'}, {class: ''} %>
+  <%= field_errors f.object, :y %>
+  <%= f.select :y, (1..44).map {|m| ["y#{m}", m]}, {prompt: 'Y'}, {class: ''} %>
+  <%= field_errors f.object, :z %>
+  <%= f.select :z, (1..20).map {|m| ["z#{m}", m]}, {prompt: 'Z'}, {class: ''} %>
+  <%= field_errors f.object, :quantity %>
+  <%= f.number_field :quantity, {class: 'field', placeholder: t('activerecord.attributes.product_income_item.quantity'), style: 'height:auto; width: 160px'} %>
+  <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+    <%= nested_remove_btn %>
+  <% end %>
+</div>

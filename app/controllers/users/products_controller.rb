@@ -131,11 +131,13 @@ class Users::ProductsController < Users::BaseController
   private
 
   def category_headers
-    @product.tab_index = params[:tab_index] if params[:tab_index].present?
-    @headers = ApplicationController.helpers.get_category_parents(@product.category)
-    @headers = @headers.reverse
-    @product.option_rels = @product.product_feature_option_rels.map {|i| i.feature_option_id.to_s}.to_a
-    @product.filters = @product.product_filters.map {|i| i.category_filter_id.to_s}.to_a
+    if @product.present?
+      @product.tab_index = params[:tab_index] if params[:tab_index].present?
+      @headers = ApplicationController.helpers.get_category_parents(@product.category)
+      @headers = @headers.reverse
+      @product.option_rels = @product.product_feature_option_rels.map {|i| i.feature_option_id.to_s}.to_a
+      @product.filters = @product.product_filters.map {|i| i.category_filter_id.to_s}.to_a
+    end
   end
 
   def set_product
@@ -148,7 +150,7 @@ class Users::ProductsController < Users::BaseController
 
   def form_price_params
     params.require(:product).permit(:tab_index, :delivery_type, instruction_id: [], instruction_val: [],
-                                    product_feature_items_attributes: [:id, :price, :p_6_8, :p_9_, :barcode, :c_balance, :_destroy])
+                                    product_feature_items_attributes: [:id, :price, :p_6_8_p, :p_9_p, :barcode, :c_balance, :_destroy])
   end
 
   def form_information_params

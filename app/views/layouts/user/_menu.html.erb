@@ -50,9 +50,24 @@
         <% end %>
       <% end %>
       <% if can? :read, Product %>
-        <%= content_tag :li, class: (controller_name == 'products' || controller_name == 'product_feature_rels') ? 'active' : '' do %>
-          <%= link_to users_products_path do %>
+        <%= content_tag :li, class: (controller_name == 'products' || controller_name == 'product_feature_rels' || controller_name == 'product_feature_items') ? 'treeview active' : 'treeview' do %>
+          <%= link_to "#" do %>
             <i class="fa fa-cube"></i><span><%= t('titles.products') %></span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          <% end %>
+          <%= content_tag :ul, class: 'treeview-menu' do %>
+            <%= content_tag :li, class: controller_name == 'products' ? 'active' : '' do %>
+              <%= link_to users_products_path do %>
+                <i class="fa fa-list"></i><span><%= t('titles.list') %></span>
+              <% end %>
+            <% end %>
+            <%= content_tag :li, class: controller_name == 'product_feature_items' ? 'active' : '' do %>
+              <%= link_to balance_users_product_feature_items_path do %>
+                <i class="fa fa-balance-scale"></i><span><%= t('titles.balance') %></span>
+              <% end %>
+            <% end %>
           <% end %>
         <% end %>
       <% end %>
@@ -145,7 +160,7 @@
               <% end %>
               <%= content_tag :li, class: (controller_name == 'technical_specifications') ? 'active' : '' do %>
                 <%= link_to users_technical_specifications_path do %>
-                  <i class="fa fa-fw fa-balance-scale"></i><span><%= t('activerecord.models.technical_specification') %></span>
+                  <i class="fa fa-fw fa-television"></i><span><%= t('activerecord.models.technical_specification') %></span>
                 <% end %>
               <% end %>
               <%= content_tag :li, class: (controller_name == 'size_instructions') ? 'active' : '' do %>

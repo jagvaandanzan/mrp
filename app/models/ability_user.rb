@@ -19,6 +19,7 @@ class AbilityUser
         can role, ProductFeatureOption
         can role, ProductFeatureGroup
         can role, ProductFeature
+        can role, ProductFeatureItem
         can role, CategoryFilterGroup
         can role, Brand
         can role, TechnicalSpecification

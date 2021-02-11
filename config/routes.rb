@@ -99,6 +99,16 @@ Rails.application.routes.draw do
     resources :product_feature_options, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :category_filter_groups, only: [:index, :create, :new, :show, :edit, :update, :destroy], path: "category/filters"
     resources :product_discounts, only: [:create, :new, :edit, :update, :destroy]
+    resources :product_feature_items, only: [:create, :new, :destroy] do
+      collection do
+        get 'balance'
+        post 'get_feature_items'
+        get 'set_balance'
+        post 'load_features'
+        post 'itoms'
+        patch 'update_feature'
+      end
+    end
     resources :products, only: [:index, :create, :new, :show, :edit, :update, :destroy] do
       collection do
         patch 'get_product_category_children'

@@ -1,0 +1,19 @@
+<% product_feature_items.each do |item| %>
+  <tr>
+    <td class="va-mid"><%= item.name %></td>
+    <td class="va-mid"><%= item.barcode %></td>
+    <td class="va-mid"><%= get_currency_mn item.price %></td>
+    <td class="va-mid"><%= item.p_6_8_p %></td>
+    <td class="va-mid"><%= item.p_9_p %></td>
+    <td class="va-mid"><%= item.balance %></td>
+    <td class="va-mid">
+      <% item.product_location_balances.each {|loc_bal| %>
+        <% location = loc_bal.product_location %>
+        <div>
+          <span>x<%= location.x %></span>
+          <span>y<%= location.y %></span>
+          <span>z<%= location.z %></span>:&nbsp;<%= loc_bal.quantity %>
+        </div>
+      <% } %></td>
+  </tr>
+<% end %>
