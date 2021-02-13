@@ -2,6 +2,7 @@ class Users::BaseController < ApplicationController
   layout 'user'
 
   before_action do
+    set_locale
     authenticate_user!
     redirect_to user_passwords_edit_password_path if current_user.password_is_reset
   end
@@ -32,6 +33,10 @@ class Users::BaseController < ApplicationController
 
   def routing_error
     redirect_to users_root_path
+  end
+
+  def set_locale
+    I18n.locale = params[:locale] || :mn
   end
 
 end
