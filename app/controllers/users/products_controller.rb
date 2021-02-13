@@ -15,7 +15,14 @@ class Users::ProductsController < Users::BaseController
       @headers = ApplicationController.helpers.get_category_parents(@product_category)
       @headers = @headers.reverse
     end
-    @products = Product.search(@code, @name, @price_min, @price_max, @customer_id, @category_id).page(params[:page])
+    @products = Product.by_not_draft
+                    .s_by_code(@code)
+                    .s_by_name(@name)
+                    .s_by_price_max_min(@price_min, @price_max)
+                    .by_customer(@customer_id)
+                    .by_category(@category_id)
+                    .order_by_name
+                    .page(params[:page])
   end
 
   def new

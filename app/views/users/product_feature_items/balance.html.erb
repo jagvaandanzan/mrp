@@ -35,9 +35,9 @@
                      {:prompt => t('activerecord.attributes.product.customer_id'), :selected => @customer_id}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
       </div>
       <div class="col-md-3 search va-mid">
-        <%= check_box_tag :balance %> <span>Үлдэгдэл</span>
-        <%= check_box_tag :barcode %> <span>Баркод</span>
-        <%= check_box_tag :desk %> <span>Тавцан</span>
+        <%= select_tag :balance, options_for_select([["Үлдэгдэл", ""], ["Үлдэгдэлтэй", true], ["Үлдэгдэлгүй", false]], @balance), class: 'form-control-1' %>
+        <%= select_tag :barcode, options_for_select([["Баркод", ""], ["Баркодтой", true], ["Баркодгүй", false]], @barcode), class: 'form-control-1' %>
+        <%= select_tag :desk, options_for_select([["Тавиур", ""], ["Тавиуртай", true], ["Тавиургүй", false]], @desk), class: 'form-control-1' %>
       </div>
       <div class="col-md-2 search" id="product_category">
         <%= hidden_field_tag :category_id, @category_id %>
@@ -71,7 +71,7 @@
         <% end %>
       </div>
       <div class="col-md-1 search">
-        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
+        <%= submit_tag "#{t('controls.button.searching')} (#{@product_count})", :class => 'btn blck-btn pull-left' %>
       </div>
       <% if can? :create, Product %>
         <div class="col-md-1 search">
@@ -132,7 +132,7 @@
         </div>
       </div>
     </div>
-    <%= paginate @products %>
+    <%= paginate @products, total_pages: @total_pages %>
   </section>
 </div>
 <script>

@@ -94,7 +94,7 @@ class Product < ApplicationRecord
     order(:n_name)
   }
   scope :by_not_draft, -> {
-    where(draft: false)
+    where("products.draft = ?", false)
   }
 
   scope :search_by_name, ->(sname) {
@@ -102,49 +102,57 @@ class Product < ApplicationRecord
     items = items.where('code LIKE :value OR n_name LIKE :value', value: "%#{sname}%") if sname.present?
     items.order_by_name
   }
+  scope :s_by_name, ->(name) {
+    joins(:brand)
+        .where('n_model LIKE :value OR n_name LIKE :value OR n_package LIKE :value OR n_material LIKE :value OR n_advantage LIKE :value OR brands.name LIKE :value', value: "%#{name}%") if name.present?
+  }
+  scope :s_by_code, ->(code) {
+    where('code LIKE :value', value: "%#{code}%") if code.present?
+  }
 
-  scope :search, ->(code, name, price_min, price_max, customer_id, category_id) {
-    items = by_not_draft
-    items = items.where('code LIKE :value', value: "%#{code}%") if code.present?
-    if name.present?
-      items = items.joins(:brand)
-      items = items.where('n_model LIKE :value OR n_name LIKE :value OR n_package LIKE :value OR n_material LIKE :value OR n_advantage LIKE :value OR brands.name LIKE :value', value: "%#{name}%")
-    end
-    if price_min.present? && price_max.present?
-      items = items.left_joins(:product_feature_items)
-      items = items.where("product_feature_items.price >= ?", price_min)
-                  .where("product_feature_items.price <= ?", price_max)
-                  .group(:id)
-    end
+  scope :s_by_price_max_min, ->(price_min, price_max) {
+    left_joins(:product_feature_items)
+        .where("product_feature_items.price >= ?", price_min)
+        .where("product_feature_items.price <= ?", price_max)
+        .group(:id) if price_min.present? && price_max.present?
+  }
+  scope :by_customer, ->(customer_id) {
     if customer_id.present?
       if customer_id.to_i == 0
-        items = items.where("customer_id IS ?", nil)
+        where("products.customer_id IS ?", nil)
       else
-        items = items.where(customer_id: customer_id)
+        where("products.customer_id = ?", customer_id)
       end
     end
+  }
 
+  scope :by_category, ->(category_id) {
     if category_id.present?
       product_category = ProductCategory.find(category_id)
       ids = product_category.category_ids
-      items = items.where("category_id IN (?)", ids)
+      where("products.category_id IN (?)", ids)
     end
-
-    items.order_by_name
   }
 
   scope :by_balance, ->(balance, barcode, desk) {
     items = order_by_name
-    items = items.left_joins(:product_feature_items)
-                .where("product_feature_items.barcode IS NOT ?", nil) if barcode.present?
-
     items = items.left_joins(:product_balances)
-                .where("SUM(product_feature_items.quantity) > ?", 0) if balance.present?
-
+                .having("#{balance == "true" ? 'SUM(product_balances.quantity) > ?' : 'SUM(product_balances.quantity) IS NULL OR SUM(product_balances.quantity) = ?'} ", 0)
+                .group('products.id') if balance.present?
+    if barcode.present?
+      items = items.left_joins(:product_feature_items)
+      if barcode == "true"
+        items = items.where("product_feature_items.barcode IS NOT ? AND product_feature_items.barcode !=''", nil)
+      else
+        items = items.where("product_feature_items.barcode IS ? OR product_feature_items.barcode =''", nil)
+      end
+    end
     items = items.left_joins(:product_location_balances)
-                .where("SUM(product_feature_items.quantity) > ?", 0) if desk.present?
+                .having("#{desk == "true" ? 'SUM(product_location_balances.quantity) > ?' : 'SUM(product_location_balances.quantity) IS NULL OR SUM(product_location_balances.quantity) = ?'} ", 0)
+                .group('products.id') if desk.present?
     items
   }
+
   scope :search_by_id, ->(id) {
     if id.present?
       where(id: id)

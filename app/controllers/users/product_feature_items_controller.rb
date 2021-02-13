@@ -60,8 +60,20 @@ class Users::ProductFeatureItemsController < Users::BaseController
       @headers = ApplicationController.helpers.get_category_parents(@product_category)
       @headers = @headers.reverse
     end
-    @products = Product.by_balance(@balance, @barcode, @desk)
-                    .search(@code, @name, params[:no], params[:no], @customer_id, @category_id).page(params[:page]).per(20)
+
+    products = Product
+                   .by_not_draft
+                   .s_by_code(@code)
+                   .s_by_name(@name)
+                   .by_customer(@customer_id)
+                   .by_category(@category_id)
+                   .by_balance(@balance, @barcode, @desk)
+
+    @product_count = products.length
+    @total_pages = (@product_count / 20).to_i
+    @total_pages += 1 if @product_count % 20 > 0
+
+    @products = products.page(params[:page]).per(20)
   end
 
   def get_feature_items

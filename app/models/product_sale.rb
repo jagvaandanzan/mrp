@@ -55,7 +55,6 @@ class ProductSale < ApplicationRecord
   }
 
   scope :send_tax, ->(send) {
-    Rails.logger.info("send: #{send}")
     if send.present?
       items = left_joins(:sale_tax)
       if send == "true"
