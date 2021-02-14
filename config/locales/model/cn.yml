@@ -135,7 +135,7 @@ cn:
         product_feature: 产品的颜色和尺码
         product_bought: 收到余额л
         quantity: 总产品的数量о
-        cargo: 货物数量
+        cargo: 几个盒子
         cost: 成本
       shipping_er_feature:
         supply_feature_id: 产品特性
