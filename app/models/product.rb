@@ -459,7 +459,7 @@ class Product < ApplicationRecord
   end
 
   def sync_web(method)
-    unless draft
+    if !draft && is_web
       self.method_type = method
       url = "products"
       if method == 'delete'

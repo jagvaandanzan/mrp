@@ -300,6 +300,7 @@ mn:
         category: Ангилал
         category_id: Ангилал
         product_feature_option_rels: Барааны шинж чанарууд
+        is_web: Веб харуулна
         is_own: Өөрийн бараа
         customer_id: Харилцагч
         delivery_type: Хүргэлтийн нөхцөл

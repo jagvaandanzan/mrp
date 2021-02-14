@@ -116,8 +116,14 @@
           <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product.code') %>
         </div>
       </div>
-      <div class="col-md-2 field_div">
-        <%= f.label :is_own, class: 'control-label' %>
+      <div class="col-md-1 field_div">
+        <%= f.label :is_web, style: 'font-size:11px' %>
+        <div class="<%= get_error_class(@product, :is_web) %>">
+          <%= f.check_box :is_web %>
+        </div>
+      </div>
+      <div class="col-md-1 field_div">
+        <%= f.label :is_own, style: 'font-size:11px' %>
         <div class="<%= get_error_class(@product, :is_own) %>">
           <%= f.check_box :is_own %>
         </div>

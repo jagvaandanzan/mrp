@@ -152,7 +152,7 @@ class Users::ProductsController < Users::BaseController
   end
 
   def product_params
-    params.require(:product).permit(:tab_index, :n_name, :n_model, :n_package, :n_material, :n_advantage, :brand_id, :category_id, :code, :is_own, :customer_id, option_rels: [])
+    params.require(:product).permit(:tab_index, :n_name, :n_model, :n_package, :n_material, :n_advantage, :brand_id, :category_id, :code, :is_web, :is_own, :customer_id, option_rels: [])
   end
 
   def form_price_params
