@@ -176,7 +176,7 @@ class ProductFeatureItem < ApplicationRecord
       self.product_location_balances.destroy_all
       lbs.each do |lb|
         locs = lb.split('=')
-        loc = locs[0]
+        loc = locs[0].downcase
         if loc.length > 5
           q = locs[1].to_i
           if q > 0
