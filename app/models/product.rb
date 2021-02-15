@@ -290,7 +290,7 @@ class Product < ApplicationRecord
     ProductBalance.balance(id)
   end
 
-  # private
+  private
 
   def valid_custom
     errors.add(:category_id, :blank) if category_id.present? && ProductCategory.search(category_id).count > 0

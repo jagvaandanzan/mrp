@@ -165,7 +165,7 @@ class ProductFeatureItem < ApplicationRecord
   end
 
   def parse_location_balance
-    if location_balances.present?
+    if location_balances.present? && c_balance > 0
       quantity = c_balance - balance
       if quantity != 0
         product_balances << ProductBalance.new(product: product,
@@ -177,23 +177,27 @@ class ProductFeatureItem < ApplicationRecord
       lbs.each do |lb|
         locs = lb.split('=')
         loc = locs[0]
-        q = locs[1].to_i
-        index_x = loc.index('x')
-        index_y = loc.index('y')
-        index_z = loc.index('z')
+        if loc.length > 5
+          q = locs[1].to_i
+          if q > 0
+            index_x = loc.index('x')
+            index_y = loc.index('y')
+            index_z = loc.index('z')
 
-        x = loc[(index_x + 1)..(index_y - 1)].to_i
-        y = loc[(index_y + 1)..(index_z - 1)].to_i
-        z = loc.from(index_z + 1).to_i
+            x = loc[(index_x + 1)..(index_y - 1)].to_i
+            y = loc[(index_y + 1)..(index_z - 1)].to_i
+            z = loc.from(index_z + 1).to_i
 
-        product_locations = ProductLocation.by_xyz(x, y, z)
-        product_location = if product_locations.present?
-                             product_locations.first
-                           else
-                             ProductLocation.create(x: x, y: y, z: z)
-                           end
-        self.product_location_balances << ProductLocationBalance.new(product_location: product_location,
-                                                                     quantity: q)
+            product_locations = ProductLocation.by_xyz(x, y, z)
+            product_location = if product_locations.present?
+                                 product_locations.first
+                               else
+                                 ProductLocation.create(x: x, y: y, z: z)
+                               end
+            self.product_location_balances << ProductLocationBalance.new(product_location: product_location,
+                                                                         quantity: q)
+          end
+        end
       end
     end
   end
