@@ -5,6 +5,7 @@
   <% end %>
   <% if @product_id.present? %>
     product_id =  <%= @product_id %>;
+    $('#link').html("<a href='http://web.market.mn/products/<%= @product_id %>' target='_blank'>WEB LINK</a>");
   <% end %>
   $('#mpr_body .product').on('click', function () {
   $('#mpr_body tr.selected').removeClass('selected');
