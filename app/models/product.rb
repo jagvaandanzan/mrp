@@ -337,7 +337,10 @@ class Product < ApplicationRecord
       was_option_ids = product_feature_option_rels.map(&:feature_option_id).to_a
       feature_option_rels = option_rel_ids
       delete_ids = was_option_ids - feature_option_rels
-
+      product_feature_items.by_same_ids(delete_ids).each do |s_item|
+        s_item.same_item = nil
+        s_item.save
+      end
       product_feature_items.by_option_ids(delete_ids).destroy_all
       product_feature_option_rels.by_feature_option_ids(delete_ids).destroy_all
 

@@ -65,6 +65,9 @@ class ProductFeatureItem < ApplicationRecord
         .order("option2s_product_feature_items.queue")
   }
 
+  scope :by_same_ids, ->(ids) {
+    where("same_item_id IN (?)", ids)
+  }
 
   scope :by_product_id, ->(product_id) {
     where(product_id: product_id)
