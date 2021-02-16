@@ -7,7 +7,8 @@ class ProductSupplyOrderItem < ApplicationRecord
 
   enum status: {draft: 0, order_created: 1, ordered: 2, cost_included: 3, warehouse_received: 4, calculated: 5, clarification: 6, clarified: 7, canceled: 8}
 
-  attr_accessor :tab_index
+  attr_accessor :tab_index, :cn_name
+  before_save :set_cn_name
 
   with_options :if => Proc.new {|m| m.product_supply_order.present?} do
     validates :product_id, presence: true
@@ -153,5 +154,11 @@ class ProductSupplyOrderItem < ApplicationRecord
 
   def set_status(status)
     self.update_column(:status, status) if status > ProductSupplyOrderItem.statuses[self.status]
+  end
+
+  private
+
+  def set_cn_name
+    product.update_column(:c_name, cn_name) if cn_name.present? && product.name != cn_name
   end
 end

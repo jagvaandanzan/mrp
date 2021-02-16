@@ -5,7 +5,8 @@ class ProductSupplyFeature < ApplicationRecord
   has_one :product_income_balance, :class_name => "ProductIncomeBalance", :foreign_key => "supply_feature_id", dependent: :destroy
   has_many :shipping_er_features, class_name: "ShippingErFeature", foreign_key: "supply_feature_id", dependent: :destroy
 
-  attr_accessor :is_create, :is_update, :remainder
+  before_save :set_cn_name
+  attr_accessor :is_create, :is_update, :remainder, :cn_name
 
   with_options :if => Proc.new {|m| m.is_create.present?} do
     validates :quantity, :price, presence: true
@@ -85,5 +86,9 @@ class ProductSupplyFeature < ApplicationRecord
                                                                 user_supply: get_user,
                                                                 quantity: quantity)
     end
+  end
+
+  def set_cn_name
+    feature_item.update_column(:c_name, cn_name) if cn_name.present? && feature_item.name != cn_name
   end
 end

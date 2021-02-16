@@ -11,7 +11,7 @@
     <input type="hidden" value="<%= feature.remainder %>" name="shipping_er[shipping_er_products_attributes][<%= rows %>][shipping_er_features_attributes][<%= index %>][remainder]"
            id="shipping_er_shipping_er_products_attributes_<%= rows %>_shipping_er_features_attributes_<%= index %>_remainder">
     <% if index == 0 %>
-      <td class="va-mid"><%= product.name %></td>
+      <td class="va-mid"><%= product.cn_name %></td>
       <td class="va-mid code"><%= product.code %></td>
     <% else %>
       <td></td>
@@ -24,7 +24,7 @@
         <% end %>
       <% end %>
     </td>
-    <td class="va-mid"><%= feature_item.name %></td>
+    <td class="va-mid"><%= feature_item.cn_name %></td>
     <td class="va-mid text-center"><%= feature.remainder %>
     <td class="va-mid">
       <input class="form-control field quantity" p="<%= product.id %>" min="0" step="1" placeholder="<%= t('activerecord.attributes.shipping_er_feature.quantity') %>" type="number"

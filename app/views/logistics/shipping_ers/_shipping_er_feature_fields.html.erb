@@ -5,7 +5,7 @@
   <%= f.hidden_field :supply_feature_id %>
   <%= f.hidden_field :remainder %>
   <% if index == 0 %>
-    <td class="va-mid"><%= product.name %></td>
+    <td class="va-mid"><%= product.cn_name %></td>
     <td class="va-mid code"><%= product.code %></td>
   <% else %>
     <td></td>
@@ -16,9 +16,13 @@
       <%= link_to feature_item.img.url, "data-lightbox": "roadtrip" do %>
         <%= t('titles.view') %>
       <% end %>
+    <% elsif product.picture.present? %>
+      <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
+        <%= t('titles.view') %>
+      <% end %>
     <% end %>
   </td>
-  <td class="va-mid"><%= feature_item.name %></td>
+  <td class="va-mid"><%= feature_item.cn_name %></td>
   <td class="va-mid text-center"><%= f.object.remainder %>
   <td class="va-mid">
     <%= field_errors f.object, :quantity %>

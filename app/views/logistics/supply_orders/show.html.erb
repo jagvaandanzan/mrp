@@ -74,17 +74,22 @@
               <% total_sum = 0 %>
               <% @supply_order_item.supply_features.each {|feature| %>
                 <tr>
-                  <% if is_supply_order %>
+                  <% if is_supply_order
+                       product = feature.product %>
                     <td class="va-mid text-center">
                       <% if feature.feature_item.img.present? %>
                         <%= link_to feature.feature_item.img.url, "data-lightbox": "roadtrip" do %>
+                          <%= t('titles.view') %>
+                        <% end %>
+                      <% elsif product.picture.present? %>
+                        <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
                           <%= t('titles.view') %>
                         <% end %>
                       <% end %>
                     </td>
                   <% end %>
                   <td class="va-mid">
-                    <%= feature.feature_item.name %>
+                    <%= feature.feature_item.cn_name %>
                   </td>
                   <td class="va-mid">
                     <%= feature.quantity %> / <b><%= feature.quantity_lo %></b>

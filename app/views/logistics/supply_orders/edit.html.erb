@@ -68,6 +68,12 @@
           </div>
 
           <div class="form-group m-t-10 ">
+            <%= f.label :cn_name, class: 'col-sm-1 control-label' %>
+            <div class="col-sm-11">
+              <%= f.text_field :cn_name, value: @supply_order_item.product.cn_name, class: 'form-control field' %>
+            </div>
+          </div>
+          <div class="form-group m-t-10 ">
             <%= f.label :note_lo, class: 'col-sm-1 control-label' %>
             <div class="col-sm-11 <%= get_error_class(@supply_order_item, :note_lo) %>">
               <%= field_errors(@supply_order_item, :note_lo) %>

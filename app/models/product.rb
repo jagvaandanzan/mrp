@@ -215,6 +215,10 @@ class Product < ApplicationRecord
     n
   end
 
+  def cn_name
+    c_name.presence || name
+  end
+
   def product_feature_option_ids
     option_features = []
     product_feature_option_rels.each do |option_rel|

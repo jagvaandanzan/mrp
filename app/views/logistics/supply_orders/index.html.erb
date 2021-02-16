@@ -52,7 +52,7 @@
                   <td class="va-mid"><%= supply_order.ordered_date.strftime('%F') %> - <%= i.status_i18n %>
                     - <%= supply_order.user.name %></td>
                   <td class="va-mid"><%= product.code %></td>
-                  <td class="va-mid"><%= product.name %></td>
+                  <td class="va-mid"><%= product.cn_name %></td>
                   <td class="va-mid"><%= i.purchase_stat.html_safe %></td>
                   <td class="va-mid"><%= i.sum_price_lo.present? ? supply_order.get_currency(i.sum_price_lo) : '' %></td>
                   <td class="va-mid"><%= i.purchase_date %></td>

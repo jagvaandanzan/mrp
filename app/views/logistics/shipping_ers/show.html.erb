@@ -50,7 +50,7 @@
                   <% product = er_feature.product
                      feature_item = er_feature.supply_feature.feature_item %>
                   <% if index == 0 %>
-                    <td class="va-mid"><%= product.name %></td>
+                    <td class="va-mid"><%= product.cn_name %></td>
                     <td class="va-mid"><%= product.code %></td>
                   <% else %>
                     <td></td>
@@ -63,7 +63,7 @@
                       <% end %>
                     <% end %>
                   </td>
-                  <td class="va-mid"><%= feature_item.name %></td>
+                  <td class="va-mid"><%= feature_item.cn_name %></td>
                   <td class="va-mid"><%= er_feature.quantity %></td>
                   <td></td>
                   <td></td>

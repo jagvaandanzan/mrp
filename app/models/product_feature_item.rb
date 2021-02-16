@@ -120,6 +120,10 @@ class ProductFeatureItem < ApplicationRecord
     end
   end
 
+  def cn_name
+    c_name.presence || name
+  end
+
   def image_url
     if img.present?
       img.url

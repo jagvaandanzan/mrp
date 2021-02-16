@@ -93,7 +93,7 @@
                        product = feature_item.product %>
                     <tr class="p-<%= product.id %>">
                       <% if product_id != product.id %>
-                        <td class="va-mid"><%= product.name %></td>
+                        <td class="va-mid"><%= product.cn_name %></td>
                         <td class="va-mid"><%= product.code %></td>
                       <% else %>
                         <td></td>
@@ -104,9 +104,13 @@
                           <%= link_to feature_item.img.url, :"data-lightbox" => "roadtrip" do %>
                             <%= t('titles.view') %>
                           <% end %>
+                        <% elsif product.picture.present? %>
+                          <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
+                            <%= t('titles.view') %>
+                          <% end %>
                         <% end %>
                       </td>
-                      <td class="va-mid"><%= feature_item.name %></td>
+                      <td class="va-mid"><%= feature_item.cn_name %></td>
                       <td class="va-mid text-center"><%= supply_feature[:remainder] %></td>
                       <td class="va-mid">
                         <% if product_id != product.id

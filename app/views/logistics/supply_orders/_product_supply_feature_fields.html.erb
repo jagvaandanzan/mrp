@@ -1,16 +1,21 @@
 <tr class="nested-fields field_div">
   <%= f.hidden_field :is_update, value: true %>
-  <% if is_supply_order %>
+  <% if is_supply_order
+       product = f.object.feature_item.product %>
     <td class="va-mid text-center">
       <% if f.object.feature_item.img.present? %>
         <%= link_to f.object.feature_item.img.url, "data-lightbox": "roadtrip" do %>
+          <%= t('titles.view') %>
+        <% end %>
+      <% elsif product.picture.present? %>
+        <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
           <%= t('titles.view') %>
         <% end %>
       <% end %>
     </td>
   <% end %>
   <td class="va-mid">
-    <%= f.object.feature_item.name %>
+    <%= f.text_field :cn_name, value: f.object.feature_item.cn_name, class: 'form-control field' %>
   </td>
   <td class="va-mid">
     <%= f.object.quantity %>

@@ -108,6 +108,7 @@ cn:
         price: 价格
         shipping_er_date: 产品到二连浩特的日期
         shipping_ub_date: 从二连浩特发货日期
+        cn_name: 产品名
       product_supply_feature:
         image: 照片
         feature_item_id: 产品性质
