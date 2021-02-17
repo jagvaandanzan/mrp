@@ -120,24 +120,36 @@ def check_payment(transactions)
     if transaction.value.downcase.match(/[wq][0-9]{8}/)
       if transaction.value.downcase.start_with?('qpay', 'mm:qpay')
         transaction_id = transaction.value.downcase.match(/[q]\d+[0-9]/).to_s
-        param = {
-            amount: transaction.summary / 99 * 100,
+        payment = transaction.summary / 99 * 100
+        param_old = {
+            amount: payment,
             type: "QPAY",
             transactionNumber: transaction_id[1..transaction_id.length],
             ibank_id: 0
         }
       else
         transaction_id = transaction.value.downcase.match(/[w]\d+[0-9]/).to_s
-        param = {
-            amount: transaction.summary,
+        payment = transaction.summary
+        param_old = {
+            amount: payment,
             type: "WEB",
             transactionNumber: transaction_id[1..transaction_id.length],
             ibank_id: 0
         }
       end
-      response = ApplicationController.helpers.sent_market_web("https://market.mn/api/payments", 'post', param.to_json)
-      Rails.logger.debug("market.mn/api/payments => #{param.to_json}")
-      Rails.logger.debug("market.mn/api/payments => #{response.code.to_s} => #{response.body.to_s}")
+      ApplicationController.helpers.sent_market_web("https://market.mn/api/payments", 'post', param_old.to_json)
+
+      # param = {
+      #     code: transaction_id[1..transaction_id.length],
+      #     pay: payment
+      # }
+
+      # response = ApplicationController.helpers.api_request('sales/payment', 'post', param)
+      # if response.code.to_i == 201
+      #   json = JSON.parse(response.body)
+      # end
+      # Rails.logger.debug("market.mn/api/payments => #{param.to_json}")
+      # Rails.logger.debug("market.mn/api/payments => #{response.code.to_s} => #{response.body.to_s}")
     end
     ids << transaction.id
   end
