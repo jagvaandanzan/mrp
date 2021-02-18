@@ -241,8 +241,8 @@ class ProductFeatureItem < ApplicationRecord
   end
 
   def resize_img
-    if self.image.present?
-      img = self.image
+    img = self.image
+    if img.present?
       path_orig = img.queued_for_write[:original]
       path_thumb = img.queued_for_write[:tumb]
       ApplicationController.helpers.resize_image(path_orig.path) if path_orig.present?
