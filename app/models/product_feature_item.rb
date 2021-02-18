@@ -70,6 +70,10 @@ class ProductFeatureItem < ApplicationRecord
     where("same_item_id IN (?)", ids)
   }
 
+  scope :same_id_not_nil, ->() {
+    where("same_item_id IS NOT ?", nil)
+  }
+
   scope :by_product_id, ->(product_id) {
     where(product_id: product_id)
   }
