@@ -41,6 +41,10 @@ class ProductSupplyFeature < ApplicationRecord
     where(product_id: product_id)
   }
 
+  scope :by_feature_item_ids, ->(feature_item_ids) {
+    where("feature_item_id IN (?)", feature_item_ids)
+  }
+
   def price
     ApplicationController.helpers.get_f(self[:price])
   end

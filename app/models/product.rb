@@ -6,6 +6,7 @@ class Product < ApplicationRecord
   belongs_to :brand
   belongs_to :manufacturer, optional: true
   belongs_to :technical_specification, optional: true
+  belongs_to :user, optional: true
 
   has_many :product_feature_option_rels
   has_many :product_feature_items, -> {order_is_feature}
@@ -80,6 +81,7 @@ class Product < ApplicationRecord
   end
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 3} do
+    validate :check_image_size
     validate :valid_image_videos
   end
 
@@ -463,6 +465,27 @@ class Product < ApplicationRecord
 
   def set_product_type
     self.p_type = 2 if is_own == 0
+  end
+
+  def resize_img
+    if self.picture.present?
+      img = self.picture
+      ApplicationController.helpers.resize_image(img.path(:original))
+      ApplicationController.helpers.resize_image(img.path(:tumb))
+    end
+  end
+
+  def check_image_size
+    if self.picture.present?
+      img = self.picture
+      if img.queued_for_write[:original].present?
+        geo = Paperclip::Geometry.from_file(img.queued_for_write[:original].path)
+        ratio = geo.width / geo.height
+        if ratio.to_i != 1
+          self.errors.add(:picture, " 1x1 хэмжээтэй байх ёстой")
+        end
+      end
+    end
   end
 
   def sync_web(method)

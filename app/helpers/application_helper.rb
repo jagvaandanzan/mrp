@@ -1,4 +1,16 @@
 module ApplicationHelper
+  def resize_image(path)
+    if File.exist?(path)
+      geo = Paperclip::Geometry.from_file(path)
+      ratio = geo.width / geo.height
+      if ratio != 1
+        max_dem = geo.width > geo.height ? geo.width : geo.height
+        dimensions = "#{max_dem.to_i}x#{max_dem.to_i}"
+        system("convert -background white -gravity center #{path} -resize #{dimensions} -extent #{dimensions} #{path}")
+      end
+    end
+  end
+
   def get_f(number)
     if number.nil?
       0

@@ -82,11 +82,17 @@ class ProductSupplyOrderItem < ApplicationRecord
   def set_supply_feature
     if product.product_feature_items.present?
       if supply_features.count != product.product_feature_items.count
-        self.supply_features.destroy_all
-        product.product_feature_items.each {|feature_item|
-          self.supply_features << ProductSupplyFeature.new(feature_item: feature_item,
+        was_feature_ids = supply_features.map(&:feature_item_id).to_a
+        feature_ids = product.product_feature_items.map(&:id).to_a
+        delete_ids = was_feature_ids - feature_ids
+        self.supply_features.by_feature_item_ids(delete_ids).destroy_all
+
+        (feature_ids - was_feature_ids).each do |feature_id|
+          feature_item = ProductFeatureItem.find(feature_id)
+          self.supply_features << ProductSupplyFeature.new(feature_item_id: feature_id,
                                                            product_id: feature_item.product_id)
-        }
+        end
+
       end
     end
   end

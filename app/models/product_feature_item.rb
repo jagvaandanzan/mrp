@@ -16,6 +16,7 @@ class ProductFeatureItem < ApplicationRecord
   accepts_nested_attributes_for :product_location_balances, allow_destroy: true
 
   before_save :set_default
+  validate :check_image_size
 
   after_create -> {sync_web('post')}
   after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
@@ -225,6 +226,29 @@ class ProductFeatureItem < ApplicationRecord
       errors.add(:product_location_balances, :over)
     elsif self.c_balance > s
       errors.add(:product_location_balances, :equal_to, count: self.c_balance)
+    end
+  end
+
+  def resize_img
+    if self.image.present?
+      img = self.image
+      path_orig = img.queued_for_write[:original]
+      path_thumb = img.queued_for_write[:tumb]
+      ApplicationController.helpers.resize_image(path_orig.path) if path_orig.present?
+      ApplicationController.helpers.resize_image(path_thumb.path) if path_thumb.present?
+    end
+  end
+
+  def check_image_size
+    if self.image.present?
+      img = self.image
+      if img.queued_for_write[:original].present?
+        geo = Paperclip::Geometry.from_file(img.queued_for_write[:original].path)
+        ratio = geo.width / geo.height
+        if ratio.to_i != 1
+          self.errors.add(:image, " 1x1 хэмжээтэй байх ёстой")
+        end
+      end
     end
   end
 

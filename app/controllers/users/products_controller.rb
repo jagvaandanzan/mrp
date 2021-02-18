@@ -153,6 +153,7 @@ class Users::ProductsController < Users::BaseController
 
   def product_params
     params.require(:product).permit(:tab_index, :n_name, :n_model, :n_package, :n_material, :n_advantage, :brand_id, :category_id, :code, :is_web, :is_own, :customer_id, option_rels: [])
+        .merge(:user => current_user)
   end
 
   def form_price_params
@@ -172,6 +173,7 @@ class Users::ProductsController < Users::BaseController
                                     product_images_attributes: [:id, :image, :_destroy],
                                     product_videos_attributes: [:id, :image, :video, :_destroy],
                                     product_photos_attributes: [:id, :photo, :_destroy])
+        .merge(:user => current_user)
   end
 
   def form_package_params
