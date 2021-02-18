@@ -90,7 +90,8 @@ class Product < ApplicationRecord
   end
   scope :sync_nil, ->() {
     where("id > ?", 5171)
-        .where("sync_at IS ?", nil)
+        .where("is_web = ?", 1)
+        # .where("sync_at IS ?", nil)
   }
   scope :order_by_name, -> {
     order(:n_name)
@@ -296,7 +297,7 @@ class Product < ApplicationRecord
     ProductBalance.balance(id)
   end
 
-  private
+  # private
 
   def valid_custom
     errors.add(:category_id, :blank) if category_id.present? && ProductCategory.search(category_id).count > 0

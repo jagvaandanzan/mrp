@@ -21,7 +21,7 @@ class ProductImage < ApplicationRecord
   scope :sync_by_p, ->(ids) {
     where("product_id IN (?)", ids)
   }
-  private
+  # private
 
   def resize_img
     img = self.image
