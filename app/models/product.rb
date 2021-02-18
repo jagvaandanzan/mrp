@@ -92,7 +92,7 @@ class Product < ApplicationRecord
     where("id = ?", 5299)
         .where("is_web = ?", 1)
         .where("draft = ?", 0)
-        # .where("sync_at IS ?", nil)
+    # .where("sync_at IS ?", nil)
   }
   scope :order_by_name, -> {
     order(:n_name)
@@ -506,7 +506,7 @@ class Product < ApplicationRecord
         params = nil
         url += "/" + id.to_s
       else
-        params = self.to_json(methods: [:method_type, :picture_url], except: [:draft, :is_web, :p_type, :picture_updated_at, :picture_file_size, :picture_content_type, :picture_file_name,
+        params = self.to_json(methods: [:method_type, :picture_url], except: [:draft, :is_web, :c_name, :p_type, :picture_updated_at, :picture_file_size, :picture_content_type, :picture_file_name,
                                                                               :deleted_at, :created_at, :updated_at, :sync_at],
                               include: {
                                   :product_feature_option_rels => {
