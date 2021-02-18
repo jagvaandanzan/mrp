@@ -6,13 +6,8 @@ module ApplicationHelper
       if ratio != 1
         max_dem = geo.width > geo.height ? geo.width : geo.height
         dimensions = "#{max_dem.to_i}x#{max_dem.to_i}"
-        puts "convert -background white -gravity center #{path} -resize #{dimensions} -extent #{dimensions} #{path}"
         system("convert -background white -gravity center #{path} -resize #{dimensions} -extent #{dimensions} #{path}")
-      else
-        puts "ratio == 1"
       end
-    else
-      puts "file_exit: #{path}"
     end
   end
 
