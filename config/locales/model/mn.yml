@@ -298,6 +298,7 @@ mn:
         code: Код
         p_type: Төрөл
         category: Ангилал
+        user_id: Админ
         category_id: Ангилал
         product_feature_option_rels: Барааны шинж чанарууд
         is_web: Веб харуулна

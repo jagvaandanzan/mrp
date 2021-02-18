@@ -81,6 +81,7 @@
                 <th><%= t('activerecord.attributes.product.customer_id') %></th>
                 <th><%= t('activerecord.attributes.product.price') %></th>
                 <th><%= t('activerecord.attributes.product.category') %></th>
+                <th><%= t('activerecord.attributes.product.user_id') %></th>
               </tr>
               <% @products.each do |p| %>
                 <tr>
@@ -89,6 +90,7 @@
                   <td class="va-mid"><%= p.customer.present? ? p.customer.name : '' %></td>
                   <td class="va-mid"><%= get_currency_mn(p.price) %></td>
                   <td class="va-mid"><%= get_name_recursive(p.category) %></td>
+                  <td class="va-mid"><%= p.user.present? ? p.user.name : '' %></td>
                 </tr>
               <% end %>
             </table>
