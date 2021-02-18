@@ -52,6 +52,8 @@ class Users::CustomersController < Users::BaseController
   end
 
   def customer_params
-    params.require(:customer).permit(:logo, :c_type, :queue, :code, :name, :description)
+    params.require(:customer).permit(:logo, :c_type, :queue, :code, :name, :description,
+                                     customer_contact_fees_attributes: [:id, :range_s, :range_e, :percent, :_destroy],
+                                     customer_contacts_attributes: [:id, :delivery, :condition, :price, :_destroy])
   end
 end

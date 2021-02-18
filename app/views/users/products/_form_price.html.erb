@@ -12,7 +12,7 @@
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.price') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8_p') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_p') %></th>
-            <% if @product.is_customer? || no_balance %>
+            <% if !@product.is_own || no_balance %>
               <th class="text-center"><%= t('activerecord.attributes.product_feature_item.c_balance') %></th>
             <% end %>
             <th></th>
@@ -32,7 +32,7 @@
               <td class="text-center">
                 <button type="button" class="btn btn-default btn-xs" btype="p_9_"><%= t('controls.button.to_equate') %></button>
               </td>
-              <% if @product.is_customer? || no_balance %>
+              <% if !@product.is_own || no_balance %>
                 <td class="text-center">
                   <button type="button" class="btn btn-default btn-xs" btype="c_balance"><%= t('controls.button.to_equate') %></button>
                 </td>
@@ -41,17 +41,18 @@
             </tr>
           <% end %>
           <%= f.fields_for :product_feature_items do |m| %>
-            <%= render 'product_feature_item_fields', :f => m, is_customer: @product.is_customer?, no_balance: no_balance %>
+            <%= render 'product_feature_item_fields', :f => m, is_customer: !@product.is_own, no_balance: no_balance %>
           <% end %>
           </tbody>
         </table>
       </div>
-      <% if @product.is_customer? %>
+      <% unless @product.is_own %>
         <div class="form-group m-t-10">
           <%= f.label :delivery_type, class: 'col-sm-3 control-label' %>
           <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product, :delivery_type) %>">
             <%= field_errors(@product, :delivery_type) %>
-            <%= f.collection_radio_buttons :delivery_type, Product.delivery_types_i18n, :first, :second do |b| %>
+            <% delivery_ids = @product.customer.customer_contacts.uniq(&:delivery).map(&:delivery).to_a %>
+            <%= f.collection_radio_buttons :delivery_type, CustomerContact.deliveries_i18n.reject {|k, v| !delivery_ids.include? k}, :first, :second do |b| %>
               <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
             <% end %>
           </div>

@@ -1,0 +1,19 @@
+<tr class="nested-fields">
+  <td class="va-mid">
+    <%= field_errors f.object, :range_s %>
+    <%= f.number_field :range_s, min: 0, step: 1, class: 'form-control field', placeholder: t('activerecord.attributes.customer_contact_fee.range_s') %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :range_e %>
+    <%= f.number_field :range_e, min: 0, step: 1, class: 'form-control field', placeholder: t('activerecord.attributes.customer_contact_fee.range_e') %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :percent %>
+    <%= f.number_field :percent, min: 0, step: 1, class: 'form-control field', placeholder: t('activerecord.attributes.customer_contact_fee.percent') %>
+  </td>
+  <td class="remove va-mid">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>

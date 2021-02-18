@@ -35,8 +35,9 @@ mn:
         type_basic: Захиалгын
         type_customer: Харицлагч
       delivery_type:
-        is_own: Маркетаас хүргэлт хийлгэх
-        is_customer: Харилцагчийн агуулхаас
+        deli_we: Манайд үлдэгдэлтэй
+        deli_customer: Харилцагчаас очиж авна
+        deli_self: Харилцагч өөрөө хүргэж өгнө
     product_instruction:
       i_type:
         using: Хэрэглэх заавар
@@ -165,6 +166,14 @@ mn:
       tax_type:
         individual: Хувь хүн
         organization: Байгууллага
+    customer_contact:
+      delivery:
+        deli_we: Манайд үлдэгдэлтэй
+        deli_customer: Харилцагчаас очиж авна
+        deli_self: Харилцагч өөрөө хүргэж өгнө
+      condition:
+        limit_less: 20,000₮ доош
+        limit_over: 20,000₮ дээш
   activerecord:
     models:
       admin_user: Админ
@@ -287,6 +296,15 @@ mn:
         code: Код
         queue: Дараалал
         description: Дэлгэрэнгүй
+        customer_contacts: Хүргэлтийн нөхцөл сонгох
+      customer_contact:
+        delivery: Хүгэлтийн нөхцөл
+        condition: Мөнгөн дүн
+        price: Өртөг
+      customer_contact_fee:
+        range_s: Зарах үний доод хязгаар
+        range_e: Зарах үний дээд хязгаар
+        percent: Зарах хязгаараас хасах %
       product:
         name: Нэр
         n_name: Барааны нэр

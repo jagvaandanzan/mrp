@@ -35,7 +35,7 @@ class Product < ApplicationRecord
   accepts_nested_attributes_for :product_videos, allow_destroy: true
 
   enum p_type: {type_sample: 0, type_basic: 1, type_customer: 2}
-  enum delivery_type: {is_own: 0, is_customer: 1}
+  enum delivery_type: {deli_we: 0, deli_customer: 1, deli_self: 2}
 
   after_create -> {sync_web('post')}
   after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
@@ -56,12 +56,12 @@ class Product < ApplicationRecord
     validate :valid_custom
   end
 
-  with_options :if => Proc.new {|m| m.tab_index.to_i == 0 && m.is_own == 0} do
+  with_options :if => Proc.new {|m| m.tab_index.to_i == 0 && m.is_own} do
     before_save :set_product_type
     validates :customer_id, presence: true
   end
 
-  with_options :if => Proc.new {|m| m.tab_index.to_i == 1 && m.is_customer?} do
+  with_options :if => Proc.new {|m| m.tab_index.to_i == 1 && !m.is_own} do
     validates :delivery_type, presence: true
   end
 

@@ -1,6 +1,11 @@
 class Customer < ApplicationRecord
   acts_as_paranoid
 
+  has_many :customer_contacts
+  has_many :customer_contact_fees
+  accepts_nested_attributes_for :customer_contacts, allow_destroy: true
+  accepts_nested_attributes_for :customer_contact_fees, allow_destroy: true
+
   after_create -> {sync_web('post')}
   after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
   after_destroy -> {sync_web('delete')}
@@ -14,6 +19,7 @@ class Customer < ApplicationRecord
 
   validates :name, presence: true, length: {maximum: 255}
   validates :c_type, :code, :queue, presence: true
+  validate :contract_should_be_uniq
 
   scope :order_by_name, -> {
     order(:queue)
@@ -33,6 +39,16 @@ class Customer < ApplicationRecord
   end
 
   private
+
+  def contract_should_be_uniq
+    uniq_by_id = customer_contacts.uniq(&:uniq_id)
+    Rails.logger.info("customer_contacts=#{customer_contacts.length}")
+    Rails.logger.info("uniq_by_id=#{uniq_by_id}")
+
+    if customer_contacts.length != uniq_by_id.length
+      self.errors.add(:customer_contacts, :taken)
+    end
+  end
 
   def sync_web(method)
     self.method_type = method

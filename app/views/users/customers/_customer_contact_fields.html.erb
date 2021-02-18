@@ -1,0 +1,19 @@
+<tr class="nested-fields">
+  <td class="va-mid">
+    <%= field_errors f.object, :delivery %>
+    <%= f.select :delivery, CustomerContact.deliveries.keys.map {|k| [CustomerContact.deliveries_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :condition %>
+    <%= f.select :condition, CustomerContact.conditions.keys.map {|k| [CustomerContact.conditions_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :price %>
+    <%= f.number_field :price, min: 0, step: 1, class: 'form-control field', placeholder: t('activerecord.attributes.customer_contact.price') %>
+  </td>
+  <td class="remove va-mid">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>

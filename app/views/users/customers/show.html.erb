@@ -42,7 +42,46 @@
         </div>
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.customer.description') %> :</div>
-          <div class="col-data"><%= @customer.description %></div>
+          <div class="col-data"><%= @customer.description.presence || '---' %></div>
+        </div>
+        <div class="m30"><strong>Харилцагчтай байгуулсан гэрээний мэдээлэл</strong></div>
+        <div class="m30">
+          <div class="align-left">Барааны үнэ бодох :</div>
+          <div class="col-data">
+            <table class="table-bordered table table-hover">
+              <tr>
+                <th><%= t('activerecord.attributes.customer_contact_fee.range_s') %></th>
+                <th><%= t('activerecord.attributes.customer_contact_fee.range_e') %></th>
+                <th><%= t('activerecord.attributes.customer_contact_fee.percent') %></th>
+              </tr>
+              <% @customer.customer_contact_fees.each {|contact_fee| %>
+                <tr>
+                  <td><%= get_currency_mn(contact_fee.range_s) %></td>
+                  <td><%= get_currency_mn(contact_fee.range_e) %></td>
+                  <td><%= contact_fee.percent %>%</td>
+                </tr>
+              <% } %>
+            </table>
+          </div>
+        </div>
+        <div class="m30">
+          <div class="align-left">Хүргэлтийн нөхцөл сонгох :</div>
+          <div class="col-data">
+            <table class="table-bordered table table-hover">
+              <tr>
+                <th><%= t('activerecord.attributes.customer_contact.delivery') %></th>
+                <th><%= t('activerecord.attributes.customer_contact.condition') %></th>
+                <th><%= t('activerecord.attributes.customer_contact.price') %></th>
+              </tr>
+              <% @customer.customer_contacts.each {|contact| %>
+                <tr>
+                  <td><%= contact.delivery_i18n %></td>
+                  <td><%= contact.condition_i18n %></td>
+                  <td><%= get_currency_mn(contact.price) %></td>
+                </tr>
+              <% } %>
+            </table>
+          </div>
         </div>
       </div>
     </div>

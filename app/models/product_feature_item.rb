@@ -31,7 +31,7 @@ class ProductFeatureItem < ApplicationRecord
   validates_attachment :image,
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
 
-  with_options :if => Proc.new {|m| m.product.is_customer? || m.is_add.present?} do
+  with_options :if => Proc.new {|m| !m.product.is_own || m.is_add.present?} do
     validates :c_balance, numericality: {greater_than: 0, only_integer: true, message: :invalid}
   end
 

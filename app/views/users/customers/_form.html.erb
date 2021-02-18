@@ -56,6 +56,52 @@
               <%= f.text_area :description, class: 'form-control', placeholder: t('activerecord.attributes.customer.description') %>
             </div>
           </div>
+          <div class="form-group">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-11"><strong>Харилцагчтай байгуулсан гэрээний мэдээлэл</strong></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Барааны үнэ бодох</label>
+            <div class="col-sm-9 cocoon-nested-form">
+              <%= field_errors(@customer, :customer_contact_fees) %>
+              <table class="table table-bordered" id="tb_customer_contact_fees">
+                <tr>
+                  <th><%= t('activerecord.attributes.customer_contact_fee.range_s') %></th>
+                  <th><%= t('activerecord.attributes.customer_contact_fee.range_e') %></th>
+                  <th><%= t('activerecord.attributes.customer_contact_fee.percent') %></th>
+                  <th width="50px">
+                    <%= link_to_add_association f, :customer_contact_fees, data: {association_insertion_node: '#tb_customer_contact_fees', association_insertion_method: :append} do %>
+                      <%= nested_add_btn %>
+                    <% end %>
+                  </th>
+                </tr>
+                <%= f.fields_for :customer_contact_fees do |m| %>
+                  <%= render 'customer_contact_fee_fields', :f => m %>
+                <% end %>
+              </table>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Хүргэлтийн нөхцөл сонгох</label>
+            <div class="col-sm-9 cocoon-nested-form">
+              <%= field_errors(@customer, :customer_contacts) %>
+              <table class="table table-bordered" id="tb_customer_contacts">
+                <tr>
+                  <th><%= t('activerecord.attributes.customer_contact.delivery') %></th>
+                  <th><%= t('activerecord.attributes.customer_contact.condition') %></th>
+                  <th><%= t('activerecord.attributes.customer_contact.price') %></th>
+                  <th width="50px">
+                    <%= link_to_add_association f, :customer_contacts, data: {association_insertion_node: '#tb_customer_contacts', association_insertion_method: :append} do %>
+                      <%= nested_add_btn('btn_customer_contact') %>
+                    <% end %>
+                  </th>
+                </tr>
+                <%= f.fields_for :customer_contacts do |m| %>
+                  <%= render 'customer_contact_fields', :f => m %>
+                <% end %>
+              </table>
+            </div>
+          </div>
 
           <div class="action-buttons">
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
@@ -67,5 +113,18 @@
   </section>
 </div>
 <script !src="">
-    load_image_preview('.content')
+    $(document).ready(function () {
+        load_image_preview('.content');
+        $('tr.nested-fields .selectpicker').selectpicker('refresh');
+
+        $('#btn_customer_contact').on('click', function () {
+            setTimeout(set_customer_contacts, 300);
+        });
+    });
+
+    function set_customer_contacts() {
+        var last_tr = "#tb_customer_contacts .nested-fields:last";
+        $(last_tr).find('.selectpicker').selectpicker('refresh');
+    }
+
 </script>
