@@ -191,19 +191,22 @@ class ProductFeatureItem < ApplicationRecord
             index_x = loc.index('x')
             index_y = loc.index('y')
             index_z = loc.index('z')
+            if !index_x.nil? && !index_y.nil? && !index_z.nil?
+              x = loc[(index_x + 1)..(index_y - 1)].to_i
+              y = loc[(index_y + 1)..(index_z - 1)].to_i
+              z = loc.from(index_z + 1).to_i
 
-            x = loc[(index_x + 1)..(index_y - 1)].to_i
-            y = loc[(index_y + 1)..(index_z - 1)].to_i
-            z = loc.from(index_z + 1).to_i
-
-            product_locations = ProductLocation.by_xyz(x, y, z)
-            product_location = if product_locations.present?
-                                 product_locations.first
-                               else
-                                 ProductLocation.create(x: x, y: y, z: z)
-                               end
-            self.product_location_balances << ProductLocationBalance.new(product_location: product_location,
-                                                                         quantity: q)
+              product_locations = ProductLocation.by_xyz(x, y, z)
+              product_location = if product_locations.present?
+                                   product_locations.first
+                                 else
+                                   ProductLocation.create(x: x, y: y, z: z)
+                                 end
+              self.product_location_balances << ProductLocationBalance.new(product_location: product_location,
+                                                                           quantity: q)
+            else
+              self.errors.add(:product_location_balances, "Агуулахын байршилийн формат буруу байна")
+            end
           end
         end
       end
