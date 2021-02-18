@@ -298,7 +298,7 @@ class Product < ApplicationRecord
     ProductBalance.balance(id)
   end
 
-  # private
+  private
 
   def valid_custom
     errors.add(:category_id, :blank) if category_id.present? && ProductCategory.search(category_id).count > 0
@@ -497,9 +497,7 @@ class Product < ApplicationRecord
   end
 
   def sync_web(method)
-    puts "sync_web"
     if !draft && is_web
-      puts "sync_web in"
       self.method_type = method
       url = "products"
       if method == 'delete'

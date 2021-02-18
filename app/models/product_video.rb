@@ -30,7 +30,7 @@ class ProductVideo < ApplicationRecord
     where("product_id IN (?)", ids)
   }
 
-  # private
+  private
 
   def resize_img
     img = self.image

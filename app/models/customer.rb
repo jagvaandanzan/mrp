@@ -42,8 +42,6 @@ class Customer < ApplicationRecord
 
   def contract_should_be_uniq
     uniq_by_id = customer_contacts.uniq(&:uniq_id)
-    Rails.logger.info("customer_contacts=#{customer_contacts.length}")
-    Rails.logger.info("uniq_by_id=#{uniq_by_id}")
 
     if customer_contacts.length != uniq_by_id.length
       self.errors.add(:customer_contacts, :taken)
