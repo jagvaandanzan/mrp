@@ -18,6 +18,10 @@ class ProductFeatureItem < ApplicationRecord
   before_save :set_default
   validate :check_image_size
 
+  with_options :if => Proc.new {|m| m.barcode.present?} do
+    validates_uniqueness_of :barcode
+  end
+
   after_create -> {sync_web('post')}
   after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
   after_destroy -> {sync_web('delete')}
@@ -48,7 +52,7 @@ class ProductFeatureItem < ApplicationRecord
 
   with_options :if => Proc.new {|m| m.is_update.present?} do
     before_validation :parse_location_balance
-    validates :price, :barcode, :c_balance, :location_balances, presence: true
+    validates :price, :barcode, :c_balance, presence: true
     validate :product_locations_count_check
   end
 
