@@ -89,7 +89,7 @@ class Product < ApplicationRecord
     validates :gift_wrap, presence: true
   end
   scope :sync_nil, ->() {
-    where("id = ?", 5178)
+    where("id = ?", 5299)
         .where("is_web = ?", 1)
         .where("draft = ?", 0)
         # .where("sync_at IS ?", nil)
