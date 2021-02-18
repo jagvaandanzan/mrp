@@ -91,6 +91,7 @@ class Product < ApplicationRecord
   scope :sync_nil, ->() {
     where("id > ?", 5171)
         .where("is_web = ?", 1)
+        .where("draft = ?", 0)
         # .where("sync_at IS ?", nil)
   }
   scope :order_by_name, -> {
