@@ -21,7 +21,7 @@ default: &default
 
 development:
   <<: *default
-  database: market_warehouse_old
+  database: market_warehouse
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
