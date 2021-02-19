@@ -56,7 +56,7 @@ class Product < ApplicationRecord
     validate :valid_custom
   end
 
-  with_options :if => Proc.new {|m| m.tab_index.to_i == 0 && m.is_own} do
+  with_options :if => Proc.new {|m| m.tab_index.to_i == 0 && !m.is_own} do
     before_save :set_product_type
     validates :customer_id, presence: true
   end
@@ -472,7 +472,7 @@ class Product < ApplicationRecord
   end
 
   def set_product_type
-    self.p_type = 2 if is_own == 0
+    self.p_type = 2 unless is_own
   end
 
   def resize_img

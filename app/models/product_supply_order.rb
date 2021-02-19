@@ -95,11 +95,13 @@ class ProductSupplyOrder < ApplicationRecord
       product.save
     else
       product = Product.new(draft: true,
+                            user: user,
                             p_type: 0,
                             n_name: product_name,
                             brand_id: 69,
                             code: ApplicationController.helpers.get_code(Product.last),
                             option_rels: option_rels)
+      Rails.logger.info("product: #{product.valid?} => #{product.errors.full_messages}")
 
       self.product_supply_order_items << ProductSupplyOrderItem.new(product: product)
     end
