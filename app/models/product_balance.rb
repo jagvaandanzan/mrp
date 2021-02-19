@@ -29,15 +29,16 @@ class ProductBalance < ApplicationRecord
   private
 
   def sync_web
-    if feature_item.present?
-      url = "product/balance"
-      balance = ProductBalance.balance(product_id, feature_item_id)
+    if product.is_sync
+      if feature_item.present?
+        url = "product/balance"
+        balance = ProductBalance.balance(product_id, feature_item_id)
 
-      params = {product_id: product_id, feature_item_id: feature_item_id, balance: balance}.to_json
-      ApplicationController.helpers.api_request(url, 'patch', params)
-      # response =
-      # Rails.logger.info("response: #{response.body}")
+        params = {product_id: product_id, feature_item_id: feature_item_id, balance: balance}.to_json
+        ApplicationController.helpers.api_request(url, 'patch', params)
+        # response =
+        # Rails.logger.info("response: #{response.body}")
+      end
     end
-
   end
 end

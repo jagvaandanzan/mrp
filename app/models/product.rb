@@ -298,6 +298,10 @@ class Product < ApplicationRecord
     ProductBalance.balance(id)
   end
 
+  def is_sync
+    !draft && is_web
+  end
+
   # private
 
   def valid_custom
@@ -381,7 +385,7 @@ class Product < ApplicationRecord
 
                 added_key = "#{option_1}-#{option_2}"
                 unless added_feature_items[added_key]
-                  self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2, p_6_8: is_own ? 5 : nil, p_9_: is_own ? 6 : nil)
+                  self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2, p_6_8_p: is_own ? 5 : nil, p_9_p: is_own ? 6 : nil)
                   added_feature_items[added_key] == "added"
                 end
               end
@@ -432,7 +436,7 @@ class Product < ApplicationRecord
     if product_feature_items.count == 0 && self.product_feature_option_rels.count == 1
       product_feature_option = self.product_feature_option_rels.first
       ProductFeatureItem.create(tab_index: 1, product: self, option1_id: product_feature_option.feature_option_id, option2_id: product_feature_option.feature_option_id,
-                                p_6_8: is_own ? 5 : nil, p_9_: is_own ? 6 : nil)
+                                p_6_8_p: is_own ? 5 : nil, p_9_p: is_own ? 6 : nil)
     end
   end
 
@@ -503,7 +507,7 @@ class Product < ApplicationRecord
   end
 
   def sync_web(method)
-    if !draft && is_web
+    if is_sync
       self.method_type = method
       url = "products"
       if method == 'delete'

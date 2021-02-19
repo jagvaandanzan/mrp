@@ -18,16 +18,18 @@ class ProductSizeInstruction < ApplicationRecord
   private
 
   def sync_web(method)
-    self.method_type = method
-    url = "product/size_instruction"
+    if product.is_sync
+      self.method_type = method
+      url = "product/size_instruction"
 
-    if method == 'delete'
-      params = nil
-      url += "/" + id.to_s
-    else
-      params = self.to_json(methods: [:method_type], only: [:id, :product_id, :product_feature_option_id, :size_instruction_id, :instruction])
+      if method == 'delete'
+        params = nil
+        url += "/" + id.to_s
+      else
+        params = self.to_json(methods: [:method_type], only: [:id, :product_id, :product_feature_option_id, :size_instruction_id, :instruction])
+      end
+
+      ApplicationController.helpers.api_request(url, method, params)
     end
-
-    ApplicationController.helpers.api_request(url, method, params)
   end
 end

@@ -35,17 +35,19 @@ class ProductFeatureOptionRel < ApplicationRecord
   private
 
   def sync_web(method)
-    self.method_type = method
-    url = "product/feature_option_rel"
+    if product.is_sync
+      self.method_type = method
+      url = "product/feature_option_rel"
 
-    if method == 'delete'
-      params = nil
-      url += "/" + id.to_s
-    else
-      params = self.to_json(only: [:id, :product_id, :feature_option_id], :methods => [:method_type])
+      if method == 'delete'
+        params = nil
+        url += "/" + id.to_s
+      else
+        params = self.to_json(only: [:id, :product_id, :feature_option_id], :methods => [:method_type])
+      end
+
+      ApplicationController.helpers.api_request(url, method, params)
     end
-
-    ApplicationController.helpers.api_request(url, method, params)
   end
 
 end

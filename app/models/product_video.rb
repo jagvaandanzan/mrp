@@ -43,17 +43,19 @@ class ProductVideo < ApplicationRecord
   end
 
   def sync_web(method)
-    self.method_type = method
-    url = "product/video"
+    if product.is_sync
+      self.method_type = method
+      url = "product/video"
 
-    if method == 'delete'
-      params = nil
-      url += "/" + id.to_s
-    else
+      if method == 'delete'
+        params = nil
+        url += "/" + id.to_s
+      else
 
-      params = self.to_json(only: [:id, :product_id], :methods => [:method_type, :image_url, :video_url])
+        params = self.to_json(only: [:id, :product_id], :methods => [:method_type, :image_url, :video_url])
+      end
+
+      ApplicationController.helpers.api_request(url, method, params)
     end
-
-    ApplicationController.helpers.api_request(url, method, params)
   end
 end

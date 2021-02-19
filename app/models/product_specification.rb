@@ -19,21 +19,24 @@ class ProductSpecification < ApplicationRecord
   scope :sync_by_p, ->(ids) {
     where("product_id IN (?)", ids)
   }
+
   private
 
   def sync_web(method)
-    self.method_type = method
-    url = "product/specification"
+    if product.is_sync
+      self.method_type = method
+      url = "product/specification"
 
-    if method == 'delete'
-      params = nil
-      url += "/" + id.to_s
-    else
+      if method == 'delete'
+        params = nil
+        url += "/" + id.to_s
+      else
 
-      params = self.to_json(only: [:id, :product_id, :spec_item_id, :specification], :methods => [:method_type])
+        params = self.to_json(only: [:id, :product_id, :spec_item_id, :specification], :methods => [:method_type])
+      end
+
+      ApplicationController.helpers.api_request(url, method, params)
     end
-
-    ApplicationController.helpers.api_request(url, method, params)
   end
 
 end

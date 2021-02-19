@@ -40,17 +40,19 @@ class ProductPackage < ApplicationRecord
   # private
 
   def sync_web(method)
-    self.method_type = method
-    url = "product/package"
+    if product.is_sync
+      self.method_type = method
+      url = "product/package"
 
-    if method == 'delete'
-      params = nil
-      url += "/" + id.to_s
-    else
+      if method == 'delete'
+        params = nil
+        url += "/" + id.to_s
+      else
 
-      params = self.to_json(only: [:id, :product_id, :product_size, :bag, :package_unit, :width, :height, :length, :weight, :weight_unit, :gift_wrap], :methods => [:method_type])
+        params = self.to_json(only: [:id, :product_id, :product_size, :bag, :package_unit, :width, :height, :length, :weight, :weight_unit, :gift_wrap], :methods => [:method_type])
+      end
+
+      ApplicationController.helpers.api_request(url, method, params)
     end
-
-    ApplicationController.helpers.api_request(url, method, params)
   end
 end

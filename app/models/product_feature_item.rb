@@ -264,31 +264,33 @@ class ProductFeatureItem < ApplicationRecord
   end
 
   def sync_web(method)
-    self.method_type = method
-    url = "product/feature_item"
+    if product.is_sync
+      self.method_type = method
+      url = "product/feature_item"
 
-    if method == 'delete'
-      params = nil
-      url += "/" + id.to_s
+      if method == 'delete'
+        params = nil
+        url += "/" + id.to_s
 
-      # product_feature_option_rels г устгах ёстой
-      delete_ids = []
-      items = product.product_feature_items
-                  .by_product_id(product_id)
-                  .by_option_ids([self.option1_id])
-      delete_ids << self.option1_id unless items.present?
-      items = product.product_feature_items
-                  .by_product_id(product_id)
-                  .by_option_ids([self.option2_id])
-      delete_ids << self.option2_id unless items.present?
+        # product_feature_option_rels г устгах ёстой
+        delete_ids = []
+        items = product.product_feature_items
+                    .by_product_id(product_id)
+                    .by_option_ids([self.option1_id])
+        delete_ids << self.option1_id unless items.present?
+        items = product.product_feature_items
+                    .by_product_id(product_id)
+                    .by_option_ids([self.option2_id])
+        delete_ids << self.option2_id unless items.present?
 
-      product.product_feature_option_rels.by_feature_option_ids(delete_ids).destroy_all
-    else
+        product.product_feature_option_rels.by_feature_option_ids(delete_ids).destroy_all
+      else
 
-      params = self.to_json(only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :c_balance, :same_item_id], :methods => [:method_type, :image_url])
+        params = self.to_json(only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :c_balance, :same_item_id], :methods => [:method_type, :image_url])
+      end
+
+      ApplicationController.helpers.api_request(url, method, params)
     end
-
-    ApplicationController.helpers.api_request(url, method, params)
   end
 
 end
