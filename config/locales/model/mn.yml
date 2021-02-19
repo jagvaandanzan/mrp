@@ -34,10 +34,6 @@ mn:
         type_sample: Дээж
         type_basic: Захиалгын
         type_customer: Харицлагч
-      delivery_type:
-        deli_we: Манайд үлдэгдэлтэй
-        deli_customer: Харилцагчаас очиж авна
-        deli_self: Харилцагч өөрөө хүргэж өгнө
     product_instruction:
       i_type:
         using: Хэрэглэх заавар
@@ -326,6 +322,7 @@ mn:
         delivery_type: Хүргэлтийн нөхцөл
         search_key: Хайлтын үг
         description: Дэлгэрэнгүй мэдээлэл
+        instruction: Тайлбар
         expiry_date: Дуусах хугацаа
         brand_id: Бренд
         manufacturer_id: Үйлдвэрлэсэн улс

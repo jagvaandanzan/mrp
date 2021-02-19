@@ -143,6 +143,7 @@ class Users::ProductsController < Users::BaseController
       @headers = ApplicationController.helpers.get_category_parents(@product.category)
       @headers = @headers.reverse
       @product.option_rels = @product.product_feature_option_rels.map {|i| i.feature_option_id.to_s}.to_a
+      @product.deliveries = @product.delivery_type.tr('[]', '').split(',').map(&:to_i) if @product.delivery_type.present?
       @product.filters = @product.product_filters.map {|i| i.category_filter_id.to_s}.to_a
     end
   end
@@ -157,7 +158,7 @@ class Users::ProductsController < Users::BaseController
   end
 
   def form_price_params
-    params.require(:product).permit(:tab_index, :delivery_type, instruction_id: [], instruction_val: [],
+    params.require(:product).permit(:tab_index, :instruction, deliveries: [], instruction_id: [], instruction_val: [],
                                     product_feature_items_attributes: [:id, :price, :p_6_8_p, :p_6_8, :p_9_p, :p_9_, :barcode, :c_balance, :_destroy])
   end
 

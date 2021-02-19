@@ -35,18 +35,18 @@ class Product < ApplicationRecord
   accepts_nested_attributes_for :product_videos, allow_destroy: true
 
   enum p_type: {type_sample: 0, type_basic: 1, type_customer: 2}
-  enum delivery_type: {deli_we: 0, deli_customer: 1, deli_self: 2}
 
   after_create -> {sync_web('post')}
   after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
   after_destroy -> {sync_web('delete')}
 
-  attr_accessor :option_rels, :method_type, :tab_index, :filters, :instruction_id, :instruction_val, :specification_id, :specification_val
+  attr_accessor :option_rels, :method_type, :tab_index, :filters, :instruction_id, :instruction_val, :specification_id, :specification_val, :deliveries
 
   has_attached_file :picture, :path => ":rails_root/public/products/picture/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/products/picture/:id_partition/:style.:extension'
   validates_attachment :picture,
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
 
+  before_validation :set_valid_value
   before_save :set_option_rels, unless: Proc.new {self.method_type == "sync"}
   after_save :set_option_item_single
 
@@ -393,6 +393,12 @@ class Product < ApplicationRecord
     elsif product_feature_option_rels.count == 0
       #   Өнгө размер сонгоогүй бол солголтгүй бараа үүсгэнэ
       self.product_feature_option_rels << ProductFeatureOptionRel.new(feature_option: ProductFeatureOption.find(12))
+    end
+  end
+
+  def set_valid_value
+    if deliveries.present?
+      self.delivery_type = deliveries.map(&:to_i)
     end
   end
 

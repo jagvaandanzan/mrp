@@ -61,12 +61,19 @@
       <% unless @product.is_own %>
         <div class="form-group m-t-10">
           <%= f.label :delivery_type, class: 'col-sm-3 control-label' %>
-          <div class="col-sm-9 radio-group p-t-5 <%= get_error_class(@product, :delivery_type) %>">
+          <div class="col-sm-9 p-t-5">
             <%= field_errors(@product, :delivery_type) %>
             <% delivery_ids = @product.customer.customer_contacts.uniq(&:delivery).map(&:delivery).to_a %>
-            <%= f.collection_radio_buttons :delivery_type, CustomerContact.deliveries_i18n.reject {|k, v| !delivery_ids.include? k}, :first, :second do |b| %>
-              <%= b.radio_button %>&nbsp;&nbsp;<%= b.text %> &nbsp;&nbsp;
-            <% end %>
+            <% CustomerContact.deliveries.reject {|k, v| !delivery_ids.include? k}.each {|key, deli| %>
+              <div class="col-md-3">
+                <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
+                  <%= label_tag do %>
+                    <%= f.check_box(:deliveries, {:multiple => true}, deli, nil) %>
+                    <%= CustomerContact.deliveries_i18n[key] %>
+                  <% end %>
+                </div>
+              </div>
+            <% } %>
           </div>
         </div>
       <% end %>
@@ -108,6 +115,13 @@
                   <% } %>
                 </table>
               </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :instruction, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 field_div">
+              <%= field_errors f.object, :instruction %>
+              <%= f.text_area :instruction, {class: 'form-control', placeholder: t('activerecord.attributes.product.instruction')} %>
             </div>
           </div>
         </div>
