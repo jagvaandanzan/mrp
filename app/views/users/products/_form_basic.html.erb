@@ -128,7 +128,7 @@
           <%= f.check_box :is_own %>
         </div>
       </div>
-      <div class="col-md-4 field_div<%= @product.is_own == 1 ? ' none' : '' %>">
+      <div class="col-md-4 field_div<%= @product.is_own ? ' none' : '' %>">
         <%= f.label :customer_id, class: 'control-label' %>
         <div class="<%= get_error_class(@product, :customer_id) %>">
           <%= field_errors(@product, :customer_id) %>

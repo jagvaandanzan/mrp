@@ -36,6 +36,7 @@ class Users::ProductsController < Users::BaseController
       flash[:success] = t('alert.saved_successfully')
       redirect_to action: :edit, id: @product.id, tab_index: 1
     else
+      Rails.logger.info("errors: #{@product.errors.full_messages}")
       category_headers
       render 'new'
     end

@@ -51,7 +51,7 @@ class Product < ApplicationRecord
   after_save :set_option_item_single
 
   with_options :if => Proc.new {|m| m.tab_index.to_i == 0 && !m.draft} do
-    validates :n_name, :brand_id, :category_id, :code, :is_own, presence: true
+    validates :n_name, :brand_id, :category_id, :code, presence: true
     validates :code, uniqueness: true
     validate :valid_custom
   end
@@ -381,7 +381,7 @@ class Product < ApplicationRecord
 
                 added_key = "#{option_1}-#{option_2}"
                 unless added_feature_items[added_key]
-                  self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2, p_6_8: is_own == 1 ? 5 : nil, p_9_: is_own == 1 ? 6 : nil)
+                  self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2, p_6_8: is_own ? 5 : nil, p_9_: is_own ? 6 : nil)
                   added_feature_items[added_key] == "added"
                 end
               end
@@ -426,7 +426,7 @@ class Product < ApplicationRecord
     if product_feature_items.count == 0 && self.product_feature_option_rels.count == 1
       product_feature_option = self.product_feature_option_rels.first
       ProductFeatureItem.create(tab_index: 1, product: self, option1_id: product_feature_option.feature_option_id, option2_id: product_feature_option.feature_option_id,
-                                p_6_8: is_own == 1 ? 5 : nil, p_9_: is_own == 1 ? 6 : nil)
+                                p_6_8: is_own ? 5 : nil, p_9_: is_own ? 6 : nil)
     end
   end
 

@@ -33,16 +33,16 @@
       <div class="col-md-2 field_div">
         <b><%= t('activerecord.attributes.product.is_web') %>:</b> <%= yes_no @product.is_web %>
       </div>
-      <% if @product.is_own != 1 && @product.customer.present? %>
+      <% if !@product.is_own && @product.customer.present? %>
         <div class="col-md-2 field_div">
-          <b><%= t('activerecord.attributes.product.is_own') %>:</b> <%= yes_no(@product.is_own == 1) %>
+          <b><%= t('activerecord.attributes.product.is_own') %>:</b> <%= yes_no(@product.is_own) %>
         </div>
         <div class="col-md-2 field_div">
           <b><%= t('activerecord.attributes.product.customer_id') %>:</b> <%= @product.customer.name %>
         </div>
       <% else %>
         <div class="col-md-4 field_div">
-          <b><%= t('activerecord.attributes.product.is_own') %>:</b> <%= yes_no(@product.is_own == 1) %>
+          <b><%= t('activerecord.attributes.product.is_own') %>:</b> <%= yes_no(@product.is_own) %>
         </div>
       <% end %>
     </div>
