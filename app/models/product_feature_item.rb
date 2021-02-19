@@ -41,7 +41,7 @@ class ProductFeatureItem < ApplicationRecord
     validates :price, presence: true, :numericality => true
   end
 
-  with_options :if => Proc.new {|m| (m.tab_index == 3 || m.is_add.present?) && !m.same_item.present?} do
+  with_options :if => Proc.new {|m| ((m.tab_index.present? && m.tab_index.to_i == 3) || m.is_add.present?) && !m.same_item.present?} do
     validates :image, presence: true
   end
 
