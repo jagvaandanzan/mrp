@@ -14,14 +14,20 @@
         <table class="table table-hover table-bordered">
           <thead>
           <tr>
-            <th></th>
-            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
-            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.price') %></th>
-            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8_p') %></th>
-            <th class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_p') %></th>
+            <th rowspan="2"></th>
+            <th rowspan="2" class="text-center va-mid"><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
+            <th rowspan="2" class="text-center va-mid"><%= t('activerecord.attributes.product_feature_item.price') %></th>
+            <th colspan="2" class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8_p') %></th>
+            <th colspan="2" class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_p') %></th>
             <% unless @product.is_own %>
-              <th class="text-center"><%= t('activerecord.attributes.product_feature_item.c_balance') %></th>
+              <th rowspan="2" class="text-center va-mid"><%= t('activerecord.attributes.product_feature_item.c_balance') %></th>
             <% end %>
+          </tr>
+          <tr>
+            <th class="text-center">%</th>
+            <th class="text-center"><%= t('currency') %></th>
+            <th class="text-center">%</th>
+            <th class="text-center"><%= t('currency') %></th>
           </tr>
           </thead>
           <tbody>
@@ -31,7 +37,9 @@
               <td><%= item.barcode %></td>
               <td><%= get_currency_mn(item.price) %></td>
               <td><%= item.p_6_8_p %></td>
+              <td><%= get_currency_mn item.p_6_8 %></td>
               <td><%= item.p_9_p %></td>
+              <td><%= get_currency_mn item.p_9_ %></td>
               <% unless @product.is_own %>
                 <td><%= item.c_balance %></td>
               <% end %>
