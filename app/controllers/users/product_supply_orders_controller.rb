@@ -140,7 +140,7 @@ class Users::ProductSupplyOrdersController < Users::BaseController
   end
 
   def product_supply_order_params
-    params.require(:product_supply_order).permit(:order_type, :ordered_date, :logistic_id, :exchange, :product_name, :link, :description, option_rels: [],
+    params.require(:product_supply_order).permit(:tab_index, :order_type, :ordered_date, :logistic_id, :exchange, :product_name, :link, :description, option_rels: [],
                                                  product_supply_order_items_attributes: [:id, :product_id, :note, :_destroy],
                                                  product_sample_images_attributes: [:id, :image, :_destroy])
         .merge(:user => current_user)
