@@ -128,7 +128,9 @@ class Users::ProductFeatureItemsController < Users::BaseController
     feature_item.barcode = params[:barcode]
     feature_item.price = params[:price]
     feature_item.p_6_8_p = params[:p_6_8_p]
+    feature_item.p_6_8 = params[:p_6_8]
     feature_item.p_9_p = params[:p_9_p]
+    feature_item.p_9_ = params[:p_9_]
     feature_item.c_balance = params[:balance].to_i
     feature_item.location_balances = params[:location_balance]
 

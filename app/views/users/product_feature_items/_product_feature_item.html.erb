@@ -4,7 +4,9 @@
     <td class="va-mid"><%= item.barcode %></td>
     <td class="va-mid"><%= get_currency_mn item.price %></td>
     <td class="va-mid"><%= item.p_6_8_p %></td>
+    <td class="va-mid"><%= get_currency_mn item.p_6_8 %></td>
     <td class="va-mid"><%= item.p_9_p %></td>
+    <td class="va-mid"><%= get_currency_mn item.p_9_ %></td>
     <td class="va-mid"><%= item.balance %></td>
     <td class="va-mid">
       <% item.product_location_balances.each {|loc_bal| %>

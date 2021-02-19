@@ -40,14 +40,20 @@
             <table class="table table-hover table-bordered">
               <thead>
               <tr>
-                <th><%= t('activerecord.models.product_feature') %></th>
-                <th><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
-                <th><%= t('activerecord.attributes.product_feature_item.price') %></th>
-                <th><%= t('activerecord.attributes.product_feature_item.p_6_8_p') %></th>
-                <th><%= t('activerecord.attributes.product_feature_item.p_9_p') %></th>
-                <th><%= t('activerecord.attributes.product.balance') %></th>
-                <th><%= t('activerecord.attributes.product_income_item.income_locations') %></th>
-                <th></th>
+                <th rowspan="2" class="va-mid"><%= t('activerecord.models.product_feature') %></th>
+                <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
+                <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product_feature_item.price') %></th>
+                <th colspan="2"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
+                <th colspan="2"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
+                <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product.balance') %></th>
+                <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product_income_item.income_locations') %></th>
+                <th rowspan="2"></th>
+              </tr>
+              <tr>
+                <th class="text-center">%</th>
+                <th class="text-center"><%= t('currency') %></th>
+                <th class="text-center">%</th>
+                <th class="text-center"><%= t('currency') %></th>
               </tr>
               </thead>
               <tbody id="mpr_body" class="cocoon-nested-form"></tbody>
@@ -198,7 +204,9 @@
                     "&barcode=" + mrp.find('#barcode').val() +
                     "&price=" + mrp.find('#price').val() +
                     "&p_6_8_p=" + mrp.find('#p_6_8_p').val() +
+                    "&p_6_8=" + mrp.find('#p_6_8').val() +
                     "&p_9_p=" + mrp.find('#p_9_p').val() +
+                    "&p_9_=" + mrp.find('#p_9_').val() +
                     "&balance=" + mrp.find('#balance').val() +
                     "&location_balance=" + mrp.find('#location_balance').val(),
                 success: function (data) {
