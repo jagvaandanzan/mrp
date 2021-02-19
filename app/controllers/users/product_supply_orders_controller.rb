@@ -78,7 +78,7 @@ class Users::ProductSupplyOrdersController < Users::BaseController
       flash[:success] = t('alert.info_updated')
       if @product_supply_order.product_supply_order_items.count > 0 &&
           @product_supply_order.product_supply_order_items.count != @product_supply_order.tab_index
-        redirect_to action: :edit, id: params[:id], tab_index: @product_supply_order.tab_index + 1
+        redirect_to action: :edit, id: params[:id], tab_index: @product_supply_order.tab_index.to_i + 1
       else
         redirect_to action: 'index'
       end
