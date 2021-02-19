@@ -10,17 +10,17 @@
             <th rowspan="2"></th>
             <th rowspan="2" class="text-center va-mid"><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
             <th rowspan="2" class="text-center va-mid"><%= t('activerecord.attributes.product_feature_item.price') %></th>
-            <th colspan="2" class="text-center" width="20%"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
-            <th colspan="2" class="text-center" width="20%"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
+            <th colspan="2" class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
+            <th colspan="2" class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
             <% if !@product.is_own || no_balance %>
               <th rowspan="2" class="text-center va-mid"><%= t('activerecord.attributes.product_feature_item.c_balance') %></th>
             <% end %>
             <th rowspan="2"></th>
           </tr>
           <tr>
-            <th class="text-center" width="6%">%</th>
+            <th class="text-center">%</th>
             <th class="text-center"><%= t('currency') %></th>
-            <th class="text-center" width="6%">%</th>
+            <th class="text-center">%</th>
             <th class="text-center"><%= t('currency') %></th>
           </tr>
           </thead>
