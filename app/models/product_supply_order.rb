@@ -92,6 +92,7 @@ class ProductSupplyOrder < ApplicationRecord
     if product_supply_order_items.present?
       product = get_product
       product.option_rels = option_rels
+      product.n_name = product_name
       product.save
     else
       product = Product.new(draft: true,
