@@ -504,7 +504,7 @@ class Product < ApplicationRecord
         params = nil
         url += "/" + id.to_s
       else
-        params = self.to_json(methods: [:method_type, :picture_url], except: [:draft, :is_web, :c_name, :user_id, :p_type, :picture_updated_at, :picture_file_size, :picture_content_type, :picture_file_name,
+        params = self.to_json(methods: [:method_type, :picture_url], except: [:draft, :c_name, :user_id, :p_type, :picture_updated_at, :picture_file_size, :picture_content_type, :picture_file_name,
                                                                               :deleted_at, :created_at, :updated_at, :sync_at],
                               include: {
                                   :product_feature_option_rels => {
