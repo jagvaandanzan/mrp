@@ -77,10 +77,10 @@
                     - <%= i.user.name %></td>
                   <% order_item = order_items.first
                      product = order_item.product %>
-                  <td class="va-mid"><%= product.code %></td>
-                  <td class="va-mid"><%= product.name %></td>
+                  <td class="va-mid"><%= product.present? ? product.code : i.id %></td>
+                  <td class="va-mid"><%= product.present? ? product.name : ''%></td>
                   <td class="va-mid">
-                    <% if product.picture.present? %>
+                    <% if product.present? && product.picture.present? %>
                       <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
                         <%= t('titles.view') %>
                       <% end %>
@@ -103,7 +103,7 @@
                     <% } %>
                   </td>
                   <td class="va-mid text-center"><%= i.exchange_i18n %></td>
-                  <td class="va-mid text-center"><%= total_quantity > 0 ? "#{total_quantity} / #{ProductIncomeItem.by_product_feature_ids(product.id, feature_ids).sum(:quantity)}" : '' %></td>
+                  <td class="va-mid text-center"><%= total_quantity > 0 ? "#{total_quantity} / #{ProductIncomeItem.by_product_feature_ids(product.present? ? product.id : 0, feature_ids).sum(:quantity)}" : '' %></td>
                   <td class="va-mid text-center"><%= total_price %></td>
                   <td class="va-mid"><%= i.is_basic? ? order_item.note : i.description %></td>
                   <td class="va-mid bg-1"><%= order_item.purchase_date %></td>
@@ -128,7 +128,7 @@
                   </td>
                   <td class="va-mid text-center bg-3"><%= loaded %></td>
                   <td class="va-mid text-center bg-3"><%= cargo %></td>
-                  <% product_feature_ids = ProductIncomeItem.by_product_feature_ids(product.id, feature_ids) %>
+                  <% product_feature_ids = ProductIncomeItem.by_product_feature_ids(product.present? ? product.id : 0, feature_ids) %>
                   <td class="va-mid text-center"><%= product_feature_ids.present? ? product_feature_ids.first.product_income.income_date.strftime('%F') : '' %></td>
                   <td class="va-mid" rowspan="<%= order_items_count %>"><%= get_currency_mn i.sum_price %></td>
                   <td class="va-mid calculated" rowspan="<%= order_items_count %>" c_id="<%= i.id %>" code="<%= i.code %>"><%= i.calculated.present? ? i.calculated.strftime('%F') : '' %></td>

@@ -8,12 +8,12 @@ class Users::BaseController < ApplicationController
   end
 
   def root
-    path = if can? :read, ProductSupplyOrder
-             users_product_supply_orders_path
+    path = if can? :read, Product
+             users_products_path
            elsif can? :read, ProductIncome
              users_product_incomes_path
-           elsif can? :read, Product
-             users_products_path
+           elsif can? :read, ProductSupplyOrder
+             users_product_supply_orders_path
            elsif can? :read, Operator
              users_operators_path
            elsif can? :read, Location
