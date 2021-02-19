@@ -61,6 +61,13 @@
             <div class="col-sm-11"><strong>Харилцагчтай байгуулсан гэрээний мэдээлэл</strong></div>
           </div>
           <div class="form-group">
+            <%= f.label :supply_price, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@customer, :supply_price) %>">
+              <%= field_errors(@customer, :supply_price) %>
+              <%= f.check_box :supply_price %>
+            </div>
+          </div>
+          <div class="form-group" id="customer_contact_fee">
             <label class="col-sm-3 control-label">Барааны үнэ бодох</label>
             <div class="col-sm-9 cocoon-nested-form">
               <%= field_errors(@customer, :customer_contact_fees) %>
@@ -119,6 +126,11 @@
 
         $('#btn_customer_contact').on('click', function () {
             setTimeout(set_customer_contacts, 300);
+        });
+        $('#customer_supply_price').on('change', function () {
+            if ($(this).prop('checked')) {
+                $('#customer_contact_fee').addClass('none');
+            } else $('#customer_contact_fee').removeClass('none');
         });
     });
 

@@ -12,11 +12,19 @@
   </td>
   <td>
     <%= field_errors f.object, :p_6_8_p %>
-    <%= f.number_field :p_6_8_p, class: 'form-control field p_6_8', placeholder: t('activerecord.attributes.product_feature_item.p_6_8') %>
+    <%= f.number_field :p_6_8_p, class: 'form-control field p_6_8_p', placeholder: t('activerecord.attributes.product_feature_item.p_6_8_p') %>
+  </td>
+  <td>
+    <%= field_errors f.object, :p_6_8 %>
+    <%= f.number_field :p_6_8, class: 'form-control field p_6_8', placeholder: t('activerecord.attributes.product_feature_item.p_6_8') %>
   </td>
   <td>
     <%= field_errors f.object, :p_9_p %>
-    <%= f.number_field :p_9_p, class: 'form-control field p_9_', placeholder: t('activerecord.attributes.product_feature_item.p_9_') %>
+    <%= f.number_field :p_9_p, class: 'form-control field p_9_p', placeholder: t('activerecord.attributes.product_feature_item.p_9_p') %>
+  </td>
+  <td>
+    <%= field_errors f.object, :p_9_ %>
+    <%= f.number_field :p_9_, class: 'form-control field p_9_', placeholder: t('activerecord.attributes.product_feature_item.p_9_') %>
   </td>
   <% if is_customer || no_balance%>
     <td>

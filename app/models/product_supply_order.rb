@@ -101,7 +101,6 @@ class ProductSupplyOrder < ApplicationRecord
                             brand_id: 69,
                             code: ApplicationController.helpers.get_code(Product.last),
                             option_rels: option_rels)
-      Rails.logger.info("product: #{product.valid?} => #{product.errors.full_messages}")
 
       self.product_supply_order_items << ProductSupplyOrderItem.new(product: product)
     end

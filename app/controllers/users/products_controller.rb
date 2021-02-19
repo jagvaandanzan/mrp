@@ -158,7 +158,7 @@ class Users::ProductsController < Users::BaseController
 
   def form_price_params
     params.require(:product).permit(:tab_index, :delivery_type, instruction_id: [], instruction_val: [],
-                                    product_feature_items_attributes: [:id, :price, :p_6_8_p, :p_9_p, :barcode, :c_balance, :_destroy])
+                                    product_feature_items_attributes: [:id, :price, :p_6_8_p, :p_6_8, :p_9_p, :p_9_, :barcode, :c_balance, :_destroy])
   end
 
   def form_information_params

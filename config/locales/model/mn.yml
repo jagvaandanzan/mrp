@@ -296,6 +296,7 @@ mn:
         code: Код
         queue: Дараалал
         description: Дэлгэрэнгүй
+        supply_price: Нийлүүлэх үнээр тохиролцсон гэрээ
         customer_contacts: Хүргэлтийн нөхцөл сонгох
       customer_contact:
         delivery: Хүгэлтийн нөхцөл

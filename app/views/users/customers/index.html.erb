@@ -28,6 +28,7 @@
                 <th><%= t('activerecord.attributes.customer.queue') %></th>
                 <th><%= t('activerecord.attributes.customer.code') %></th>
                 <th><%= t('activerecord.attributes.customer.name') %></th>
+                <th><%= t('activerecord.attributes.customer.supply_price') %></th>
               </tr>
               <% @customers.each do |s| %>
                 <tr>
@@ -42,6 +43,7 @@
                   <td class="va-mid"><%= s.queue %></td>
                   <td class="va-mid"><%= s.code %></td>
                   <td class="va-mid"><%= link_to s.name, users_customer_path(s) %></td>
+                  <td class="va-mid"><%= yes_no s.supply_price %></td>
                 </tr>
               <% end %>
             </table>
