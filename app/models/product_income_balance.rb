@@ -1,6 +1,5 @@
 class ProductIncomeBalance < ApplicationRecord
-  acts_as_paranoid
-
+  # acts_as_paranoid
   belongs_to :product
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
   belongs_to :supply_feature, :class_name => "ProductSupplyFeature", optional: true

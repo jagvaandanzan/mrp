@@ -1,5 +1,5 @@
 class ProductSupplyOrder < ApplicationRecord
-  acts_as_paranoid
+  # acts_as_paranoid
   belongs_to :logistic
   belongs_to :user
 
