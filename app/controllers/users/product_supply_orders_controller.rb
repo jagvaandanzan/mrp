@@ -111,9 +111,17 @@ class Users::ProductSupplyOrdersController < Users::BaseController
   end
 
   def destroy
-    @product_supply_order.destroy!
-    flash[:success] = t('alert.deleted_successfully')
-    redirect_to action: 'index'
+    ids = @product_supply_order.supply_features.map(&:id).to_a
+    er_features = ShippingErFeature.by_supply_feature_ids(ids)
+
+    if er_features.present?
+      flash[:alert] = t('alert.the_order_has_been_created')
+      redirect_to action: 'show', id: @product_supply_order.id
+    else
+      @product_supply_order.destroy!
+      flash[:success] = t('alert.deleted_successfully')
+      redirect_to action: 'index'
+    end
   end
 
   def last_product_price

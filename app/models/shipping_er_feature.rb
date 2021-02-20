@@ -30,4 +30,8 @@ class ShippingErFeature < ApplicationRecord
         .sum(:quantity)
   }
 
+  scope :by_supply_feature_ids, -> (ids) {
+    where("supply_feature_id IN (?)", ids)
+  }
+
 end
