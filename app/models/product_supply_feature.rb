@@ -25,11 +25,13 @@ class ProductSupplyFeature < ApplicationRecord
 
   scope :find_to_er, ->(product_id = nil) {
     items = left_joins(:shipping_er_features)
+                .left_joins(:order_item)
                 .group("product_supply_features.id")
                 .having("product_supply_features.quantity_lo IS NOT NULL")
                 .having("SUM(shipping_er_features.quantity) IS NULL OR SUM(shipping_er_features.quantity) < product_supply_features.quantity_lo") # хэд хэд тасалж авсан тохиолдлыг шалгаж байна
                 .select("product_supply_features.*, product_supply_features.quantity_lo - IFNULL(SUM(shipping_er_features.quantity), 0) as remainder")
     items = items.where(product_id: product_id) unless product_id.nil?
+    items = items.where("product_supply_order_items.status < ?", 8)
     items
   }
 

@@ -41,14 +41,13 @@ cn:
         canceled: 取消
     shipping_er:
       s_type:
-        post_cargo: "快递 广场-货物"
-        post_er: "快递 广场-二连浩特"
-        cargo_er: "物流 广场-二连浩特"
-        cargo_post: "物流 快递-二连浩特"
+        post_cargo: "快递 广场-货物" #Шуудан: Үйлд-Карго
+        post_er: "快递 厂家～二连"
+        cargo_er: "物流 厂家～二连"
     shipping_ub:
       s_type:
-        simple: "简单的运输 二连浩特-乌兰巴托"
-        urgent: "紧急运输 二连浩特-乌兰巴托"
+        simple: "大车 二连～乌兰巴托"
+        urgent: "小车 二连～乌兰巴托"
     product_income_item:
       urgent_type:
         engiin: 简单的产品
@@ -109,6 +108,7 @@ cn:
         shipping_er_date: 产品到二连浩特的日期
         shipping_ub_date: 从二连浩特发货日期
         cn_name: 产品名
+        cost: 成本
       product_supply_feature:
         image: 照片
         feature_item_id: 产品性质

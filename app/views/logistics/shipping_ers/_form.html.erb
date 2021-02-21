@@ -31,7 +31,7 @@
                 <%= f.label :s_type, class: 'control-label' %>
                 <div class="<%= get_error_class(@shipping_er, :s_type) %>">
                   <%= field_errors(@shipping_er, :s_type) %>
-                  <%= f.select :s_type, ShippingEr.s_types_i18n.keys.map {|k| [ShippingEr.s_types_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+                  <%= f.select :s_type, ShippingEr.s_types_i18n.keys.map {|k| [ShippingEr.s_types_i18n[k], k]}, {}, {class: 'form-control selectpicker'} %>
                 </div>
               </div>
             </div>

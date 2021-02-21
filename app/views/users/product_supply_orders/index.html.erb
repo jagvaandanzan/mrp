@@ -20,7 +20,11 @@
       <div class="col-md-2 search">
         <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.by_product')} %>
       </div>
-      <div class="col-md-6 search">
+      <div class="col-md-2 search">
+        <%= f.select :order_type, ProductSupplyOrder.order_types.keys.map {|k| [ProductSupplyOrder.order_types_i18n[k], k]},
+                     {:prompt => t('activerecord.attributes.product_supply_order.order_type'), selected: @order_type}, {class: 'form-control selectpicker'} %>
+      </div>
+      <div class="col-md-4 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
         <% if can? :create, ProductSupplyOrder %>
           <%= link_to t('titles.product_sample'), new_users_product_supply_order_path(order_type: 1), class: 'btn btn-warning pull-right m-l-10' %>

@@ -67,11 +67,12 @@ cn:
     send_successfully: 成功发送
     to_archive: 成功转移
     downloaded_successfully: 成功下载
-  are_you_sure: " 你确定要删除吗? ?"
+  are_you_sure: " 你确定要删除吗?"
+  are_you_cancel: "你确定要取消？"
   are_you_update: "保存吗?"
   are_sure_change: "更换吗 ?"
-  are_you_sure_ok: "你确定吗？ ?"
-  are_you_sure_switch: "您转让吗？ ?"
+  are_you_sure_ok: "你确定吗？"
+  are_you_sure_switch: "您转让吗？"
   currency: ₮
   minute: 分钟
   minute_s: 分钟

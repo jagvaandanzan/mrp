@@ -50,7 +50,8 @@
         <% end %>
       <% end %>
       <% if can? :read, Product %>
-        <%= content_tag :li, class: (controller_name == 'products' || controller_name == 'product_feature_rels' || controller_name == 'product_feature_items') ? 'treeview active' : 'treeview' do %>
+        <%= content_tag :li, class: (controller_name == 'products' || controller_name == 'product_feature_rels' || controller_name == 'product_feature_items' ||
+            controller_name == 'product_reports') ? 'treeview active' : 'treeview' do %>
           <%= link_to "#" do %>
             <i class="fa fa-cube"></i><span><%= t('titles.products') %></span>
             <span class="pull-right-container">
@@ -66,6 +67,11 @@
             <%= content_tag :li, class: controller_name == 'product_feature_items' ? 'active' : '' do %>
               <%= link_to balance_users_product_feature_items_path do %>
                 <i class="fa fa-balance-scale"></i><span><%= t('titles.balance') %></span>
+              <% end %>
+            <% end %>
+            <%= content_tag :li, class: controller_name == 'product_reports' ? 'active' : '' do %>
+              <%= link_to users_product_reports_track_path do %>
+                <i class="fa fa-file-archive-o"></i><span><%= t('titles.sale_report') %></span>
               <% end %>
             <% end %>
           <% end %>

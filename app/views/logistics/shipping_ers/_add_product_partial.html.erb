@@ -1,6 +1,8 @@
-<% shipping_er_product.shipping_er_features.each_with_index {|feature, index|
-  product = feature.product
-  feature_item = feature.supply_feature.feature_item %>
+<% order_item = nil
+   shipping_er_product.shipping_er_features.each_with_index {|feature, index|
+     product = feature.product
+     order_item = feature.supply_feature.order_item.presence
+     feature_item = feature.supply_feature.feature_item %>
 
   <tr class="nested-fields feature-<%= product.id %> row-<%= rows %>">
     <input type="hidden" value="<%= product.id %>"
@@ -70,6 +72,7 @@
   <td class="va-mid">
     <input class="form-control field" min="0" step="0.01" placeholder="<%= t('activerecord.attributes.shipping_er_product.cost') %>" type="number"
            name="shipping_er[shipping_er_products_attributes][<%= rows %>][cost]"
+           value="<%= order_item.nil? ? '' : order_item.cost %>"
            id="shipping_er_shipping_er_products_attributes_<%= rows %>_cost">
   </td>
   <td class="va-mid remove">
@@ -78,3 +81,8 @@
     <i class="fa fa-fw fa-minus-circle"></i>
   </a></td>
 </tr>
+<script type="text/javascript" charset="utf-8">
+    <% if !order_item.nil? && order_item.product_supply_order.is_sample? %>
+    $('#shipping_er_s_type').val('post_er').selectpicker('refresh');
+    <% end %>
+</script>

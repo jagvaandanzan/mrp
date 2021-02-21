@@ -7,12 +7,12 @@ class ShippingEr < ApplicationRecord
 
   accepts_nested_attributes_for :shipping_er_products, allow_destroy: true
 
-  enum s_type: {post_cargo: 0, post_er: 1, cargo_er: 2, cargo_post: 3}
+  enum s_type: {post_cargo: 0, post_er: 1, cargo_er: 2}
 
   before_save :set_per_price
   attr_accessor :number
 
-  validates :date, :s_type, presence: true
+  validates :date, :s_type, :shipping_er_products, presence: true
   validate :product_should_be_uniq
 
   scope :order_created_at, -> {

@@ -19,6 +19,9 @@ class Logistics::SupplyOrdersController < Logistics::BaseController
 
   def update
     @supply_order_item.attributes = supply_order_item_params
+    unless params[:commit] == "保存"
+      @supply_order_item.status = 8
+    end
     if @supply_order_item.save
       @supply_order_item.set_sum_price_lo
       flash[:success] = t('alert.info_updated')
@@ -35,7 +38,7 @@ class Logistics::SupplyOrdersController < Logistics::BaseController
   end
 
   def supply_order_item_params
-    params.require(:product_supply_order_item).permit(:note_lo, :cn_name,
+    params.require(:product_supply_order_item).permit(:note_lo, :cn_name, :cost,
                                                       supply_features_attributes: [:id, :cn_name, :is_update, :quantity_lo, :price_lo, :note_lo, :_destroy])
         .merge(:logistic => current_logistic)
   end

@@ -185,6 +185,10 @@ Rails.application.routes.draw do
       end
     end
 
+    namespace :product_reports do
+      get 'track'
+    end
+
     match "*any", to: "base#routing_error", via: :all
   end
 

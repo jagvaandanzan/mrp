@@ -11,6 +11,7 @@ class Logistics::ShippingUbsController < Logistics::BaseController
 
   def new
     @shipping_ub = ShippingUb.new
+    @shipping_ub.s_type = 0
     @shipping_ub.date = Time.current
     @shipping_ub.number = ApplicationController.helpers.last_number(ShippingUb)
     @shipping_ub.shipping_ub_boxes << ShippingUbBox.new(is_box: false)

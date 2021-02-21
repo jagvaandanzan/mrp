@@ -7,7 +7,8 @@
   </section>
   <section class="content multi">
     <div class="box box-info">
-      <% supply_order = @supply_order_item.product_supply_order %>
+      <% supply_order = @supply_order_item.product_supply_order
+         is_sample = supply_order.is_sample? %>
       <div class="row m-t-10">
         <div class="col-md-12">
           <div class="col-md-5 field_div">
@@ -20,10 +21,10 @@
           </div>
           <div class="col-md-5 field_div">
             <b><%= t('activerecord.attributes.product_supply_order_item.note') %>:</b>
-            <% if @supply_order_item.product_supply_order.present? %>
+            <% if supply_order.present? %>
               <%= @supply_order_item.note %>
-              <% if @supply_order_item.product_supply_order.is_sample? %>
-                <%= @supply_order_item.product_supply_order.description %>
+              <% if supply_order.is_sample? %>
+                <%= supply_order.description %>
               <% end %>
             <% end %>
           </div>
@@ -35,7 +36,7 @@
           <div class="field_div cocoon-nested-form">
             <table class="table table-hover table-bordered">
               <thead>
-              <% is_supply_order = @supply_order_item.product_supply_order.present? %>
+              <% is_supply_order = supply_order.present? %>
               <tr>
                 <% if is_supply_order %>
                   <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.image') %></th>
@@ -73,6 +74,14 @@
               <%= f.text_field :cn_name, value: @supply_order_item.product.cn_name, class: 'form-control field' %>
             </div>
           </div>
+          <% if is_sample %>
+            <div class="form-group m-t-10 ">
+              <%= f.label :cost, class: 'col-sm-1 control-label' %>
+              <div class="col-sm-11">
+                <%= f.number_field :cost, class: 'form-control field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_supply_order_item.cost') %>
+              </div>
+            </div>
+          <% end %>
           <div class="form-group m-t-10 ">
             <%= f.label :note_lo, class: 'col-sm-1 control-label' %>
             <div class="col-sm-11 <%= get_error_class(@supply_order_item, :note_lo) %>">
@@ -82,6 +91,7 @@
           </div>
           <div class="action-buttons m-t-10">
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+            <%= f.submit t('enums.product_supply_order_item.status.canceled'), class: 'btn btn-danger', data: {confirm: t('are_you_cancel')} %>
           </div>
         <% end %>
       <% end %>

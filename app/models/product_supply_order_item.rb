@@ -14,6 +14,10 @@ class ProductSupplyOrderItem < ApplicationRecord
     validates :product_id, presence: true
   end
 
+  with_options :if => Proc.new {|m| m.canceled?} do
+    validates :note_lo, presence: true
+  end
+
   def get_currency(value)
     ApplicationController.helpers.get_currency(value, Const::CURRENCY[product_supply_order.exchange_before_type_cast.to_i], 2)
   end
@@ -73,7 +77,7 @@ class ProductSupplyOrderItem < ApplicationRecord
     end
     self.update_attribute(:sum_price_lo, sum.to_f.round(1))
 
-    if sum > 0
+    if sum > 0 && !canceled?
       self.update_columns(status: 2, purchase_date: Time.current)
       product_supply_order.update_status(2)
     end
@@ -166,5 +170,6 @@ class ProductSupplyOrderItem < ApplicationRecord
 
   def set_cn_name
     product.update_column(:c_name, cn_name) if cn_name.present? && product.name != cn_name
+    product_supply_order.update_column(:status, 8) if canceled?
   end
 end

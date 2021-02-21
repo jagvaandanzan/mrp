@@ -11,6 +11,7 @@ class Logistics::ShippingErsController < Logistics::BaseController
 
   def new
     @shipping_er = ShippingEr.new
+    @shipping_er.s_type = 2
     @shipping_er.date = Time.current
     @shipping_er.number = ApplicationController.helpers.last_number(ShippingEr)
   end

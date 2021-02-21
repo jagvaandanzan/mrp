@@ -1,0 +1,42 @@
+<script>
+    var tr_select_id = "";
+    function callChildren(select) {
+        let val = $(select).val();
+        let ind = parseInt($(select).attr('ind')) + 1;
+        for (let i = ind; i <= category_max_index; i++) {
+            $("#category-" + i).remove();
+        }
+        if (valid_id(val)) {
+            if (ind > category_max_index) {
+                category_max_index = ind;
+            }
+            Rails.ajax({
+                url: "<%= get_product_category_children_users_products_path %>",
+                type: "PATCH",
+                data: "parent_id=" + val,
+                success: function (data) {
+                    let childrens = data.childrens;
+                    if (childrens.length > 0) {
+                        $("#category_id").val(val);
+                        var divSelect = "<div class='col-sm-12 sub_category' id=category-" + ind + " style='padding: 6px 0 0 0;'>" +
+                            "<select class='form-control' onchange='callChildren(this)' ind=" + ind + ">" +
+                            "<option value=''>Дэд ангилал сонгох</option>";
+
+                        for (var i = 0; i < childrens.length; i++) {
+                            divSelect += '<option value="' + childrens[i]["id"] + '">' + childrens[i]["name"] + '</option>';
+                        }
+                        divSelect += "</select>" + "</div>";
+
+                        $("#product_category").append(divSelect);
+                        $('#product_category select:last').selectpicker('refresh');
+                    } else {
+                        $("#category_id").val(val);
+                    }
+                }
+            });
+        } else {
+            $("#category_id").val("");
+        }
+    }
+
+</script>

@@ -113,6 +113,11 @@ class ProductFeatureItem < ApplicationRecord
         .group(:id)
   }
 
+  scope :join_balances, ->() {
+    left_joins(:product_balances)
+        .where("product_balances.id IS NOT ?", nil)
+  }
+
   def balance
     ProductBalance.balance(product_id, id)
   end
