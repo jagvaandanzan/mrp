@@ -6,9 +6,10 @@ class Logistics::SupplyOrdersController < Logistics::BaseController
     @by_end = params[:by_end]
     @by_code = params[:by_code]
     @by_product_name = params[:by_product_name]
+    @order_type = params[:order_type]
     cookies[:product_supply_order_page_number] = params[:page]
 
-    @product_supply_order_items = ProductSupplyOrderItem.search(@by_start, @by_end, @by_code, @by_product_name).page(params[:page])
+    @product_supply_order_items = ProductSupplyOrderItem.search(@by_start, @by_end, @by_code, @by_product_name, @order_type).page(params[:page])
   end
 
   def edit

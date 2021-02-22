@@ -27,8 +27,8 @@ cn:
         gbr: 英镑
         mnt: 蒙古图格鲁格
       order_type:
-        is_basic: 基本产品
-        is_sample: 样品货 第一次购买的的产品
+        is_basic: 产品
+        is_sample: 样品
     product_supply_order_item:
       status:
         order_created: 订单已创建
@@ -57,7 +57,7 @@ cn:
       product: 产品
       product_supply_order: 基本产品
       product_supply_order_item: 产品供应订单项
-      shipping_er: 运输 广场-二连浩特
+      shipping_er: 运输 厂家～二连浩特
       shipping_ub: 运输 二连浩特-乌兰巴托
       logistic: 供应人员
       shipping_ub_box: 运输盒
@@ -75,7 +75,7 @@ cn:
         current_password: 现在的密码
       product_supply_order:
         order_type: 产品类型
-        code: 电话号码
+        code: 产品编码
         status: 状态
         ordered_date: 订单日期
         logistic_id: 供应人员
@@ -84,7 +84,7 @@ cn:
         link: 链接
         description: 描述
         product_name: 产品名
-        product_code: 产品号码
+        product_code: 产品代码
         product_image: 产品照片
         product_feature: 颜色， 尺寸
         product_supply_order_items: 产品
@@ -93,10 +93,10 @@ cn:
         status: 状态
         supply_order_id: 购买产品
         product_id: 产品
-        note: 描述
+        note: 备注
         sum_price: 总价格
         product_name: 产品名
-        product_code: 产品号码
+        product_code: 产品代码
         product_feature: 颜色， 尺寸
         product_supply_order_id: 基本产品
         note_lo: 描述
@@ -131,7 +131,7 @@ cn:
         shipping_er_features: 产品的
       shipping_er_product:
         product_name: 产品名
-        product_code: 产品的偏号
+        product_code: 产品代码
         product_image: 产品照片
         product_feature: 产品的颜色和尺码
         product_bought: 收到余额л

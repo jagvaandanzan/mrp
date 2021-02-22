@@ -101,7 +101,7 @@
               <% @feature_items.each {|feature_item|
                 product = feature_item.product %>
                 <tr>
-                  <td class="va-mid"><%= product.code %></td>
+                  <td class="va-mid"><%= feature_item.id %>, <%= product.code %></td>
                   <td class="va-mid"><%= product.name %></td>
                   <td class="va-mid"><%= feature_item.name %></td>
                   <td class="va-mid"><%= feature_item.barcode %></td>

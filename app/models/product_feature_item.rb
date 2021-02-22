@@ -113,9 +113,42 @@ class ProductFeatureItem < ApplicationRecord
         .group(:id)
   }
 
+  scope :join_products, ->() {
+    left_joins(:product)
+        .order("products.code")
+        .group('product_feature_items.id')
+  }
   scope :join_balances, ->() {
     left_joins(:product_balances)
         .where("product_balances.id IS NOT ?", nil)
+  }
+  scope :by_balance_date, ->(start, finish) {
+    where('product_balances.created_at >= :s AND product_balances.created_at <= :f', s: "#{start}", f: "#{finish}")
+  }
+  scope :s_by_name, ->(name) {
+    where('products.n_model LIKE :value OR products.n_name LIKE :value OR products.n_package LIKE :value OR products.n_material LIKE :value OR products.n_advantage LIKE :value', value: "%#{name}%") if name.present?
+  }
+  scope :s_by_code, ->(code) {
+    where('products.code LIKE :value', value: "%#{code}%") if code.present?
+  }
+  scope :by_customer, ->(customer_id) {
+    if customer_id.present?
+      if customer_id.to_i == 0
+        where("products.customer_id IS ?", nil)
+      else
+        where("products.customer_id = ?", customer_id)
+      end
+    end
+  }
+  scope :by_category, ->(category_id) {
+    if category_id.present?
+      product_category = ProductCategory.find(category_id)
+      ids = product_category.category_ids
+      where("products.category_id IN (?)", ids)
+    end
+  }
+  scope :by_balance, ->(balance) {
+    having("#{balance == "true" ? 'SUM(product_balances.quantity) > ?' : 'SUM(product_balances.quantity) IS NULL OR SUM(product_balances.quantity) = ?'} ", 0) if balance.present?
   }
 
   def balance

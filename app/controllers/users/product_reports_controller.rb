@@ -15,7 +15,15 @@ class Users::ProductReportsController < Users::BaseController
       @headers = @headers.reverse
     end
 
-    @feature_items = ProductFeatureItem.join_balances
+    @feature_items = ProductFeatureItem.join_products
+                         .join_balances
+                         .s_by_code(@code)
+                         .s_by_name(@name)
+                         .by_customer(@customer_id)
+                         .by_category(@category_id)
+                         .by_balance(@balance)
+                          .by_balance_date(@by_start, @by_end)
+                         .order_is_feature
 
   end
 

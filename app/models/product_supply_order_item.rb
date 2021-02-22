@@ -35,7 +35,7 @@ class ProductSupplyOrderItem < ApplicationRecord
     order(created_at: :desc)
   }
 
-  scope :search, ->(start, finish, supply_code, product_name) {
+  scope :search, ->(start, finish, supply_code, product_name, order_type) {
     items = left_joins(:product_supply_order)
                 .where("product_supply_orders.status > ?", 0)
     if start.present? && finish.present?
@@ -46,6 +46,7 @@ class ProductSupplyOrderItem < ApplicationRecord
       items = items.where('product_supply_orders.code LIKE :value', value: "%#{supply_code}%")
     end
     items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{product_name}%") if product_name.present?
+    items = items.where("product_supply_orders.order_type = ?", order_type) if order_type.present?
     items.created_at_desc
   }
 
