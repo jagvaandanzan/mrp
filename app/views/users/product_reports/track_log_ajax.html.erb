@@ -1,0 +1,9 @@
+<% if @product_balances.present? %>
+  $('#form_modal_body').html("<%= escape_javascript render(:partial => 'track_log', :locals => {:product => @product,
+                                                                                                :by_start => @by_start,
+                                                                                                :by_end => @by_end,
+                                                                                                :feature_item => @feature_item,
+                                                                                                :product_balances => @product_balances}) %>");
+<% else %>
+  $('#form_modal_body').html("");
+<% end %>

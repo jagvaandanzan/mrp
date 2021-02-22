@@ -123,7 +123,7 @@ class ProductFeatureItem < ApplicationRecord
         .where("product_balances.id IS NOT ?", nil)
   }
   scope :by_balance_date, ->(start, finish) {
-    where('product_balances.created_at >= :s AND product_balances.created_at <= :f', s: "#{start}", f: "#{finish}")
+    where('product_balances.created_at >= :s AND product_balances.created_at <= :f', s: "#{start}", f: "#{finish + 1.day}")
   }
   scope :s_by_name, ->(name) {
     where('products.n_model LIKE :value OR products.n_name LIKE :value OR products.n_package LIKE :value OR products.n_material LIKE :value OR products.n_advantage LIKE :value', value: "%#{name}%") if name.present?
@@ -149,6 +149,10 @@ class ProductFeatureItem < ApplicationRecord
   }
   scope :by_balance, ->(balance) {
     having("#{balance == "true" ? 'SUM(product_balances.quantity) > ?' : 'SUM(product_balances.quantity) IS NULL OR SUM(product_balances.quantity) = ?'} ", 0) if balance.present?
+  }
+  scope :by_salesman, ->(salesman_id) {
+    left_joins(:salesman_travel)
+        .where("salesman_travels.salesman_id = ?", salesman_id) if salesman_id.present?
   }
 
   def balance

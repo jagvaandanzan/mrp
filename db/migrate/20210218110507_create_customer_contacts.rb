@@ -1,5 +1,5 @@
 class CreateCustomerContacts < ActiveRecord::Migration[5.2]
   def change
-    add_column :product_supply_order_items, :cost, :integer, after: 'note_lo'
+    add_reference :product_balances, :salesman_return, foreign_key: true, after: 'sale_direct_id'
   end
 end

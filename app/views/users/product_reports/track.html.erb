@@ -100,14 +100,16 @@
               <tbody>
               <% @feature_items.each {|feature_item|
                 product = feature_item.product %>
-                <tr>
+                <tr style="cursor: pointer;" onclick="load_log(<%= feature_item.id %>, <%= product.id %>)">
                   <td class="va-mid"><%= feature_item.id %>, <%= product.code %></td>
                   <td class="va-mid"><%= product.name %></td>
                   <td class="va-mid"><%= feature_item.name %></td>
                   <td class="va-mid"><%= feature_item.barcode %></td>
                   <td class="va-mid"><%= get_currency_mn(feature_item.price) %></td>
                   <td class="va-mid"><%= feature_item.balance %></td>
-                  <td class="va-mid"><%= product.category.name %></td>
+                  <td class="va-mid"><%= product.category.name %>
+                    <i class="fa fa-info-circle" data-toggle="tooltip" title="<%= get_text_recursive(product.category) %>"></i>
+                  </td>
                   <td class="va-mid"><%= product.customer.present? ? product.customer.name : '' %></td>
                 </tr>
               <% } %>
@@ -121,3 +123,20 @@
 </div>
 <%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>
 <%= render 'shared/select_category_js' %>
+<%= render 'shared/form_modal', title: t('titles.sale_track'), modal_class: 'modal-lg' %>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    function load_log(id, product_id) {
+        let modal = $('#form_modal');
+        modal.find('#form_modal_body').html("<div class='text-center m-t-20 w-100'><img src='/images/loading2.gif'></div>");
+        modal.modal('show');
+        Rails.ajax({
+            url: "<%= users_product_reports_track_log_path %>",
+            type: "POST",
+            data: "id=" + id + "&product_id=" + product_id + "&by_start=" + $('#by_start').val() + "&by_end=" + $('#by_end').val()
+        });
+    }
+</script>

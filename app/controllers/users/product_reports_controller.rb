@@ -6,8 +6,11 @@ class Users::ProductReportsController < Users::BaseController
     @customer_id = params[:customer_id]
     @salesman_id = params[:salesman_id]
     @balance = params[:balance]
-    @by_start = params[:by_start]
-    @by_end = params[:by_end]
+
+    today = Time.current.beginning_of_day
+    @by_start = params[:by_start].presence || (today - 10.days).strftime("%Y/%m/%d")
+    @by_end = params[:by_end].presence || today.strftime("%Y/%m/%d")
+
     @category_id = params[:category_id]
     if @category_id.present?
       @product_category = ProductCategory.find(@category_id)
@@ -22,9 +25,20 @@ class Users::ProductReportsController < Users::BaseController
                          .by_customer(@customer_id)
                          .by_category(@category_id)
                          .by_balance(@balance)
-                          .by_balance_date(@by_start, @by_end)
+                         .by_balance_date(@by_start.to_date, @by_end.to_date)
+                         .by_salesman(@salesman_id)
                          .order_is_feature
+  end
 
+  def track_log
+    @product = Product.find(params[:product_id])
+    @feature_item = ProductFeatureItem.find(params[:id])
+    @by_start = params[:by_start].to_date
+    @by_end = params[:by_end].to_date
+    @product_balances = ProductBalance.by_feature_id(params[:id], @by_start, @by_end)
+    respond_to do |format|
+      format.js {render 'users/product_reports/track_log_ajax'}
+    end
   end
 
 end

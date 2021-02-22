@@ -13,19 +13,21 @@ module SearchHelper
   end
 
   def get_category_parents(obj)
-    @headers = []
+    headers = []
     if obj.presence
-      get_recursive_header(obj)
+      get_recursive_header(obj, headers)
     end
 
-    @headers
+    headers
   end
 end
 
-def get_recursive_header(obj)
-  @headers.push(obj)
+def get_recursive_header(obj, headers)
+  headers.push(obj)
   if obj.parent.presence
-    get_recursive_header(obj.parent)
+    get_recursive_header(obj.parent, headers)
+  else
+    headers
   end
 end
 
@@ -40,12 +42,11 @@ def get_search_recursive(obj, type)
     concat header_li
 
     if obj.presence
-      @headers = []
-      get_recursive_header(obj)
+      headers = get_recursive_header(obj, [])
 
-      @headers.reverse().each do |item|
+      headers.reverse().each do |item|
         unless item.nil?
-          li = content_tag :li, class: item == @headers.first ? "active" : "" do
+          li = content_tag :li, class: item == headers.first ? "active" : "" do
             link_to(item.name, type == "category" ? users_product_categories_path(parent_id: item.id)
                                    : users_product_locations_path(parent_id: item.id))
           end
@@ -64,18 +65,30 @@ def get_search_recursive(obj, type)
   end #div .row breadcrumb-container
 end
 
+def get_text_recursive(obj)
+  name = ""
+  if obj.presence
+    headers = get_recursive_header(obj, [])
+    headers.reverse.each do |item|
+      unless item.nil?
+        name += "#{item.name}#{item == headers.first ? "" : " >> "}"
+      end
+    end
+  end
+  name
+end
+
 def get_name_recursive(obj)
   content_tag :span, class: '' do
     if obj.presence
-      @headers = []
-      get_recursive_header(obj)
+      headers = get_recursive_header(obj, [])
 
-      @headers.reverse().each do |item|
+      headers.reverse.each do |item|
         unless item.nil?
           i = content_tag :i do
             # concat link_to(item.name, users_product_categories_path(parent_id: item.id))
             concat item.name
-            concat (item == @headers.first ? "" : " >> ")
+            concat item == headers.first ? "" : " >> "
           end
           concat i
         end # item is null check

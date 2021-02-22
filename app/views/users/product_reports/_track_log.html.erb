@@ -1,0 +1,127 @@
+<table class="table table-bordered">
+  <thead>
+  <tr>
+    <th><%= t('activerecord.attributes.product.code') %></th>
+    <th><%= t('activerecord.attributes.product.name') %></th>
+    <th><%= t('activerecord.models.product_feature') %></th>
+    <th><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
+    <th><%= t('activerecord.attributes.product.price') %></th>
+    <th><%= t('activerecord.attributes.product.balance') %></th>
+    <th><%= t('activerecord.attributes.product.category') %></th>
+    <th><%= t('activerecord.attributes.product.customer_id') %></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td class="va-mid"><%= product.code %></td>
+    <td class="va-mid"><%= product.name %></td>
+    <td class="va-mid"><%= feature_item.name %></td>
+    <td class="va-mid"><%= feature_item.barcode %></td>
+    <td class="va-mid"><%= get_currency_mn(feature_item.price) %></td>
+    <td class="va-mid"><%= feature_item.balance %></td>
+    <td class="va-mid"><%= get_text_recursive(product.category) %></td>
+    <td class="va-mid"><%= product.customer.present? ? product.customer.name : '' %></td>
+  </tr>
+  </tbody>
+</table>
+<strong style="margin-left: 10px">Хугацаа:</strong>
+<span><%= by_start.strftime("%Y/%m/%d") %> - <%= by_end.strftime("%Y/%m/%d") %></span>
+<table class="table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th>Огноо</th>
+    <th>Шинж</th>
+    <th>Тоо хэмжээ</th>
+    <th>Өртөг</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% in_price = 0
+     out_price = 0
+     in_quantity = 0
+     out_quantity = 0
+     first_date = nil %>
+  <% product_balances.each_with_index do |balance, index|
+    if index > 0
+    first_date = balance.created_at
+   end                  %>
+    <tr>
+      <td class="va-mid"><%= balance.created_at.strftime('%F %R') %></td>
+      <% if balance.income_item.present? %>
+        <% income_item = balance.income_item
+           product_income = income_item.product_income
+           q = income_item.quantity
+           price = income_item.feature_item.price * q
+           in_price += price
+           in_quantity += q %>
+        <td>Орлого #<%= show_id product_income.id %>, <%= product_income.user.name %></td>
+        <td><%= get_currency_mn price %></td>
+      <% elsif balance.sale_item.present?
+           sale_item = balance.sale_item
+           price = sale_item.sum_price
+           out_price += price
+           out_quantity += sale_item.quantity %>
+        <td>Борлуулалт #<%= sale_item.product_sale.phone %>, <%= balance.operator.name %></td>
+        <td><%= get_currency_mn price %></td>
+      <% elsif balance.salesman_return.present?
+           salesman_return = balance.salesman_return
+           q = salesman_return.quantity
+           price = salesman_return.sale_item.price * q
+           in_price += price
+           in_quantity += q %>
+        <td>Буцаалт #<%= salesman_return.salesman.name %>, <%= salesman_return.user.name %></td>
+        <td><%= get_currency_mn price %></td>
+      <% elsif balance.sale_direct.present?
+           sale_direct = balance.sale_direct
+           q = sale_direct.quantity
+           price = sale_direct.sale_item.price * q
+           out_price += price
+           out_quantity += q %>
+        <td>Машинаас зарсан #<%= sale_direct.phone %>, <%= sale_direct.salesman.name %></td>
+        <td><%= get_currency_mn price %></td>
+      <% end %>
+      <td class="va-mid"><%= balance.quantity %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+<table class="table-bordered table">
+  <thead>
+  <tr>
+    <th></th>
+    <th>Тоо хэмжээ</th>
+    <th>Өртөг</th>
+  </tr>
+  </thead>
+  <tr>
+    <% total_price = 0
+       total_q = 0 %>
+    <td>Эхний үлдэгдэл</td>
+    <% if first_date.nil? %>
+      <td></td>
+      <td></td>
+    <% else %>
+      <% quantity = ProductBalance.balance_by_feature_id(feature_item.id, first_date)
+         total_q += quantity
+         price = quantity * feature_item.price
+         total_price += price %>
+      <td><%= quantity %></td>
+      <td><%= get_currency_mn price %></td>
+    <% end %>
+  </tr>
+  <tr>
+    <td>Орлогын нийт дүн</td>
+    <td><%= in_quantity %></td>
+    <td><%= get_currency_mn in_price %></td>
+  </tr>
+  <tr>
+    <td>Зарлагын нийт дүн</td>
+    <td><%= out_quantity %></td>
+    <td><%= get_currency_mn out_price %></td>
+  </tr>
+  <tr>
+    <td>Эцсийн үлдэгдэл</td>
+    <td><%= total_q - out_quantity + in_quantity %></td>
+    <td><%= get_currency_mn total_price - out_price + in_price %></td>
+  </tr>
+</table>

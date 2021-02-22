@@ -63,9 +63,11 @@ module API
                     salesman_returns.each {|ret|
                       sales_item = ret.sale_item
                       sales_item.update_column(:back_quantity, sales_item.back_quantity.present? ? sales_item.back_quantity + ret.quantity : ret.quantity)
-                      product_balance = sales_item.product_balance
-                      product_balance.quantity = product_balance.quantity + ret.quantity
-                      product_balance.save
+                      ProductBalance.create(product: ret.product,
+                                            feature_item: ret.feature_item,
+                                            salesman_return: ret,
+                                            user: current_user,
+                                            quantity: ret.quantity)
                     }
                     return_sign.send_notification_to_salesman
                     present :sign_at, return_sign.updated_at
