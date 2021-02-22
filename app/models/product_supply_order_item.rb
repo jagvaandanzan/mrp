@@ -104,9 +104,9 @@ class ProductSupplyOrderItem < ApplicationRecord
 
   def get_order_type
     if product_supply_order.is_basic?
-      I18n.t('activerecord.models.product_supply_order')
+      I18n.t('enums.product_supply_order.order_type.is_basic')
     else
-      I18n.t('titles.product_sample')
+      I18n.t('enums.product_supply_order.order_type.is_sample')
     end
   end
 
