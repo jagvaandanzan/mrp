@@ -47,6 +47,7 @@
    end                  %>
     <tr>
       <td class="va-mid"><%= balance.created_at.strftime('%F %R') %></td>
+      <td class="va-mid"><%= balance.quantity %></td>
       <% if balance.income_item.present? %>
         <% income_item = balance.income_item
            product_income = income_item.product_income
@@ -80,7 +81,6 @@
         <td>Машинаас зарсан #<%= sale_direct.phone %>, <%= sale_direct.salesman.name %></td>
         <td><%= get_currency_mn price %></td>
       <% end %>
-      <td class="va-mid"><%= balance.quantity %></td>
     </tr>
   <% end %>
   </tbody>
