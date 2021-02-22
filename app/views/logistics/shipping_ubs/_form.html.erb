@@ -99,6 +99,15 @@
                           <%= link_to product.picture.url, :"data-lightbox" => "roadtrip" do %>
                             <%= t('titles.view') %>
                           <% end %>
+                        <% else %>
+                          <% sample_images = ProductSampleImage.by_product_id(product)
+                             sample_images.each {|img| %>
+                            <div style="display: inline-block">
+                              <%= link_to img.image.url, "data-lightbox": "roadtrip" do %>
+                                <%= image_tag img.image.url(:tumb), width: '30' %>
+                              <% end %>
+                            </div>
+                          <% } %>
                         <% end %>
                       </td>
                       <td class="va-mid"><%= er_product.shipping_er_features.count %></td>
@@ -124,7 +133,7 @@
 <script !src="">
     function add_product(id) {
         let row = $('.tb_shipping_ub_products:last .nested-fields').length;
-        let box_r = $('.box_r:last input:first').attr('name').replace("shipping_ub[shipping_ub_boxes_attributes][", "").replace("][is_box]","");
+        let box_r = $('.box_r:last input:first').attr('name').replace("shipping_ub[shipping_ub_boxes_attributes][", "").replace("][is_box]", "");
         Rails.ajax({
             url: "<%= add_product_logistics_shipping_ubs_path %>",
             type: "POST",

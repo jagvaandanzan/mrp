@@ -134,8 +134,8 @@ cn:
         product_code: 产品代码
         product_image: 产品照片
         product_feature: 产品的颜色和尺码
-        product_bought: 收到余额л
-        quantity: 总产品的数量о
+        product_bought: 收到余额
+        quantity: 总产品的数量
         cargo: 几个盒子
         cost: 成本
       shipping_er_feature:
