@@ -106,7 +106,7 @@
                             <% supply_order.product_sample_images.each {|img| %>
                               <div style="display: inline-block">
                                 <%= link_to img.image.url, "data-lightbox": "roadtrip" do %>
-                                  <%= image_tag img.image.url(:tumb), width: '30' %>
+                                  <%= image_tag img.image.url(:tumb), height: '30' %>
                                 <% end %>
                               </div>
                             <% } %>
