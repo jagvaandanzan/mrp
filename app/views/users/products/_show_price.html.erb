@@ -4,7 +4,12 @@
       <div class="form-group">
         <%= label_tag :delivery_type, t('activerecord.attributes.product.delivery_type'), class: 'col-sm-3 control-label', style: 'padding-top:0' %>
         <div class="col-sm-9">
-          <%= @product.delivery_type_i18n %>
+          <% if @product.deliveries.present? %>
+            <% @product.deliveries.each_with_index {|deli, index| %>
+              <% if index > 0 %>, <% end %>
+              <%= CustomerContact.deliveries_i18n[CustomerContact.deliveries.key(deli)] %>
+            <% } %>
+          <% end %>
         </div>
       </div>
     <% end %>

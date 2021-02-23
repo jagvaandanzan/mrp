@@ -3,5 +3,5 @@ class CustomerContactFee < ApplicationRecord
 
   validates :range_s, :range_e, :percent, presence: true
 
-  validates_uniqueness_of :range_s, :range_e, :percent, scope: [:customer_id]
+  # validates_uniqueness_of :range_s, :range_e, :percent, scope: [:customer_id]
 end
