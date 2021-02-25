@@ -302,7 +302,11 @@ class Product < ApplicationRecord
     !draft && is_web
   end
 
-  # private
+  def delivery_type
+    self[:delivery_type].to_s if self[:delivery_type].present?
+  end
+
+  private
 
   def valid_custom
     errors.add(:category_id, :blank) if category_id.present? && ProductCategory.search(category_id).count > 0
