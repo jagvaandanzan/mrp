@@ -144,7 +144,7 @@ class Users::ProductsController < Users::BaseController
       @headers = ApplicationController.helpers.get_category_parents(@product.category)
       @headers = @headers.reverse
       @product.option_rels = @product.product_feature_option_rels.map {|i| i.feature_option_id.to_s}.to_a
-      @product.deliveries = @product.delivery_type.tr('[]', '').split(',').map(&:to_i) if @product.delivery_type.present?
+      @product.deliveries = @product.delivery_type.split(',').map(&:to_i) if @product.delivery_type.present?
       @product.filters = @product.product_filters.map {|i| i.category_filter_id.to_s}.to_a
     end
   end

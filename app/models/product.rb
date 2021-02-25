@@ -302,10 +302,6 @@ class Product < ApplicationRecord
     !draft && is_web
   end
 
-  def delivery_type
-    self[:delivery_type].to_s if self[:delivery_type].present?
-  end
-
   private
 
   def valid_custom
@@ -406,7 +402,7 @@ class Product < ApplicationRecord
 
   def set_valid_value
     if deliveries.present?
-      self.delivery_type = deliveries.map(&:to_i)
+      self.delivery_type = deliveries.map(&:to_i).to_s.tr('[]', '')
     end
   end
 
