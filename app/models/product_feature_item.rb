@@ -18,7 +18,7 @@ class ProductFeatureItem < ApplicationRecord
   before_save :set_default
   validate :check_image_size
 
-  with_options :if => Proc.new {|m| m.barcode.present?} do
+  with_options :if => Proc.new {|m| ((m.tab_index.present? && m.tab_index.to_i == 1) || m.is_add.present?) && m.barcode.present?} do
     validates_uniqueness_of :barcode
   end
 
