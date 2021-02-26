@@ -1,0 +1,44 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<div class="content-wrapper">
+  <div class="col-md-12 m-t-10 m-b-10">
+    <%= form_with url: users_product_reports_track_logs_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+      <div class="col-md-3 search m-t-5">
+        <div id="search-date" class="form-control search">
+          <i class="fa fa-calendar fa-lg p-r-0"></i>
+          <span><%= t("filters.by_date") %>...</span>
+          <%= f.hidden_field :product_id, value: @product.id %>
+          <%= f.hidden_field :id, value: @feature_item.id %>
+          <%= f.hidden_field :by_start, value: @by_start %>
+          <%= f.hidden_field :by_end, value: @by_end %>
+        </div>
+      </div>
+      <div class="col-md-3 search m-t-5">
+        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left', style: 'height: 30px' %>
+        <%= link_to t('titles.back_to_list'), users_product_reports_track_path, {class: "m-l-10 btn blck-btn pull-left"} %>
+      </div>
+      <div class="col-md-6 search"></div>
+
+
+    <% end %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <div class="box-body table-responsive no-padding">
+            <%= render 'track_log',:product => @product,
+                       :by_start => @by_start,
+                       :by_end => @by_end,
+                       :feature_item => @feature_item,
+                       :product_balances => @product_balances %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>

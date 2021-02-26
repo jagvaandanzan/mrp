@@ -187,6 +187,7 @@ Rails.application.routes.draw do
 
     namespace :product_reports do
       get 'track'
+      get 'track_logs'
       post 'track_log'
     end
 

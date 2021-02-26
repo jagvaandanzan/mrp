@@ -11,7 +11,7 @@
     <% if can? :update, Product %>
       <%= link_to t('controls.button.edit'), edit_users_product_path(@product), class: 'btn btn-info' %>
     <% end %>
-    <%= link_to t('titles.back_to_list'), users_products_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
+    <%= link_to t('titles.back_to_list'), users_products_path(page: cookies[:product_page_number]), {class: "btn blck-btn"} %>
     <% if can? :destroy, Product %>
       <%= link_to t('controls.button.delete'), users_product_path(@product), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <% end %>

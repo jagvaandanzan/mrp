@@ -28,6 +28,16 @@ class Users::ProductReportsController < Users::BaseController
                          .by_balance_date(@by_start.to_date, @by_end.to_date)
                          .by_salesman(@salesman_id)
                          .order_is_feature
+                         .page(params[:page])
+    cookies[:product_track_page_number] = params[:page]
+  end
+
+  def track_logs
+    @by_start = params[:by_start].to_date
+    @by_end = params[:by_end].to_date
+    @product = Product.find(params[:product_id])
+    @feature_item = ProductFeatureItem.find(params[:id])
+    @product_balances = ProductBalance.by_feature_id(params[:id], @by_start, @by_end)
   end
 
   def track_log

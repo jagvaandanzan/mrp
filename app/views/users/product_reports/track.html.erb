@@ -100,10 +100,10 @@
               <tbody>
               <% @feature_items.each {|feature_item|
                 product = feature_item.product %>
-                <tr style="cursor: pointer;" onclick="load_log(<%= feature_item.id %>, <%= product.id %>)">
-                  <td class="va-mid"><%= feature_item.id %>, <%= product.code %></td>
+                <tr style="cursor: pointer" click="load_log(<%= feature_item.id %>, <%= product.id %>)">
+                  <td class="va-mid"><%= product.code %></td>
                   <td class="va-mid"><%= product.name %></td>
-                  <td class="va-mid"><%= feature_item.name %></td>
+                  <td class="va-mid"><a href="<%= users_product_reports_track_logs_path(by_start: @by_start, by_end: @by_end, product_id: product.id, id: feature_item.id) %>" target="_blank"><%= feature_item.name %></a></td>
                   <td class="va-mid"><%= feature_item.barcode %></td>
                   <td class="va-mid"><%= get_currency_mn(feature_item.price) %></td>
                   <td class="va-mid"><%= feature_item.balance %></td>
@@ -119,6 +119,7 @@
         </div>
       </div>
     </div>
+    <%= paginate @feature_items %>
   </section>
 </div>
 <%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>

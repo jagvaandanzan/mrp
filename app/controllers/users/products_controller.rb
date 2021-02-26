@@ -23,6 +23,7 @@ class Users::ProductsController < Users::BaseController
                     .by_category(@category_id)
                     .order_by_name
                     .page(params[:page])
+    cookies[:product_page_number] = params[:page]
   end
 
   def new
