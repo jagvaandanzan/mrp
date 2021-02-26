@@ -27,11 +27,11 @@
         category_filter_groups = category.category_filter_groups.order_name
         if category_filter_groups.size > 0 %>
           <div style="width: 25%;text-align: right;font-weight:700">
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapse<%= category.id %>" style="color: black">
-              <%= t('activerecord.attributes.ali_category.ali_filter_groups') %>: <%= category.name %>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse-<%= category.id %>" style="color: black">
+              Шүүлтүүр: <%= category.name %>
             </a>
           </div>
-          <div id="collapse<%= category.id %>" class="panel-collapse collapse <%= (!@product.persisted? && index == 2 || (@product.persisted? && @product.check_filter_group_selected(category_filter_groups.map(&:id).to_a))) ? 'in' : '' %>">
+          <div id="collapse-<%= category.id %>" class="panel-collapse collapse <%= (!@product.persisted? && index == 2 || (@product.persisted? && @product.check_filter_group_selected(category_filter_groups.map(&:id).to_a))) ? 'in' : '' %>">
             <% category_filter_groups.order_name.each {|group| %>
               <div class="form-group">
                 <%= label_tag :product_filter_groups, class: 'col-sm-3 control-label' do %>

@@ -299,7 +299,7 @@ class Product < ApplicationRecord
   end
 
   def is_sync
-    !draft && is_web_was.presence || is_web
+    !draft && (is_web || attribute_before_last_save(:is_web))
   end
 
   private
