@@ -299,7 +299,7 @@ class Product < ApplicationRecord
   end
 
   def is_sync
-    !draft && is_web
+    !draft && is_web_was.presence || is_web
   end
 
   private
