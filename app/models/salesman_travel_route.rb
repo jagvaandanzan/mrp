@@ -22,7 +22,7 @@ class SalesmanTravelRoute < ApplicationRecord
 
   scope :search, ->(start, finish, salesman_id) {
     joins(:salesman_travel)
-        .where('salesman_travels.delivery_at >= :s AND salesman_travels.delivery_at <= :f', s: "#{start}", f: "#{finish}")
+        .where('salesman_travels.delivery_at >= :s AND salesman_travels.delivery_at <= :f', s: "#{start}", f: "#{finish + 1.day}")
         .where('salesman_travels.salesman_id = ?', salesman_id)
         .order("salesman_travel_routes.delivery_at")
   }
