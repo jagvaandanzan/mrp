@@ -6,13 +6,48 @@
   <%= render 'layouts/breadcrumbs', data: [
       [operators_loc_districts_path, t('activerecord.models.loc_district')],
       [operators_loc_khoroos_path(id: @location.loc_khoroo.loc_district_id), @location.loc_khoroo.loc_district.name],
-      [operators_locations_path(id: @location.loc_khoroo.id), @location.loc_khoroo.name], t('activerecord.models.location') +t(@location.persisted? ? 'titles.edit' : 'titles.add')] %>
+      [operators_locations_path(id: @location.loc_khoroo.id), @location.loc_khoroo.name], t('activerecord.models.location') + t(@location.persisted? ? 'titles.edit' : 'titles.add')] %>
 
   <section class="content">
     <div class="box box-info">
       <%= form_with model: @location, url: @location.persisted? ? operators_location_path : operators_locations_path, method: @location.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
           <%= f.hidden_field :loc_khoroo_id %>
+          <div class="form-group">
+            <%= f.label :micro_region, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@location, :micro_region) %>">
+              <%= field_errors(@location, :micro_region) %>
+              <%= f.text_field :micro_region, class: 'form-control n_press', placeholder: t('activerecord.attributes.location.micro_region') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :town, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@location, :town) %>">
+              <%= field_errors(@location, :town) %>
+              <%= f.text_field :town, class: 'form-control n_press', placeholder: t('activerecord.attributes.location.town') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :street, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@location, :street) %>">
+              <%= field_errors(@location, :street) %>
+              <%= f.text_field :street, class: 'form-control n_press', placeholder: t('activerecord.attributes.location.street') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :apartment, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@location, :apartment) %>">
+              <%= field_errors(@location, :apartment) %>
+              <%= f.text_field :apartment, class: 'form-control n_press', placeholder: t('activerecord.attributes.location.apartment') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :entrance, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@location, :entrance) %>">
+              <%= field_errors(@location, :entrance) %>
+              <%= f.text_field :entrance, class: 'form-control n_press', placeholder: t('activerecord.attributes.location.entrance') %>
+            </div>
+          </div>
           <div class="form-group">
             <%= f.label :name, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@location, :name) %>">
@@ -28,33 +63,21 @@
             </div>
           </div>
           <div class="form-group">
+            <%= f.label :station_id, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@location, :station_id) %>">
+              <%= field_errors(@location, :station_id) %>
+              <%= f.collection_select :station_id, Location.by_country, :id, :full_name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+            </div>
+          </div>
+          <div class="form-group">
             <%= f.label :distance, class: 'col-sm-3 control-label' %>
             <div class="col-sm-6 <%= get_error_class(@location, :distance) %>">
               <%= field_errors(@location, :distance) %>
               <%= f.select :distance, Location.distances_i18n.keys.reject {|k| k == 'st_leave'}.map {|k| [Location.distances_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
             </div>
           </div>
-          <div class="form-group">
-            <%= f.label :country, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-6 <%= get_error_class(@location, :country) %>">
-              <%= field_errors(@location, :country) %>
-              <%= f.check_box :country %>
-            </div>
-          </div>
-          <div class="form-group">
-            <%= f.label :latitude, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-9 <%= get_error_class(@location, :latitude) %>">
-              <%= field_errors(@location, :latitude) %>
-              <%= f.text_field :latitude, id: 'latitude', class: 'form-control', readonly: true, placeholder: t('activerecord.attributes.location.latitude') %>
-            </div>
-          </div>
-          <div class="form-group">
-            <%= f.label :longitude, class: 'col-sm-3 control-label' %>
-            <div class="col-sm-9 <%= get_error_class(@location, :longitude) %>">
-              <%= field_errors(@location, :longitude) %>
-              <%= f.text_field :longitude, id: 'longitude', class: 'form-control', readonly: true, placeholder: t('activerecord.attributes.location.longitude') %>
-            </div>
-          </div>
+          <%= f.hidden_field :latitude, id: 'latitude' %>
+          <%= f.hidden_field :longitude, id: 'longitude' %>
           <div class="form-group">
             <div class="col-sm-12">
               <div id="map"></div>
@@ -69,6 +92,7 @@
   </section>
 </div>
 <script>
+
     function initMap() {
         let lat = document.getElementById('latitude').value;
         let lng = document.getElementById('longitude').value;
@@ -116,6 +140,24 @@
 
     $(function () {
         initMap();
+        $('.n_press').keyup(function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+            } else {
+                set_location_full_name();
+            }
+        });
     });
+
+    function set_location_full_name() {
+        var n = "";
+        n = get_name_text(n, $("#location_micro_region").val());
+        n = get_name_text(n, $("#location_town").val());
+        n = get_name_text(n, $("#location_street").val());
+        n = get_name_text(n, $("#location_apartment").val());
+        n = get_name_text(n, $("#location_entrance").val());
+        $("#location_name").val(n);
+    }
+
 
 </script>

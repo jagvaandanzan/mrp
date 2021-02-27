@@ -34,3 +34,11 @@ $(function () {
 function reset_excel_download_btn() {
     $('button#download-excel').removeAttr('disabled');
 }
+
+function get_name_text(n, v) {
+    if (v !== undefined && v.length > 0) {
+        if (n.length > 0) n += ", ";
+        n += v;
+    }
+    return n;
+}

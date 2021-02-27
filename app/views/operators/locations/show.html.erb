@@ -32,6 +32,10 @@
           <div class="col-data"><%= @location.distance.present? ? @location.distance_i18n : '---' %></div>
         </div>
         <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.location.station_id') %> :</div>
+          <div class="col-data"><%= @location.station.present? ? @location.station.full_name : '---' %></div>
+        </div>
+        <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.location.latitude') %> :</div>
           <div class="col-data"><%= @location.latitude %></div>
         </div>

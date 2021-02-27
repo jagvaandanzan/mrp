@@ -35,9 +35,13 @@ class ProductSale < ApplicationRecord
     validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
   end
 
+  with_options :if => Proc.new {|m| m.country} do
+    validate :check_money
+  end
+
   validates :main_status, presence: true
 
-  with_options :if => Proc.new {|m| m.money == 'mixed'} do
+  with_options :if => Proc.new {|m| m.money != 'cash'} do
     validates :paid, presence: true
     validates_numericality_of :paid, less_than_or_equal_to: Proc.new(&:sum_price)
   end
@@ -133,6 +137,10 @@ class ProductSale < ApplicationRecord
 
 
   private
+
+  def check_money
+    self.errors.add(:money, " заавал дансаар төлсөн байх ёстой!") unless account?
+  end
 
   def set_defaults
     self.code = ApplicationController.helpers.get_code(ProductSale.last) unless code.present?

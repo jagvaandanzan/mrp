@@ -252,6 +252,12 @@ mn:
         gender: Хүйс
         phone: Утас
       location:
+        micro_region: Хороолол
+        town: Хотхон
+        street: Гудамж
+        apartment: Байр
+        entrance: Орц/Тоот
+        station_id: Явах зогсоол
         name: Хаяг
         name_la: Хаяг латинаар
         latitude: Өргөрөг
@@ -262,6 +268,7 @@ mn:
         country: Орон нутаг
       loc_district:
         name: Нэр
+        country: Орон нутаг
       loc_khoroo:
         loc_district: Дүүрэг/аймаг
         loc_district_id: Дүүрэг/аймаг

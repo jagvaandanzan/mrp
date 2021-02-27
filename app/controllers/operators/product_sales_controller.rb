@@ -52,11 +52,7 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def search_locations
-    @list = if params[:country].present?
-              Location.search_by_country
-            else
-              Location.search_by_name(params[:text])
-            end
+    @list = Location.search_by_name(params[:text], params[:country])
     @select_id = params[:id]
 
     respond_to do |format|
@@ -160,6 +156,12 @@ class Operators::ProductSalesController < Operators::BaseController
     location = Location.create(
         operator: current_operator,
         loc_khoroo_id: params[:khoroo_id],
+        micro_region: params[:micro_region],
+        town: params[:town],
+        street: params[:street],
+        apartment: params[:apartment],
+        entrance: params[:entrance],
+        station_id: params[:station_id],
         name: params[:name],
         name_la: params[:name_la],
         distance: params[:distance],

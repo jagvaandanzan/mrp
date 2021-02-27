@@ -1,15 +1,22 @@
 class Location < ApplicationRecord
   belongs_to :operator, optional: true
   belongs_to :loc_khoroo
+  belongs_to :station, :class_name => "Location", optional: true
+
   has_many :location_travels, :foreign_key => "location_from_id", dependent: :destroy
   has_many :location_travels, :foreign_key => "location_to_id", dependent: :destroy
   has_many :salesman_travel_routes, dependent: :destroy
   has_many :product_sales
+  has_one :loc_district, through: :loc_khoroo
 
   enum distance: {distance_a: 0, distance_b: 1, distance_c: 2, distance_d: 3}
 
   validates :distance, :loc_khoroo, presence: true
-  validates :name, :name_la, presence: true, length: {maximum: 255}
+  validates :name, :name_la, presence: true
+
+  with_options :if => Proc.new {|m| m.loc_khoroo.loc_district.country} do
+    validates :station_id, presence: true
+  end
 
   validates_uniqueness_of :name, :name_la, scope: [:loc_khoroo_id]
 
@@ -19,9 +26,16 @@ class Location < ApplicationRecord
     items.order(:name)
   }
 
-  scope :search_by_name, ->(name) {
-    where('name LIKE :value OR name_la LIKE :value', value: "%#{name}%")
-        .order(:name)
+  scope :search_by_name, ->(name, country) {
+    items = joins(:loc_district)
+    items = if country == "true"
+              items.where('loc_districts.name LIKE :value OR loc_khoroos.name LIKE :value OR locations.name LIKE :value OR locations.name_la LIKE :value', value: "%#{name}%")
+                  .where("loc_districts.country = ?", true)
+            else
+              items.where('locations.name LIKE :value OR locations.name_la LIKE :value', value: "%#{name}%")
+                  .where("loc_districts.country = ?", false)
+            end
+    items.order(:name)
   }
   scope :search_by_id, ->(id) {
     if id.present?
@@ -33,14 +47,15 @@ class Location < ApplicationRecord
   scope :search_by_ids, ->(ids) {
     where("id IN (?)", ids)
   }
-  scope :searchAll, ->() {
-    items = where("")
-    # items = items.where('name LIKE :value OR name_la LIKE :value', value: "%#{sname}%") if sname.present?
-    items.order(:name)
+
+  scope :by_country, ->() {
+    where(country: true)
+        .order(:name)
   }
 
   scope :search_by_country, ->() {
-    where(country: true)
+    joins(:loc_district)
+        .where("loc_districts.country = ?", true)
         .order(:name)
   }
 

@@ -12,7 +12,14 @@
             <%= f.label :name, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@loc_district, :name) %>">
               <%= field_errors(@loc_district, :name) %>
-              <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.user.name') %>
+              <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.loc_district.name') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :country, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@loc_district, :country) %>">
+              <%= field_errors(@loc_district, :country) %>
+              <%= f.check_box :country %>
             </div>
           </div>
 

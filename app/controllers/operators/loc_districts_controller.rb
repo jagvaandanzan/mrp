@@ -50,6 +50,6 @@ class Operators::LocDistrictsController < Operators::BaseController
 
   def loc_district_params
     params.require(:loc_district)
-        .permit(:name)
+        .permit(:name, :country)
   end
 end

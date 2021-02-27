@@ -16,20 +16,64 @@
         <%= form_body do %>
           <div class="row">
             <div class="col-md-12">
-              <div class="col-md-4 field_div">
+              <div class="col-md-6 field_div">
                 <label class="control-label" for="location_district_id"><%= t('activerecord.models.loc_district') %></label>
                 <div>
                   <%= select_tag :location_district_id, options_from_collection_for_select(LocDistrict.search, :id, :name), :prompt => t('controls.select.none'),
                                  class: 'form-control selectpicker', "data-live-search": "true" %>
                 </div>
               </div>
-              <div class="col-md-4 field_div">
+              <div class="col-md-6 field_div">
                 <label class="control-label" for="location_loc_khoroo_id"><%= t('activerecord.attributes.location.loc_khoroo_id') %></label>
                 <div id="khoroo_id">
                   <%= select_tag :location_loc_khoroo_id, options_for_select([]), :prompt => t('controls.select.none'), class: 'form-control selectpicker', "data-live-search": "true" %>
                 </div>
               </div>
-              <div class="col-md-4 field_div">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-3 field_div">
+                <label class="control-label" for="location_micro_region"><%= t('activerecord.attributes.location.micro_region') %></label>
+                <div>
+                  <%= text_field_tag :location_micro_region, "", {class: 'form-control n_press', placeholder: t('activerecord.attributes.location.micro_region')} %>
+                </div>
+              </div>
+              <div class="col-md-3 field_div">
+                <label class="control-label" for="location_town"><%= t('activerecord.attributes.location.town') %></label>
+                <div>
+                  <%= text_field_tag :location_town, "", {class: 'form-control n_press', placeholder: t('activerecord.attributes.location.town')} %>
+                </div>
+              </div>
+              <div class="col-md-3 field_div">
+                <label class="control-label" for="location_street"><%= t('activerecord.attributes.location.street') %></label>
+                <div>
+                  <%= text_field_tag :location_street, "", {class: 'form-control n_press', placeholder: t('activerecord.attributes.location.street')} %>
+                </div>
+              </div>
+              <div class="col-md-3 field_div">
+                <label class="control-label" for="location_apartment"><%= t('activerecord.attributes.location.apartment') %></label>
+                <div>
+                  <%= text_field_tag :location_apartment, "", {class: 'form-control n_press', placeholder: t('activerecord.attributes.location.apartment')} %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-3 field_div">
+                <label class="control-label" for="location_entrance"><%= t('activerecord.attributes.location.entrance') %></label>
+                <div>
+                  <%= text_field_tag :location_entrance, "", {class: 'form-control n_press', placeholder: t('activerecord.attributes.location.entrance')} %>
+                </div>
+              </div>
+              <div class="col-md-6 field_div">
+                <label class="control-label" for="location_station_id"><%= t('activerecord.attributes.location.station_id') %></label>
+                <div>
+                  <%= select_tag :station_id, options_from_collection_for_select(Location.by_country, :id, :full_name), {prompt: t('controls.select.none'), "data-live-search": true, class: 'selectpicker form-control'} %>
+                </div>
+              </div>
+              <div class="col-md-3 field_div">
                 <label class="control-label" for="location_loc_khoroo_id"><%= t('activerecord.attributes.location.distance') %></label>
                 <div id="khoroo_id">
                   <%= select_tag :distance, options_for_select(Location.distances_i18n.keys.reject {|k| k == 'st_leave'}.map {|k| [Location.distances_i18n[k], k]}), :prompt => t('controls.select.none'), class: 'form-control selectpicker' %>
@@ -139,8 +183,23 @@
         marker.setPosition(myCoords);
         map.setCenter(marker.getPosition());
     }
-
+    function set_location_full_name() {
+        var n = "";
+        n = get_name_text(n, $("#location_micro_region").val());
+        n = get_name_text(n, $("#location_town").val());
+        n = get_name_text(n, $("#location_street").val());
+        n = get_name_text(n, $("#location_apartment").val());
+        n = get_name_text(n, $("#location_entrance").val());
+        $("#location_name").val(n);
+    }
     $(document).ready(function () {
+        $('.n_press').keyup(function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+            } else {
+                set_location_full_name();
+            }
+        });
         $('select#location_district_id').on('change', function () {
             call_khoroo($(this));
         });
@@ -174,14 +233,27 @@
                 Rails.ajax({
                     url: "<%= add_location_operators_product_sales_path %>",
                     type: "POST",
-                    data: "khoroo_id=" + khoroo_id + "&name=" + loc_name + "&distance=" + distance + "&name_la=" + loc_name_la + "&latitude=" + latitude + "&longitude=" + longitude,
+                    data: "khoroo_id=" + khoroo_id +
+                        "&micro_region=" + $('#location_micro_region').val() +
+                        "&town=" + $('#location_town').val() +
+                        "&street=" + $('#location_street').val() +
+                        "&apartment=" + $('#location_apartment').val() +
+                        "&entrance=" + $('#location_entrance').val() +
+                        "&station_id=" + $('#station_id').val() +
+                        "&name=" + loc_name + "&distance=" + distance + "&name_la=" + loc_name_la + "&latitude=" + latitude + "&longitude=" + longitude,
                     success: function (data) {
                         btn.removeAttr('disabled');
                         if (data.status === "ok") {
                             $("#location-modal-lg").modal('hide');
+                            $('#location_micro_region').val();
+                            $('#location_town').val("");
+                            $('#location_street').val("");
+                            $('#location_apartment').val("");
+                            $('#location_entrance').val("");
                             $('#location_name').val("");
                             $('#location_name_la').val("");
                             $('#location_district_id').val("").selectpicker("refresh");
+                            $('#station_id').val("").selectpicker("refresh");
                             $('#location_loc_khoroo_id').html("<option value><%= t('controls.select.none') %></option>").selectpicker("refresh");
                             selected_locatoion_refresh_marker(latitude, longitude);
                             $('#product_sale_location_id').html("<option selected='selected' value=" + data.id + ">" + data.name + "</option>").selectpicker("refresh");

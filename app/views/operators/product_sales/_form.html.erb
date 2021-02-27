@@ -182,7 +182,7 @@
                                             {class: 'form-control selectpicker', onchange: 'get_sub_status(this)', "data-live-search": "true"} %>
                   </div>
                 </div>
-                <div id="paid_div" class="col-md-4 field_div <%= (!@product_sale.persisted? || @product_sale.cash?) ? 'none' : '' %>">
+                <div id="paid_div" class="col-md-4 field_div <%= (@product_sale.present? && !@product_sale.cash?) ? '' : 'none' %>">
                   <%= f.label :paid, class: 'control-label' %>
                   <div class="<%= get_error_class(@product_sale, :paid) %>">
                     <%= field_errors(@product_sale, :paid) %>
@@ -230,6 +230,23 @@
   <%= javascript_include_tag 'admin-lte/plugins/iCheck/icheck.min' %>
 <% end %>
 <script>
+    function location_input_press(select, url) {
+        select.parent().find('.bs-searchbox').find('input').keydown(function (e) {
+            if (e.which === 13) {
+                Rails.ajax({
+                    url: url,
+                    type: "POST",
+                    data: "text=" + $(this).val() + "&id=" + select.attr('id') + "&country=" + $('#product_sale_country').prop('checked'),
+                    success: function (data) {
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                });
+            }
+        });
+    }
+
     var to_see = false;
 
     $(window).on('load', function () {
@@ -275,12 +292,11 @@
                 } else paid_div.removeClass('none');
             }
         });
-        select_input_press(location_select, "<%= search_locations_operators_product_sales_path %>", false);
+        location_input_press(location_select, "<%= search_locations_operators_product_sales_path %>");
 
         $('#product_sale_country').on('ifChanged', function (e) {
-            if (e.target.checked) {
-                location_country_search();
-            }
+            // if (e.target.checked) {
+            location_select.val("").selectpicker("refresh");
         });
         initSelectedMap();
     });
@@ -422,19 +438,6 @@
                 });
             } // val is undefined chek
         }// select is undefined check
-    }
-
-    function location_country_search() {
-        Rails.ajax({
-            url: "<%= search_locations_operators_product_sales_path %>",
-            type: "POST",
-            data: "country=true&id=product_sale_location_id",
-            success: function (data) {
-            },
-            error: function (data) {
-                console.log(data);
-            }
-        });
     }
 
     function calc_time(select) {
