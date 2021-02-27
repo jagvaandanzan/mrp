@@ -59,7 +59,7 @@ class ProductWarehouseLoc < ApplicationRecord
 
   def set_location_balance
     self.product_location_balance = ProductLocationBalance.create(product_location: location,
-                                                                  feature_item: feature_item,
+                                                                  product_feature_item: feature_item,
                                                                   travel: salesman_travel,
                                                                   quantity: -quantity)
   end
