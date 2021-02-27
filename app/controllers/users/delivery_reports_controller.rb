@@ -25,7 +25,7 @@ class Users::DeliveryReportsController < Users::BaseController
 
     if @salesman_id.present?
       @travel_routes = SalesmanTravelRoute.not_ni_wage
-                           .search(@by_start, @by_end, params[:salesman_id])
+                           .search(@by_start.to_date, @by_end.to_date, params[:salesman_id])
     end
 
   end
