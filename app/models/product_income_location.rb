@@ -28,7 +28,7 @@ class ProductIncomeLocation < ApplicationRecord
                                            quantity: quantity)
     else
       self.product_location_balance = ProductLocationBalance.create(product_location: location,
-                                                                    feature_item: income_item.feature_item,
+                                                                    product_feature_item: income_item.feature_item,
                                                                     income_item: income_item,
                                                                     quantity: quantity)
     end

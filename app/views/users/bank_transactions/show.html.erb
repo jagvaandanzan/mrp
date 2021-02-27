@@ -24,7 +24,7 @@
         </div>
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.bank_transaction.salesman_id') %> :</div>
-          <div class="col-data"><%= @bank_transaction.salesman.full_name %></div>
+          <div class="col-data"><%= @bank_transaction.salesman.present? ? @bank_transaction.salesman.full_name : '---' %></div>
         </div>
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.bank_transaction.billing_date') %> :</div>
