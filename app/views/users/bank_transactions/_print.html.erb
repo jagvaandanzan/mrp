@@ -74,7 +74,7 @@
         <td></td>
         <td class="b-l"></td>
         <td style="vertical-align: top">
-          <div class="text-center"><%= bank_transaction.salesman.s_name %></div>
+          <div class="text-center"><%= bank_transaction.salesman.present? ? bank_transaction.salesman.s_name : '---' %></div>
           <div class="text-center" style="border-bottom: 1px solid black"></div>
           <div class="text-center">(овог нэр)</div>
           <div style="margin-top: 28px">Гүйлгээний утга
@@ -84,7 +84,7 @@
       </tr>
       <tr>
         <td>Хаанаас
-          <div class="dash text-center" style="width: 382px;display: inline-block"><%= bank_transaction.salesman.s_name %></div>
+          <div class="dash text-center" style="width: 382px;display: inline-block"><%= bank_transaction.salesman.present? ? bank_transaction.salesman.s_name : '---' %></div>
         </td>
         <td></td>
         <td class="b-l"></td>
