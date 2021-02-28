@@ -3,7 +3,7 @@
      len = call_items.size
      call_item = call_items.first %>
   <tr>
-    <td class="va-mid text-center" rowspan="<%= len %>"><%= link_to sale_call.phone, operators_product_sale_call_path(sale_call) %></td>
+    <td class="va-mid text-center" rowspan="<%= len %>"><%= link_to sale_call.phone, edit_operators_product_sale_call_path(sale_call) %></td>
     <td class="va-mid"><%= call_item.product.code %></td>
     <td class="va-mid"><%= call_item.product.name %></td>
     <td class="va-mid"><%= call_item.feature_item.present? ? call_item.feature_item.name : '' %></td>
@@ -24,7 +24,7 @@
     <% end } %>
 <% else %>
   <tr>
-    <td class="va-mid text-center"><%= link_to sale_call.phone, operators_product_sale_call_path(sale_call) %></td>
+    <td class="va-mid text-center"><%= link_to sale_call.phone, edit_operators_product_sale_call_path(sale_call) %></td>
     <td class="va-mid"><%= sale_call.code %></td>
     <td></td>
     <td></td>
