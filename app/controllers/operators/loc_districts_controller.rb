@@ -3,7 +3,8 @@ class Operators::LocDistrictsController < Operators::BaseController
   before_action :set_loc_district, only: [:edit, :update, :destroy]
 
   def index
-    @loc_districts = LocDistrict.all.page(params[:page]).order(:name)
+    @loc_districts = LocDistrict.order_country
+                         .page(params[:page]).order(:name)
   end
 
   def new

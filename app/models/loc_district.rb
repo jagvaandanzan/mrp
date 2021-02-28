@@ -7,4 +7,9 @@ class LocDistrict < ApplicationRecord
     order(:name)
   }
 
+  scope :order_country, ->() {
+    order(:country)
+        .order(:name)
+  }
+
 end

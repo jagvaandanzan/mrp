@@ -19,7 +19,7 @@
               <div class="col-md-6 field_div">
                 <label class="control-label" for="location_district_id"><%= t('activerecord.models.loc_district') %></label>
                 <div>
-                  <%= select_tag :location_district_id, options_from_collection_for_select(LocDistrict.search, :id, :name), :prompt => t('controls.select.none'),
+                  <%= select_tag :location_district_id, options_from_collection_for_select(LocDistrict.order_country, :id, :name), :prompt => t('controls.select.none'),
                                  class: 'form-control selectpicker', "data-live-search": "true" %>
                 </div>
               </div>

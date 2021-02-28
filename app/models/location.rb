@@ -9,6 +9,7 @@ class Location < ApplicationRecord
   has_many :product_sales
   has_one :loc_district, through: :loc_khoroo
 
+  before_save :set_lng_lat
   enum distance: {distance_a: 0, distance_b: 1, distance_c: 2, distance_d: 3}
 
   validates :distance, :loc_khoroo, presence: true
@@ -61,5 +62,15 @@ class Location < ApplicationRecord
 
   def full_name
     loc_khoroo.loc_district.name + ", " + loc_khoroo.name + ", " + name
+  end
+
+  private
+
+  def set_lng_lat
+    if station_id.present?
+      self.latitude = station.latitude
+      self.longitude = station.longitude
+      self.distance = station.distance
+    end
   end
 end
