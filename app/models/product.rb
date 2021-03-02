@@ -294,8 +294,8 @@ class Product < ApplicationRecord
     product_balances.count > 0
   end
 
-  def balance
-    ProductBalance.balance(id)
+  def balance_sum
+    ProductBalance.balance_sum(id)
   end
 
   def is_sync
@@ -521,7 +521,7 @@ class Product < ApplicationRecord
                                       only: [:id, :product_id, :feature_option_id],
                                   },
                                   :product_feature_items => {
-                                      only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :c_balance, :same_item_id], :methods => [:image_url],
+                                      only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :balance, :same_item_id], :methods => [:image_url],
                                   }})
       end
       # Rails.logger.debug(params)

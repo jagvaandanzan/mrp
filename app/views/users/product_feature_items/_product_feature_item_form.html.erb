@@ -73,10 +73,10 @@
       </div>
     </div>
     <div class="form-group">
-      <%= f.label :c_balance, class: 'col-sm-3 control-label' %>
-      <div class="col-sm-9 <%= get_error_class(@feature_item, :c_balance) %>">
-        <%= field_errors(@feature_item, :c_balance) %>
-        <%= f.number_field :c_balance, class: 'form-control', step: 1, placeholder: t('activerecord.attributes.product_feature_item.c_balance') %>
+      <%= f.label :balance, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9 <%= get_error_class(@feature_item, :balance) %>">
+        <%= field_errors(@feature_item, :balance) %>
+        <%= f.number_field :balance, class: 'form-control', step: 1, placeholder: t('activerecord.attributes.product_feature_item.balance') %>
       </div>
     </div>
     <div class="form-group">

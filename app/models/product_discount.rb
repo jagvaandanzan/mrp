@@ -14,8 +14,8 @@ class ProductDiscount < ApplicationRecord
   }
 
   scope :by_available, ->() {
-    where("start_date >= ?", Time.current.beginning_of_day)
-        .where("end_date <= ?", Time.current.beginning_of_day)
+    where("start_date <= ?", Time.current.beginning_of_day)
+        .where("end_date >= ?", Time.current.beginning_of_day)
         .order(:start_date)
   }
 

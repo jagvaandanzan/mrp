@@ -213,6 +213,7 @@ mn:
       bank_dealing_account: Харьцах данс
       sale_tax: ebarimt
       salesman_travel: Түгээлт
+      bonu: Бонус
     attributes:
       admin_user:
         email: Имэйл
@@ -380,7 +381,7 @@ mn:
         p_9_: 9-с дээш
         p_6_8_p: 6-8 ширхэг (%)
         p_9_p: 9-с дээш (%)
-        c_balance: Эхний үлдэгдэл
+        balance: Үлдэгдэл
         feature_item_id: Шинж чанар
         same_item_id: Адил шинж чанар
         image: Зураг
@@ -522,12 +523,12 @@ mn:
         location_id: Байршил
         country: Орон нутаг
         building_code: Орцны код
-        loc_note: Орц, давхар, тоот
+        loc_note: Давхар, тоот
         delivery_date: Хүргэсэн огноо
         payment_delivery: Хүргэлтийн төлбөр
         money: Төлбөрийн хэлбэр
         paid: Төлсөн
-        bonus: Хямдрал (%)
+        bonus: Бонус
         main_status: Статус
         main_status_id: Статус
         status_id: Статус
@@ -549,6 +550,8 @@ mn:
         add_stock: Нярав нэмсэн
         quantity: Тоо хэмжээ
         price: Үнэ
+        p_discount: Хямдарсан үнэ
+        discount: Хямдрал %
         sum_price: Нийт
         remainder: Үлдэгдэл
       product_sale_exchange:
@@ -701,6 +704,11 @@ mn:
         email: Имэйл
         register: Регистр
         price: Дүн
+      bonu:
+        balance: Бонус
+        bonus_phones: Утас
+      bonus_phone:
+        phone: Утас
     errors:
       messages:
         blank: " хоосон байна!"

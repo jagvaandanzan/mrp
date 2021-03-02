@@ -23,6 +23,7 @@ $.fn.bootstrapDP.defaults.language = "mn";
 // $.fn.datetimepicker.defaults.language = "mn";
 
 function getDecimalPay(numval) {
+    numval = Math.floor(numval);
     numval = numval + "";
     var cde = 1, vv = "";
     for (var i = 0; i < numval.length; i++) {

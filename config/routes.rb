@@ -208,6 +208,7 @@ Rails.application.routes.draw do
         post 'get_location'
         post 'get_product_balance'
         patch 'update_status'
+        post 'get_bonus'
       end
     end
 
@@ -236,6 +237,7 @@ Rails.application.routes.draw do
     resources :bank_transactions, only: [:index]
     resources :sms_messages, only: [:index, :create, :new]
     resources :loc_districts, only: [:index, :create, :new, :edit, :update, :destroy]
+    resources :bonus, only: [:index, :edit, :update, :destroy]
     resources :loc_khoroos, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :locations, only: [:index, :create, :new, :show, :edit, :update, :destroy]
     namespace :distributing do

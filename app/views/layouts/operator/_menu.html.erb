@@ -59,6 +59,13 @@
         <% end %>
       <% end %>
 
+      <% if can? :read, Bonu %>
+        <%= content_tag :li, class: controller_name == 'bonus' ? 'active' : '' do %>
+          <%= link_to operators_bonus_path do %>
+            <i class="fa fa-gift"></i><span><%= t('activerecord.models.bonu') %></span>
+          <% end %>
+        <% end %>
+      <% end %>
       <% if can? :read, BankTransaction %>
         <%= content_tag :li, class: controller_name == 'bank_transactions' ? 'active' : '' do %>
           <%= link_to operators_bank_transactions_path do %>

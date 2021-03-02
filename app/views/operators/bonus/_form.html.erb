@@ -1,0 +1,42 @@
+<div class="content-wrapper">
+
+  <section class="content">
+    <div class="box box-info">
+      <%= form_with model: @bonu, url: @bonu.persisted? ? operators_bonu_path : operators_bonus_path,
+                    method: @bonu.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <div class="form-group">
+            <%= f.label :balance, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@bonu, :balance) %>">
+              <%= field_errors(@bonu, :balance) %>
+              <%= f.number_field :balance, class: 'form-control', min: 0, step: 1, placeholder: t('activerecord.attributes.bonu.balance'), readonly: true %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :bonus_phones, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 cocoon-nested-form">
+              <%= field_errors(@bonu, :bonus_phones) %>
+              <table class="table table-bordered" id="tb_bonus_phones">
+                <tr>
+                  <th><%= t('activerecord.attributes.bonus_phone.phone') %></th>
+                  <th width="50px">
+                    <%= link_to_add_association f, :bonus_phones, data: {association_insertion_node: '#tb_bonus_phones', association_insertion_method: :append} do %>
+                      <%= nested_add_btn %>
+                    <% end %>
+                  </th>
+                </tr>
+                <%= f.fields_for :bonus_phones do |m| %>
+                  <%= render 'bonus_phone_fields', :f => m %>
+                <% end %>
+              </table>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>

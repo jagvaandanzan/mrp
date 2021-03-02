@@ -12,6 +12,7 @@ class ProductSale < ApplicationRecord
   has_many :product_sale_items
   has_many :product_sale_status_logs
   has_many :product_sale_exchanges
+  has_one :bonus_balance, dependent: :destroy
   has_one :sale_tax
   has_one :salesman_travel_route, dependent: :destroy
 
@@ -22,16 +23,15 @@ class ProductSale < ApplicationRecord
   attr_accessor :hour_now, :hour_start, :hour_end, :status_user_type, :update_status, :operator
 
   before_validation :validate_status
-  after_save :set_sum_price
   before_save :set_defaults
   before_save :create_log
+  before_save :set_balance
 
   with_options :if => Proc.new {|m| m.update_status == nil} do
     validates_numericality_of :hour_end, greater_than: Proc.new(&:hour_start)
     validates :phone, :location_id, :product_sale_items, :money, presence: true
     validates :code, uniqueness: true
     validate :feature_rel_should_be_uniq
-    validates :bonus, numericality: {greater_than_or_equal_to: 0, less_than: 100, message: :invalid}
     validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
   end
 
@@ -44,6 +44,10 @@ class ProductSale < ApplicationRecord
   with_options :if => Proc.new {|m| m.money != 'cash'} do
     validates :paid, presence: true
     validates_numericality_of :paid, less_than_or_equal_to: Proc.new(&:sum_price)
+  end
+
+  with_options :if => Proc.new {|m| m.bonus.present?} do
+    validate :check_bonus
   end
 
   scope :created_at_desc, -> {
@@ -135,6 +139,23 @@ class ProductSale < ApplicationRecord
     distributions
   end
 
+  def bonus_add
+    if product_sale_items.present?
+      BonusBalance.balance_by_item(product_sale_items.map(&:id).to_a)
+    else
+      0
+    end
+  end
+
+  def bonus_show
+    bonu = Bonu.by_phone(phone)
+    if bonu.present?
+      b = bonu.first
+      b.balance - bonus_add + (bonus_was.presence || 0)
+    else
+      0
+    end
+  end
 
   private
 
@@ -147,22 +168,7 @@ class ProductSale < ApplicationRecord
 
     self.delivery_end = delivery_start.change({hour: hour_end}) if hour_end.present?
     self.delivery_start = delivery_start.change({hour: hour_start}) if hour_start.present?
-
-  end
-
-  def set_sum_price
-    s = 0
-    if product_sale_items.present?
-      product_sale_items.each do |item|
-        s += (item.price * item.quantity) if item.price.present? && item.quantity.present?
-      end
-    end
-
-    s -= ((bonus * s) / 100).to_i if bonus.present?
-
-    s += 2000 if s < 20000
-
-    self.update_column(:sum_price, s)
+    self.sum_price -= bonus if bonus.present?
   end
 
   def validate_status
@@ -173,6 +179,23 @@ class ProductSale < ApplicationRecord
         end
       else
         self.status = main_status
+      end
+    end
+  end
+
+  def check_bonus
+    if bonus.present? && bonus > 0
+      real_bonus = bonus - (bonus_was.nil? ? 0 : bonus_was)
+      bonu = Bonu.by_phone(phone)
+      if bonu.present?
+        b = bonu.first
+        if b.balance - bonus_add < real_bonus
+          self.errors.add(:bonus, " хүрэхгүй байна!")
+        elsif real_bonus > sum_price / 2
+          self.errors.add(:bonus, " ашиглаж болох хэмжээ хэтэрсэн байна!")
+        end
+      else
+        self.errors.add(:bonus, " хүрэхгүй байна!")
       end
     end
   end
@@ -191,4 +214,18 @@ class ProductSale < ApplicationRecord
                                                               note: status_note)
   end
 
+  def set_balance
+    if bonus.present? && bonus > 0
+      bonu = Bonu.by_phone(phone)
+      if bonu.present?
+        b = bonu.first
+        if bonus_balance.present?
+          self.bonus_balance.update(bonu: b, bonus: -bonus)
+        else
+          self.bonus_balance = BonusBalance.new(bonu: b, bonus: -bonus)
+        end
+      end
+    end
+
+  end
 end

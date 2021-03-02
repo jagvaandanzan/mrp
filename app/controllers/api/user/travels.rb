@@ -208,7 +208,7 @@ module API
                 product.product_feature_items.each do |item|
                   features.push({id: item.id,
                                  name: item.name,
-                                 balance: ProductBalance.balance(product.id, item.id),
+                                 balance: item.balance,
                                  price: ApplicationController.helpers.get_currency_mn(item.price)})
                 end
 

@@ -31,7 +31,6 @@ class Operators::ProductSaleCallsController < Operators::BaseController
     redirect_to action: 'index'
   end
 
-
   def update
     @sale_call.attributes = sale_call_params
 

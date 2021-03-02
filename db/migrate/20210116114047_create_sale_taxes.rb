@@ -1,7 +1,6 @@
 class CreateSaleTaxes < ActiveRecord::Migration[5.2]
   def change
-    # add_column :product_feature_items, :p_6_8_p, :integer, after: 'p_6_8'
-    # add_column :product_feature_items, :p_9_p, :integer, after: 'p_9_'
-    add_reference :products, :user, after: 'photo_web'
+    # add_foreign_key :products, :users
+    # add_reference :locations, :station, foreign_key: {to_table: :locations}, after: 'loc_khoroo_id'
   end
 end

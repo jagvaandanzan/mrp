@@ -32,7 +32,7 @@ class ProductFeatureItem < ApplicationRecord
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
 
   with_options :if => Proc.new {|m| m.is_add.present?} do
-    validates :c_balance, numericality: {greater_than: 0, only_integer: true, message: :invalid}
+    validates :balance, numericality: {greater_than: 0, only_integer: true, message: :invalid}
   end
 
   with_options :unless => Proc.new {|m| m.tab_index.present? || m.is_add.present?} do
@@ -52,7 +52,7 @@ class ProductFeatureItem < ApplicationRecord
 
   with_options :if => Proc.new {|m| m.is_update.present?} do
     before_validation :parse_location_balance
-    validates :price, :barcode, :c_balance, presence: true
+    validates :price, :barcode, :balance, presence: true
     validate :product_locations_count_check
   end
 
@@ -155,8 +155,13 @@ class ProductFeatureItem < ApplicationRecord
         .where("salesman_travels.salesman_id = ?", salesman_id) if salesman_id.present?
   }
 
-  def balance
-    ProductBalance.balance(product_id, id)
+  scope :by_id, ->(id, p) {
+    where(id: id)
+        .limit(1)
+  }
+
+  def balance_sum
+    ProductBalance.balance_sum(product_id, id)
   end
 
   def name
@@ -201,6 +206,20 @@ class ProductFeatureItem < ApplicationRecord
     s
   end
 
+  def price_quantity(quantity)
+    if price.present?
+      if quantity < 6
+        price
+      elsif quantity > 8
+        p_9_
+      else
+        p_6_8
+      end
+    else
+      0
+    end
+  end
+
   private
 
   def set_default
@@ -218,13 +237,13 @@ class ProductFeatureItem < ApplicationRecord
       end
 
       self.product_balances << ProductBalance.new(product: product,
-                                                  quantity: c_balance)
+                                                  quantity: balance)
     end
   end
 
   def parse_location_balance
-    if location_balances.present? && c_balance > 0
-      quantity = c_balance - balance
+    if location_balances.present? && balance > 0
+      quantity = balance - balance_sum
       if quantity != 0
         product_balances << ProductBalance.new(product: product,
                                                quantity: quantity)
@@ -275,10 +294,10 @@ class ProductFeatureItem < ApplicationRecord
         s += location.quantity
       end
     end
-    if (self.c_balance || 0) < s
+    if (self.balance || 0) < s
       errors.add(:product_location_balances, :over)
-    elsif self.c_balance > s
-      errors.add(:product_location_balances, :equal_to, count: self.c_balance)
+    elsif self.balance > s
+      errors.add(:product_location_balances, :equal_to, count: self.balance)
     end
   end
 
@@ -328,7 +347,7 @@ class ProductFeatureItem < ApplicationRecord
         product.product_feature_option_rels.by_feature_option_ids(delete_ids).destroy_all
       else
 
-        params = self.to_json(only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :c_balance, :same_item_id], :methods => [:method_type, :image_url])
+        params = self.to_json(only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :balance, :same_item_id], :methods => [:method_type, :image_url])
       end
 
       ApplicationController.helpers.api_request(url, method, params)

@@ -68,6 +68,9 @@ module API
                                             salesman_return: ret,
                                             user: current_user,
                                             quantity: ret.quantity)
+                      BonusBalance.create(bonu_id: sales_item.bonus_balance.bonu_id,
+                                          product_sale_item: sales_item,
+                                          bonus: -ret.quantity)
                     }
                     return_sign.send_notification_to_salesman
                     present :sign_at, return_sign.updated_at

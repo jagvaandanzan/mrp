@@ -40,7 +40,7 @@
                       <%= f.label :phone, class: 'control-label' %>
                       <div class="<%= get_error_class(@product_sale, :phone) %>">
                         <%= field_errors(@product_sale, :phone) %>
-                        <%= f.number_field :phone, class: 'form-control', placeholder: t('activerecord.attributes.product_sale.phone'), id: 'phone_number' %>
+                        <%= f.number_field :phone, class: 'form-control', oninput: "load_phone_bonus()", placeholder: t('activerecord.attributes.product_sale.phone'), id: 'phone_number' %>
                       </div>
                     </div>
                     <div class="col-md-3 field_div">
@@ -114,14 +114,16 @@
                   <%= field_errors(@product_sale, :product_sale_items) %>
                   <table class="table table-bordered" id="tb_product_sale_items">
                     <tr>
-                      <th><%= t('activerecord.attributes.product_feature_item.image') %></th>
-                      <th><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
-                      <th><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
-                      <th><%= t('activerecord.attributes.product_sale_item.to_see') %></th>
-                      <th><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
-                      <th><%= t('activerecord.attributes.product_sale_item.price') %></th>
-                      <th><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
-                      <th><%= t('activerecord.attributes.product_sale_item.remainder') %></th>
+                      <th class="va-mid" class="va-mid"><%= t('activerecord.attributes.product_feature_item.image') %></th>
+                      <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
+                      <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
+                      <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.to_see') %></th>
+                      <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
+                      <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                      <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.p_discount') %></th>
+                      <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.discount') %></th>
+                      <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
+                      <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.remainder') %></th>
                       <th width="50px"></th>
                     </tr>
                     <%= f.fields_for :product_sale_items do |m| %>
@@ -138,11 +140,11 @@
             </div>
             <div class="row">
               <div class="col-md-12">
-                <div class=" col-md-4 field_div">
+                <div class=" col-md-3 field_div">
                   <%= f.label :sum_price, class: 'control-label' %>
                   <div class="">
                     <%= f.hidden_field :sum_price %>
-                    <%= text_field_tag :sum_price, @product_sale.sum_price.present? ? get_currency_mn(@product_sale.sum_price) : nil,
+                    <%= text_field_tag :sum_price, @product_sale.sum_price.present? ? get_currency_mn(@product_sale.sum_price - (@product_sale.bonus.presence || 0)) : nil,
                                        {class: 'form-control field', readonly: true, placeholder: t('activerecord.attributes.product_sale.sum_price')} %>
                   </div>
                 </div>
@@ -155,11 +157,13 @@
                     <% end %>
                   </div>
                 </div>
-                <div class="col-md-2 field_div">
-                  <%= f.label :bonus, class: 'control-label' %>
+                <div class="col-md-3 field_div">
+                  <label class="control-label" for="product_sale_bonus">Бонус:
+                    <span id="bonus_available"><%= (@product_sale.present? && @product_sale.sum_price.present?) ? get_currency_mn(@product_sale.sum_price / 2) : 0 %></span>
+                    / <span id="bonus_extra"><%= get_currency_mn(@product_sale.bonus_show) %></span></label>
                   <div class="<%= get_error_class(@product_sale, :bonus) %>">
                     <%= field_errors(@product_sale, :bonus) %>
-                    <%= f.number_field :bonus, class: 'form-control', oninput: "func_calc_sum()", placeholder: t('activerecord.attributes.product_sale.bonus') %>
+                    <%= f.number_field :bonus, class: 'form-control', oninput: "set_bonus()", placeholder: t('activerecord.attributes.product_sale.bonus') %>
                   </div>
                 </div>
                 <div class="col-md-2 field_div">
@@ -371,7 +375,11 @@
                 type: "POST",
                 data: "product_id=" + product_id + "&feature_item_id=" + feature_id,
                 success: function (data) {
-                    parentTr.find("input.item_price").val(data.price);
+                    let p = parentTr.find("input.item_price");
+                    p.val(data.price);
+                    p.attr('price', data.price);
+                    p.attr('p_6_8', data.p_6_8);
+                    p.attr('p_9_', data.p_9_);
                     parentTr.find("input.item_price_show").val(getDecimalPay(data.price));
                     parentTr.find('.remainder').val(data.balance);
                     parentTr.find('.image a').html("<img src='" + data.tumb + "', class='tumb'>");
@@ -391,7 +399,29 @@
             if (tr.is(':visible')) {
                 let quantity = tr.find('.item_quantity').val();
                 if (quantity !== undefined && quantity.length > 0) {
-                    let price = tr.find('.item_price').val();
+                    let price_tr = tr.find('.item_price');
+                    let price = 0;
+                    if (quantity < 6) {
+                        price = price_tr.attr('price');
+                    } else if (quantity > 8) {
+                        price = price_tr.attr('p_9_');
+                    } else {
+                        price = price_tr.attr('p_6_8');
+                    }
+
+                    let p_discount = tr.find("input.item_p_discount").val();
+                    if (p_discount.length > 0) {
+                        price = parseInt(p_discount)
+                    } else {
+                        let discount = tr.find("input.item_discount").val();
+                        if (discount.length > 0) {
+                            price -= get_percentage(price, parseInt(discount))
+                        }
+                    }
+                    price = Math.floor(price);
+                    tr.find("input.item_price_show").val(getDecimalPay(price));
+                    price_tr.val(price);
+
                     let sum_price = price * parseInt(quantity);
                     tr.find('.item_sum').val(sum_price);
                     tr.find('.item_sum_show').val(getDecimalPay(sum_price));
@@ -399,8 +429,21 @@
                 }
             }
         });
+        total_price += (total_price > 0 && total_price < <%= Const::FREE_SHIPPING %>) ? <%= Const::SHIPPING_FEE %> : 0;
         $('#product_sale_sum_price').val(total_price);
+        $('#bonus_available').val(getDecimalPay(total_price / 2));
+
+        let bonus = $('#product_sale_bonus').val();
+        if (bonus.length > 0) {
+            total_price -= parseInt(bonus);
+        }
         $('#sum_price').val(getDecimalPay(total_price));
+    }
+
+    function set_bonus() {
+        let bonus = $('#product_sale_bonus').val();
+        let sum_price = $('#product_sale_sum_price').val();
+        $('#sum_price').val(getDecimalPay(sum_price - (bonus.length > 0 ? bonus : 0)));
     }
 
     function get_sub_status(select) {
@@ -492,4 +535,17 @@
         selected_map.setCenter(selected_marker.getPosition());
     }
 
+    function load_phone_bonus() {
+        let inp = $('#phone_number');
+        if (inp.val().length === 8) {
+            Rails.ajax({
+                url: "<%= get_bonus_operators_product_sales_path %>",
+                type: "POST",
+                data: "phone=" + inp.val(),
+                success: function (data) {
+                    $('#bonus_extra').text(data.bonus);
+                }
+            });
+        }
+    }
 </script>

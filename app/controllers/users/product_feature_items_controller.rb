@@ -6,7 +6,7 @@ class Users::ProductFeatureItemsController < Users::BaseController
     @feature_item.product_id = params[:product_id]
     @feature_item.barcode = params[:barcode] if params[:barcode].present?
     @feature_item.price = params[:price] if params[:price].present?
-    @feature_item.c_balance = params[:balance] if params[:balance].present?
+    @feature_item.balance = params[:balance] if params[:balance].present?
     location_balances = params[:location_balance]
     if location_balances.present?
       lbs = location_balances.split('#')
@@ -131,7 +131,7 @@ class Users::ProductFeatureItemsController < Users::BaseController
     feature_item.p_6_8 = params[:p_6_8]
     feature_item.p_9_p = params[:p_9_p]
     feature_item.p_9_ = params[:p_9_]
-    feature_item.c_balance = params[:balance].to_i
+    feature_item.balance = params[:balance].to_i
     feature_item.location_balances = params[:location_balance]
 
     feature_item.save
@@ -145,7 +145,7 @@ class Users::ProductFeatureItemsController < Users::BaseController
   end
 
   def feature_item_params
-    params.require(:product_feature_item).permit(:product_id, :option1_id, :option2_id, :same_item_id, :image, :real_img, :price, :p_6_8_p, :p_9_p, :barcode, :c_balance,
+    params.require(:product_feature_item).permit(:product_id, :option1_id, :option2_id, :same_item_id, :image, :real_img, :price, :p_6_8_p, :p_9_p, :barcode, :balance,
                                                  product_location_balances_attributes: [:id, :x, :y, :z, :quantity, :_destroy])
   end
 end

@@ -42,3 +42,7 @@ function get_name_text(n, v) {
     }
     return n;
 }
+
+function get_percentage(percent, price) {
+    return (percent === 0) ? price : percent * price / 100
+}

@@ -5,9 +5,9 @@ class ProductSaleItem < ApplicationRecord
 
   has_many :salesman_returns, :class_name => "SalesmanReturn", :foreign_key => "sale_item_id", dependent: :destroy
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "sale_item_id", dependent: :destroy
+  has_one :bonus_balance, dependent: :destroy
   has_one :salesman_travel, through: :product_sale
 
-  before_save :set_defaults
   before_save :set_product_balance
 
   before_create -> {create_exchange('create')}
@@ -19,7 +19,7 @@ class ProductSaleItem < ApplicationRecord
   validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
 
   before_validation :set_remainder
-  attr_accessor :remainder
+  attr_accessor :remainder, :p_price, :p_6_8, :p_9_
 
   scope :find_by_salesman_id, ->(feature_item_id, salesman_id) {
     joins(:salesman_travel)
@@ -75,10 +75,6 @@ class ProductSaleItem < ApplicationRecord
     ApplicationController.helpers.get_f(self[:sum_price])
   end
 
-  def get_balance
-    ProductBalance.balance(product_id, feature_item_id)
-  end
-
   def product_image
     feature_item.img
   end
@@ -105,14 +101,6 @@ class ProductSaleItem < ApplicationRecord
 
   private
 
-  def set_defaults
-    self.sum_price = if price.present? && quantity.present?
-                       price * quantity
-                     else
-                       0
-                     end
-  end
-
   def set_product_balance
     if product_balance.present?
       self.product_balance.update(
@@ -126,10 +114,28 @@ class ProductSaleItem < ApplicationRecord
                                                    operator: product_sale.created_operator,
                                                    quantity: -quantity)
     end
+
+    if sum_price.present?
+      bonu = Bonu.by_phone(product_sale.phone)
+      b_model = if bonu.present?
+                  bonu.first
+                else
+                  b = Bonu.new(balance: 0)
+                  b.bonus_phones << BonusPhone.new(phone: product_sale.phone)
+                  b.save
+                  b
+                end
+      if bonus_balance.present?
+        self.bonus_balance.update(bonu: b_model, bonus: ApplicationController.helpers.get_percentage(sum_price, 5))
+      else
+        self.bonus_balance = BonusBalance.new(bonu: b_model, bonus: ApplicationController.helpers.get_percentage(sum_price, 5))
+      end
+    end
+
   end
 
   def set_remainder
-    self.remainder = ProductBalance.balance(product_id, feature_item_id) + (quantity_was.presence || 0) if product_id.present? && feature_item_id.present?
+    self.remainder = feature_item.balance + (quantity_was.presence || 0) if product_id.present? && feature_item_id.present?
   end
 
   def create_exchange(method)

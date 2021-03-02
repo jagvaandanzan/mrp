@@ -25,15 +25,23 @@
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :price %>
-    <%= f.hidden_field :price, class: 'item_price' %>
+    <%= f.hidden_field :price, class: 'item_price', price: f.object.p_price, p_6_8: f.object.p_6_8, p_9_: f.object.p_9_ %>
     <%= text_field_tag :price, f.object.price.present? ? get_currency_mn(f.object.price) : nil, {class: 'form-control field item_price_show', readonly: true, placeholder: t('activerecord.attributes.product_sale_item.price')} %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :p_discount %>
+    <%= f.number_field :p_discount, class: 'form-control field item_p_discount', oninput: "calc_total_price()", placeholder: t('activerecord.attributes.product_sale_item.p_discount') %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :discount %>
+    <%= f.number_field :discount, class: 'form-control field item_discount', oninput: "calc_total_price()", placeholder: '%' %>
   </td>
   <td class="va-mid">
     <%= f.hidden_field :sum_price, class: 'item_sum' %>
     <%= text_field_tag :item_sum, f.object.sum_price.present? ? get_currency_mn(f.object.sum_price) : nil, {class: 'form-control field item_sum_show', readonly: true, placeholder: t('activerecord.attributes.product_sale_item.sum_price')} %>
   </td>
   <td class="va-mid">
-    <%= f.text_field :remainder, class: 'form-control field remainder', value: f.object.remainder.presence || f.object.get_balance, readonly: true, placeholder: t('activerecord.attributes.product_sale_item.remainder') %>
+    <%= f.text_field :remainder, class: 'form-control field remainder', value: f.object.remainder, readonly: true, placeholder: t('activerecord.attributes.product_sale_item.remainder') %>
   </td>
   <td class="va-mid remove">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>

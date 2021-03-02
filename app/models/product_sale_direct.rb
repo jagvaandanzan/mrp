@@ -26,7 +26,7 @@ class ProductSaleDirect < ApplicationRecord
   end
 
   def get_balance
-    ProductBalance.balance(product_id, feature_item_id)
+    feature_item.balance
   end
 
   def product_image

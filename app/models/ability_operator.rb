@@ -23,6 +23,8 @@ class AbilityOperator
         can role, LocDistrict
         can role, LocKhoroo
         can role, Location
+      when "bonus"
+        can role, Bonu
       else
         puts "it was something else"
       end

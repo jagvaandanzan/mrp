@@ -212,6 +212,7 @@ module API
               #{0=Бэлнээр, 1=Дансаар, 2=Бэлнээр+Дансаар, 3=Авхаа больсон, 4=Хойшлуулсан, 5=Буруу захилга}
               params do
                 requires :status, type: Integer
+                optional :description, type: String
               end
               patch do
                 message = ""
@@ -247,11 +248,11 @@ module API
                       case params[:status]
                       when 3 #Авхаа больсон
                         status = ProductSaleStatus.find_by_alias("not_buy")
-                        product_sale.update_columns(main_status_id: status.id, status_id: status.id)
+                        product_sale.update_columns(main_status_id: status.id, status_id: status.id, status_note: params[:description])
                       when 4 #Хойшлуулсан
                         main_status = ProductSaleStatus.find_by_alias("delay")
                         status = ProductSaleStatus.find_by_alias("delay_salesman")
-                        product_sale.update_columns(main_status_id: main_status.id, status_id: status.id)
+                        product_sale.update_columns(main_status_id: main_status.id, status_id: status.id, status_note: params[:description])
                       else #5, Буруу захилга
                         status = ProductSaleStatus.find_by_alias("wrong_book")
                         product_sale.update_columns(main_status_id: status.id, status_id: status.id)

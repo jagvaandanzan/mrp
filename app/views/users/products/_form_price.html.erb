@@ -12,8 +12,8 @@
             <th rowspan="2" class="text-center va-mid"><%= t('activerecord.attributes.product_feature_item.price') %></th>
             <th colspan="2" class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
             <th colspan="2" class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
-            <% if !@product.is_own || no_balance %>
-              <th rowspan="2" class="text-center va-mid"><%= t('activerecord.attributes.product_feature_item.c_balance') %></th>
+            <% if no_balance %>
+              <th rowspan="2" class="text-center va-mid"><%= t('activerecord.attributes.product_feature_item.balance') %></th>
             <% end %>
             <th rowspan="2"></th>
           </tr>
@@ -44,16 +44,16 @@
               <td class="text-center">
                 <button type="button" class="btn btn-default btn-xs" btype="p_9_"><%= t('controls.button.to_equate') %></button>
               </td>
-              <% if !@product.is_own || no_balance %>
+              <% if no_balance %>
                 <td class="text-center">
-                  <button type="button" class="btn btn-default btn-xs" btype="c_balance"><%= t('controls.button.to_equate') %></button>
+                  <button type="button" class="btn btn-default btn-xs" btype="balance"><%= t('controls.button.to_equate') %></button>
                 </td>
               <% end %>
               <td></td>
             </tr>
           <% end %>
           <%= f.fields_for :product_feature_items do |m| %>
-            <%= render 'product_feature_item_fields', :f => m, is_customer: !@product.is_own, no_balance: no_balance %>
+            <%= render 'product_feature_item_fields', :f => m, no_balance: no_balance %>
           <% end %>
           </tbody>
         </table>

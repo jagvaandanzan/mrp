@@ -135,6 +135,8 @@
                   <th><%= t('activerecord.attributes.product_sale_item.to_see') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_item.p_discount') %></th>
+                  <th><%= t('activerecord.attributes.product_sale_item.discount') %></th>
                   <th><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
                 </tr>
                 </thead>
@@ -151,6 +153,8 @@
                       <% end %></td>
                     <td class="va-mid"><%= i.quantity %></td>
                     <td class="va-mid"><%= get_currency_mn(i.price) %></td>
+                    <td class="va-mid"><%= get_currency_mn(i.p_discount) %></td>
+                    <td class="va-mid"><%= i.discount %></td>
                     <td class="va-mid"><%= get_currency_mn(i.sum_price) %></td>
                   </tr>
                 <% end %>

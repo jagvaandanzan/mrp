@@ -19,20 +19,33 @@ class Operators::ProductSalesController < Operators::BaseController
 
       total_price = 0
       sale_call.product_call_items.each do |call_item|
-        sale_item = ProductSaleItem.new(product: call_item.product)
+        product = call_item.product
+        sale_item = ProductSaleItem.new(product: product)
         if call_item.feature_item.present?
-          sale_item.feature_item = call_item.feature_item
-          sale_item.remainder = ProductBalance.balance(call_item.product_id, call_item.feature_item_id)
+          feature_item = call_item.feature_item
+          sale_item.feature_item = feature_item
+          sale_item.remainder = feature_item.balance
           sale_item.quantity = call_item.quantity.presence || 0
-          sale_item.price = call_item.feature_item.price.presence || 0
+          sale_item.p_price = feature_item.price.presence || 0
+          sale_item.p_6_8 = feature_item.p_6_8.presence || 0
+          sale_item.p_9_ = feature_item.p_9_.presence || 0
+          sale_item.price = feature_item.price_quantity(sale_item.quantity).presence || 0
+          # Хэрэв хямдралтай бол
+          product_discounts = product.product_discounts.by_available
+          if product_discounts.present?
+            discount = product_discounts.first
+            sale_item.discount = discount.percent
+            sale_item.price -= ApplicationController.helpers.get_percentage(sale_item.price, discount.percent)
+          end
           sum_price = sale_item.price * sale_item.quantity
           sale_item.sum_price = sum_price
           total_price += sum_price
         end
         @product_sale.product_sale_items << sale_item
       end
-
+      total_price += total_price < Const::FREE_SHIPPING ? Const::SHIPPING_FEE : 0
       @product_sale.sum_price = total_price
+
       @product_sale.phone = sale_call.phone
 
       time = Time.current
@@ -80,6 +93,14 @@ class Operators::ProductSalesController < Operators::BaseController
     @product_sale.status_user_type = 'operator'
     @product_sale.hour_start = @product_sale.delivery_start.hour
     @product_sale.hour_end = @product_sale.delivery_end.hour
+    @product_sale.sum_price += @product_sale.bonus if @product_sale.bonus.present?
+    @product_sale.product_sale_items.each do |item|
+      feature_item = item.feature_item
+      item.remainder = feature_item.balance
+      item.p_price = feature_item.price.presence || 0
+      item.p_6_8 = feature_item.p_6_8.presence || 0
+      item.p_9_ = feature_item.p_9_.presence || 0
+    end
 
     if params[:rc].present?
       @product_sale.main_status = @product_sale.status = ProductSaleStatus.find_by_alias("return_change")
@@ -144,7 +165,7 @@ class Operators::ProductSalesController < Operators::BaseController
       img_url = product.picture.url(:tumb) if product.picture.present?
       price = product.price if product.price.present?
       product.product_feature_items.each do |item|
-        features.push({id: item.id, name: item.name, balance: ProductBalance.balance(product.id, item.id), product: product.id})
+        features.push({id: item.id, name: item.name, balance: item.balance, product: product.id})
       end
     end
 
@@ -208,12 +229,28 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def get_product_balance
     feature_item_id = params[:feature_item_id]
-    product_balance = ProductBalance.balance(params[:product_id], feature_item_id)
     feature_item = ProductFeatureItem.find(feature_item_id)
-    render json: {balance: product_balance,
+    render json: {balance: feature_item.balance,
                   price: feature_item.price.presence || 0,
+                  p_9_: feature_item.p_9_.presence || 0,
+                  p_6_8: feature_item.p_6_8.presence || 0,
                   img: feature_item.img.present? ? feature_item.img.url : '/assets/no-image.png',
                   tumb: feature_item.img.present? ? feature_item.img.url(:tumb) : '/assets/no-image.png'}
+  end
+
+  def get_bonus
+    bonus = if params[:phone].length == 8
+              bonu = Bonu.by_phone(params[:phone])
+              if bonu.present?
+                b = bonu.first
+                b.balance
+              else
+                0
+              end
+            else
+              0
+            end
+    render json: {bonus: bonus}
   end
 
   def auto
@@ -259,6 +296,6 @@ class Operators::ProductSalesController < Operators::BaseController
         .permit(:sale_call_id, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :country, :building_code, :loc_note,
                 :sum_price, :money, :paid, :bonus, :tax,
                 :main_status_id, :status_id, :status_note, :status_user_type,
-                product_sale_items_attributes: [:id, :product_id, :feature_item_id, :to_see, :quantity, :price, :sum_price, :remainder, :_destroy])
+                product_sale_items_attributes: [:id, :product_id, :feature_item_id, :to_see, :quantity, :price, :p_discount, :discount, :sum_price, :remainder, :_destroy])
   end
 end

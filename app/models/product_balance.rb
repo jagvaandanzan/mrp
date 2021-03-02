@@ -10,7 +10,7 @@ class ProductBalance < ApplicationRecord
 
   after_save -> {sync_web}
 
-  scope :balance, -> (product_id, feature_item_id = nil) {
+  scope :balance_sum, -> (product_id, feature_item_id = nil) {
     items = where(product_id: product_id)
     items = items.where(feature_item_id: feature_item_id) if feature_item_id.present?
     items.sum(:quantity)
@@ -19,12 +19,6 @@ class ProductBalance < ApplicationRecord
   scope :by_sale_item, -> (feature_item_id, sale_item_id) {
     where(feature_item_id: feature_item_id)
         .where(sale_item_id: sale_item_id)
-  }
-
-  scope :balance, -> (product_id, feature_item_id = nil) {
-    items = where(product_id: product_id)
-    items = items.where(feature_item_id: feature_item_id) if feature_item_id.present?
-    items.sum(:quantity)
   }
 
   scope :by_feature_id, -> (feature_item_id, start, finish) {
@@ -39,16 +33,17 @@ class ProductBalance < ApplicationRecord
         .sum(:quantity)
   }
 
-
   private
 
   def sync_web
+    product.update_column(:balance, product.balance_sum)
+    feature_item.update_column(:balance, feature_item.balance_sum) if feature_item.present?
+
     if product.is_sync
       if feature_item.present?
         url = "product/balance"
-        balance = ProductBalance.balance(product_id, feature_item_id)
 
-        params = {product_id: product_id, feature_item_id: feature_item_id, balance: balance}.to_json
+        params = {product_id: product_id, feature_item_id: feature_item_id, balance: feature_item.balance}.to_json
         ApplicationController.helpers.api_request(url, 'patch', params)
         # response =
         # Rails.logger.info("response: #{response.body}")
