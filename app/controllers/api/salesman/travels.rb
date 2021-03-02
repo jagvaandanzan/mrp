@@ -230,6 +230,7 @@ module API
                       status = ProductSaleStatus.find_by_alias("delivered")
                       product_sale = travel_route.product_sale
                       product_sale.update_columns(main_status_id: status.id, status_id: status.id)
+                      product_sale.add_bonus
                       r_s = 200
                       message = I18n.t('alert.info_updated')
                     else

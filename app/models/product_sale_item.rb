@@ -99,6 +99,25 @@ class ProductSaleItem < ApplicationRecord
     salesman_returns.count > 0
   end
 
+  def add_bonus
+    if bought_quantity.present?
+      bonu = Bonu.by_phone(product_sale.phone)
+      b_model = if bonu.present?
+                  bonu.first
+                else
+                  b = Bonu.new(balance: 0)
+                  b.bonus_phones << BonusPhone.new(phone: product_sale.phone)
+                  b.save
+                  b
+                end
+      if bonus_balance.present?
+        self.bonus_balance.update(bonu: b_model, bonus: ApplicationController.helpers.get_percentage(bought_quantity * price, 5))
+      else
+        self.bonus_balance = BonusBalance.create(bonu: b_model, product_sale_item: self, bonus: ApplicationController.helpers.get_percentage(bought_quantity * price, 5))
+      end
+    end
+  end
+
   private
 
   def set_product_balance
@@ -114,24 +133,6 @@ class ProductSaleItem < ApplicationRecord
                                                    operator: product_sale.created_operator,
                                                    quantity: -quantity)
     end
-
-    if sum_price.present?
-      bonu = Bonu.by_phone(product_sale.phone)
-      b_model = if bonu.present?
-                  bonu.first
-                else
-                  b = Bonu.new(balance: 0)
-                  b.bonus_phones << BonusPhone.new(phone: product_sale.phone)
-                  b.save
-                  b
-                end
-      if bonus_balance.present?
-        self.bonus_balance.update(bonu: b_model, bonus: ApplicationController.helpers.get_percentage(sum_price, 5))
-      else
-        self.bonus_balance = BonusBalance.new(bonu: b_model, bonus: ApplicationController.helpers.get_percentage(sum_price, 5))
-      end
-    end
-
   end
 
   def set_remainder

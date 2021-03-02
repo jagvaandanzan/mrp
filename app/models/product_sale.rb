@@ -157,6 +157,15 @@ class ProductSale < ApplicationRecord
     end
   end
 
+  def add_bonus
+    # 2 дахь худалдан авалтаас бонус бодно
+    sales = ProductSaleCall.by_status_id(9)
+                .by_phone(phone)
+    if sales.present?
+      product_sale.product_sale_items.each(&:add_bonus)
+    end
+  end
+
   private
 
   def check_money
