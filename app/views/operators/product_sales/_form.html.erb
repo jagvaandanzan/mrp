@@ -431,7 +431,7 @@
         });
         total_price += (total_price > 0 && total_price < <%= Const::FREE_SHIPPING %>) ? <%= Const::SHIPPING_FEE %> : 0;
         $('#product_sale_sum_price').val(total_price);
-        $('#bonus_available').val(getDecimalPay(total_price / 2));
+        $('#bonus_available').text(getDecimalPay(total_price / 2));
 
         let bonus = $('#product_sale_bonus').val();
         if (bonus.length > 0) {

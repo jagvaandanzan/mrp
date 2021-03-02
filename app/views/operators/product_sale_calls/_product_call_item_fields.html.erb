@@ -1,6 +1,6 @@
 <tr class="nested-fields">
   <td class="image va-mid">
-    <%=product_img_web_link(f.object)%>
+    <%= product_img_web_link(f.object) %>
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :product_id %>
@@ -16,7 +16,7 @@
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :quantity %>
-    <%= f.number_field :quantity, class: 'form-control field item_quantity', oninput: "calc_total_price()", placeholder: t('activerecord.attributes.product_call_item.quantity') %>
+    <%= f.number_field :quantity, value: f.object.quantity.presence || 1, class: 'form-control field item_quantity', oninput: "calc_total_price()", placeholder: t('activerecord.attributes.product_call_item.quantity') %>
   </td>
   <td class="va-mid">
     <%= f.hidden_field :price, class: 'item_price' %>
