@@ -12,10 +12,10 @@
             <th rowspan="2" class="text-center va-mid"><%= t('activerecord.attributes.product_feature_item.price') %></th>
             <th colspan="2" class="text-center"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
             <th colspan="2" class="text-center"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
+            <th rowspan="2" class="text-center va-mid"><%= t('activerecord.attributes.product_feature_item.cost') %></th>
             <% if no_balance %>
               <th rowspan="2" class="text-center va-mid"><%= t('activerecord.attributes.product_feature_item.balance') %></th>
             <% end %>
-            <th rowspan="2" class="text-center va-mid"><%= t('activerecord.attributes.product_feature_item.cost') %></th>
             <th rowspan="2"></th>
           </tr>
           <tr>
@@ -45,14 +45,14 @@
               <td class="text-center">
                 <button type="button" class="btn btn-default btn-xs" btype="p_9_"><%= t('controls.button.to_equate') %></button>
               </td>
+              <td class="text-center">
+                <button type="button" class="btn btn-default btn-xs" btype="cost"><%= t('controls.button.to_equate') %></button>
+              </td>
               <% if no_balance %>
                 <td class="text-center">
                   <button type="button" class="btn btn-default btn-xs" btype="balance"><%= t('controls.button.to_equate') %></button>
                 </td>
               <% end %>
-              <td class="text-center">
-                <button type="button" class="btn btn-default btn-xs" btype="cost"><%= t('controls.button.to_equate') %></button>
-              </td>
               <td></td>
             </tr>
           <% end %>

@@ -26,16 +26,16 @@
     <%= field_errors f.object, :p_9_ %>
     <%= f.number_field :p_9_, class: 'form-control field p_9_', placeholder: t('activerecord.attributes.product_feature_item.p_9_') %>
   </td>
-  <% if no_balance%>
+  <td>
+    <%= field_errors f.object, :cost %>
+    <%= f.number_field :cost, class: 'form-control field cost', placeholder: t('activerecord.attributes.product_feature_item.cost') %>
+  </td>
+  <% if no_balance %>
     <td>
       <%= field_errors f.object, :balance %>
       <%= f.number_field :balance, class: 'form-control field balance', placeholder: t('activerecord.attributes.product_feature_item.balance') %>
     </td>
   <% end %>
-  <td>
-    <%= field_errors f.object, :cost %>
-    <%= f.number_field :cost, class: 'form-control field cost', placeholder: t('activerecord.attributes.product_feature_item.cost') %>
-  </td>
   <td class="va-mid remove">
     <%= link_to_remove_association f, data: {confirm: "Энэ шинж чанарыг устгахдаа итгэлтэй байна уу, үүнтэй холбоотой бүх өгөгдөл устах болно!"} do %>
       <%= nested_remove_btn %>
