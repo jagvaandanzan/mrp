@@ -132,6 +132,7 @@ class Users::ProductFeatureItemsController < Users::BaseController
     feature_item.p_9_p = params[:p_9_p]
     feature_item.p_9_ = params[:p_9_]
     feature_item.balance = params[:balance].to_i
+    feature_item.cost = params[:cost].to_i if params[:cost].present?
     feature_item.location_balances = params[:location_balance]
 
     feature_item.save

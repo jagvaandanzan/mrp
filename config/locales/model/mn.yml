@@ -386,6 +386,7 @@ mn:
         same_item_id: Адил шинж чанар
         image: Зураг
         barcode: Баркод
+        cost: Өртөг
         real_img: Бодит зураг
         product_location_balances: Агуулахын байршил
         location_balances: Агуулахын байршил
