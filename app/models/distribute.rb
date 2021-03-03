@@ -204,18 +204,19 @@ def save_travels(locations)
 
   len_ori = 0 # google origins, destinations max 25 elements
 
-  max_len = length > 25 ? 25 : length
-
-  Rails.logger.info("distributing.max_len = #{max_len} / #{length}")
+  max_dis = length > 25 ? 25 : length
+  max_ori = (100 / max_dis).to_i
+  Rails.logger.info("distributing.max_ori = #{max_ori} / #{length}")
+  Rails.logger.info("distributing.max_dis = #{max_dis} / #{length}")
   while len_ori < length do
-    ori_locations = locations.slice(len_ori, max_len)
+    ori_locations = locations.slice(len_ori, max_ori)
     len_ori += ori_locations.length
     # Rails.logger.info("distributing.ori_locations = #{ori_locations.map(&:id).to_a}")
     Rails.logger.info("distributing.len_ori = #{len_ori}")
 
     len_dis = 0
     while len_dis < length do
-      dis_locations = locations.slice(len_dis, max_len)
+      dis_locations = locations.slice(len_dis, max_dis)
       len_dis += dis_locations.length
       Rails.logger.info("distributing.len_dis = #{len_dis}")
 
