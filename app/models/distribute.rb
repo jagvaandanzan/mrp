@@ -206,9 +206,11 @@ def save_travels(locations)
 
   len = 0 # google max 100 elements
   max_len = (100 / length).to_i
+  Rails.logger.info("distributing.max_len = #{max_len} / #{length}")
   while len < length do
     sub_locations = locations.slice(len, max_len)
     len += sub_locations.length
+    Rails.logger.info("distributing.len = #{len}")
 
     matrix_locations = []
     origins = ""
