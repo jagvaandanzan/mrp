@@ -33,6 +33,10 @@ class Distribute
           Rails.logger.info("routing = #{routing}")
           # routing = [138, 0, 4, 3, 1, 5, 6, 2, 0].map(&:to_i)
 
+          travel_config = TravelConfig.get_last
+          max_travel = travel_config.max_travel
+          waiting_time = travel_config.waiting_time # хүртгэлт хооронд хүлээх минут
+
           travel = SalesmanTravel.new
           travel.salesman = salesman
           travel.distance = routing[0]
@@ -48,13 +52,18 @@ class Distribute
               travel_route = SalesmanTravelRoute.new
               travel_route.queue = i - 2
               travel_route.distance = location_travel.distance
-              travel_route.duration = location_travel.duration
-              travel_duration = travel_duration + location_travel.duration
+              travel_route.duration = location_travel.duration + waiting_time
+              travel_duration += travel_route.duration
               travel_route.salesman_travel = travel
               travel_route.location = location
               travel_route.product_sale = product_sale
 
               travel.salesman_travel_routes << travel_route
+
+              if travel_duration > max_travel
+                break
+              end
+
             end
           }
           travel.duration = travel_duration
@@ -115,57 +124,50 @@ def vrptw(location_ids, hash_loc_travels) # return routing = [138, 0, 7, 4, 3, 1
     second += 1
   end
 
-  travel_config = TravelConfig.get_last
-  max_travel = travel_config.max_travel
-
-  result_data = if second == 6
-                  "error"
-                else
-                  File.read(result_path)
-                end
-
-  Rails.logger.info("result_data = #{result_data}")
-  if result_data == "error"
-    routing = result_data
+  if second == 6
+    "error"
   else
-    Rails.logger.info("salesman р үзээд батгахгүй бол 2 машинаас эхлэж явуулж үзнэ")
-    # salesman р үзээд батгахгүй бол 2 машинаас эхлэж явуулж үзнэ
-    routing = extra_result("tsp", max_travel, result_data)
-
-    if routing.length == 0 # багтаагүй байна
-      vehicle = 2
-      while routing != "error" && routing.length == 0
-        FileUtils.rm(result_path)
-        Rails.logger.info("cd " + folder_path + " && python vrp.py " + max_travel.to_s + " " + file_temp + " " + vehicle.to_s)
-        system "cd " + folder_path + " && python vrp.py " + max_travel.to_s + " " + file_temp + " " + vehicle.to_s
-
-        second = 0
-        until File.exists?(result_path) || second == 6
-          sleep(1)
-          second += 1
-        end
-
-        result_data = if second == 6
-                        "error"
-                      else
-                        File.read(result_path)
-                      end
-
-        if result_data == "error"
-          routing = result_data
-        else
-          routing = extra_result("vrp", max_travel, result_data)
-        end
-
-        vehicle += 1 # машины тоог нэмж үзнэ
-      end
-
-    end
+    File.read(result_path)
   end
+
+  # if result_data == "error"
+  #   routing = result_data
+  # else
+  #   # salesman р үзээд батгахгүй бол 2 машинаас эхлэж явуулж үзнэ
+  #   routing = extra_result("tsp", max_travel, result_data)
+  #
+  #   if routing.length == 0 # багтаагүй байна
+  #     vehicle = 2
+  #     while routing != "error" && routing.length == 0
+  #       FileUtils.rm(result_path)
+  #       system "cd " + folder_path + " && python vrp.py " + max_travel.to_s + " " + file_temp + " " + vehicle.to_s
+  #
+  #       second = 0
+  #       until File.exists?(result_path) || second == 6
+  #         sleep(1)
+  #         second += 1
+  #       end
+  #
+  #       result_data = if second == 6
+  #                       "error"
+  #                     else
+  #                       File.read(result_path)
+  #                     end
+  #
+  #       if result_data == "error"
+  #         routing = result_data
+  #       else
+  #         routing = extra_result("vrp", max_travel, result_data)
+  #       end
+  #
+  #       vehicle += 1 # машины тоог нэмж үзнэ
+  #     end
+  #
+  #   end
+  # end
   # TODO буцаах устгадаг болгох
   # FileUtils.rm [folder_path + file_name, result_path]
 
-  routing
 end
 
 def extra_result(type, max_travel, result)
