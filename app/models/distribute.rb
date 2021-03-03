@@ -194,6 +194,7 @@ def extra_result(type, max_travel, result)
 end
 
 def save_travels(locations)
+  Rails.logger.info("distributing.locations = #{locations.count}")
   # print ''
   # STDOUT.flush
   new_location_travels = []

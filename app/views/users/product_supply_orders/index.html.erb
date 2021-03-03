@@ -80,7 +80,7 @@
                     - <%= i.status_i18n %>
                     - <%= i.user.name %></td>
                   <% order_item = order_items.first
-                     product = order_item.product %>
+                       product = order_item.product %>
                   <td class="va-mid"><%= product.present? ? product.code : i.id %></td>
                   <td class="va-mid"><%= product.present? ? product.name : ''%></td>
                   <td class="va-mid">
