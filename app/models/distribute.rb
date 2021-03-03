@@ -125,9 +125,10 @@ def vrptw(location_ids, hash_loc_travels) # return routing = [138, 0, 7, 4, 3, 1
   end
 
   if second == 6
-    "error"
+    []
   else
-    File.read(result_path)
+    result_data = File.read(result_path)
+    result_data.split(',').map(&:to_i)
   end
 
   # if result_data == "error"
