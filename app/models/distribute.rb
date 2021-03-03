@@ -198,90 +198,96 @@ def save_travels(locations)
   # STDOUT.flush
   new_location_travels = []
 
-  hash_locations = locations.map {|i| [i.id, i]}.to_h
-  length = hash_locations.length #locations.map(&:id).to_a
+  length = locations.length #locations.map(&:id).to_a
   # өмнө нь авсан зайнуудыг авна
-  location_travels = LocationTravel.search(hash_locations.keys).map {|i| [i.location_from_id.to_s + "-" + i.location_to_id.to_s, i]}.to_h
+  location_travels = LocationTravel.search(locations.map(&:id).to_a).map {|i| [i.location_from_id.to_s + "-" + i.location_to_id.to_s, i]}.to_h
 
-  len = 0 # google max 100 elements
+  len_ori = 0 # google origins, destinations max 25 elements
 
-  max_len = length > 100 ? 100 : length
+  max_len = length > 25 ? 25 : length
 
   Rails.logger.info("distributing.max_len = #{max_len} / #{length}")
-  while len < length do
-    sub_locations = locations.slice(len, 2)
-    len += sub_locations.length
-    Rails.logger.info("distributing.sub_locations = #{sub_locations.map(&:id).to_a}")
-    Rails.logger.info("distributing.len = #{len}")
+  while len_ori < length do
+    ori_locations = locations.slice(len_ori, max_len)
+    len_ori += ori_locations.length
+    # Rails.logger.info("distributing.ori_locations = #{ori_locations.map(&:id).to_a}")
+    Rails.logger.info("distributing.len_ori = #{len_ori}")
 
-    matrix_locations = []
-    origins = ""
-    destinations = ""
+    len_dis = 0
+    while len_dis < length do
+      dis_locations = locations.slice(len_dis, max_len)
+      len_dis += dis_locations.length
+      Rails.logger.info("distributing.len_dis = #{len_dis}")
 
-    sub_locations.each {|location|
-      hash_locations.each_key {|key|
-        matrix_locations.push([location.id, key])
+      matrix_locations = []
+      origins = ""
+      destinations = ""
+
+      ori_locations.each {|location|
+        dis_locations.each_key {|key|
+          matrix_locations.push([location.id, key])
+        }
       }
-    }
 
-    sub_locations.each {|location|
-      if origins.length > 0
-        origins += "|"
-      end
-      origins += location.latitude.to_s + "," + location.longitude.to_s
-    }
-
-    hash_locations.each_value {|location|
-      if origins.length > 0
-        destinations += "|"
-      end
-      destinations += location.latitude.to_s + "," + location.longitude.to_s
-    }
-
-    # Rails.logger.debug("distributing.matrix_locations = #{matrix_locations.to_s}")
-
-    url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + origins + "&destinations=" + destinations + "&key=" + ENV['GOOGLE_MAP_KEY']
-    Rails.logger.debug("distributing.url = #{url}")
-
-    uri = URI.parse(url)
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-    response = http.request(Net::HTTP::Get.new(uri.request_uri))
-    Rails.logger.debug("distributing.response = #{response.body}")
-
-    json = JSON.parse(response.body)
-    m_index = 0 # matrix_index
-    sub_locations.each_index {|index|
-      elements = json['rows'][index]['elements']
-      elements.each {|e|
-        matrix_location = matrix_locations[m_index]
-        if matrix_location[0] != matrix_location[1]
-          if e['status'].to_s == "OK"
-
-            hash_travel = location_travels[matrix_location[0].to_s + '-' + matrix_location[1].to_s]
-            meter = e['distance']['value']
-            minute = (e['duration']['value'] / 60).to_i
-
-            if hash_travel.present?
-              hash_travel.distance = meter
-              hash_travel.duration = minute
-              hash_travel.save
-              new_location_travels << hash_travel
-            else
-              location_travel = LocationTravel.create(location_from_id: matrix_location[0], location_to_id: matrix_location[1], distance: meter, duration: minute)
-              new_location_travels << location_travel
-            end
-            Rails.logger.debug("meter=" + e['distance']['value'].to_s)
-            Rails.logger.debug("minute=" + e['duration']['value'].to_s)
-          end
+      ori_locations.each {|location|
+        if origins.length > 0
+          origins += "|"
         end
-
-        m_index += 1
+        origins += location.latitude.to_s + "," + location.longitude.to_s
       }
-    }
 
+      dis_locations.each_value {|location|
+        if destinations.length > 0
+          destinations += "|"
+        end
+        destinations += location.latitude.to_s + "," + location.longitude.to_s
+      }
+
+      # Rails.logger.debug("distributing.matrix_locations = #{matrix_locations.to_s}")
+
+      url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + origins + "&destinations=" + destinations + "&key=" + ENV['GOOGLE_MAP_KEY']
+      Rails.logger.debug("distributing.url = #{url}")
+
+      uri = URI.parse(url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+      response = http.request(Net::HTTP::Get.new(uri.request_uri))
+      Rails.logger.debug("distributing.response = #{response.body}")
+
+      json = JSON.parse(response.body)
+      m_index = 0 # matrix_index
+      ori_locations.each_index {|index|
+        elements = json['rows'][index]['elements']
+        elements.each {|e|
+          matrix_location = matrix_locations[m_index]
+          if matrix_location[0] != matrix_location[1]
+            if e['status'].to_s == "OK"
+
+              hash_travel = location_travels[matrix_location[0].to_s + '-' + matrix_location[1].to_s]
+              meter = e['distance']['value']
+              minute = (e['duration']['value'] / 60).to_i
+
+              if hash_travel.present?
+                hash_travel.distance = meter
+                hash_travel.duration = minute
+                hash_travel.save
+                new_location_travels << hash_travel
+              else
+                location_travel = LocationTravel.create(location_from_id: matrix_location[0], location_to_id: matrix_location[1], distance: meter, duration: minute)
+                new_location_travels << location_travel
+              end
+              Rails.logger.debug("meter=" + e['distance']['value'].to_s)
+              Rails.logger.debug("minute=" + e['duration']['value'].to_s)
+            end
+          end
+
+          m_index += 1
+        }
+      }
+
+    end
   end
 
   new_location_travels
