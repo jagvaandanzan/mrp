@@ -194,7 +194,6 @@ def extra_result(type, max_travel, result)
 end
 
 def save_travels(locations)
-  Rails.logger.info("distributing.locations = #{locations.count}")
   # print ''
   # STDOUT.flush
   new_location_travels = []
@@ -205,7 +204,9 @@ def save_travels(locations)
   location_travels = LocationTravel.search(hash_locations.keys).map {|i| [i.location_from_id.to_s + "-" + i.location_to_id.to_s, i]}.to_h
 
   len = 0 # google max 100 elements
-  max_len = (100 / length).to_i
+  max_len = (length / 100).to_i
+  max_len += 1 if (length % 100) > 0
+
   Rails.logger.info("distributing.max_len = #{max_len} / #{length}")
   while len < length do
     sub_locations = locations.slice(len, max_len)
@@ -271,8 +272,8 @@ def save_travels(locations)
               location_travel = LocationTravel.create(location_from_id: matrix_location[0], location_to_id: matrix_location[1], distance: meter, duration: minute)
               new_location_travels << location_travel
             end
-            # Rails.logger.debug("meter=" + e['distance']['value'].to_s)
-            # Rails.logger.debug("minute=" + e['duration']['value'].to_s)
+            Rails.logger.debug("meter=" + e['distance']['value'].to_s)
+            Rails.logger.debug("minute=" + e['duration']['value'].to_s)
           end
         end
 
