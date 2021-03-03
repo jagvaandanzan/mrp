@@ -108,6 +108,7 @@ def vrptw(location_ids, hash_loc_travels) # return routing = [138, 0, 7, 4, 3, 1
 
   result_path = folder_path + "#{file_temp}_result.txt"
 
+  # result үүсэх хүртэл 6 сек хүлээнэ
   second = 0
   until File.exists?(result_path) || second == 6
     sleep(1)
@@ -135,6 +136,7 @@ def vrptw(location_ids, hash_loc_travels) # return routing = [138, 0, 7, 4, 3, 1
       vehicle = 2
       while routing != "error" && routing.length == 0
         FileUtils.rm(result_path)
+        Rails.logger.info("cd " + folder_path + " && python vrp.py " + max_travel.to_s + " " + file_temp + " " + vehicle.to_s)
         system "cd " + folder_path + " && python vrp.py " + max_travel.to_s + " " + file_temp + " " + vehicle.to_s
 
         second = 0
