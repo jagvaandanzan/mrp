@@ -204,13 +204,14 @@ def save_travels(locations)
   location_travels = LocationTravel.search(hash_locations.keys).map {|i| [i.location_from_id.to_s + "-" + i.location_to_id.to_s, i]}.to_h
 
   len = 0 # google max 100 elements
-  max_len = (length / 100).to_i
-  max_len += 1 if (length % 100) > 0
+
+  max_len = length > 100 ? 100 : length
 
   Rails.logger.info("distributing.max_len = #{max_len} / #{length}")
   while len < length do
     sub_locations = locations.slice(len, max_len)
     len += sub_locations.length
+    Rails.logger.info("distributing.sub_locations = #{sub_locations.map(&:id).to_a}")
     Rails.logger.info("distributing.len = #{len}")
 
     matrix_locations = []
@@ -237,10 +238,10 @@ def save_travels(locations)
       destinations += location.latitude.to_s + "," + location.longitude.to_s
     }
 
-    # Rails.logger.debug(matrix_locations.to_s)
+    Rails.logger.debug("distributing.matrix_locations = #{matrix_locations.to_s}")
 
     url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + origins + "&destinations=" + destinations + "&key=" + ENV['GOOGLE_MAP_KEY']
-    # Rails.logger.debug(url)
+    Rails.logger.debug("distributing.url = #{url}")
 
     uri = URI.parse(url)
     http = Net::HTTP.new(uri.host, uri.port)
@@ -248,7 +249,7 @@ def save_travels(locations)
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
     response = http.request(Net::HTTP::Get.new(uri.request_uri))
-    # logger.debug(response.body)
+    logger.debug("distributing.response = #{response.body}")
 
     json = JSON.parse(response.body)
     m_index = 0 # matrix_index
