@@ -9,4 +9,9 @@ class LocationTravel < ApplicationRecord
     where(from_ids)
         .or(where(to_ids))
   }
+
+  scope :by_ids, ->(ids) {
+    where("id IN (?)", ids)
+  }
+
 end
