@@ -209,9 +209,9 @@ def save_travels(locations)
 
   Rails.logger.info("distributing.max_len = #{max_len} / #{length}")
   while len < length do
-    sub_locations = locations.slice(len, max_len)
+    sub_locations = locations.slice(len, 2)
     len += sub_locations.length
-    # Rails.logger.info("distributing.sub_locations = #{sub_locations.map(&:id).to_a}")
+    Rails.logger.info("distributing.sub_locations = #{sub_locations.map(&:id).to_a}")
     Rails.logger.info("distributing.len = #{len}")
 
     matrix_locations = []
@@ -241,7 +241,7 @@ def save_travels(locations)
     # Rails.logger.debug("distributing.matrix_locations = #{matrix_locations.to_s}")
 
     url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + origins + "&destinations=" + destinations + "&key=" + ENV['GOOGLE_MAP_KEY']
-    # Rails.logger.debug("distributing.url = #{url}")
+    Rails.logger.debug("distributing.url = #{url}")
 
     uri = URI.parse(url)
     http = Net::HTTP.new(uri.host, uri.port)
