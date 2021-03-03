@@ -224,8 +224,8 @@ def save_travels(locations)
       destinations = ""
 
       ori_locations.each {|location|
-        dis_locations.each_key {|key|
-          matrix_locations.push([location.id, key])
+        dis_locations.each {|loc_dis|
+          matrix_locations.push([location.id, loc_dis.id])
         }
       }
 
@@ -236,7 +236,7 @@ def save_travels(locations)
         origins += location.latitude.to_s + "," + location.longitude.to_s
       }
 
-      dis_locations.each_value {|location|
+      dis_locations.each {|location|
         if destinations.length > 0
           destinations += "|"
         end
