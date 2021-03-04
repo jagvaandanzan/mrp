@@ -3,7 +3,7 @@ class ProductSupplyOrder < ApplicationRecord
   belongs_to :logistic
   belongs_to :user
 
-  has_many :product_sample_images
+  has_many :product_sample_images, dependent: :destroy
   has_many :product_supply_order_items, dependent: :destroy
   has_many :products, through: :product_supply_order_items
   has_many :supply_features, through: :product_supply_order_items
