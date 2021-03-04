@@ -66,8 +66,10 @@
                     <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
                       <%= label_tag do %>
                         <%= option.name %>
-                        <%= yes_no(@product_supply_order.option_rels.include?(option.id.to_s)) %>
-                      <% end %>
+                        <% if @product_supply_order.option_rels.present? %>
+                          <%= yes_no(@product_supply_order.option_rels.include?(option.id.to_s)) %>
+                        <% end
+                           end %>
                     </div>
                   </div>
                 <% } %>
