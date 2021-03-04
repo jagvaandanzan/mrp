@@ -88,9 +88,9 @@ class Product < ApplicationRecord
   with_options :if => Proc.new {|m| m.tab_index.to_i == 4} do
     validates :gift_wrap, presence: true
   end
+
   scope :sync_nil, ->() {
-    where("id > ?", 5693)
-        .where("is_web = ?", 1)
+    where("is_web = ?", 1)
         .where("draft = ?", 0)
         .where("sync_at IS ?", nil)
   }
@@ -302,7 +302,7 @@ class Product < ApplicationRecord
     !draft #(is_web || attribute_before_last_save(:is_web))
   end
 
-  private
+  # private
 
   def valid_custom
     errors.add(:category_id, :blank) if category_id.present? && ProductCategory.search(category_id).count > 0

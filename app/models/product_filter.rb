@@ -17,7 +17,7 @@ class ProductFilter < ApplicationRecord
     where("product_id IN (?)", ids)
   }
 
-  private
+  # private
 
   def sync_web(method)
     if product.is_sync
