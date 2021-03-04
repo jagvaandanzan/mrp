@@ -71,7 +71,7 @@
               </tr>
               <% @product_supply_orders.each do |i| %>
                 <% order_items = i.product_supply_order_items
-                   order_items_count = order_items.count %>
+                   order_items_count = order_items.count > 0 ? order_items.count : 1 %>
                 <tr id="supple_order_<%= i.id %>">
                   <td class="va-mid" rowspan="<%= order_items_count %>">
                     <%= link_to i.code, users_product_supply_order_path(i, tab_index: 0) %></td>
@@ -80,9 +80,9 @@
                     - <%= i.status_i18n %>
                     - <%= i.user.name %></td>
                   <% order_item = order_items.first
-                       product = order_item.product unless order_item.product.nil? %>
+                     product = order_item.product if order_item.present? %>
                   <td class="va-mid"><%= product.present? ? product.code : i.id %></td>
-                  <td class="va-mid"><%= product.present? ? product.name : ''%></td>
+                  <td class="va-mid"><%= product.present? ? product.name : '' %></td>
                   <td class="va-mid">
                     <% if product.present? && product.picture.present? %>
                       <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
@@ -95,26 +95,32 @@
                        total_quantity = 0
                        total_quantity_lo = 0
                        total_price = ""
-                       order_item.supply_features.each_with_index {|supply_feature, index|
-                         feature_ids << supply_feature.id
-                         total_quantity += supply_feature.quantity if supply_feature.quantity.present?
-                         total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
-                         if index > 0
-                           total_price += ", " %>,&nbsp;
-                      <% end
-                         total_price += "#{i.get_currency supply_feature.price}" %>
-                      <%= supply_feature.feature_item.name %>
-                    <% } %>
+                       if order_item.present?
+                         order_item.supply_features.each_with_index {|supply_feature, index|
+                           feature_ids << supply_feature.id
+                           total_quantity += supply_feature.quantity if supply_feature.quantity.present?
+                           total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
+                           if index > 0
+                             total_price += ", " %>,&nbsp;
+                        <% end
+                           total_price += "#{i.get_currency supply_feature.price}" %>
+                        <%= supply_feature.feature_item.name %>
+                      <% }
+                         end %>
                   </td>
                   <td class="va-mid text-center"><%= i.exchange_i18n %></td>
                   <td class="va-mid text-center"><%= total_quantity > 0 ? "#{total_quantity} / #{ProductIncomeItem.by_product_feature_ids(product.present? ? product.id : 0, feature_ids).sum(:quantity)}" : '' %></td>
                   <td class="va-mid text-center"><%= total_price %></td>
-                  <td class="va-mid"><%= i.is_basic? ? order_item.note : i.description %></td>
-                  <td class="va-mid bg-1"><%= order_item.purchase_date %></td>
+                  <td class="va-mid">
+                    <% if order_item.present? %>
+                      <%= i.is_basic? ? order_item.note : i.description %>
+                    <% end %>
+                  </td>
+                  <td class="va-mid bg-1"><%= order_item.present? ? order_item.purchase_date : '' %></td>
                   <td class="va-mid text-center bg-1"><%= total_quantity_lo > 0 ? total_quantity_lo : '' %></td>
-                  <td class="va-mid text-center bg-1"><%= order_item.get_currency order_item.sum_price_lo %></td>
-                  <td class="va-mid text-center bg-1"><%= order_item.note_lo %></td>
-                  <% date, costs, quantity, cargo, cost_text = order_item.shipping_er_feature %>
+                  <td class="va-mid text-center bg-1"><%= order_item.present? ? (order_item.get_currency order_item.sum_price_lo) : '' %></td>
+                  <td class="va-mid text-center bg-1"><%= order_item.present? ? order_item.note_lo : '' %></td>
+                  <% date, costs, quantity, cargo, cost_text = order_item.present? ? order_item.shipping_er_feature : '' %>
                   <td class="va-mid text-center bg-2"><%= date %></td>
                   <td class="va-mid bg-2"><%= costs %>
                     <% if cost_text.present? %>
@@ -123,7 +129,7 @@
                   </td>
                   <td class="va-mid text-center bg-2"><%= quantity %></td>
                   <td class="va-mid text-center bg-2"><%= cargo %></td>
-                  <% date, costs, loaded, cargo, cost_text = order_item.shipping_ub_product %>
+                  <% date, costs, loaded, cargo, cost_text = order_item.present? ? order_item.shipping_ub_product : '' %>
                   <td class="va-mid text-center bg-3"><%= date %></td>
                   <td class="va-mid bg-3"><%= costs %>
                     <% if costs.present? %>

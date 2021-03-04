@@ -16,17 +16,20 @@
           :</b> <%= @product_supply_order.ordered_date.strftime('%F') %>
       </div>
       <div class="col-md-3 field_div">
-        <b><%= t('activerecord.attributes.product_supply_order.logistic_id') %>:</b> <%= @product_supply_order.logistic.name %>
+        <b><%= t('activerecord.attributes.product_supply_order.logistic_id') %>
+          :</b> <%= @product_supply_order.logistic.name %>
       </div>
       <div class="col-md-3 field_div">
-        <b><%= t('activerecord.attributes.product_supply_order.exchange') %>:</b> <%= @product_supply_order.exchange_i18n %>
+        <b><%= t('activerecord.attributes.product_supply_order.exchange') %>
+          :</b> <%= @product_supply_order.exchange_i18n %>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
       <div class="col-md-6 field_div">
-        <b><%= t('activerecord.attributes.product_supply_order.product_name') %>:</b> <%= @product_supply_order.product_name %>
+        <b><%= t('activerecord.attributes.product_supply_order.product_name') %>
+          :</b> <%= @product_supply_order.product_name %>
       </div>
       <div class="col-md-6 field_div">
         <b><%= t('activerecord.attributes.product_supply_order.link') %>:</b> <%= @product_supply_order.link %>
@@ -85,8 +88,10 @@
                         <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
                           <%= label_tag do %>
                             <%= option.name %>
-                            <%= yes_no(@product_supply_order.option_rels.include?(option.id.to_s)) %>
-                          <% end %>
+                            <% if @product_supply_order.option_rels.present? %>
+                              <%= yes_no(@product_supply_order.option_rels.include?(option.id.to_s)) %>
+                            <% end
+                               end %>
                         </div>
                       </div>
                     <% } %>
@@ -102,7 +107,8 @@
   <div class="row">
     <div class="col-md-12">
       <div class="col-md-6 field_div">
-        <b><%= t('activerecord.attributes.product_supply_order.description') %>:</b> <%= @product_supply_order.description %>
+        <b><%= t('activerecord.attributes.product_supply_order.description') %>
+          :</b> <%= @product_supply_order.description %>
       </div>
     </div>
   </div>
