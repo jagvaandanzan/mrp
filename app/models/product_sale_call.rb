@@ -97,7 +97,7 @@ class ProductSaleCall < ApplicationRecord
   def create_log
     self.product_sale_status_logs << ProductSaleStatusLog.new(operator: temp_operator.presence || operator,
                                                               status: status,
-                                                              note: message)
+                                                              note: message) if operator.present? || temp_operator.present?
   end
 
   def sent_itoms
