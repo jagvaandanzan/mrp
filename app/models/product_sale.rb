@@ -2,7 +2,6 @@ class ProductSale < ApplicationRecord
   acts_as_paranoid
 
   belongs_to :location
-  belongs_to :main_status, :class_name => "ProductSaleStatus"
   belongs_to :status, :class_name => "ProductSaleStatus"
   belongs_to :created_operator, :class_name => "Operator", optional: true
   belongs_to :approved_operator, :class_name => "Operator", optional: true
@@ -20,11 +19,10 @@ class ProductSale < ApplicationRecord
 
   enum money: {cash: 0, account: 1, mixed: 2}
 
-  attr_accessor :hour_now, :hour_start, :hour_end, :status_user_type, :update_status, :operator
+  attr_accessor :hour_now, :hour_start, :hour_end, :status_user_type, :update_status, :operator, :salesman, :status_m, :status_sub
 
-  before_validation :validate_status
-  before_save :set_defaults
   before_save :create_log
+  before_save :set_defaults
   before_save :set_balance
 
   with_options :if => Proc.new {|m| m.update_status == nil} do
@@ -39,7 +37,7 @@ class ProductSale < ApplicationRecord
     validate :check_money
   end
 
-  validates :main_status, presence: true
+  validates :status_id, presence: true
 
   with_options :if => Proc.new {|m| m.money != 'cash'} do
     validates :paid, presence: true
@@ -74,12 +72,12 @@ class ProductSale < ApplicationRecord
     end
   }
 
-  scope :search, ->(code_name, start, finish, phone, status_id) {
+  scope :search, ->(code_name, start, finish, phone, status) {
     items = joins(:status)
     items = items.where('phone LIKE :value', value: "%#{phone}%") if phone.present?
     items = items.joins(product_sale_items: :product)
                 .where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{code_name}%").group("id") if code_name.present?
-    items = items.where('main_status_id = :s OR status_id=:s', s: status_id) if status_id.present?
+    items = items.where('product_sale_statuses.alias = ?', status) if status.present?
     items = items.where('? <= delivery_start AND delivery_start <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items = items.order("product_sale_statuses.queue")
                 .created_at_desc
@@ -88,8 +86,9 @@ class ProductSale < ApplicationRecord
   }
 
   scope :by_salesman_nil, ->() {
-    where.not("approved_date IS ?", nil)
-        .where("main_status_id = 2 OR main_status_id = 4")
+    joins(:status)
+        .where.not("approved_date IS ?", nil)
+        .where('product_sale_statuses.alias = ?', 'oper_confirmed')
         .where("salesman_travel_id IS ?", nil)
         .order(:approved_date)
   }
@@ -98,7 +97,8 @@ class ProductSale < ApplicationRecord
     where("salesman_travel_id IN (?)", ids)
   }
   scope :by_status, ->(status) {
-    where("main_status_id = ?", status)
+    joins(:status)
+        .where('product_sale_statuses.alias = ?', status)
   }
 
   def bonus
@@ -119,6 +119,10 @@ class ProductSale < ApplicationRecord
 
   def bought_price
     product_sale_items.sum(:bought_price)
+  end
+
+  def status_alias
+    status.alias
   end
 
   def distribution
@@ -159,10 +163,19 @@ class ProductSale < ApplicationRecord
 
   def add_bonus
     # 2 дахь худалдан авалтаас бонус бодно
-    sales = ProductSaleCall.by_status_id(9)
+    sales = ProductSale.by_status('sals_delivered')
                 .by_phone(phone)
     if sales.present?
       product_sale.product_sale_items.each(&:add_bonus)
+    end
+  end
+
+  def set_statuses
+    if status.previous.present? || status.alias == "sals_delivered"
+      self.status_m = status.alias == "sals_delivered" ? status_id : status.previous_status.id
+      self.status_sub = status_id
+    else
+      self.status_m = status_id
     end
   end
 
@@ -173,22 +186,12 @@ class ProductSale < ApplicationRecord
   end
 
   def set_defaults
-    self.code = ApplicationController.helpers.get_code(ProductSale.last) unless code.present?
+    if operator.present?
+      self.code = ApplicationController.helpers.get_code(ProductSale.last) unless code.present?
 
-    self.delivery_end = delivery_start.change({hour: hour_end}) if hour_end.present?
-    self.delivery_start = delivery_start.change({hour: hour_start}) if hour_start.present?
-    self.sum_price -= bonus if bonus.present?
-  end
-
-  def validate_status
-    if main_status.present?
-      if main_status.get_status_childs(status_user_type).count > 0
-        unless status.present?
-          self.errors.add(:status_id, :blank)
-        end
-      else
-        self.status = main_status
-      end
+      self.delivery_end = delivery_start.change({hour: hour_end}) if hour_end.present?
+      self.delivery_start = delivery_start.change({hour: hour_start}) if hour_start.present?
+      self.sum_price -= bonus if bonus.present?
     end
   end
 
@@ -219,12 +222,25 @@ class ProductSale < ApplicationRecord
 
   def create_log
     self.product_sale_status_logs << ProductSaleStatusLog.new(operator: operator,
+                                                              salesman: salesman,
                                                               status: status,
                                                               note: status_note)
+    # set_status
+    if status.next.present?
+      next_status = status.next_status
+      if next_status.user_type == "auto"
+        self.status = next_status
+      elsif next_status.alias == "call_connect_again" || next_status.alias == "call_no_balance"
+        sale_call.temp_operator = operator
+        sale_call.status = next_status
+        sale_call.save(validate: false)
+      end
+    end
+
   end
 
   def set_balance
-    if bonus.present? && bonus > 0
+    if operator.present? && bonus.present? && bonus > 0
       bonu = Bonu.by_phone(phone)
       if bonu.present?
         b = bonu.first

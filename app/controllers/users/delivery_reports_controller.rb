@@ -12,7 +12,7 @@ class Users::DeliveryReportsController < Users::BaseController
     travers = SalesmanTravel.travels(@salesman_id, @date)
 
     @product_sales = ProductSale.by_travel_ids(travers.map(&:id).to_a)
-                         .by_status(9)
+                         .by_status('sals_delivered')
   end
 
   def salary

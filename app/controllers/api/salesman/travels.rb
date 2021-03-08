@@ -211,7 +211,7 @@ module API
               desc "PATCH travels/routes/:id/register"
               #{0=Бэлнээр, 1=Дансаар, 2=Бэлнээр+Дансаар, 3=Авхаа больсон, 4=Хойшлуулсан, 5=Буруу захилга}
               params do
-                requires :status, type: Integer
+                requires :status, type: String
                 optional :description, type: String
               end
               patch do
@@ -222,14 +222,16 @@ module API
                 travel = travel_route.salesman_travel
 
                 if travel.present? && salesman.id == travel.salesman_id
-                  if params[:status] <= 2 # Авсан
+                  if params[:status] == "sals_delivered" # Авсан
                     if travel_route.main_payable.present?
                       travel_route.calculate_delivery
                       travel_route.calculate_wage
                       travel.calculate_delivery
-                      status = ProductSaleStatus.find_by_alias("delivered")
+                      status = ProductSaleStatus.find_by_alias("sals_delivered")
                       product_sale = travel_route.product_sale
-                      product_sale.update_columns(main_status_id: status.id, status_id: status.id)
+                      product_sale.salesman = salesman
+                      product_sale.status = status
+                      product_sale.save(validate: false)
                       product_sale.add_bonus
                       r_s = 200
                       message = I18n.t('alert.info_updated')
@@ -246,18 +248,11 @@ module API
                       travel_route.calculate_delivery
                       travel.calculate_delivery
                       product_sale = travel_route.product_sale
-                      case params[:status]
-                      when 3 #Авхаа больсон
-                        status = ProductSaleStatus.find_by_alias("not_buy")
-                        product_sale.update_columns(main_status_id: status.id, status_id: status.id, status_note: params[:description])
-                      when 4 #Хойшлуулсан
-                        main_status = ProductSaleStatus.find_by_alias("delay")
-                        status = ProductSaleStatus.find_by_alias("delay_salesman")
-                        product_sale.update_columns(main_status_id: main_status.id, status_id: status.id, status_note: params[:description])
-                      else #5, Буруу захилга
-                        status = ProductSaleStatus.find_by_alias("wrong_book")
-                        product_sale.update_columns(main_status_id: status.id, status_id: status.id)
-                      end
+                      status = ProductSaleStatus.find_by_alias(params[:status])
+                      product_sale.salesman = salesman
+                      product_sale.status = status
+                      product_sale.status_note = params[:description]
+                      product_sale.save(validate: false)
                       message = I18n.t('alert.info_updated')
                     end
                   end

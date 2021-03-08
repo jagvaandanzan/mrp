@@ -62,20 +62,21 @@
             <%= f.label :status_id, class: 'col-sm-3 control-label' %>
             <div class="col-sm-6 <%= get_error_class(@sale_call, :status_id) %>">
               <%= field_errors(@sale_call, :status_id) %>
-              <%= f.collection_select :status_id, ProductCallStatus.parent_nil.by_not_ids([1, 2]), :id, :name,
-                                      {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+              <%= f.hidden_field :status_id %>
+              <%= f.collection_select :status_m, ProductSaleStatus.by_previous.by_type('call'), :id, :name,
+                                      {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_next_status(this)'} %>
             </div>
           </div>
-          <div class="form-group <%= @sale_call.status_id.present? && (@sale_call.status_id == 7) ? '' : 'none' %>" id="status_sub">
+          <div id="div_status_sub" class="form-group <%= @sale_call.status_sub.present? ? '' : 'none' %>">
             <%= f.label :status_sub_id, class: 'col-sm-3 control-label' do %>
             <% end %>
-            <div class="col-sm-6 <%= get_error_class(@sale_call, :status_sub_id) %>">
-              <%= field_errors(@sale_call, :status_sub_id) %>
-              <%= f.collection_select :status_sub_id, ProductCallStatus.by_parent_id(9), :id, :name,
-                                      {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+            <div class="col-sm-6 <%= get_error_class(@sale_call, :status_sub) %>">
+              <%= field_errors(@sale_call, :status_sub) %>
+              <%= f.collection_select :status_sub, ProductSaleStatus.by_previous(@sale_call.status_m).by_type('call'), :id, :name,
+                                      {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_set_status(this)'} %>
             </div>
           </div>
-          <div class="form-group <%= @sale_call.status_id.present? && (@sale_call.status_id > 3 && @sale_call.status_id < 7) ? '' : 'none' %>" id="status_message">
+          <div class="form-group" id="status_message">
             <%= f.label :message, class: 'col-sm-3 control-label' %>
             <div class="col-sm-6 <%= get_error_class(@sale_call, :message) %>">
               <%= field_errors(@sale_call, :message) %>
@@ -86,6 +87,36 @@
           <div class="action-buttons">
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
           </div>
+          <% if @sale_call.product_sale_status_logs.present? %>
+            <div class="col-md-12 group_div m-t-20">
+              <div class="col-md-12 field_div">
+                <b><%= t('activerecord.attributes.product_sale.product_sale_status_logs') %></b>
+              </div>
+              <div style="clear: both"></div>
+              <div class="col-md-12 field_div">
+                <table class="table table-bordered" style="background: white;">
+                  <thead>
+                  <tr>
+                    <th><%= t('activerecord.attributes.product_sale_status_log.created_at') %></th>
+                    <th><%= t('activerecord.attributes.product_sale_status_log.operator_id') %></th>
+                    <th><%= t('activerecord.attributes.product_sale_status_log.status_id') %></th>
+                    <th><%= t('activerecord.attributes.product_sale_status_log.note') %></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% @sale_call.product_sale_status_logs.each do |p| %>
+                    <tr>
+                      <td class="va-mid"><%= p.created_at.strftime('%F %R') %></td>
+                      <td class="va-mid"><%= p.operator.operator_name %></td>
+                      <td class="va-mid"><%= p.status.present? ? p.status.name_with_parent : "Сонгоогүй" %></td>
+                      <td class="va-mid"><%= p.note %></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          <% end %>
         <% end %>
       <% end %>
     </div>
@@ -93,9 +124,12 @@
 </div>
 <%= render 'shared/suggestion_search' %>
 <%= render 'previous_sales' %>
-
+<%= render 'shared/product_status_js', select_id: 'product_sale_call_status_id' %>
 <script>
     $(document).ready(function () {
+        <% unless @sale_call.status_sub.present?%>
+        call_next_status($('#product_sale_call_status_m'));
+        <% end %>
         $('#form_call').on('submit', function () {
             if ($('#product_sale_call_phone').val().length === 0) {
                 alert("<%= t('alert.enter_phone_number') %>");
@@ -113,20 +147,6 @@
             setTimeout(set_product_call_item, 300);
         });
 
-        $('#product_sale_call_status_id').on('change', function () {
-            let st = parseInt($(this).val());
-            auto_save($('#product_sale_call_phone').val(), $(this).val(), false);
-            if (st > 3 && st < 7) {
-                $('#status_message').removeClass('none');
-            } else {
-                $('#status_message').addClass('none');
-            }
-            if (st === 7) {
-                $('#status_sub').removeClass('none');
-            } else {
-                $('#status_sub').addClass('none');
-            }
-        });
         $('#product_sale_call_phone').keyup(function () {
             let phone = $(this).val();
             if (!isNaN(parseInt(phone)) && phone.length === 8) {

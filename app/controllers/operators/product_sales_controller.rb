@@ -4,11 +4,17 @@ class Operators::ProductSalesController < Operators::BaseController
   def index
     @product_name = params[:product_name]
     @status_id = params[:status_id]
+    @status = params[:status]
+    @status_sub = params[:status_sub]
     @phone = params[:phone]
     @start = params[:start]
     @finish = params[:finish]
     cookies[:product_sale_page_number] = params[:page]
-    @product_sales = ProductSale.search(@product_name, @start, @finish, @phone, @status_id).page(params[:page])
+    status_alias = if @status_id.present?
+                     s = ProductSaleStatus.find(@status_id)
+                     s.alias
+                   end
+    @product_sales = ProductSale.search(@product_name, @start, @finish, @phone, status_alias).page(params[:page])
   end
 
   def new
@@ -54,7 +60,6 @@ class Operators::ProductSalesController < Operators::BaseController
       @product_sale.hour_now = time.hour
       @product_sale.hour_end = time.hour + 2
       @product_sale.status_user_type = 'operator'
-      @product_sale.main_status_id = 2
       @product_sale.location = Location.offset(rand(Location.count)).first
       @product_sale.building_code = 4.times.map {rand(9)}.join
       @product_sale.loc_note = (4.times.map {rand(9)}.join) + ', ' + (4.times.map {rand(9)}.join)
@@ -101,10 +106,7 @@ class Operators::ProductSalesController < Operators::BaseController
       item.p_6_8 = feature_item.p_6_8.presence || 0
       item.p_9_ = feature_item.p_9_.presence || 0
     end
-
-    if params[:rc].present?
-      @product_sale.main_status = @product_sale.status = ProductSaleStatus.find_by_alias("return_change")
-    end
+    @product_sale.set_statuses
   end
 
   def destroy
@@ -120,7 +122,13 @@ class Operators::ProductSalesController < Operators::BaseController
 
     if @product_sale.save
       flash[:success] = t('alert.info_updated')
-      redirect_to action: :index
+      if @product_sale.status.alias == "oper_replacement" ||
+          @product_sale.status.alias == "oper_return" ||
+          @product_sale.status.alias == "oper_affliction"
+        redirect_to edit_operators_product_sale_path(@product_sale, rc: true)
+      else
+        redirect_to action: :index
+      end
     else
       render 'edit'
     end
@@ -128,7 +136,7 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def update_status
     @product_sale.update_status = true
-    @product_sale.attributes = params.require(:product_sale).permit(:main_status_id, :status_id, :status_note, :status_user_type)
+    @product_sale.attributes = params.require(:product_sale).permit(:status_id, :status_m, :status_sub, :status_note, :status_user_type)
     @product_sale.operator = current_operator
     check_approved(@product_sale)
 
@@ -143,16 +151,7 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def show
-  end
-
-  def get_sub_status
-    subs = nil
-
-    if params[:parent_id].present?
-      subs = ProductSaleStatus.search(params[:parent_id], params[:status_user_type])
-    end
-
-    render json: {subs: subs}
+    @product_sale.set_statuses
   end
 
   def get_product_features
@@ -253,6 +252,21 @@ class Operators::ProductSalesController < Operators::BaseController
     render json: {bonus: bonus}
   end
 
+  def next_status
+    @id = params[:id]
+    @select_id = params[:select_id]
+
+    status = ProductSaleStatus.find(@id)
+    if status.next.present?
+      ids = status.next.split(",").map(&:to_i)
+      @list = ProductSaleStatus.by_ids(ids)
+    end
+
+    respond_to do |format|
+      format.js {render 'shared/product_status'}
+    end
+  end
+
   def auto
   end
 
@@ -280,8 +294,8 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def check_approved(product_sale)
-    if product_sale.main_status.present?
-      if product_sale.main_status.alias == "approved"
+    if product_sale.status.present?
+      if product_sale.status.alias == "oper_confirmed"
         product_sale.approved_operator = current_operator
         product_sale.approved_date = Time.current
       else
@@ -295,7 +309,7 @@ class Operators::ProductSalesController < Operators::BaseController
     params.require(:product_sale)
         .permit(:sale_call_id, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :country, :building_code, :loc_note,
                 :sum_price, :money, :paid, :bonus, :tax,
-                :main_status_id, :status_id, :status_note, :status_user_type,
+                :status_id, :status_m, :status_sub, :status_note, :status_user_type,
                 product_sale_items_attributes: [:id, :product_id, :feature_item_id, :to_see, :quantity, :price, :p_discount, :discount, :sum_price, :remainder, :_destroy])
   end
 end

@@ -530,9 +530,8 @@ mn:
         money: Төлбөрийн хэлбэр
         paid: Төлсөн
         bonus: Бонус
-        main_status: Статус
-        main_status_id: Статус
         status_id: Статус
+        status_sub_id: Дэд төлөв
         status_note: Статус тайлбар
         product_sale_item: Бараа
         product_sale_items: Захиалгын бараанууд

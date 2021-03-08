@@ -7,6 +7,7 @@ class ProductSaleItem < ApplicationRecord
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "sale_item_id", dependent: :destroy
   has_one :bonus_balance, dependent: :destroy
   has_one :salesman_travel, through: :product_sale
+  has_one :status, through: :product_sale
 
   before_save :set_product_balance
 
@@ -38,8 +39,8 @@ class ProductSaleItem < ApplicationRecord
   }
 
   scope :status_not_confirmed, ->() {
-    joins(:product_sale)
-        .where.not("product_sales.main_status_id = ?", 2)
+    joins(:status)
+        .where.not('product_sale_statuses.alias = ?', 'oper_confirmed')
   }
 
   scope :report_sale_delivered, ->(salesman_id, start_time, end_time) {
@@ -140,7 +141,8 @@ class ProductSaleItem < ApplicationRecord
   end
 
   def create_exchange(method)
-    if self.product_sale.main_status_id == 4 #exchange
+    status_alias = self.product_sale.status.alias
+    if status_alias == 'oper_replacement' || status_alias == 'oper_return' #exchange
       if method == "update"
         sale_exchange = ProductSaleExchange.create(e_type: 0,
                                                    product_sale_id: product_sale_id_was,

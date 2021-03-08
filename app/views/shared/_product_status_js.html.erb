@@ -1,0 +1,25 @@
+<script>
+    function call_next_status(select) {
+        let val = $(select).val();
+        if (valid_id(val)) {
+            Rails.ajax({
+                url: "<%= next_status_operators_product_sales_path %>",
+                type: "POST",
+                data: "id=" + val + "&select_id=<%= select_id %>"
+            });
+        } else {
+            $('#div_status_sub').addClass('none');
+            $('#status_sub').val("");
+            $('#<%= select_id %>').val("");
+        }
+    }
+
+    function call_set_status(select) {
+        let val = $(select).val();
+        if (valid_id(val)) {
+            $('#<%= select_id %>').val(val);
+        } else {
+            $('#<%= select_id %>').val("");
+        }
+    }
+</script>

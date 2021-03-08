@@ -12,7 +12,6 @@
   </section>
 
   <div class="action-buttons">
-    <%= link_to t('controls.button.return_change'), edit_operators_product_sale_path(@product_sale, rc: true), class: 'btn btn-warning' %>
     <%= link_to t('controls.button.edit'), edit_operators_product_sale_path(@product_sale), class: 'btn btn-info' %>
     <%= link_to t('controls.button.delete'), operators_product_sale_path(@product_sale), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <%= link_to t('titles.back_to_list'), operators_product_sales_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
@@ -54,24 +53,20 @@
                 <%= f.hidden_field :status_user_type %>
                 <div class="row">
                   <div class="col-md-6 field_div">
-                    <%= f.label :main_status_id, class: 'control-label' %>
-                    <div class="<%= get_error_class(@product_sale, :main_status_id) %>">
-                      <%= field_errors(@product_sale, :main_status) %>
-                      <%= f.collection_select :main_status_id, ProductSaleStatus.search(nil, @product_sale.status_user_type), :id, :name,
-                                              {:prompt => t('controls.select.none')},
-                                              {class: 'form-control selectpicker', onchange: 'callChildren(this)', "data-live-search": "true"} %>
+                    <%= f.label :status_id, class: 'control-label' %>
+                    <div class="<%= get_error_class(@product_sale, :status_id) %>">
+                      <%= f.hidden_field :status_id %>
+                      <%= field_errors(@product_sale, :status_id) %>
+                      <%= f.collection_select :status_m, ProductSaleStatus.by_previous.by_type('oper', @product_sale.status_m), :id, :name,
+                                              {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_next_status(this)'} %>
                     </div>
                   </div>
-                  <div class="col-md-6 field_div">
-                    <label class="control-label" for="product_sale_status_id" style="margin-bottom: 13px"></label>
-                    <div id="status" class="<%= get_error_class(@product_sale, :status_id) %>">
-                      <%= field_errors(@product_sale, :status_id) %>
-                      <% if (@product_sale.status.present? && @product_sale.status.id != @product_sale.main_status.id) ||
-                          (@product_sale.main_status.present? && @product_sale.main_status.get_status_childs(@product_sale.status_user_type).count > 0) %>
-                        <%= f.collection_select :status_id, ProductSaleStatus.search(@product_sale.main_status_id, @product_sale.status_user_type), :id, :name,
-                                                {:prompt => t('controls.select.none')},
-                                                {class: 'form-control selectpicker', id: 'status_id'} %>
-                      <% end %>
+                  <div id="div_status_sub" class="col-md-6 field_div <%= @product_sale.status_sub.present? ? '' : 'none' %>">
+                    <label class="control-label" for="product_sale_status_id" style="margin-bottom: 15px"></label>
+                    <div id="status" class="<%= get_error_class(@product_sale, :status_sub) %>">
+                      <%= field_errors(@product_sale, :status_sub) %>
+                      <%= f.collection_select :status_sub, ProductSaleStatus.by_previous(@product_sale.status_m).by_type('oper'), :id, :name,
+                                              {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_set_status(this)'} %>
                     </div>
                   </div>
                 </div>
@@ -256,48 +251,11 @@
     </div>
   <% end %>
 </div>
+<%= render 'shared/product_status_js', select_id: 'product_sale_status_id' %>
 <script type="text/javascript" charset="utf-8">
     $(document).ready(function () {
         initSelectedMap();
     });
-
-    function callChildren(select) {
-        let val = null;
-        if (select !== undefined && select !== null) {
-            val = $(select).val();
-            if (valid_id(val)) {
-
-                Rails.ajax({
-                    url: "<%= get_sub_status_operators_product_sales_path %>",
-                    type: "PATCH",
-                    data: "parent_id=" + val + "&status_user_type=<%= @product_sale.status_user_type %>",
-                    success: function (data) {
-                        let subs = data.subs;
-                        if (subs !== undefined && subs.length > 0) {
-                            let divSelect =
-                                "<select name='product_sale[status_id]' id=\"status_id\" class='form-control'>" +
-                                "<option value=''>Сонгох</option>";
-
-                            for (var i = 0; i < subs.length; i++) {
-                                divSelect += '<option value="' + subs[i]["id"] + '">' + subs[i]["name"] + '</option>';
-                            }
-                            divSelect += "</select>";
-
-                            $("#status").html(divSelect);
-
-                            $("#status_id").selectpicker("refresh");
-                        } else {
-                            $("#status").html("");
-                        }
-
-                    },
-                    error: function (data) {
-                        console.log(data);
-                    }
-                });
-            } // val is undefined chek
-        }// select is undefined check
-    }
 
     var selected_map = null, selected_marker;
 

@@ -199,7 +199,6 @@ Rails.application.routes.draw do
 
     resources :product_sales, only: [:index, :create, :new, :show, :edit, :update, :destroy] do
       collection do
-        patch 'get_sub_status'
         patch 'get_product_features'
         post 'search_locations'
         post 'add_location'
@@ -209,6 +208,7 @@ Rails.application.routes.draw do
         post 'get_product_balance'
         patch 'update_status'
         post 'get_bonus'
+        post 'next_status'
       end
     end
 

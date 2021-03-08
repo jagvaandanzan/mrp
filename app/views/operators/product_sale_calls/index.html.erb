@@ -20,9 +20,14 @@
       <div class="col-md-2 search">
         <%= text_field_tag :phone, @phone, {class: 'form-control', placeholder: t('filters.by_phone')} %>
       </div>
-      <div class="col-md-2 search">
-        <%= f.collection_select :status, ProductCallStatus.parent_nil, :id, :name,
-                                {:selected => @status, :include_blank => t('activerecord.attributes.product_sale_call.status_id')}, {class: 'form-control selectpicker'} %>
+      <div class="col-md-2 search" id="select_product_status">
+        <%= f.hidden_field :status_id, value: @status_id %>
+        <%= f.collection_select :status, ProductSaleStatus.by_previous.by_type('call'), :id, :name,
+                                {:selected => @status, :include_blank => t('activerecord.attributes.product_sale_call.status_id')}, {class: 'form-control selectpicker', onchange: 'call_next_status(this)'} %>
+        <div id="div_status_sub" class="<%= @status_sub.present? && !@status_sub.blank? ? '' : 'none' %>">
+          <%= f.collection_select :status_sub, ProductSaleStatus.by_previous(@status).by_type('call'), :id, :name,
+                                  {:selected => @status_sub, :include_blank => t('activerecord.attributes.product_sale_call.status_sub_id')}, {class: 'm-t-5 form-control selectpicker', onchange: 'call_set_status(this)'} %>
+        </div>
       </div>
       <div class="col-md-2 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
@@ -63,4 +68,13 @@
     </div>
   </section>
 </div>
+<%= render 'shared/product_status_js', select_id: 'status_id' %>
 <%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'start', finish_id: 'finish' %>
+<script>
+    $(document).ready(function () {
+        <% unless @status_sub.present? && !@status_sub.blank?  %>
+        call_next_status($('#status'));
+        <% end %>
+    });
+
+</script>
