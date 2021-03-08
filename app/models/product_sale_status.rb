@@ -15,6 +15,9 @@ class ProductSaleStatus < ApplicationRecord
     end
   }
 
+  scope :by_types, ->(user_types) {
+    where('user_type IN (?)', user_types)
+  }
   scope :by_type, ->(user_type, id = nil) {
     if id.nil?
       items = where('user_type = ?', user_type)
