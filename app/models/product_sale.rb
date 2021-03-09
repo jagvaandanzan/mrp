@@ -121,8 +121,8 @@ class ProductSale < ApplicationRecord
     product_sale_items.sum(:bought_price)
   end
 
-  def status_alias
-    status.alias
+  def status_name
+    status.name_with_parent
   end
 
   def distribution
