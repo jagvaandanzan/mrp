@@ -359,7 +359,12 @@ class Product < ApplicationRecord
           s_item.save
         end
       end
-      product_feature_items.by_option_ids(delete_ids).destroy_all
+      feature_items = product_feature_items.by_option_ids(delete_ids)
+      feature_items.each do |item|
+        # Давхар product_feature_option_rels үүсээгүй байхад нь feature_item 348 д устгаад байгаа тул
+        item.from_product = true
+      end
+      feature_items.destroy_all
       product_feature_option_rels.by_feature_option_ids(delete_ids).destroy_all
 
       added_feature_items = Hash.new
@@ -369,24 +374,26 @@ class Product < ApplicationRecord
 
         if self.product_feature_option_rels.size > 1
           self.product_feature_option_rels.each {|option_rel|
-            if option_rel.feature_option_id != option_id
-              product_feature_1 = option_rel.feature_option.product_feature
-              product_feature_2 = feature_option.product_feature
-              # Төрөл нь өөр байх ёстой
-              if product_feature_1.feature_type != product_feature_2.feature_type
-                # Дараалал түрүүнд байгаа нь эхэндээ байна
-                if product_feature_1.queue < product_feature_2.queue
-                  option_1 = option_rel.feature_option_id
-                  option_2 = option_id
-                else
-                  option_1 = option_id
-                  option_2 = option_rel.feature_option_id
-                end
+            unless delete_ids.include? option_rel.feature_option_id
+              if option_rel.feature_option_id != option_id
+                product_feature_1 = option_rel.feature_option.product_feature
+                product_feature_2 = feature_option.product_feature
+                # Төрөл нь өөр байх ёстой
+                if product_feature_1.feature_type != product_feature_2.feature_type
+                  # Дараалал түрүүнд байгаа нь эхэндээ байна
+                  if product_feature_1.queue < product_feature_2.queue
+                    option_1 = option_rel.feature_option_id
+                    option_2 = option_id
+                  else
+                    option_1 = option_id
+                    option_2 = option_rel.feature_option_id
+                  end
 
-                added_key = "#{option_1}-#{option_2}"
-                unless added_feature_items[added_key]
-                  self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2, p_6_8_p: is_own ? 5 : nil, p_9_p: is_own ? 6 : nil)
-                  added_feature_items[added_key] == "added"
+                  added_key = "#{option_1}-#{option_2}"
+                  unless added_feature_items[added_key]
+                    self.product_feature_items << ProductFeatureItem.new(option1_id: option_1, option2_id: option_2, p_6_8_p: is_own ? 5 : nil, p_9_p: is_own ? 6 : nil)
+                    added_feature_items[added_key] == "added"
+                  end
                 end
               end
             end

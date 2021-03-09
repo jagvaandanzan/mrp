@@ -25,7 +25,7 @@ class ProductFeatureItem < ApplicationRecord
   after_create -> {sync_web('post')}
   after_update -> {sync_web('update')}, unless: Proc.new {self.method_type == "sync"}
   after_destroy -> {sync_web('delete')}
-  attr_accessor :method_type, :is_add, :is_update, :location_balances
+  attr_accessor :method_type, :is_add, :is_update, :location_balances, :from_product
 
   has_attached_file :image, :path => ":rails_root/public/product_feature_items/image/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/product_feature_items/image/:id_partition/:style.:extension'
   validates_attachment :image,
@@ -333,18 +333,20 @@ class ProductFeatureItem < ApplicationRecord
         params = nil
         url += "/" + id.to_s
 
-        # product_feature_option_rels г устгах ёстой
-        delete_ids = []
-        items = product.product_feature_items
-                    .by_product_id(product_id)
-                    .by_option_ids([self.option1_id])
-        delete_ids << self.option1_id unless items.present?
-        items = product.product_feature_items
-                    .by_product_id(product_id)
-                    .by_option_ids([self.option2_id])
-        delete_ids << self.option2_id unless items.present?
+        unless from_product.present?
+          # product_feature_option_rels г устгах ёстой
+          delete_ids = []
+          items = product.product_feature_items
+                      .by_product_id(product_id)
+                      .by_option_ids([self.option1_id])
+          delete_ids << self.option1_id unless items.present?
+          items = product.product_feature_items
+                      .by_product_id(product_id)
+                      .by_option_ids([self.option2_id])
+          delete_ids << self.option2_id unless items.present?
 
-        product.product_feature_option_rels.by_feature_option_ids(delete_ids).destroy_all
+          product.product_feature_option_rels.by_feature_option_ids(delete_ids).destroy_all
+        end
       else
 
         params = self.to_json(only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :balance, :same_item_id], :methods => [:method_type, :image_url])
