@@ -21,7 +21,13 @@
 
 <div class="content-wrapper">
   <section class="content-header">
-    <h1><%= t('activerecord.models.product_sale') + t(@product_sale.persisted? ? 'titles.edit' : 'titles.add') %></h1>
+    <h1>
+      <% if @product_sale.rc.present? %>
+        Буцаалт, солилт
+      <% else %>
+        <%= t('activerecord.models.product_sale') + t(@product_sale.persisted? ? 'titles.edit' : 'titles.add') %>
+      <% end %>
+    </h1>
   </section>
 
   <section class="content">
@@ -30,6 +36,7 @@
                     method: @product_sale.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= f.hidden_field :status_user_type %>
         <%= f.hidden_field :sale_call_id %>
+        <%= f.hidden_field :rc %>
         <%= form_body do %>
           <div class="col-md-12 p-0">
             <div class="row">

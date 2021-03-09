@@ -12,8 +12,9 @@ class Distribute
       if sale_items.present?
         [422, I18n.t('errors.messages.you_have_a_balance')]
       else
-
+        travel_config = TravelConfig.get_last
         product_sales = ProductSale.by_salesman_nil
+                            .by_delivery_end(Time.current.beginning_of_minute + 2.hours)
 
         location_ids = product_sales.map(&:location_id).to_a
         if location_ids.length == 0
@@ -30,7 +31,6 @@ class Distribute
           Rails.logger.info("routing = #{routing}")
           # routing = [138, 0, 4, 3, 1, 5, 6, 2, 0].map(&:to_i)
 
-          travel_config = TravelConfig.get_last
           max_travel = travel_config.max_travel
           waiting_time = travel_config.waiting_time # хүртгэлт хооронд хүлээх минут
 

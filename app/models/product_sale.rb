@@ -19,7 +19,7 @@ class ProductSale < ApplicationRecord
 
   enum money: {cash: 0, account: 1, mixed: 2}
 
-  attr_accessor :hour_now, :hour_start, :hour_end, :status_user_type, :update_status, :operator, :salesman, :status_m, :status_sub
+  attr_accessor :hour_now, :hour_start, :hour_end, :status_user_type, :update_status, :operator, :salesman, :status_m, :status_sub, :rc
 
   before_save :create_log
   before_save :set_defaults
@@ -88,9 +88,13 @@ class ProductSale < ApplicationRecord
   scope :by_salesman_nil, ->() {
     joins(:status)
         .where.not("approved_date IS ?", nil)
-        .where('product_sale_statuses.alias = ?', 'oper_confirmed')
+        .where('product_sale_statuses.alias = ? OR product_sale_statuses.alias = ? OR product_sale_statuses.alias = ?', 'oper_confirmed', 'oper_replacement', 'oper_confirmed')
         .where("salesman_travel_id IS ?", nil)
         .order(:approved_date)
+  }
+
+  scope :by_delivery_end, ->(date) {
+    where("delivery_end <= ?", date) if date.present?
   }
 
   scope :by_travel_ids, ->(ids) {
@@ -170,9 +174,9 @@ class ProductSale < ApplicationRecord
     end
   end
 
-  def set_statuses
-    if status.previous.present? || status.alias == "sals_delivered"
-      self.status_m = status.alias == "sals_delivered" ? status_id : status.previous_status.id
+  def set_statuses(is_edit)
+    if status.previous.present? || (is_edit && status.alias == "sals_delivered")
+      self.status_m = (is_edit && status.alias == "sals_delivered") ? status_id : status.previous_status.id
       self.status_sub = status_id
     else
       self.status_m = status_id

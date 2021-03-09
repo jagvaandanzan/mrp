@@ -106,7 +106,8 @@ class Operators::ProductSalesController < Operators::BaseController
       item.p_6_8 = feature_item.p_6_8.presence || 0
       item.p_9_ = feature_item.p_9_.presence || 0
     end
-    @product_sale.set_statuses
+    @product_sale.rc = params[:rc]
+    @product_sale.set_statuses(true)
   end
 
   def destroy
@@ -122,13 +123,7 @@ class Operators::ProductSalesController < Operators::BaseController
 
     if @product_sale.save
       flash[:success] = t('alert.info_updated')
-      if @product_sale.status.alias == "oper_replacement" ||
-          @product_sale.status.alias == "oper_return" ||
-          @product_sale.status.alias == "oper_affliction"
-        redirect_to edit_operators_product_sale_path(@product_sale, rc: true)
-      else
-        redirect_to action: :index
-      end
+      redirect_to action: :index
     else
       render 'edit'
     end
@@ -142,7 +137,13 @@ class Operators::ProductSalesController < Operators::BaseController
 
     if @product_sale.save
       flash[:success] = t('alert.info_updated')
+      # if @product_sale.status.alias == "oper_replacement" ||
+      #     @product_sale.status.alias == "oper_return" ||
+      #     @product_sale.status.alias == "oper_affliction"
+      #   redirect_to edit_operators_product_sale_path(@product_sale, rc: true)
+      # else
       redirect_to action: :index
+      # end
     else
       render 'show'
       logger.debug(@product_sale.errors.full_messages)
@@ -151,7 +152,7 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def show
-    @product_sale.set_statuses
+    @product_sale.set_statuses(false)
   end
 
   def get_product_features
@@ -307,7 +308,7 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def product_sale_params
     params.require(:product_sale)
-        .permit(:sale_call_id, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :country, :building_code, :loc_note,
+        .permit(:sale_call_id, :rc, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :country, :building_code, :loc_note,
                 :sum_price, :money, :paid, :bonus, :tax,
                 :status_id, :status_m, :status_sub, :status_note, :status_user_type,
                 product_sale_items_attributes: [:id, :product_id, :feature_item_id, :to_see, :quantity, :price, :p_discount, :discount, :sum_price, :remainder, :_destroy])
