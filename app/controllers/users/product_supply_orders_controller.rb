@@ -1,6 +1,6 @@
 class Users::ProductSupplyOrdersController < Users::BaseController
   load_and_authorize_resource except: [:last_product_price, :set_calculated]
-  before_action :set_product_supply_order, only: [:edit, :show, :update, :destroy]
+  before_action :set_product_supply_order, only: [:edit, :show, :update, :destroy, :to_product]
 
   def index
     @by_start = params[:by_start]
@@ -139,6 +139,19 @@ class Users::ProductSupplyOrdersController < Users::BaseController
   def set_calculated
     supply_order = ProductSupplyOrder.find(params[:id])
     supply_order.update_columns(calculated: params[:date], status: 4)
+  end
+
+  def to_product
+    product = @product_supply_order.products.first
+    if product.present? && product.draft
+      product.update_column(:draft, false)
+      product.sync_web('post')
+      ProductPackage.create(product: product)
+
+      redirect_to edit_users_product_path(product, tab_index: 0)
+    else
+      redirect_to action: 'index'
+    end
   end
 
   private

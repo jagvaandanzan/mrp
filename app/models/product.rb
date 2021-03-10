@@ -174,16 +174,20 @@ class Product < ApplicationRecord
   }
 
   def all_categories
-    categories = get_parent_category([category], category)
-    categories.reverse
+    if category.present?
+      categories = get_parent_category([category], category)
+      categories.reverse
 
-    if category.cross_id.present?
-      cross_categories = get_parent_category([category.cross], category.cross)
-      cross_categories.reverse
-      categories = categories + cross_categories
+      if category.cross_id.present?
+        cross_categories = get_parent_category([category.cross], category.cross)
+        cross_categories.reverse
+        categories = categories + cross_categories
+      end
+
+      categories
+    else
+      []
     end
-
-    categories
   end
 
   def get_parent_category(parents, category)
@@ -302,7 +306,35 @@ class Product < ApplicationRecord
     !draft #(is_web || attribute_before_last_save(:is_web))
   end
 
-  # private
+  def sync_web(method)
+    if is_sync
+      self.method_type = method
+      url = "products"
+      if method == 'delete'
+        params = nil
+        url += "/" + id.to_s
+      else
+        params = self.to_json(methods: [:method_type, :picture_url], except: [:draft, :c_name, :user_id, :p_type, :picture_updated_at, :picture_file_size, :picture_content_type, :picture_file_name,
+                                                                              :deleted_at, :created_at, :updated_at, :sync_at],
+                              include: {
+                                  :product_feature_option_rels => {
+                                      only: [:id, :product_id, :feature_option_id],
+                                  },
+                                  :product_feature_items => {
+                                      only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :balance, :same_item_id], :methods => [:image_url],
+                                  }})
+      end
+      # Rails.logger.debug(params)
+      response = ApplicationController.helpers.api_request(url, method, params)
+      Rails.logger.debug("response.body #{response.body}")
+      # puts "response.body #{response.body}")
+      if response.code.to_i == 201
+        self.update_attributes(sync_at: Time.now, method_type: 'sync')
+      end
+    end
+  end
+
+  private
 
   def valid_custom
     errors.add(:category_id, :blank) if category_id.present? && ProductCategory.search(category_id).count > 0
@@ -509,34 +541,6 @@ class Product < ApplicationRecord
         if ratio.to_i != 1
           self.errors.add(:picture, " 1x1 хэмжээтэй байх ёстой")
         end
-      end
-    end
-  end
-
-  def sync_web(method)
-    if is_sync
-      self.method_type = method
-      url = "products"
-      if method == 'delete'
-        params = nil
-        url += "/" + id.to_s
-      else
-        params = self.to_json(methods: [:method_type, :picture_url], except: [:draft, :c_name, :user_id, :p_type, :picture_updated_at, :picture_file_size, :picture_content_type, :picture_file_name,
-                                                                              :deleted_at, :created_at, :updated_at, :sync_at],
-                              include: {
-                                  :product_feature_option_rels => {
-                                      only: [:id, :product_id, :feature_option_id],
-                                  },
-                                  :product_feature_items => {
-                                      only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :balance, :same_item_id], :methods => [:image_url],
-                                  }})
-      end
-      # Rails.logger.debug(params)
-      response = ApplicationController.helpers.api_request(url, method, params)
-      Rails.logger.debug("response.body #{response.body}")
-      # puts "response.body #{response.body}")
-      if response.code.to_i == 201
-        self.update_attributes(sync_at: Time.now, method_type: 'sync')
       end
     end
   end

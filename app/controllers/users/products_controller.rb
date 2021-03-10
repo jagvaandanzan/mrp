@@ -60,7 +60,11 @@ class Users::ProductsController < Users::BaseController
     @product.attributes = product_params
     if @product.save
       flash[:success] = t('alert.info_updated')
-      redirect_to action: 'index'
+      if @product.tab_index.present?
+        redirect_to action: :edit, id: @product.id, tab_index: 1
+      else
+        redirect_to action: 'index'
+      end
     else
       category_headers
       render 'edit'
