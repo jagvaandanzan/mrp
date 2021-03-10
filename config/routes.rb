@@ -124,6 +124,7 @@ Rails.application.routes.draw do
         patch 'form_feature'
         post 'last_product_price'
         patch 'set_calculated'
+        get 'to_product'
       end
     end
     resources :product_locations, only: [:index, :create, :new, :edit, :update, :destroy]
