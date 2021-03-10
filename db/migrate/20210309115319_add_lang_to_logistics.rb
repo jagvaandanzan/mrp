@@ -1,4 +1,4 @@
-class AddLangToLogistics < ActiveRecord::Migration[6.0]
+class AddLangToLogistics < ActiveRecord::Migration[5.2]
   def change
     add_column :logistics, :lang, :string, after: 'gender', default: 'mn'
     add_column :shipping_ers, :order_type, :integer, after: 'description', default: 1
