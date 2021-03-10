@@ -8,7 +8,7 @@ class Logistics::BaseController < ApplicationController
   end
 
   def root
-    redirect_to logistics_supply_orders_path
+    redirect_to logistics_supply_orders_path(order_type: 'basic')
   end
 
   def routing_error
@@ -16,7 +16,7 @@ class Logistics::BaseController < ApplicationController
   end
 
   def set_locale
-    I18n.locale = params[:locale] || :cn
+    I18n.locale = params[:locale] || current_logistic.present? ? current_logistic.lang : 'mn'
   end
 
 end

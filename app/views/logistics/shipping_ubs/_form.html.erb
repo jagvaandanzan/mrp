@@ -68,61 +68,16 @@
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
           </div>
           <div class="col-md-12 field_div">
-            <div class="cocoon-nested-form">
-              <div>
-                <table class="table table-bordered" id="tb_shipping_er_products">
-                  <tr>
-                    <th colspan="6"><%= t('titles.ready_for_shipment') %></th>
-                    <th colspan="3"><%= t('titles.received') %></th>
-                    <th></th>
-                  </tr>
-                  <tr>
-                    <th class="va-mid text-center">№</th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_name') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_code') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_image') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_feature') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_product.product_bought') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_product.quantity') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.cargo') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_ub_product.at_er') %></th>
-                    <th></th>
-                  </tr>
-                  <% ShippingErProduct.find_to_ub.each_with_index {|er_product, index|
-                    product = er_product.product %>
-                    <tr id="p-<%= er_product.id %>">
-                      <td class="va-mid text-center"><%= index + 1 %></td>
-                      <td class="va-mid"><%= product.cn_name %></td>
-                      <td class="va-mid"><%= product.code %></td>
-                      <td class="va-mid">
-                        <% if product.picture.present? %>
-                          <%= link_to product.picture.url, :"data-lightbox" => "roadtrip" do %>
-                            <%= t('titles.view') %>
-                          <% end %>
-                        <% else %>
-                          <% sample_images = ProductSampleImage.by_product_id(product)
-                             sample_images.each {|img| %>
-                            <div style="display: inline-block">
-                              <%= link_to img.image.url, "data-lightbox": "roadtrip" do %>
-                                <%= image_tag img.image.url(:tumb), height: '30' %>
-                              <% end %>
-                            </div>
-                          <% } %>
-                        <% end %>
-                      </td>
-                      <td class="va-mid"><%= er_product.shipping_er_features.count %></td>
-                      <td class="va-mid"><%= er_product.product_bought %></td>
-                      <td class="va-mid"><%= er_product[:remainder] %></td>
-                      <td class="va-mid"><%= er_product.cargo %></td>
-                      <td class="va-mid"><%= er_product.shipping_er.date.strftime('%F') %></td>
-                      <td class="va-mid">
-                        <button class="btn btn-block btn-success btn-xs" type="button" onclick="add_product(<%= er_product.id %>)">
-                          <i class="fa fa-plus" style="color: white"></i></button>
-                      </td>
-                    </tr>
-                  <% } %>
-                </table>
+            <div class="row m-b-10">
+              <div class="col-md-6">
+                <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.by_product')} %>
               </div>
+              <div class="col-md-6">
+                <button type="button" class="btn btn-primary" onclick="search_er_product()"><%= t('controls.button.searching') %></button>
+              </div>
+            </div>
+            <div class="cocoon-nested-form">
+              <div id="er_products"></div>
             </div>
           </div>
         <% end %>
@@ -143,4 +98,17 @@
             },
         });
     }
+
+    function search_er_product() {
+        $('#er_products').html("<div class='text-center m-t-20 w-100'><img src='/images/loading.gif'></div>");
+        Rails.ajax({
+            url: "<%= search_er_products_logistics_shipping_ubs_path %>",
+            type: "POST",
+            data: "order_type=<%= params[:order_type] %>&by_code=" + $('#by_code').val() + "&by_product_name=" + $('#by_product_name').val()
+        });
+    }
+
+    $(function () {
+        search_er_product();
+    });
 </script>

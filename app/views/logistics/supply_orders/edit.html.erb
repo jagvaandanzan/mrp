@@ -32,6 +32,7 @@
       </div>
 
       <%= form_with model: @supply_order_item, url: logistics_supply_order_path, method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= f.hidden_field :order_type, value: @supply_order_item.order_type.presence || params[:order_type] %>
         <%= form_body do %>
           <div class="field_div cocoon-nested-form">
             <table class="table table-hover table-bordered">

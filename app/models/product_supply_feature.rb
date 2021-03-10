@@ -2,6 +2,7 @@ class ProductSupplyFeature < ApplicationRecord
   belongs_to :order_item, :class_name => "ProductSupplyOrderItem"
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
   belongs_to :product
+  has_one :product_supply_order, through: :order_item
   has_one :product_income_balance, :class_name => "ProductIncomeBalance", :foreign_key => "supply_feature_id", dependent: :destroy
   has_many :shipping_er_features, class_name: "ShippingErFeature", foreign_key: "supply_feature_id", dependent: :destroy
 
@@ -23,14 +24,18 @@ class ProductSupplyFeature < ApplicationRecord
     before_update :set_sum_price_lo
   end
 
-  scope :find_to_er, ->(product_id = nil) {
+  scope :find_to_er, ->(order_type, product_id = nil, by_code, by_product_name) {
     items = left_joins(:shipping_er_features)
                 .left_joins(:order_item)
-                .group("product_supply_features.id")
+    items = items.left_joins(:product_supply_order) unless order_type.nil?
+    items = items.group("product_supply_features.id")
                 .having("product_supply_features.quantity_lo IS NOT NULL")
                 .having("SUM(shipping_er_features.quantity) IS NULL OR SUM(shipping_er_features.quantity) < product_supply_features.quantity_lo") # хэд хэд тасалж авсан тохиолдлыг шалгаж байна
-                .select("product_supply_features.*, product_supply_features.quantity_lo - IFNULL(SUM(shipping_er_features.quantity), 0) as remainder")
+                .select("product_supply_features.*, #{order_type.nil? ? '' : 'product_supply_orders.code as order_code, '}product_supply_features.quantity_lo - IFNULL(SUM(shipping_er_features.quantity), 0) as remainder")
     items = items.where(product_id: product_id) unless product_id.nil?
+    items = items.where("product_supply_orders.order_type = ?", order_type) unless order_type.nil?
+    items = items.where('product_supply_orders.code LIKE :value', value: "%#{by_code}%") if by_code.present?
+    items = items.left_joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value OR products.c_name LIKE :value', value: "%#{by_product_name}%") if by_product_name.present?
     items = items.where("product_supply_order_items.status < ?", 8)
     items
   }

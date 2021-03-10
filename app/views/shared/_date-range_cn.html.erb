@@ -1,0 +1,46 @@
+<script>
+    $(document).ready(function () {
+        let startDate = $('input#<%= start_id %>');
+        let endDate = $('input#<%= finish_id %>');
+
+        $('#<%= search_field_id %> span').html(startDate.val() + ' - ' + endDate.val());
+
+        $('#<%= search_field_id %>').daterangepicker({
+                ranges: {
+                    '今天': [moment(), moment()],
+                    '昨天': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                    '上个星期': [moment().subtract('days', 6), moment()],
+                    '最近30天': [moment().subtract('days', 29), moment()],
+                    '这个月': [moment().startOf('month'), moment().endOf('month')],
+                    '上个月': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                },
+                startDate: moment(),
+                endDate: moment(),
+                format: 'YYYY/MM/DD',
+                locale: {
+                    applyLabel: '完毕',
+                    cancelLabel: '取消',
+                    fromLabel: '-',
+                    toLabel: '直到',
+                    customRangeLabel: '否则选择',
+                    dayNames: ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
+                    daysOfWeek: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+                    monthNames: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+                    firstDay: 1
+                }
+            },
+            function (start, end) {
+                $('#search-date span').html(start.format('YYYY/MM/DD') + ' - ' + end.format('YYYY/MM/DD'));
+                startDate.val(start.format('YYYY/MM/DD'));
+                endDate.val(end.format('YYYY/MM/DD'));
+            }
+        ).on('apply.daterangepicker', function (ev, picker) {
+            startDate.val(picker.startDate.format('YYYY/MM/DD'));
+            endDate.val(picker.endDate.format('YYYY/MM/DD'));
+        }).on('cancel.daterangepicker', function (ev, picker) {
+            $('#search-date span').html("<%= t("filters.by_date") %>...");
+            startDate.val("");
+            endDate.val("");
+        });
+    });
+</script>

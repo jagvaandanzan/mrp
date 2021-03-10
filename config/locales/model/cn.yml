@@ -100,6 +100,7 @@ cn:
         product_feature: 颜色， 尺寸
         product_supply_order_id: 基本产品
         note_lo: 描述
+        pin: 别针
         purchase: 购买产品
         purchase_date: 买产品日期
         purchase_quantity: 购买产品数量
@@ -130,6 +131,7 @@ cn:
         shipping_er_products: 产品
         shipping_er_features: 产品的
       shipping_er_product:
+        order_code: 产品编码
         product_name: 产品名
         product_code: 产品代码
         product_image: 产品照片

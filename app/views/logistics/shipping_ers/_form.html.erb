@@ -9,6 +9,7 @@
     <div class="box box-info">
       <%= form_with model: @shipping_er, url: @shipping_er.persisted? ? logistics_shipping_er_path : logistics_shipping_ers_path, method: @shipping_er.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= form_body do %>
+          <%= f.hidden_field :order_type, value: params[:order_type] == 'basic' ? 0 : 1 %>
           <div class="row">
             <div class="col-md-12">
               <div class=" col-md-4 field_div">
@@ -76,67 +77,18 @@
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
           </div>
           <div class="col-md-12 field_div">
-            <div class="cocoon-nested-form">
-              <div>
-                <table class="table table-bordered" id="tb_products">
-                  <tr>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_name') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_code') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_image') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_feature') %></th>
-                    <th class="va-mid"><%= t('activerecord.attributes.shipping_er_product.product_bought') %></th>
-                    <th></th>
-                  </tr>
-                  <% product_id = 0
-                     ProductSupplyFeature.find_to_er.each do |supply_feature| %>
-                    <% feature_item = supply_feature.feature_item
-                       product = feature_item.product %>
-                    <tr class="p-<%= product.id %>">
-                      <% if product_id != product.id %>
-                        <td class="va-mid"><%= product.cn_name %></td>
-                        <td class="va-mid"><%= product.code %></td>
-                      <% else %>
-                        <td></td>
-                        <td></td>
-                      <% end %>
-                      <td class="va-mid">
-                        <% supply_order = supply_feature.order_item.product_supply_order %>
-                        <% if product_id != product.id %>
-                          <% if supply_order.is_sample? %>
-                            <% supply_order.product_sample_images.each {|img| %>
-                              <div style="display: inline-block">
-                                <%= link_to img.image.url, "data-lightbox": "roadtrip" do %>
-                                  <%= image_tag img.image.url(:tumb), height: '30' %>
-                                <% end %>
-                              </div>
-                            <% } %>
-                          <% end %>
-                        <% else %>
-                          <% if feature_item.img.present? %>
-                            <%= link_to feature_item.img.url, :"data-lightbox" => "roadtrip" do %>
-                              <%= t('titles.view') %>
-                            <% end %>
-                          <% elsif product.picture.present? %>
-                            <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
-                              <%= t('titles.view') %>
-                            <% end %>
-                          <% end %>
-                        <% end %>
-                      </td>
-                      <td class="va-mid"><%= feature_item.cn_name %></td>
-                      <td class="va-mid text-center"><%= supply_feature[:remainder] %></td>
-                      <td class="va-mid">
-                        <% if product_id != product.id
-                             product_id = product.id %>
-                          <button class="btn btn-block btn-success btn-xs" type="button" onclick="add_product(<%= product_id %>)">
-                            <i class="fa fa-plus" style="color: white"></i></button>
-                        <% end %>
-                      </td>
-                    </tr>
-                  <% end %>
-                </table>
+            <div class="row m-b-10">
+              <div class="col-md-4">
+                <%= text_field_tag :by_code, @by_code, {class: 'form-control', placeholder: t('filters.by_code')} %>
+              </div>
+              <div class="col-md-4">
+                <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.by_product')} %>
+              </div>
+              <div class="col-md-4">
+                <button type="button" class="btn btn-primary" onclick="search_supply_feature()"><%= t('controls.button.searching') %></button>
               </div>
             </div>
+            <div class="cocoon-nested-form" id="search_supply_feature"></div>
           </div>
         <% end %>
       <% end %>
@@ -182,5 +134,18 @@
             }
         });
     }
+
+    function search_supply_feature() {
+        $('#search_supply_feature').html("<div class='text-center m-t-20 w-100'><img src='/images/loading.gif'></div>");
+        Rails.ajax({
+            url: "<%= search_supply_feature_logistics_shipping_ers_path %>",
+            type: "POST",
+            data: "order_type=<%= params[:order_type] %>&by_code=" + $('#by_code').val() + "&by_product_name=" + $('#by_product_name').val()
+        });
+    }
+
+    $(function () {
+        search_supply_feature();
+    });
 
 </script>

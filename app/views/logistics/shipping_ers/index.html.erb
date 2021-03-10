@@ -18,7 +18,7 @@
         </div>
         <div class="col-md-4 search">
           <%= submit_tag t('controls.button.searching') + " (" + @shipping_ers.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
-          <%= link_to t('controls.button.create'), new_logistics_shipping_er_path, class: 'btn btn-warning pull-right' %>
+          <%= link_to t('controls.button.create'), new_logistics_shipping_er_path(order_type: params[:order_type]), class: 'btn btn-warning pull-right' %>
         </div>
       <% end %>
     </div>
@@ -38,14 +38,16 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.date') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.cost') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.shipping_er_products') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.description') %></th>
               </tr>
               </thead>
               <% @shipping_ers.each do |shipping_er| %>
                 <tr>
-                  <td class="va-mid underline text-center"><%= link_to show_id(shipping_er.id), logistics_shipping_er_path(shipping_er) %></td>
+                  <td class="va-mid underline text-center"><%= link_to show_id(shipping_er.id), logistics_shipping_er_path(shipping_er, order_type: params[:order_type]) %></td>
                   <td class="va-mid underline text-center"><%= shipping_er.date.strftime('%F') %></td>
                   <td class="va-mid text-center"><%= get_currency(shipping_er.cost, Const::CURRENCY[0], 2) %></td>
-                  <td class="va-mid text-center"><%= shipping_er.product_names %></td>
+                  <td class="va-mid"><%= shipping_er.product_names %></td>
+                  <td class="va-mid"><%= shipping_er.description %></td>
                 </tr>
               <% end %>
             </table>

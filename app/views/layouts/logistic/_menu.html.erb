@@ -1,15 +1,44 @@
 <aside class="main-sidebar sidebar_fixed">
   <section class="sidebar">
     <ul class="sidebar-menu" data-widget="tree">
-
-      <%= content_tag :li, class: controller_name == 'supply_orders' ? 'active' : '' do %>
-        <%= link_to logistics_supply_orders_path do %>
+      <%= content_tag :li, class: controller_name == 'supply_orders' ? 'treeview active' : 'treeview' do %>
+        <%= link_to "#" do %>
           <i class="fa fa-cubes"></i><span><%= t('titles.product_supply_ordering') %></span>
+          <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        <% end %>
+        <%= content_tag :ul, class: 'treeview-menu' do %>
+          <%= content_tag :li, class: params[:order_type] == 'basic' ? 'active' : '' do %>
+            <%= link_to logistics_supply_orders_path(order_type: 'basic') do %>
+              <i class="fa fa-circle-o"></i><span><%= t('enums.product_supply_order.order_type.is_basic') %></span>
+            <% end %>
+          <% end %>
+          <%= content_tag :li, class: params[:order_type] == 'sample' ? 'active' : '' do %>
+            <%= link_to logistics_supply_orders_path(order_type: 'sample') do %>
+              <i class="fa fa-star"></i><span><%= t('enums.product_supply_order.order_type.is_sample') %></span>
+            <% end %>
+          <% end %>
         <% end %>
       <% end %>
-      <%= content_tag :li, class: controller_name == 'shipping_ers' ? 'active' : '' do %>
-        <%= link_to logistics_shipping_ers_path do %>
+      <%= content_tag :li, class: controller_name == 'shipping_ers' ? 'treeview active' : 'treeview' do %>
+        <%= link_to "#" do %>
           <i class="fa fa-truck"></i><span><%= t('activerecord.models.shipping_er') %></span>
+          <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        <% end %>
+        <%= content_tag :ul, class: 'treeview-menu' do %>
+          <%= content_tag :li, class: params[:order_type] == 'basic' ? 'active' : '' do %>
+            <%= link_to logistics_shipping_ers_path(order_type: 'basic') do %>
+              <i class="fa fa-circle-o"></i><span><%= t('enums.product_supply_order.order_type.is_basic') %></span>
+            <% end %>
+          <% end %>
+          <%= content_tag :li, class: params[:order_type] == 'sample' ? 'active' : '' do %>
+            <%= link_to logistics_shipping_ers_path(order_type: 'sample') do %>
+              <i class="fa fa-star"></i><span><%= t('enums.product_supply_order.order_type.is_sample') %></span>
+            <% end %>
+          <% end %>
         <% end %>
       <% end %>
       <%= content_tag :li, class: controller_name == 'shipping_ubs' ? 'active' : '' do %>

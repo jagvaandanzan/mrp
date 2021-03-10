@@ -5,7 +5,8 @@ class Logistics::ShippingErsController < Logistics::BaseController
     @product_name = params[:product_name]
     @by_start = params[:by_start]
     @by_end = params[:by_end]
-    @shipping_ers = ShippingEr.search(@by_start, @by_end, @product_name).page(params[:page])
+
+    @shipping_ers = ShippingEr.search(@by_start, @by_end, @product_name, params[:order_type] == 'basic' ? 0 : 1).page(params[:page])
     cookies[:shipping_er_page_number] = params[:page]
   end
 
@@ -16,12 +17,19 @@ class Logistics::ShippingErsController < Logistics::BaseController
     @shipping_er.number = ApplicationController.helpers.last_number(ShippingEr)
   end
 
+  def search_supply_feature
+    product_supply_features = ProductSupplyFeature.find_to_er(params[:order_type] == 'basic' ? 0 : 1, nil, params[:by_code], params[:by_product_name])
+    respond_to do |format|
+      format.js {render 'logistics/shipping_ers/search_supply_feature_js', locals: {product_supply_features: product_supply_features, page: params[:page]}}
+    end
+  end
+
   def create
     @shipping_er = ShippingEr.new(shipping_er_params)
 
     if @shipping_er.save
       flash[:success] = t('alert.saved_successfully')
-      redirect_to action: :index
+      redirect_to action: :index, order_type: @shipping_er.order_type == 0 ? 'basic' : 'sample'
     else
       logger.info("errors: #{@shipping_er.errors.full_messages}")
       @shipping_er.date = Time.current
@@ -47,7 +55,7 @@ class Logistics::ShippingErsController < Logistics::BaseController
     @shipping_er.attributes = shipping_er_params
     if @shipping_er.save
       flash[:success] = t('alert.info_updated')
-      redirect_to action: :index
+      redirect_to action: :index, order_type: @shipping_er.order_type == 0 ? 'basic' : 'sample'
     else
       render 'edit'
     end
@@ -64,7 +72,7 @@ class Logistics::ShippingErsController < Logistics::BaseController
     @product = Product.find(params[:product_id])
     @shipping_er_product = ShippingErProduct.new(product: @product)
 
-    ProductSupplyFeature.find_to_er(params[:product_id]).each {|ps|
+    ProductSupplyFeature.find_to_er(nil, params[:product_id], "", "").each {|ps|
       if ps[:remainder].present? && ps[:remainder].to_i > 0
         @shipping_er_product.shipping_er_features << ShippingErFeature.new(supply_feature: ps,
                                                                            remainder: ps[:remainder],
@@ -87,7 +95,7 @@ class Logistics::ShippingErsController < Logistics::BaseController
   end
 
   def shipping_er_params
-    params.require(:shipping_er).permit(:date, :cost, :s_type, :description,
+    params.require(:shipping_er).permit(:order_type, :date, :cost, :s_type, :description,
                                         shipping_er_products_attributes: [:id, :product_id, :quantity, :cargo, :cost, :_destroy,
                                                                           shipping_er_features_attributes: [:id, :product_id, :supply_feature_id, :remainder, :quantity, :_destroy]])
         .merge(:logistic => current_logistic)

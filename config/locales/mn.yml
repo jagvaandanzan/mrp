@@ -101,6 +101,8 @@ mn:
     received: Хүлээж авсан
     balance: Үлдэгдэл
     sale_track: Борлуулалтын түүх
+    ready_for_shipment: Тээвэрлэхэд бэлэн бараа
+    consignment: Ачуулсан
   app_name: “MRP”
   app_short_name: M
   alert:

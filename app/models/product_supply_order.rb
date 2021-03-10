@@ -34,7 +34,7 @@ class ProductSupplyOrder < ApplicationRecord
     items = order("product_supply_orders.ordered_date": :desc)
     items = items.where('product_supply_orders.code LIKE :value', value: "%#{supply_code}%") if supply_code.present?
     items = items.where('ordered_date >= :s AND ordered_date <= :f', s: "#{start}", f: "#{finish}") if start.present? && finish.present?
-    items = items.joins(:products).where('products.code LIKE :value', value: "%#{product_name}%") if product_name.present?
+    items = items.joins(:products).where('products.code LIKE :value OR products.n_name LIKE :value OR products.c_name LIKE :value', value: "%#{product_name}%") if product_name.present?
     items = items.where(order_type: order_type) if order_type.present?
     items
   }

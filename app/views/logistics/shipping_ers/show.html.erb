@@ -8,7 +8,7 @@
   </section>
 
   <div class="action-buttons">
-    <%= link_to t('controls.button.edit'), edit_logistics_shipping_er_path(@shipping_er), class: 'btn btn-info' %>
+    <%= link_to t('controls.button.edit'), edit_logistics_shipping_er_path(@shipping_er, order_type: params[:order_type]), class: 'btn btn-info' %>
     <%= link_to t('titles.back_to_list'), logistics_shipping_ers_path(page: cookies[:shipping_er_page_number]), {class: "btn blck-btn"} %>
   </div>
   <%= show_body do %>

@@ -8,8 +8,8 @@
   </section>
 
   <div class="action-buttons">
-    <%= link_to t('controls.button.edit'), edit_logistics_supply_order_path(@supply_order_item), class: 'btn btn-info' %>
-    <%= link_to t('titles.back_to_list'), logistics_supply_orders_path(page: cookies[:product_supply_order_page_number]), {class: "btn blck-btn"} %>
+    <%= link_to t('controls.button.edit'), edit_logistics_supply_order_path(@supply_order_item, order_type: params[:order_type]), class: 'btn btn-info' %>
+    <%= link_to t('titles.back_to_list'), logistics_supply_orders_path(order_type: params[:order_type], page: cookies[:supply_order_page_number]), {class: "btn blck-btn"} %>
   </div>
   <%= show_body do %>
     <div class="box">
@@ -55,7 +55,7 @@
         <% end %>
         <div class="row">
           <div class="col-md-12">
-            <table class="table table-hover table-bordered">
+            <table class="table table-hover table-bordered" style="margin-bottom: 0">
               <thead>
               <% is_supply_order = @supply_order_item.product_supply_order.present? %>
               <tr>
@@ -119,10 +119,29 @@
           </div>
         </div>
         <div class="col-md-12">
-          <div class="col-md-12 field_div">
-            <b><%= t('activerecord.attributes.product_supply_order_item.note_lo') %>
-              :</b> <%= @supply_order_item.note_lo %>
-          </div>
+          <%= form_with model: @supply_order_item, url: create_temp_logistics_supply_orders_path(id: @supply_order_item.id), method: :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+            <%= form_body do %>
+              <%= f.hidden_field :order_type, value: @supply_order_item.order_type.presence || params[:order_type] %>
+              <div class="form-group m-t-10 ">
+                <%= f.label :pin, class: 'col-sm-1 control-label', style: 'padding-top: 0' %>
+                <div class="col-sm-11">
+                  <%= field_errors(@supply_order_item, :pin) %>
+                  <%= f.check_box :pin %>
+                </div>
+              </div>
+
+              <div class="form-group m-t-10 ">
+                <%= f.label :note_lo, class: 'col-sm-1 control-label' %>
+                <div class="col-sm-11">
+                  <%= field_errors(@supply_order_item, :note_lo) %>
+                  <%= f.text_area :note_lo, {class: 'form-control', placeholder: t('activerecord.attributes.product_supply_order_item.note_lo')} %>
+                </div>
+              </div>
+              <div class="action-buttons">
+                <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+              </div>
+            <% end %>
+          <% end %>
         </div>
       </div>
     </div>

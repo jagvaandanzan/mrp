@@ -5,7 +5,7 @@
 <div class="content-wrapper">
 
   <div class="col-md-12 m-t-10 m-b-10">
-    <%= form_with url: logistics_supply_orders_path, method: "get", class: "", local: true do |f| %>
+    <%= form_with url: logistics_supply_orders_path(order_type: params[:order_type]), method: "get", class: "", local: true do |f| %>
       <div class="col-md-2 search">
         <div id="search-date" class="form-control search">
           <i class="fa fa-calendar fa-lg p-r-0"></i>
@@ -19,10 +19,6 @@
       </div>
       <div class="col-md-3 search">
         <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.by_product')} %>
-      </div>
-      <div class="col-md-2 search">
-        <%= f.select :order_type, ProductSupplyOrder.order_types.keys.map {|k| [ProductSupplyOrder.order_types_i18n[k], ProductSupplyOrder.order_types[k]]},
-                     {:prompt => t('activerecord.attributes.product_supply_order.order_type'), selected: @order_type}, {class: 'form-control selectpicker'} %>
       </div>
       <div class="col-md-2 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
@@ -39,28 +35,43 @@
             <table class="table table-hover table-bordered">
               <tr>
                 <th><%= t('activerecord.attributes.product_supply_order.code') %></th>
-                <th><%= t('activerecord.attributes.product_supply_order.order_type') %></th>
                 <th><%= t('activerecord.attributes.product_supply_order.status') %></th>
                 <th><%= t('activerecord.attributes.product_supply_order_item.product_code') %></th>
                 <th><%= t('activerecord.attributes.product_supply_order_item.product_name') %></th>
                 <th><%= t('activerecord.attributes.product_supply_order_item.purchase') %></th>
                 <th><%= t('activerecord.attributes.product_supply_order_item.sum_price') %></th>
                 <th><%= t('activerecord.attributes.product_supply_order_item.purchase_date') %></th>
+                <th><%= t('activerecord.attributes.product_supply_order.description') %></th>
               </tr>
+              <% supply_order_id = 0 %>
               <% @product_supply_order_items.each do |i| %>
                 <% supply_order = i.product_supply_order
-                   product = i.product %>
-                <tr>
-                  <td class="va-mid"><%= link_to supply_order.code, logistics_supply_order_path(i) %></td>
-                  <td class="va-mid"><%= i.get_order_type %></td>
-                  <td class="va-mid"><%= supply_order.ordered_date.strftime('%F') %> - <%= i.status_i18n %>
-                    - <%= supply_order.user.name %></td>
-                  <td class="va-mid"><%= product.code %></td>
-                  <td class="va-mid"><%= product.cn_name %></td>
-                  <td class="va-mid"><%= i.purchase_stat.html_safe %></td>
-                  <td class="va-mid"><%= i.sum_price_lo.present? ? supply_order.get_currency(i.sum_price_lo) : '' %></td>
-                  <td class="va-mid"><%= i.purchase_date %></td>
-                </tr>
+                   product = i.product
+                   rows = supply_order.product_supply_order_items.count %>
+                <% if supply_order_id != supply_order.id
+                     supply_order_id = supply_order.id %>
+                  <tr>
+                    <td class="va-mid" rowspan="<%= rows %>"><%= link_to supply_order.code, logistics_supply_order_path(i, order_type: params[:order_type]) %></td>
+                    <td class="va-mid" rowspan="<%= rows %>"><%= supply_order.ordered_date.strftime('%F') %>
+                      - <%= i.status_i18n %>
+                      - <%= supply_order.user.name %></td>
+                    <td class="va-mid"><%= product.code %></td>
+                    <td class="va-mid"><%= product.cn_name %></td>
+                    <td class="va-mid"><%= i.purchase_stat.html_safe %></td>
+                    <td class="va-mid"><%= i.sum_price_lo.present? ? supply_order.get_currency(i.sum_price_lo) : '' %></td>
+                    <td class="va-mid"><%= i.purchase_date %></td>
+                    <td class="va-mid" style="color: <%= i.pin ? 'orangered' : 'black' %>"><%= i.note_lo %></td>
+                  </tr>
+                <% else %>
+                  <tr>
+                    <td class="va-mid"><%= product.code %></td>
+                    <td class="va-mid"><%= product.cn_name %></td>
+                    <td class="va-mid"><%= i.purchase_stat.html_safe %></td>
+                    <td class="va-mid"><%= i.sum_price_lo.present? ? supply_order.get_currency(i.sum_price_lo) : '' %></td>
+                    <td class="va-mid"><%= i.purchase_date %></td>
+                    <td class="va-mid" style="color: <%= i.pin ? 'orangered' : 'black' %>"><%= i.note_lo %></td>
+                  </tr>
+                <% end %>
               <% end %>
             </table>
           </div>
@@ -71,4 +82,4 @@
     </div>
   </section>
 </div>
-<%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>
+<%= render "shared/date-range#{current_logistic.lang == 'cn' ? '_cn' : ''}", search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>

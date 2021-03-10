@@ -258,15 +258,21 @@ Rails.application.routes.draw do
   namespace :logistics, path: :logistic do
     root "base#root"
 
-    resources :supply_orders, only: [:index, :show, :edit, :update]
+    resources :supply_orders, only: [:index, :show, :edit, :update] do
+      collection do
+        post 'create_temp'
+      end
+    end
     resources :shipping_ers do
       collection do
+        post 'search_supply_feature'
         post 'add_product'
       end
     end
     resources :shipping_ubs do
       collection do
         post 'add_product'
+        post 'search_er_products'
       end
     end
 
