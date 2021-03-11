@@ -2,6 +2,7 @@
   <%= f.hidden_field :is_update, value: true %>
   <% if is_supply_order
        product = f.object.feature_item.product %>
+    <td class="va-mid text-center"><%= product.code %></td>
     <td class="va-mid text-center">
       <% if f.object.feature_item.img.present? %>
         <%= link_to f.object.feature_item.img.url, "data-lightbox": "roadtrip" do %>

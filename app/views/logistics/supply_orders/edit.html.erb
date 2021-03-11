@@ -40,6 +40,7 @@
               <% is_supply_order = supply_order.present? %>
               <tr>
                 <% if is_supply_order %>
+                  <th class="text-center"><%= t('activerecord.attributes.shipping_er_product.product_code') %></th>
                   <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.image') %></th>
                 <% end %>
                 <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.feature_item_id') %></th>
@@ -51,6 +52,7 @@
               <tbody>
               <tr class="btn_actions">
                 <% if is_supply_order %>
+                  <td></td>
                   <td></td>
                 <% end %>
                 <td></td>

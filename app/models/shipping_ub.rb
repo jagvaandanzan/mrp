@@ -35,6 +35,10 @@ class ShippingUb < ApplicationRecord
     shipping_ub_products.sum(:cost)
   end
 
+  def cargo
+    shipping_ub_products.sum(:cargo)
+  end
+
   def product_names
     names = ""
     products.each_with_index {|product, index|

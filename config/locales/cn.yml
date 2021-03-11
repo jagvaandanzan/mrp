@@ -55,6 +55,8 @@ cn:
     ready_for_shipment: 准备发货的货物
     received: 已收到
     consignment: 已出货
+    ordered: 订购
+    not_ordered: 未订购
   app_name: “MRP”
   app_short_name: M
   alert:

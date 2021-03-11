@@ -18,8 +18,11 @@
       <div class="col-md-2 search">
         <%= text_field_tag :by_code, @by_code, {class: 'form-control', placeholder: t('filters.by_code')} %>
       </div>
-      <div class="col-md-3 search">
+      <div class="col-md-2 search">
         <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.by_product')} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= select_tag :is_ordered, options_for_select([[t('titles.not_ordered'), false], [t('titles.ordered'), true]], @is_ordered), class: 'form-control' %>
       </div>
       <div class="col-md-2 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>

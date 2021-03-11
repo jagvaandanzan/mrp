@@ -38,6 +38,8 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.date') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.cost') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.shipping_er_products') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_ub.shipping_ub_features') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er_product.cargo') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.shipping_er.description') %></th>
               </tr>
               </thead>
@@ -47,6 +49,8 @@
                   <td class="va-mid underline text-center"><%= shipping_er.date.strftime('%F') %></td>
                   <td class="va-mid text-center"><%= get_currency(shipping_er.cost, Const::CURRENCY[0], 2) %></td>
                   <td class="va-mid"><%= shipping_er.product_names %></td>
+                  <td class="va-mid text-center"><%= shipping_er.sum_quantity %></td>
+                  <td class="va-mid text-center"><%= shipping_er.sum_cargo %></td>
                   <td class="va-mid"><%= shipping_er.description %></td>
                 </tr>
               <% end %>

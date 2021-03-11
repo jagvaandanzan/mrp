@@ -9,6 +9,7 @@ class ProductSupplyOrderItem < ApplicationRecord
 
   attr_accessor :tab_index, :cn_name, :order_type
   before_save :set_cn_name
+  before_save :set_is_ordered
 
   with_options :if => Proc.new {|m| m.product_supply_order.present?} do
     validates :product_id, presence: true
@@ -31,12 +32,11 @@ class ProductSupplyOrderItem < ApplicationRecord
     items
   }
 
-  scope :created_at_desc, -> {
+  scope :order_pin, -> {
     order(pin: :desc)
-        .order(created_at: :desc)
   }
 
-  scope :search, ->(start, finish, supply_code, product_name, order_type) {
+  scope :search, ->(start, finish, supply_code, product_name, order_type, is_order) {
     items = left_joins(:product_supply_order)
                 .where("product_supply_orders.status > ?", 0)
     if start.present? && finish.present?
@@ -48,7 +48,8 @@ class ProductSupplyOrderItem < ApplicationRecord
     end
     items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{product_name}%") if product_name.present?
     items = items.where("product_supply_orders.order_type = ?", order_type) if order_type.present?
-    items.created_at_desc
+    items = items.where("ordered_at IS#{is_order == "true" ? ' NOT' : ''} ?", nil) if is_order.present?
+    items.order_pin
   }
 
   scope :by_status_lower, ->(stat) {
@@ -173,5 +174,15 @@ class ProductSupplyOrderItem < ApplicationRecord
   def set_cn_name
     product.update_column(:c_name, cn_name) if cn_name.present? && product.name != cn_name
     product_supply_order.update_column(:status, 8) if canceled?
+  end
+
+  def set_is_ordered
+    q = 0
+    q_lo = 0
+    supply_features.each do |feature|
+      q += feature.quantity if feature.quantity.present?
+      q_lo += feature.quantity_lo if feature.quantity_lo.present?
+    end
+    self.ordered_at = Time.current if q_lo > 0 && q == q_lo && !ordered_at.present?
   end
 end

@@ -42,6 +42,10 @@ class ShippingEr < ApplicationRecord
     shipping_er_products.sum(:quantity)
   end
 
+  def sum_cargo
+    shipping_er_products.sum(:cargo)
+  end
+
   private
 
   def product_should_be_uniq

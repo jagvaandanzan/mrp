@@ -60,6 +60,7 @@
               <% is_supply_order = @supply_order_item.product_supply_order.present? %>
               <tr>
                 <% if is_supply_order %>
+                  <th class="text-center"><%= t('activerecord.attributes.shipping_er_product.product_code') %></th>
                   <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.image') %></th>
                 <% end %>
                 <th class="text-center"><%= t('activerecord.attributes.product_supply_feature.feature_item_id') %></th>
@@ -76,6 +77,7 @@
                 <tr>
                   <% if is_supply_order
                        product = feature.product %>
+                    <td class="va-mid text-center"><%= product.code %></td>
                     <td class="va-mid text-center">
                       <% if feature.feature_item.img.present? %>
                         <%= link_to feature.feature_item.img.url, "data-lightbox": "roadtrip" do %>
@@ -110,7 +112,7 @@
               <% total_sum += feature.sum_price_lo if feature.sum_price_lo.present?
                  } %>
               <tr>
-                <td colspan="<%= is_supply_order ? 4 : 3 %>" class="text-right"><b><%= t('titles.total') %></b></td>
+                <td colspan="<%= is_supply_order ? 5 : 3 %>" class="text-right"><b><%= t('titles.total') %></b></td>
                 <td><b><%= @supply_order_item.get_currency(total_sum) %></b></td>
                 <td colspan="2"></td>
               </tr>

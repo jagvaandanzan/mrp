@@ -6,8 +6,9 @@ class Logistics::SupplyOrdersController < Logistics::BaseController
     @by_end = params[:by_end]
     @by_code = params[:by_code]
     @by_product_name = params[:by_product_name]
+    @is_ordered = params[:is_ordered].presence || "false"
     cookies[:supply_order_page_number] = params[:page]
-    @product_supply_order_items = ProductSupplyOrderItem.search(@by_start, @by_end, @by_code, @by_product_name, params[:order_type] == "basic" ? 0 : 1)
+    @product_supply_order_items = ProductSupplyOrderItem.search(@by_start, @by_end, @by_code, @by_product_name, params[:order_type] == "basic" ? 0 : 1, @is_ordered)
                                       .page(params[:page])
   end
 
@@ -22,6 +23,10 @@ class Logistics::SupplyOrdersController < Logistics::BaseController
   end
 
   def edit
+    @supply_order_item.supply_features.each do |supply_feature|
+      supply_feature.quantity_lo = supply_feature.quantity unless supply_feature.quantity_lo.present?
+      supply_feature.price_lo = ApplicationController.helpers.get_f(supply_feature[:price]) unless supply_feature[:price_lo].present?
+    end
   end
 
   def show

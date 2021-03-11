@@ -103,6 +103,8 @@ mn:
     sale_track: Борлуулалтын түүх
     ready_for_shipment: Тээвэрлэхэд бэлэн бараа
     consignment: Ачуулсан
+    ordered: Захиалсан
+    not_ordered: Захиалаагүй
   app_name: “MRP”
   app_short_name: M
   alert:
