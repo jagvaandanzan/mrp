@@ -34,6 +34,7 @@ class ProductSupplyOrderItem < ApplicationRecord
 
   scope :order_pin, -> {
     order(pin: :desc)
+        .order(:created_at)
   }
 
   scope :search, ->(start, finish, supply_code, product_name, order_type, is_order) {
