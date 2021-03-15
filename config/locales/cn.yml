@@ -30,6 +30,7 @@ cn:
       to_equate: 等于
       watch: 看
       add_box: 添加框 /盒子
+      add_sample_box: 添加框 /样品
       remove_box: 取出框/ 盒子
     select:
       none: 选着

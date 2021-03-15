@@ -53,7 +53,7 @@
                   <td class="va-mid"><%= shipping_ub.product_names %></td>
                   <td class="va-mid text-center"><%= shipping_ub.shipping_ub_features %></td>
                   <td class="va-mid text-center"><%= shipping_ub.cargo %></td>
-                  <td class="va-mid"><%=  get_currency(shipping_ub.cargo_price, Const::CURRENCY[0], 0) %></td>
+                  <td class="va-mid"><%=  get_currency(shipping_ub.cargo_price, Const::CURRENCY[0], 2) %></td>
                   <td class="va-mid text-center"><%= shipping_ub.s_type_i18n %></td>
                   <td class="va-mid text-center"><%= shipping_ub.description %></td>
                 </tr>

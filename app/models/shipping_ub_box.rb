@@ -4,9 +4,11 @@ class ShippingUbBox < ApplicationRecord
   has_many :shipping_ub_products, dependent: :destroy
   accepts_nested_attributes_for :shipping_ub_products, allow_destroy: true
 
+  enum box_type: {is_open: 0, is_box: 1, is_sample: 2}
+
   validates :shipping_ub_products, :length => {:minimum => 1}
 
-  with_options :if => Proc.new {|m| m.is_box.present? && m.is_box} do
+  with_options :if => Proc.new {|m| m.box_type.present? && m.is_box?} do
     validates :cost, presence: true
   end
 
@@ -15,7 +17,7 @@ class ShippingUbBox < ApplicationRecord
   private
 
   def set_product_cost
-    if is_box
+    if is_box?
       per_cost = self.cost / self.shipping_ub_products.count
       self.shipping_ub_products.each do |ub_p|
         ub_p.update_columns(cost: per_cost, per_price: per_cost / ub_p.quantity)

@@ -519,6 +519,12 @@ mn:
       shipping_ub_box:
         number: Дугаар
         cost: Зардал
+        shipping_ub_products: Бараа
+      shipping_ub_sample:
+        number: Дугаар
+        cargo: Ачааны тоо
+        cost: Зардал
+        created_at: Ачуулсан огноо
       shipping_ub:
         number: Баримтын дугаар
         logistic: Хангамжийн ажилтан
@@ -527,6 +533,7 @@ mn:
         description: Тайлбар
         shipping_ub_products: Бараа
         shipping_ub_features: Барааны тоо
+        shipping_ub_samples: Дээж хайрцаг
       shipping_ub_product:
         product_bought: Худалдан авсан тоо
         at_er: Эрээнд ирсэн огноо

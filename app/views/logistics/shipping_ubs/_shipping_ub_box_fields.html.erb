@@ -1,7 +1,7 @@
 <div class="nested-fields box_r">
-  <div class="<%= get_error_class(@shipping_ub, :shipping_ub_products) %>">
-    <%= field_errors(@shipping_ub, :shipping_ub_products) %>
-    <%= f.hidden_field :is_box, value: f.object.is_box.nil? ? true : f.object.is_box %>
+  <div class="<%= get_error_class(f.object, :shipping_ub_products) %>">
+    <%= field_errors(f.object, :shipping_ub_products) %>
+    <%= f.hidden_field :box_type, value: f.object.box_type.nil? ? 'is_box' : f.object.box_type %>
     <table class="table table-bordered t-list">
       <thead>
       <tr>
@@ -32,7 +32,7 @@
       </tbody>
     </table>
   </div>
-  <% if f.object.is_box.nil? || f.object.is_box %>
+  <% if f.object.box_type.nil? || f.object.is_box? %>
     <div class="row" style="margin-top: 6px">
       <div class="col-md-6"></div>
       <div class="col-md-3">

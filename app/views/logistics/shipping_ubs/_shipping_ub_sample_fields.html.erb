@@ -1,0 +1,15 @@
+<tr class="nested-fields">
+  <td class="va-mid">
+    <%= field_errors f.object, :number %>
+    <%= f.text_field :number, class: 'form-control field', placeholder: t('activerecord.attributes.shipping_ub_sample.number') %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :cost %>
+    <%= f.number_field :cost, min: 0, step: 0.01, class: 'form-control field', placeholder: t('activerecord.attributes.shipping_ub_sample.cost') %>
+  </td>
+  <td class="remove va-mid">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>

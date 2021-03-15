@@ -6,7 +6,7 @@ class Logistics::ShippingErsController < Logistics::BaseController
     @by_start = params[:by_start]
     @by_end = params[:by_end]
 
-    @shipping_ers = ShippingEr.search(@by_start, @by_end, @product_name, params[:order_type] == 'basic' ? 0 : 1).page(params[:page])
+    @shipping_ers = ShippingEr.search(@by_start, @by_end, @product_name, params[:order_type] == 'sample' ? 1 : 0).page(params[:page])
     cookies[:shipping_er_page_number] = params[:page]
   end
 
@@ -18,7 +18,7 @@ class Logistics::ShippingErsController < Logistics::BaseController
   end
 
   def search_supply_feature
-    product_supply_features = ProductSupplyFeature.find_to_er(params[:order_type] == 'basic' ? 0 : 1, nil, params[:by_code], params[:by_product_name])
+    product_supply_features = ProductSupplyFeature.find_to_er(params[:order_type] == 'sample' ? 1 : 0, nil, params[:by_code], params[:by_product_name])
     respond_to do |format|
       format.js {render 'logistics/shipping_ers/search_supply_feature_js', locals: {product_supply_features: product_supply_features, page: params[:page]}}
     end

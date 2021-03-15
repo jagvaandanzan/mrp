@@ -13,6 +13,7 @@
         <% end %>
       <% end %>
     </td>
+    <td></td>
     <td class="va-mid"><%= shipping_ub_product.shipping_ub.date.strftime('%F') %></td>
     <td class="va-mid text-center"><%= shipping_ub_product[:remainder] %></td>
     <td class="va-mid text-center"><%= shipping_ub_product.cargo %></td>
@@ -23,7 +24,7 @@
     </td>
     <td class="remove">
       <input value="false" type="hidden" name="product_income[product_income_products_attributes][<%= row %>][_destroy]" id="product_income_product_income_products_attributes_<%= row %>__destroy">
-      <a data-confirm="Та устгахдаа итгэлтэй байна уу ?" class="remove_fields dynamic" href="#">
+      <a data-confirm="Та устгахдаа итгэлтэй байна уу ?" class="remove_fields dynamic none" href="#">
         <i class="fa fa-fw fa-minus-circle"></i>
       </a></td>
   </tr>
@@ -52,9 +53,10 @@
             <%= t('titles.view') %>
           <% end %>
         <% end %></td>
+      <td class="va-mid"><%= ub_feature.supply_feature.quantity %></td>
       <td class="va-mid"></td>
       <td class="va-mid"><%= ub_feature.quantity %></td>
-      <td class="va-mid">
+      <td class="va-mid"></td>
       <td class="va-mid">
         <input class="form-control p-2 field" min="0" step="1" placeholder="Тоо" type="number" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][quantity]"
                id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_quantity">

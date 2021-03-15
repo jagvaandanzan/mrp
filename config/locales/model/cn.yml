@@ -146,6 +146,12 @@ cn:
       shipping_ub_box:
         cost: 成本
         number: 事实的编号
+        shipping_ub_products: 产品
+      shipping_ub_sample:
+        number: 事实的编号
+        cargo: 几个盒子
+        cost: 成本
+        created_at: 从二连浩特发货产品的日期
       shipping_ub:
         number: 事实的编号
         logistic: 供应人员
@@ -154,6 +160,7 @@ cn:
         description: 描述
         shipping_ub_products: 产品
         shipping_ub_features: 产品的数量
+        shipping_ub_samples: 样品
       shipping_ub_product:
         product_bought: 购买产品的数量
         at_er: 到二连浩特的日期

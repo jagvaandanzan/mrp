@@ -14,7 +14,7 @@ class Logistics::ShippingUbsController < Logistics::BaseController
     @shipping_ub.s_type = 0
     @shipping_ub.date = Time.current
     @shipping_ub.number = ApplicationController.helpers.last_number(ShippingUb)
-    @shipping_ub.shipping_ub_boxes << ShippingUbBox.new(is_box: false)
+    @shipping_ub.shipping_ub_boxes << ShippingUbBox.new(box_type: 0)
   end
 
   def search_er_products
@@ -83,8 +83,9 @@ class Logistics::ShippingUbsController < Logistics::BaseController
 
   def shipping_ub_params
     params.require(:shipping_ub).permit(:date, :s_type, :description,
-                                        shipping_ub_boxes_attributes: [:id, :is_box, :cost, :number, :_destroy,
-                                                                       shipping_ub_products_attributes: [:id, :product_id, :shipping_er_product_id, :remainder, :quantity, :cargo, :cost, :_destroy]])
+                                        shipping_ub_boxes_attributes: [:id, :box_type, :cost, :number, :_destroy,
+                                                                       shipping_ub_products_attributes: [:id, :product_id, :shipping_er_product_id, :remainder, :quantity, :cargo, :cost, :_destroy]],
+                                        shipping_ub_samples_attributes: [:id, :number, :cost, :_destroy])
         .merge(:logistic => current_logistic)
   end
 end

@@ -1,7 +1,7 @@
 class ProductIncomeItem < ApplicationRecord
   belongs_to :product_income
   belongs_to :product_income_product
-  belongs_to :shipping_ub_feature
+  belongs_to :shipping_ub_feature, optional: true
   belongs_to :supply_feature, :class_name => "ProductSupplyFeature"
   belongs_to :product
   belongs_to :feature_item, :class_name => "ProductFeatureItem"

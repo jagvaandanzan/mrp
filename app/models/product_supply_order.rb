@@ -80,7 +80,7 @@ class ProductSupplyOrder < ApplicationRecord
       sum += order_item.sum_price
     end
 
-    self.update_column(:sum_price, sum.to_f.round(1))
+    self.update_column(:sum_price, sum.to_f.round(2))
   end
 
   def set_status(status)

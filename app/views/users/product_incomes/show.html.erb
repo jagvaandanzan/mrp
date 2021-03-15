@@ -82,13 +82,22 @@
                   <td class="va-mid">
                     <% if product.picture.present? %>
                       <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
-                        <%= t('titles.view') %>
+                        <%= image_tag product.picture.url(:tumb), height: '30' %>
                       <% end %>
+                    <% else %>
+                      <% i.product_supply_order.product_sample_images.each {|img| %>
+                        <div style="display: inline-block">
+                          <%= link_to img.image.url, "data-lightbox": "roadtrip" do %>
+                            <%= image_tag img.image.url(:tumb), height: '30' %>
+                          <% end %>
+                        </div>
+                      <% } %>
                     <% end %>
                   </td>
                   <td></td>
                   <td></td>
-                  <td class="va-mid"><strong><%= shipping_ub_product.quantity %></strong></td>
+                  <td class="va-mid">
+                    <strong><%= shipping_ub_product.present? ? shipping_ub_product.quantity : '' %></strong></td>
                   <td class="va-mid"><strong><%= i.quantity %></strong></td>
                   <td class="va-mid"><%= i.cargo %></td>
                   <td colspan="3"></td>
@@ -106,7 +115,7 @@
                     </td>
                     <td class="va-mid"><%= feature_item.name %></td>
                     <td class="va-mid"><%= item.supply_feature.quantity %></td>
-                    <td class="va-mid"><%= item.shipping_ub_feature.quantity %></td>
+                    <td class="va-mid"><%= shipping_ub_product.present? ? item.shipping_ub_feature.quantity : '' %></td>
                     <td class="va-mid"><%= item.quantity %></td>
                     <td></td>
                     <td class="va-mid"><%= item.qr_printed %></td>

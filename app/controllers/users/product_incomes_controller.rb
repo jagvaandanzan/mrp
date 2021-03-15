@@ -1,5 +1,5 @@
 class Users::ProductIncomesController < Users::BaseController
-  load_and_authorize_resource :except => [:insert_shipping_ub]
+  load_and_authorize_resource :except => [:insert_shipping_ub, :insert_sample_product]
   before_action :set_product_income, only: [:edit, :update, :show, :locations, :set_location, :destroy]
 
   def index
@@ -30,6 +30,20 @@ class Users::ProductIncomesController < Users::BaseController
     # end
   end
 
+  def search_products
+    shipping_ub_products = ShippingUbProduct.find_to_incomes(nil, nil, params[:by_product_name])
+    respond_to do |format|
+      format.js {render 'users/product_incomes/search_ub_product_js', locals: {shipping_ub_products: shipping_ub_products, page: params[:page]}}
+    end
+  end
+
+  def search_supply_feature
+    product_supply_features = ProductSupplyFeature.find_to_income(1, nil, params[:by_code], params[:by_product_name])
+    respond_to do |format|
+      format.js {render 'users/product_incomes/search_supply_feature_js', locals: {product_supply_features: product_supply_features, page: params[:page]}}
+    end
+  end
+
   def create
     @product_income = ProductIncome.new(product_income_params)
     if @product_income.save
@@ -49,10 +63,21 @@ class Users::ProductIncomesController < Users::BaseController
   end
 
   def insert_shipping_ub
-    @shipping_ub_products = ShippingUbProduct.find_to_incomes(params[:is_box] == "true", params[:id].to_i)
+    @shipping_ub_products = ShippingUbProduct.find_to_incomes(params[:is_box] == "true", params[:id].to_i, nil)
     @rows = params[:rows].to_i
     respond_to do |format|
       format.js {render 'users/product_incomes/add_product'}
+    end
+  end
+
+  def insert_sample_product
+
+    @product_id = params[:id]
+    @product_supply_features = ProductSupplyFeature.by_product_id(params[:id])
+    @rows = params[:rows].to_i
+    @sample_box_id = params[:sample_box_id]
+    respond_to do |format|
+      format.js {render 'users/product_incomes/add_sample_product'}
     end
   end
 
@@ -139,7 +164,7 @@ class Users::ProductIncomesController < Users::BaseController
 
   def product_income_params
     params.require(:product_income).permit(:income_date, :cargo_price, :logistic_id,
-                                           product_income_products_attributes: [:id, :product_id, :shipping_ub_product_id, :cargo, :_destroy,
+                                           product_income_products_attributes: [:id, :product_id, :shipping_ub_product_id, :shipping_ub_sample_id, :product_supply_order_id, :cargo, :_destroy,
                                                                                 product_income_items_attributes: [:id, :is_income_order, :product_id, :shipping_ub_feature_id, :supply_feature_id, :feature_item_id, :remainder, :quantity, :_destroy]])
         .merge(:user => current_user)
   end

@@ -1,0 +1,54 @@
+<% product_supply_features.each_with_index {|supply_feature, index|
+  feature_item = supply_feature.feature_item %>
+  <tr class="nested-fields">
+    <% if index == 0
+         supply_order = supply_feature.order_item.product_supply_order
+         product = supply_feature.product %>
+      <input type="hidden" value="<%= product_id %>" name="product_income[product_income_products_attributes][<%= row %>][product_id]" id="product_income_product_income_products_attributes_<%= row %>_product_id">
+      <input type="hidden" value="<%= sample_box_id %>" name="product_income[product_income_products_attributes][<%= row %>][shipping_ub_sample_id]" id="product_income_product_income_products_attributes_<%= row %>_shipping_ub_sample_id">
+      <input type="hidden" value="<%= supply_order.id %>" name="product_income[product_income_products_attributes][<%= row %>][product_supply_order_id]" id="product_income_product_income_products_attributes_<%= row %>_product_supply_order_id">
+      <input value="false" type="hidden" name="product_income[product_income_products_attributes][<%= row %>][_destroy]" id="product_income_product_income_products_attributes_<%= row %>__destroy">
+    <% end %>
+    <input type="hidden" value="true" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][is_income_order]"
+           id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_is_income_order">
+    <input type="hidden" value="<%= product_id %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][product_id]"
+           id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_product_id">
+    <input type="hidden" value="<%= supply_feature.id %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][supply_feature_id]"
+           id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_supply_feature_id">
+    <input type="hidden" value="<%= feature_item.id %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][feature_item_id]"
+           id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_feature_item_id">
+    <input type="hidden" value="<%= supply_feature.quantity_lo %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][remainder]"
+           id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_remainder">
+    <% if index == 0 %>
+      <td class="va-mid"><%= product.code %></td>
+      <td class="va-mid"><%= product.name %></td>
+    <% else %>
+      <td></td>
+      <td></td>
+    <% end %>
+    <td class="va-mid"><%= feature_item.name %></td>
+    <% if index == 0 %>
+      <td class="va-mid">
+        <% supply_order.product_sample_images.each {|img| %>
+          <div style="display: inline-block">
+            <%= link_to img.image.url, "data-lightbox": "roadtrip" do %>
+              <%= image_tag img.image.url(:tumb), height: '30' %>
+            <% end %>
+          </div>
+        <% } %>
+      </td>
+    <% else %>
+      <td></td>
+    <% end %>
+    <td class="va-mid"><%= supply_feature.quantity %></td>
+    <td></td>
+    <td class="va-mid"><%= supply_feature.quantity_lo %></td>
+    <td class="va-mid"></td>
+    <td class="va-mid">
+      <input class="form-control p-2 field" min="0" step="1" placeholder="Тоо" type="number" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][quantity]"
+             id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_quantity">
+    </td>
+    <td></td>
+    <td></td>
+  </tr>
+<% } %>

@@ -35,7 +35,7 @@
           </div>
         </div>
         <div class="col-md-12">
-          <table class="table table-bordered t-list m-t-10">
+          <table class="table table-bordered t-list m-t-10 table-hover">
             <thead>
             <tr>
               <th colspan="5"></th>
@@ -58,9 +58,9 @@
             </thead>
             <tbody>
             <% @shipping_ub.shipping_ub_boxes.each_with_index {|box, b_i| %>
-              <% if box.is_box %>
+              <% if box.is_box? %>
                 <tr>
-                  <td class="2" colspan="10"><%= t('activerecord.models.shipping_ub_box') %>: <%= b_i %></td>
+                  <td class="2" colspan="11"><%= t('activerecord.models.shipping_ub_box') %>: <%= box.number %></td>
                 </tr>
               <% end %>
               <% box.shipping_ub_products.each_with_index {|ub, index|
@@ -82,13 +82,13 @@
                   <td class="va-mid text-center"><%= shipping_er_product.cargo %></td>
                   <td class="va-mid text-center"><%= shipping_er_product.shipping_er.date.strftime('%F') %></td>
                   <td class="va-mid text-center"><%= ub.quantity %></td>
-                  <% if box.is_box
+                  <td class="va-mid text-center"><%= ub.cargo %></td>
+                  <% if box.is_box?
                        if index == 0 %>
-                      <td class="va-mid text-center" rowspan="<%= box.shipping_ub_products.count %>"><%= get_currency(box.cost, Const::CURRENCY[0], 0) %></td>
+                      <td class="va-mid text-center" rowspan="<%= box.shipping_ub_products.count %>"><%= get_currency(box.cost, Const::CURRENCY[0], 2) %></td>
                     <% end
                        else %>
-                    <td class="va-mid text-center"><%= ub.cargo %></td>
-                    <td class="va-mid text-center"><%= get_currency(ub.cost, Const::CURRENCY[0], 0) %></td>
+                    <td class="va-mid text-center"><%= get_currency(ub.cost, Const::CURRENCY[0], 2) %></td>
                   <% end %>
                 </tr>
               <% }
@@ -96,6 +96,28 @@
             </tbody>
           </table>
         </div>
+        <% if @shipping_ub.shipping_ub_samples.present? %>
+          <div class="col-md-12">
+            <table class="table table-bordered t-list m-t-10 table-hover">
+              <thead>
+              <tr>
+                <th width="30px">#</th>
+                <th><%= t('activerecord.attributes.shipping_ub.shipping_ub_samples') %> <%= t('activerecord.attributes.shipping_ub_sample.number') %></th>
+                <th><%= t('activerecord.attributes.shipping_ub_sample.cost') %></th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @shipping_ub.shipping_ub_samples.each_with_index {|s, index| %>
+                <tr>
+                  <td><%= index + 1 %></td>
+                  <td><%= s.number %></td>
+                  <td><%= get_currency(s.cost, Const::CURRENCY[0], 2) %></td>
+                </tr>
+              <% } %>
+              </tbody>
+            </table>
+          </div>
+        <% end %>
       </div>
     </div>
   <% end %>

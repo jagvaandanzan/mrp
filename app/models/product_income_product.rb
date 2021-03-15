@@ -1,6 +1,8 @@
 class ProductIncomeProduct < ApplicationRecord
   belongs_to :product_income
-  belongs_to :shipping_ub_product
+  belongs_to :shipping_ub_product, optional: true
+  belongs_to :shipping_ub_sample, optional: true
+  belongs_to :product_supply_order, optional: true
   belongs_to :product
 
   attr_accessor :remainder
@@ -13,7 +15,10 @@ class ProductIncomeProduct < ApplicationRecord
 
   before_save :set_default
 
-  validates :cargo, presence: true
+  with_options :if => Proc.new {|m| m.shipping_ub_product_id.present?} do
+    validates :cargo, presence: true
+  end
+
   scope :date_desc, -> {
     order(created_at: :desc)
   }
@@ -97,10 +102,15 @@ class ProductIncomeProduct < ApplicationRecord
       self[:cost]
     else
       if self[:exc_rate].present?
-        c = shipping_er_product.shipping_er.per_price
-        c += shipping_ub_product.per_price
         pi = self.product_income
-        v = (c * self[:exc_rate]) + pi.cargo_price / pi.sum_quantity
+        v = if shipping_ub_product.present?
+              c = shipping_er_product.shipping_er.per_price
+              c += shipping_ub_product.per_price
+              (c * self[:exc_rate]) + pi.cargo_price / pi.sum_quantity
+            else
+              (shipping_ub_sample.cost * self[:exc_rate]) / pi.sum_quantity
+            end
+
         self.update_column(:cost, v)
         v
       else

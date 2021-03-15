@@ -137,6 +137,9 @@ Rails.application.routes.draw do
         patch 'insert_shipping_ub'
         get 'locations'
         patch 'set_location'
+        post 'search_products'
+        post 'search_supply_feature'
+        post 'insert_sample_product'
       end
     end
     resources :operators, only: [:index, :create, :new, :show, :edit, :update, :destroy]

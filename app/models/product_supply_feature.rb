@@ -4,6 +4,7 @@ class ProductSupplyFeature < ApplicationRecord
   belongs_to :product
   has_one :product_supply_order, through: :order_item
   has_one :product_income_balance, :class_name => "ProductIncomeBalance", :foreign_key => "supply_feature_id", dependent: :destroy
+  has_many :product_income_items, class_name: "ProductIncomeItem", foreign_key: "supply_feature_id", dependent: :destroy
   has_many :shipping_er_features, class_name: "ShippingErFeature", foreign_key: "supply_feature_id", dependent: :destroy
 
   before_save :set_cn_name
@@ -35,7 +36,23 @@ class ProductSupplyFeature < ApplicationRecord
     items = items.where(product_id: product_id) unless product_id.nil?
     items = items.where("product_supply_orders.order_type = ?", order_type) unless order_type.nil?
     items = items.where('product_supply_orders.code LIKE :value', value: "%#{by_code}%") if by_code.present?
-    items = items.left_joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value OR products.c_name LIKE :value', value: "%#{by_product_name}%") if by_product_name.present?
+    items = items.left_joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{by_product_name}%") if by_product_name.present?
+    items = items.where("product_supply_order_items.status < ?", 8)
+    items
+  }
+
+  scope :find_to_income, ->(order_type, product_id = nil, by_code, by_product_name) {
+    items = left_joins(:product_income_items)
+                .left_joins(:order_item)
+    items = items.left_joins(:product_supply_order) unless order_type.nil?
+    items = items.group("product_supply_features.id")
+                .having("product_supply_features.quantity_lo IS NOT NULL")
+                .having("SUM(product_income_items.quantity) IS NULL OR SUM(product_income_items.quantity) < product_supply_features.quantity_lo") # хэд хэд тасалж авсан тохиолдлыг шалгаж байна
+                .select("product_supply_features.*, #{order_type.nil? ? '' : 'product_supply_orders.code as order_code, '}product_supply_features.quantity_lo - IFNULL(SUM(product_income_items.quantity), 0) as remainder")
+    items = items.where(product_id: product_id) unless product_id.nil?
+    items = items.where("product_supply_orders.order_type = ?", order_type) unless order_type.nil?
+    items = items.where('product_supply_orders.code LIKE :value', value: "%#{by_code}%") if by_code.present?
+    items = items.left_joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{by_product_name}%") if by_product_name.present?
     items = items.where("product_supply_order_items.status < ?", 8)
     items
   }
@@ -79,11 +96,11 @@ class ProductSupplyFeature < ApplicationRecord
   end
 
   def set_sum_price
-    self.sum_price = (price * quantity).to_f.round(1)
+    self.sum_price = (price * quantity).to_f.round(2)
   end
 
   def set_sum_price_lo
-    self.sum_price_lo = (price_lo * quantity_lo).to_f.round(1) if price_lo.present? && quantity_lo.present?
+    self.sum_price_lo = (price_lo * quantity_lo).to_f.round(2) if price_lo.present? && quantity_lo.present?
   end
 
   def set_product_balance

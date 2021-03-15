@@ -71,7 +71,7 @@ class ProductSupplyOrderItem < ApplicationRecord
       sum += feature.quantity * feature.price
     end
 
-    self.update_column(:sum_price, sum.to_f.round(1))
+    self.update_column(:sum_price, sum.to_f.round(2))
   end
 
   def set_sum_price_lo
@@ -79,7 +79,7 @@ class ProductSupplyOrderItem < ApplicationRecord
     supply_features.each do |feature|
       sum += feature.quantity_lo * feature.price_lo
     end
-    self.update_attribute(:sum_price_lo, sum.to_f.round(1))
+    self.update_attribute(:sum_price_lo, sum.to_f.round(2))
 
     if sum > 0 && !canceled?
       self.update_columns(status: 2, purchase_date: Time.current)

@@ -1,0 +1,4 @@
+<% if @product_supply_features.present? %>
+$('#tb_product_income_products tbody').append("<%= escape_javascript render(partial: 'users/product_incomes/add_sample_product_partial',
+                    :locals => {product_supply_features: @product_supply_features, sample_box_id: @sample_box_id, product_id: @product_id, row: @rows }) %>")
+<% end %>

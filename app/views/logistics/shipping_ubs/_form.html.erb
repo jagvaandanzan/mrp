@@ -54,12 +54,35 @@
                   <% end %>
                 <% end %>
 
-                <div class="links" id="btn_shipping_ub_boxes" style="position: absolute">
+                <div class="links" id="btn_shipping_ub_boxes" style="position: absolute; display: none">
                   <%= link_to_add_association f, :shipping_ub_boxes do %>
                     <button type="button" class="btn btn-success btn-xs" id="btn_shipping_ub_boxes">
                       <i class="fa"><%= t('controls.button.add_box') %></i></button>
                   <% end %>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12 field_div m-t-10">
+            <div class="cocoon-nested-form">
+              <div class="<%= get_error_class(@shipping_ub, :shipping_ub_samples) %>">
+                <%= field_errors(@shipping_ub, :shipping_ub_samples) %>
+                <table class="table table-bordered" id="tb_ub_samples">
+                  <tr>
+                    <th><%= t('activerecord.attributes.shipping_ub.shipping_ub_samples') %> <%= t('activerecord.attributes.shipping_ub_sample.number') %></th>
+                    <th><%= t('activerecord.attributes.shipping_ub_sample.cost') %></th>
+                    <th width="50px">
+                      <%= link_to_add_association f, :shipping_ub_samples, data: {association_insertion_node: '#tb_ub_samples', association_insertion_method: :append} do %>
+                        <button type="button" class="btn btn-success btn-xs" id="btn_shipping_ub_samples">
+                          <i class="fa"><%= t('controls.button.add_sample_box') %></i></button>
+                      <% end %>
+                    </th>
+                  </tr>
+                  <%= f.fields_for :shipping_ub_samples do |m| %>
+                    <%= render 'shipping_ub_sample_fields', :f => m %>
+                  <% end %>
+                </table>
               </div>
             </div>
           </div>
@@ -88,7 +111,7 @@
 <script !src="">
     function add_product(id) {
         let row = $('.tb_shipping_ub_products:last .nested-fields').length;
-        let box_r = $('.box_r:last input:first').attr('name').replace("shipping_ub[shipping_ub_boxes_attributes][", "").replace("][is_box]", "");
+        let box_r = $('.box_r:last input:first').attr('name').replace("shipping_ub[shipping_ub_boxes_attributes][", "").replace("][box_type]", "");
         Rails.ajax({
             url: "<%= add_product_logistics_shipping_ubs_path %>",
             type: "POST",

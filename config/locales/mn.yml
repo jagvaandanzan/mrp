@@ -32,6 +32,9 @@ mn:
       watch: Үзэх
       print: Хэвлэх
       check: Шалгах
+      add_box: Хайрцаг нэмэх
+      remove_box: Хайрцаг хасах
+      add_sample_box: Дээж хайрцаг нэмэх
     select:
       none: Сонгох
       alert: " сонгоно уу!"
