@@ -5,9 +5,12 @@
         <%= content_tag :li, class: (controller_name == 'product_incomes' || controller_name == 'product_income_items') ? 'active' : '' do %>
           <%= link_to users_product_incomes_path do %>
             <i class="fa fa-cart-arrow-down"></i><span><%= t('activerecord.models.product_income') %></span>
+            <% not_matchs = ProductIncomeItem.not_match.count
+               if not_matchs > 0 %>
             <span class="pull-right-container">
               <small class="label pull-right bg-yellow"><%= ProductIncomeItem.not_match.count %></small>
             </span>
+            <% end %>
           <% end %>
         <% end %>
       <% end %>
