@@ -21,8 +21,10 @@
 <%= yield :footer_js %>
 <% if current_logistic.lang == "cn" %>
   <script type="text/javascript" charset="utf-8">
+      var datepicker = $.fn.datepicker.noConflict(); // return $.fn.datepicker to previously assigned value
+      $.fn.bootstrapDP = datepicker;
       $.fn.bootstrapDP.dates['cn'] = {
-          "format": "yyyy年mm月dd日",
+          "format": "yyyy-mm-dd",
           "days": ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
           "daysShort": ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
           "daysMin": ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
