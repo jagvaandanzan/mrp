@@ -42,7 +42,7 @@
     <% end %>
     <td class="va-mid"><%= supply_feature.quantity %></td>
     <td></td>
-    <td class="va-mid"><%= supply_feature.quantity_lo %></td>
+    <td class="va-mid"><%= supply_feature[:remainder] %></td>
     <td class="va-mid"></td>
     <td class="va-mid">
       <input class="form-control p-2 field" min="0" step="1" placeholder="Тоо" type="number" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][quantity]"

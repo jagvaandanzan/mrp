@@ -3,6 +3,8 @@
      ub_product = f.object.shipping_ub_product %>
   <%= f.hidden_field :product_id %>
   <%= f.hidden_field :shipping_ub_product_id %>
+  <%= f.hidden_field :shipping_ub_sample_id %>
+  <%= f.hidden_field :product_supply_order_id %>
   <td class="va-mid"><%= product.code %></td>
   <td class="va-mid"><%= product.name %></td>
   <td></td>
@@ -14,14 +16,22 @@
     <% end %>
   </td>
   <td></td>
-  <td class="va-mid"><%= ub_product.shipping_ub.date.strftime('%F') %></td>
+  <td class="va-mid"><%= ub_product.present? ? ub_product.shipping_ub.date.strftime('%F') : '' %></td>
   <td class="va-mid text-center"><%= f.object.remainder %></td>
-  <td class="va-mid text-center"><%= ub_product.cargo %></td>
-  <td></td>
-  <td>
-    <%= field_errors f.object, :cargo %>
-    <%= f.number_field :cargo, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.cargo') %>
-  </td>
+  <td class="va-mid text-center"><%= ub_product.present? ? ub_product.cargo : '' %></td>
+  <% if f.object.shipping_ub_sample.present? %>
+    <td colspan="2">
+      <%= f.object.shipping_ub_sample.number %>
+    </td>
+  <% else %>
+    <td></td>
+    <td>
+      <% if ub_product.present? %>
+        <%= field_errors f.object, :cargo %>
+        <%= f.number_field :cargo, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.cargo') %>
+      <% end %>
+    </td>
+  <% end %>
   <td class="remove">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
       <%= nested_remove_btn %>

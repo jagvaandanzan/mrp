@@ -3,14 +3,17 @@
     <%= f.hidden_field :product_id %>
     <%= f.hidden_field :shipping_ub_feature_id %>
     <%= f.hidden_field :supply_feature_id %>
-    <%= f.hidden_field :feature_item_id %>
     <%= f.hidden_field :remainder %>
     <%= f.hidden_field :is_income_order, value: is_income_order %>
 
     <% feature_item = f.object.feature_item %>
     <td></td>
     <td></td>
-    <td class="va-mid"><%= feature_item.name %></td>
+    <td class="va-mid">
+      <%= field_errors f.object, :feature_item_id %>
+      <%= f.collection_select :feature_item_id, ProductFeatureItem.by_product_id(f.object.product_id), :id, :name,
+                              {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+    </td>
     <td class="va-mid">
       <% if feature_item.img.present? %>
         <%= link_to feature_item.img.url, "data-lightbox": "roadtrip" do %>
@@ -20,14 +23,18 @@
     </td>
     <td class="va-mid"><%= f.object.supply_feature.quantity %></td>
     <td class="va-mid"></td>
-    <td class="va-mid"><%= f.object.shipping_ub_feature.quantity %></td>
+    <td class="va-mid"><%= f.object.shipping_ub_feature.present? ? f.object.shipping_ub_feature.quantity : '' %></td>
     <td></td>
     <td class="va-mid">
       <%= field_errors f.object, :quantity %>
       <%= f.number_field :quantity, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.quantity') %>
     </td>
     <td></td>
-    <td></td>
+    <td class="remove">
+      <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+        <%= nested_remove_btn %>
+      <% end %>
+    </td>
   </tr>
 <% else %>
 
@@ -45,7 +52,7 @@
     </td>
     <td class="va-mid"><%= feature_item.name %></td>
     <td class="va-mid"><%= f.object.supply_feature.quantity %></td>
-    <td class="va-mid"><%= f.object.shipping_ub_feature.quantity %></td>
+    <td class="va-mid"><%= f.object.shipping_ub_feature.present? ? f.object.shipping_ub_feature.quantity : '' %></td>
     <td class="va-mid"><%= f.object.quantity %></td>
     <td class="va-mid">
       <%= field_errors f.object, :qr_printed %>

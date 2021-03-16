@@ -52,16 +52,20 @@
                    income = i.product_income
                    shipping_ub_product = i.shipping_ub_product %>
                 <tr>
-                  <td class="va-mid"><%= link_to show_id(income.id), users_product_income_path(income) %></td>
+                  <td class="va-mid"><%= link_to show_id(income.id), users_product_income_path(income) %>
+                    <% sum_not_match = i.sum_not_match
+                       if sum_not_match > 0 %>
+                      <span class="label label-warning pull-right"><%= i.sum_not_match %></span>
+                    <% end %></td>
                   <td class="va-mid"><%= income.income_date.strftime('%F') %></td>
                   <td class="va-mid"><%= product.code %></td>
                   <td class="va-mid"><%= product.full_name %></td>
                   <td class="va-mid">
                     <% if product.picture.present? %>
                       <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
-                        <%= t('titles.view') %>
+                        <%= image_tag product.picture.url(:tumb), height: '30' %>
                       <% end %>
-                    <% else %>
+                    <% elsif i.product_supply_order.present? %>
                       <% i.product_supply_order.product_sample_images.each {|img| %>
                         <div style="display: inline-block">
                           <%= link_to img.image.url, "data-lightbox": "roadtrip" do %>

@@ -6,6 +6,7 @@ class ProductIncomeItem < ApplicationRecord
   belongs_to :product
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
   has_many :income_locations, :class_name => "ProductIncomeLocation", :foreign_key => "income_item_id", dependent: :destroy
+  has_many :product_income_logs, dependent: :destroy
 
   has_one :product_income_balance, :class_name => "ProductIncomeBalance", :foreign_key => "income_item_id", dependent: :destroy
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "income_item_id", dependent: :destroy
@@ -13,14 +14,16 @@ class ProductIncomeItem < ApplicationRecord
   accepts_nested_attributes_for :income_locations, allow_destroy: true
 
   before_save :set_product_balance
+  before_create :set_is_match
+  before_update :check_match_feature
   before_validation :set_default
   # before_validation :set_remainder
 
   validates :quantity, presence: true
   validates :quantity, numericality: {greater_than: 0}
-  with_options :if => Proc.new {|m| m.remainder.present?} do
-    validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
-  end
+  # with_options :if => Proc.new {|m| m.remainder.present?} do
+  #   validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
+  # end
   validate :income_locations_count_check, on: :update
   attr_accessor :is_income_order, :remainder
 
@@ -61,6 +64,9 @@ class ProductIncomeItem < ApplicationRecord
   }
   scope :by_ids, ->(ids) {
     where("id IN (?)", ids)
+  }
+  scope :not_match, ->() {
+    where(is_match: false)
   }
 
   def get_balance
@@ -131,6 +137,30 @@ class ProductIncomeItem < ApplicationRecord
 
   def set_remainder
     self.remainder = ProductIncomeBalance.balance(supply_order_item.product_id) + (quantity_was.presence || 0) if supply_order_item.present?
+  end
+
+  def set_is_match
+    self.is_match = supply_feature.quantity == quantity
+    unless self.is_match
+      self.product_income_logs << ProductIncomeLog.new(quantity_was: supply_feature.quantity,
+                                                       quantity: quantity,
+                                                       owner: product_income.user)
+    end
+  end
+
+  def check_match_feature
+    # Өнгө размер зөрж ирсэн үед лог үүсгэнэ
+    if self.is_income_order.present?
+      if feature_item_id_was != feature_item_id || quantity_was != quantity
+        self.product_income_product.set_default
+        self.product_income_logs << ProductIncomeLog.new(feature_item_was_id: feature_item_id_was,
+                                                         feature_item_id: feature_item_id,
+                                                         quantity_was: supply_feature.quantity,
+                                                         quantity: quantity,
+                                                         owner: product_income.user)
+        self.is_match = false
+      end
+    end
   end
 
 end

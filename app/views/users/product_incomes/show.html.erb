@@ -84,7 +84,7 @@
                       <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
                         <%= image_tag product.picture.url(:tumb), height: '30' %>
                       <% end %>
-                    <% else %>
+                    <% elsif i.product_supply_order.present? %>
                       <% i.product_supply_order.product_sample_images.each {|img| %>
                         <div style="display: inline-block">
                           <%= link_to img.image.url, "data-lightbox": "roadtrip" do %>
@@ -113,7 +113,10 @@
                         <% end %>
                       <% end %>
                     </td>
-                    <td class="va-mid"><%= feature_item.name %></td>
+                    <td class="va-mid no-wrap"><%= feature_item.name %>
+                      <% unless item.is_match %>
+                        <span class="label label-warning pull-right" style="cursor: pointer">1</span>
+                      <% end %></td>
                     <td class="va-mid"><%= item.supply_feature.quantity %></td>
                     <td class="va-mid"><%= shipping_ub_product.present? ? item.shipping_ub_feature.quantity : '' %></td>
                     <td class="va-mid"><%= item.quantity %></td>

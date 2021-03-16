@@ -14,6 +14,7 @@ class ProductIncomeProduct < ApplicationRecord
   accepts_nested_attributes_for :product_income_items, allow_destroy: true
 
   before_save :set_default
+  after_save :set_ub_sample
 
   with_options :if => Proc.new {|m| m.shipping_ub_product_id.present?} do
     validates :cargo, presence: true
@@ -29,6 +30,10 @@ class ProductIncomeProduct < ApplicationRecord
     items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{product_name}%") if product_name.present?
     items
   }
+
+  def sum_not_match
+    product_income_items.not_match.count
+  end
 
   # def set_income_item
   #   was_ids = self.product_income_items.map(&:shipping_ub_feature_id).to_a
@@ -120,7 +125,6 @@ class ProductIncomeProduct < ApplicationRecord
 
   end
 
-  private
 
   def set_default
     q = 0
@@ -129,5 +133,13 @@ class ProductIncomeProduct < ApplicationRecord
     end
     self.quantity = q
 
+  end
+
+  private
+
+  def set_ub_sample
+    if shipping_ub_sample.present?
+      shipping_ub_sample.update_column(:received_at, Time.current) unless shipping_ub_sample.received_at.present?
+    end
   end
 end

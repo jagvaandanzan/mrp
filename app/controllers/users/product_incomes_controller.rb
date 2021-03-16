@@ -71,9 +71,8 @@ class Users::ProductIncomesController < Users::BaseController
   end
 
   def insert_sample_product
-
     @product_id = params[:id]
-    @product_supply_features = ProductSupplyFeature.by_product_id(params[:id])
+    @product_supply_features = ProductSupplyFeature.find_to_income(1, params[:id], params[:by_code], params[:by_product_name])
     @rows = params[:rows].to_i
     @sample_box_id = params[:sample_box_id]
     respond_to do |format|
@@ -82,9 +81,9 @@ class Users::ProductIncomesController < Users::BaseController
   end
 
   def edit
-    @product_income.product_income_products.each do |income_product|
-      income_product.remainder = income_product.shipping_ub_product.quantity
-    end
+    # @product_income.product_income_products.each do |income_product|
+    #   income_product.remainder = income_product.shipping_ub_product.quantity
+    # end
   end
 
   def show
@@ -92,6 +91,7 @@ class Users::ProductIncomesController < Users::BaseController
 
   def update
     @product_income.attributes = product_income_params
+    @product_income.user = current_user
     if @product_income.save
       flash[:success] = t('alert.info_updated')
       redirect_to action: 'index'
