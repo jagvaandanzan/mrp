@@ -1,0 +1,47 @@
+<table class="table table-bordered table-hover">
+  <tbody>
+  <tr>
+    <th colspan="2" class="text-center">Захиалсан</th>
+    <th colspan="2" class="text-center">Өөрчилсөн</th>
+    <th rowspan="2" class="text-center va-mid">Орлого авсан</th>
+    <th rowspan="2" class="text-center va-mid">Баталсан</th>
+    <th rowspan="2" class="text-center va-mid">Тайлбар</th>
+    <% if manage_log %>
+      <th rowspan="2" class="text-center va-mid">OK</th>
+      <th rowspan="2"></th>
+    <% end %>
+  </tr>
+  <tr>
+    <th class="text-center">Шинж чанар</th>
+    <th class="text-center">Тоо</th>
+    <th class="text-center">Шинж чанар</th>
+    <th class="text-center">Тоо</th>
+  </tr>
+  </tbody>
+  <tbody>
+  <% product_income_logs.each {|product_income_log| %>
+    <tr>
+      <td><%= product_income_log.feature_item_was.present? ? product_income_log.feature_item_was.name : '' %></td>
+      <td><%= product_income_log.quantity_was %></td>
+      <td><%= product_income_log.feature_item.present? ? product_income_log.feature_item.name : '' %></td>
+      <td><%= product_income_log.quantity %></td>
+      <td><%= product_income_log.owner.name %>, <%= product_income_log.created_at.strftime('%F %R') %></td>
+      <td><%= product_income_log.user.present? ? product_income_log.user.name + ', ' + product_income_log.updated_at.strftime('%F %R') : '' %></td>
+      <% if manage_log %>
+        <td>
+          <%= text_area_tag :income_log_description, product_income_log.description, {id: 'income_log_description' + product_income_log.id.to_s, class: 'form-control', style: 'font-size: 12px'} %>
+        </td>
+        <td class="va-mid">
+          <%= check_box_tag :income_log_is_match, 1, product_income_log.is_match, {id: 'income_log_check' + product_income_log.id.to_s} %>
+        </td>
+        <td class="va-mid">
+          <%= image_tag '/images/loading2.gif',class: 'none' %>
+          <i class="fa fa-fw fa-save" style="font-size: 18px;color: #46a2e1" onclick="update_income_log($(this), <%= product_income_log.id%>)"></i>
+        </td>
+      <% else %>
+        <td><%= product_income_log.description %></td>
+      <% end %>
+    </tr>
+  <% } %>
+  </tbody>
+</table>

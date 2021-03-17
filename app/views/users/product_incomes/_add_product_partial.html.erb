@@ -29,6 +29,7 @@
       </a></td>
   </tr>
   <% shipping_ub_product.shipping_ub_features
+     .not_income
      .by_quantity(0).each_with_index {|ub_feature, index| %>
     <% feature_item = ub_feature.feature_item %>
     <tr class="nested-fields">
@@ -62,7 +63,12 @@
                id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_quantity">
       </td>
       <td></td>
-      <td></td>
+      <td class="remove">
+        <input value="false" type="hidden" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][_destroy]" id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>__destroy">
+        <a data-confirm="Та устгахдаа итгэлтэй байна уу ?" class="remove_fields existing" href="#">
+          <i class="fa fa-fw fa-minus-circle"></i>
+        </a>
+      </td>
     </tr>
   <% }
      row += 1

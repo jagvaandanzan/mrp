@@ -12,6 +12,8 @@ class AbilityUser
         can role, ProductSupplyOrder
       when "product_income"
         can role, ProductIncome
+      when "product_income_log"
+        can role, ProductIncomeLog
       when "product"
         can role, Product
         can role, ProductDiscount

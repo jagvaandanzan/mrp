@@ -1,3 +1,9 @@
+<% if is_sample_box %>
+  <tr class='sample_box' id='<%= f.object.shipping_ub_sample_id %>'>
+    <td colspan='11' style="font-weight: bold"><%= f.object.shipping_ub_sample.number %>
+      , <%= get_currency(f.object.shipping_ub_sample.cost, Const::CURRENCY[0], 2) %></td>
+  </tr>
+<% end %>
 <tr class="nested-fields">
   <% product = f.object.product
      ub_product = f.object.shipping_ub_product %>
@@ -19,19 +25,13 @@
   <td class="va-mid"><%= ub_product.present? ? ub_product.shipping_ub.date.strftime('%F') : '' %></td>
   <td class="va-mid text-center"><%= f.object.remainder %></td>
   <td class="va-mid text-center"><%= ub_product.present? ? ub_product.cargo : '' %></td>
-  <% if f.object.shipping_ub_sample.present? %>
-    <td colspan="2">
-      <%= f.object.shipping_ub_sample.number %>
-    </td>
-  <% else %>
-    <td></td>
-    <td>
-      <% if ub_product.present? %>
-        <%= field_errors f.object, :cargo %>
-        <%= f.number_field :cargo, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.cargo') %>
-      <% end %>
-    </td>
-  <% end %>
+  <td></td>
+  <td>
+    <% if ub_product.present? %>
+      <%= field_errors f.object, :cargo %>
+      <%= f.number_field :cargo, class: 'form-control p-2 field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_income_item.cargo') %>
+    <% end %>
+  </td>
   <td class="remove">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
       <%= nested_remove_btn %>

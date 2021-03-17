@@ -114,8 +114,9 @@
                       <% end %>
                     </td>
                     <td class="va-mid no-wrap"><%= feature_item.name %>
-                      <% unless item.is_match %>
-                        <span class="label label-warning pull-right" style="cursor: pointer">1</span>
+                      <% product_income_logs = item.product_income_logs.count %>
+                      <% if product_income_logs > 0 %>
+                        <span class="income_logs label label-<%= item.is_match ? 'warning' : 'danger' %> pull-right" style="cursor: pointer" id="<%= item.id %>"><%= product_income_logs %></span>
                       <% end %></td>
                     <td class="va-mid"><%= item.supply_feature.quantity %></td>
                     <td class="va-mid"><%= shipping_ub_product.present? ? item.shipping_ub_feature.quantity : '' %></td>
@@ -144,3 +145,44 @@
     </div>
   <% end %>
 </div>
+<%= render 'shared/form_modal', title: 'Орлогын түүх', modal_class: 'modal-lg' %>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+        $('.income_logs').on('click', function () {
+            $('#form_modal').modal('show');
+            $('#form_modal_body').html("<div class='text-center'><img src='/images/loading.gif'></div>");
+            Rails.ajax({
+                url: "<%= income_logs_users_product_incomes_path %>",
+                type: "POST",
+                data: "income_item_id=" + $(this).attr('id')
+            });
+        });
+    });
+
+    function update_income_log(i, item_id) {
+        let description = $('#income_log_description' + item_id);
+        if (description.val().length > 0) {
+            if (confirm("Хадгалах уу?")) {
+                let is_ok = $('#income_log_check' + item_id);
+                i.addClass('none');
+                let img = i.parent('img');
+                img.removeClass('none');
+                Rails.ajax({
+                    url: "<%= update_income_log_users_product_incomes_path %>",
+                    type: "PATCH",
+                    data: "item_log_id=" + item_id +
+                        "&is_ok=" + is_ok.prop('checked') +
+                        "&description=" + description.val(),
+                    success: function () {
+                        img.addClass('none');
+                        i.removeClass('none');
+                        alert("<%= t('alert.saved_successfully') %>");
+                    }
+                });
+            }
+        } else {
+            alert("Тайлбар оруулна уу?");
+        }
+
+    }
+</script>

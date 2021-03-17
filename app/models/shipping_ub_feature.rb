@@ -25,7 +25,14 @@ class ShippingUbFeature < ApplicationRecord
   }
 
   scope :by_quantity, ->(q) {
-    where("quantity > ? ", q)
+    where("shipping_ub_features.quantity > ? ", q)
+  }
+
+  scope :not_income, ->() {
+    left_joins(:product_income_items)
+        .group("shipping_ub_features.id")
+        .having("SUM(product_income_items.quantity) IS NULL OR SUM(product_income_items.quantity) < shipping_ub_features.quantity")
+        .select("shipping_ub_features.*, shipping_ub_features.quantity - IFNULL(SUM(product_income_items.quantity), 0) as remainder")
   }
 
   scope :by_shipping_er_feature, ->(shipping_er_feature_id) {

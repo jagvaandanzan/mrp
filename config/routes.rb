@@ -140,6 +140,8 @@ Rails.application.routes.draw do
         post 'search_products'
         post 'search_supply_feature'
         post 'insert_sample_product'
+        post 'income_logs'
+        patch 'update_income_log'
       end
     end
     resources :operators, only: [:index, :create, :new, :show, :edit, :update, :destroy]

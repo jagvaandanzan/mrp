@@ -156,6 +156,28 @@ class Users::ProductIncomesController < Users::BaseController
     end
   end
 
+  def income_logs
+    @manage_log = can? :manage, ProductIncomeLog
+    @product_income_logs = ProductIncomeLog.by_income_item_id(params[:income_item_id])
+    respond_to do |format|
+      format.js {render 'users/product_incomes/income_logs_js'}
+    end
+  end
+
+  def update_income_log
+    income_log = ProductIncomeLog.find(params[:item_log_id])
+    income_log.is_match = params[:is_ok]
+    income_log.description = params[:description]
+    income_log.user = current_user if income_log.is_match
+    income_log.save
+
+    is_match = true
+    income_log.product_income_item.product_income_logs.each do |log|
+      is_match = false unless log.is_match
+    end
+    income_log.product_income_item.update_column(:is_match, is_match)
+  end
+
   private
 
   def set_product_income
