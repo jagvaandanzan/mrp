@@ -27,7 +27,7 @@ class ProductSupplyOrderItem < ApplicationRecord
     items = joins(:product_supply_order)
     items = items.where('? <= product_supply_orders.ordered_date AND product_supply_orders.ordered_date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items = items.where('product_supply_orders.code LIKE :value', value: "%#{supply_code}%") if supply_code.present?
-    items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{product_name}%") if product_name.present?
+    items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value OR products.c_name LIKE :value', value: "%#{product_name}%") if product_name.present?
     items.order("product_supply_orders.ordered_date": :desc)
     items
   }
@@ -47,7 +47,7 @@ class ProductSupplyOrderItem < ApplicationRecord
     if supply_code.present?
       items = items.where('product_supply_orders.code LIKE :value', value: "%#{supply_code}%")
     end
-    items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{product_name}%") if product_name.present?
+    items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value OR products.c_name LIKE :value', value: "%#{product_name}%") if product_name.present?
     items = items.where("product_supply_orders.order_type = ?", order_type) if order_type.present?
     items = items.where("ordered_at IS#{is_order == "true" ? ' NOT' : ''} ?", nil) if is_order.present?
     items.order_pin
@@ -178,12 +178,10 @@ class ProductSupplyOrderItem < ApplicationRecord
   end
 
   def set_is_ordered
-    q = 0
     q_lo = 0
     supply_features.each do |feature|
-      q += feature.quantity if feature.quantity.present?
       q_lo += feature.quantity_lo if feature.quantity_lo.present?
     end
-    self.ordered_at = Time.current if q_lo > 0 && q == q_lo && !ordered_at.present?
+    self.ordered_at = Time.current if q_lo > 0 && !ordered_at.present?
   end
 end

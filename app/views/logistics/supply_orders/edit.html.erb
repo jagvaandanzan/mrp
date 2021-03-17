@@ -77,14 +77,12 @@
               <%= f.text_field :cn_name, value: @supply_order_item.product.cn_name, class: 'form-control field' %>
             </div>
           </div>
-          <% if is_sample %>
-            <div class="form-group m-t-10 ">
-              <%= f.label :cost, class: 'col-sm-1 control-label' %>
-              <div class="col-sm-11">
-                <%= f.number_field :cost, class: 'form-control field', min: 0, step: 1, placeholder: t('activerecord.attributes.product_supply_order_item.cost') %>
-              </div>
+          <div class="form-group m-t-10 ">
+            <%= f.label :cost, class: 'col-sm-1 control-label' %>
+            <div class="col-sm-11">
+              <%= f.number_field :cost, class: 'form-control field', min: 0, step: 0.01, placeholder: t('activerecord.attributes.product_supply_order_item.cost') %>
             </div>
-          <% end %>
+          </div>
           <div class="form-group m-t-10 ">
             <%= f.label :note_lo, class: 'col-sm-1 control-label' %>
             <div class="col-sm-11 <%= get_error_class(@supply_order_item, :note_lo) %>">
@@ -103,6 +101,20 @@
 </div>
 <script>
     $(document).ready(function () {
+        $('form.form-horizontal').submit(function () {
+            var equal_q = true;
+            $('tr.nested-fields').each(function () {
+                let q_lo = $(this).find('input.quantity').val();
+                if (q_lo.length === 0 || parseInt($(this).find('td.quantity').text()) !== parseInt(q_lo)) {
+                    equal_q = false
+                }
+            });
+            if (equal_q) {
+                return true;
+            } else {
+                return confirm("订单号不同，保存吗？")
+            }
+        });
         $('.btn_actions button').on('click', function () {
             var v = '';
             $('.nested-fields input.' + $(this).attr('btype')).each(function (index) {

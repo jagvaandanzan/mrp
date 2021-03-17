@@ -14,15 +14,18 @@
           <%= f.hidden_field :by_end, value: @by_end %>
         </div>
       </div>
-      <div class="col-md-2 search">
+      <div class="col-md-1 search">
         <%= text_field_tag :by_code, @by_code, {class: 'form-control', placeholder: t('filters.by_code')} %>
       </div>
-      <div class="col-md-2 search">
+      <div class="col-md-1 search">
         <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.by_product')} %>
       </div>
       <div class="col-md-2 search">
         <%= f.select :order_type, ProductSupplyOrder.order_types.keys.map {|k| [ProductSupplyOrder.order_types_i18n[k], k]},
-                     {:prompt => t('activerecord.attributes.product_supply_order.order_type'), selected: @order_type}, {class: 'form-control selectpicker'} %>
+                     {:prompt => t('activerecord.attributes.product_supply_order.order_type'), selected: @order_type}, {class: 'form-control'} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= f.select :is_equal, options_for_select([['Тэнцүү', true], ['Зөрүүтэй', false]], @is_equal),{:prompt => 'Захиалгын авалт'},{ class: 'form-control'} %>
       </div>
       <div class="col-md-4 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>

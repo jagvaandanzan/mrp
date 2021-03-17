@@ -8,7 +8,8 @@ class Users::ProductSupplyOrdersController < Users::BaseController
     @by_code = params[:by_code]
     @by_product_name = params[:by_product_name]
     @order_type = params[:order_type]
-    @product_supply_orders = ProductSupplyOrder.search(@by_start, @by_end, @by_code, @by_product_name, @order_type).page(params[:page])
+    @is_equal = params[:is_equal]
+    @product_supply_orders = ProductSupplyOrder.search(@by_start, @by_end, @by_code, @by_product_name, @order_type, @is_equal).page(params[:page])
   end
 
   def new
