@@ -40,7 +40,7 @@
                 <div class="col-sm-9" style="padding-left: 0">
                   <% group.category_filters.order_name.each {|filter| %>
                     <div class="col-md-2">
-                      <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
+                      <div class="checkbox" style="position: relative; display: block; overflow: hidden;  height: 34px;font-size: 11px">
                         <%= label_tag :check_box, {style: 'font-size:13px'} do %>
                           <%= f.check_box(:filters, {:multiple => true}, filter.id.to_s, nil) %>
                           <%= filter.name %>

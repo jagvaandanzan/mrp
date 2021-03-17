@@ -82,7 +82,7 @@
                     <div id="collapse<%= gr.id %>" class="panel-collapse collapse <%= gr.check_option_selected(@product.option_rels) ? 'in' : '' %>">
                       <% gr.product_feature_options.order_queue.each {|option| %>
                         <div class="col-md-2">
-                          <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
+                          <div class="checkbox" style="position: relative; display: block; overflow: hidden;  height: 34px;font-size: 11px">
                             <%= label_tag do %>
                               <%= option.name %>
                               <%= yes_no(@product.option_rels.include?(option.id.to_s)) %>
