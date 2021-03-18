@@ -7,32 +7,25 @@ describe "bank transaction check", type: :feature do
     Capybara.reset_sessions!
     visit('/')
 
-    within("#Form1") do
-      fill_in 'txtCustNo', with: ENV['KHAN_USER']
-      fill_in 'txtPassword', with: ENV['KHAN_PASSWORD']
-      click_link "btnLogin"
+    within(".ant-form-horizontal") do
+      fill_in 'username', with: ENV['KHAN_USER']
+      fill_in 'password', with: ENV['KHAN_PASSWORD']
+      find('span', text: 'НЭВТРЭХ').click
     end
     puts "click 1: " + Time.now.to_s
-    sleep 3.minute
-    page.has_css?('a#cphMain_ctl00_ucAcnt_Menu1_acntJrnl', wait: 0)
-    page.has_selector?('a#cphMain_ctl00_ucAcnt_Menu1_acntJrnl')
+
+    sleep 1.minute
+    page.has_selector?('li.icon-savingsFilled')
     puts "Logged: " + Time.now.to_s
-    visit('/pageMain?content=ucAcnt_Statement')
+
+    find('i', class: 'icon-savingsFilled').click
+    find(:xpath, "//a[@href='/account/statement/#{ENV['ACCOUNT']}/MNT/OPR']").click
     # fill_in 'ctl00$cphMain$ctl00$numBegDate', with: '2020.01.09'
-    sleep 2.minute
-    find('#cphMain_ctl00_ddlAcntNo').find(:xpath, "option[@value='MNTD0000000#{ENV['ACCOUNT']}']").select_option
 
-    click_link "cphMain_ctl00_btnSearch1"
-    page.has_css?('table#tbl_Stmt', wait: 0)
-    page.has_selector?('table#tbl_Stmt')
-
+    sleep 1.minute
+    page.has_selector?('div#rc-tabs-0-panel-1')
+    page.has_selector?('table.statement-table')
     puts "tbl_Stmt: " + Time.now.to_s
-
-    # while page.has_selector?("a#cphMain_ctl00_btnReadMore")
-    while page.has_content?("Цааш нь үзэх")
-      puts "click: cphMain_ctl00_btnReadMore => " + Time.now.to_s
-      click_link "cphMain_ctl00_btnReadMore"
-    end
 
     transaction_last = nil
     bank_transactions = BankTransaction.by_day(Time.now.beginning_of_day)
@@ -43,13 +36,13 @@ describe "bank transaction check", type: :feature do
     is_created_new = false
     transactions = []
     day = Time.now
-    page.all('table#tbl_Stmt tbody tr').each do |tr|
+    page.all('div#rc-tabs-0-panel-1 tr').each do |tr|
       transaction = BankTransaction.new
       tr.all('td').each_with_index {|td, index|
         data = td.text
         # puts data
         if td[:colspan].present?
-          day = Date.strptime(td.find('strong').native.text, "%Y.%m.%d")
+          day = Date.strptime(data, "%Y-%m-%d")
         else
           case index
           when 0
@@ -57,16 +50,16 @@ describe "bank transaction check", type: :feature do
           when 1
             transaction.value = data
           when 2
-            num = data.gsub(',', '')
+            num = data.gsub(',', '').gsub(' ', '')
             transaction.first_balance = num.to_f.round(1)
           when 3
-            num = data.gsub(',', '')
+            num = data.gsub(',', '').gsub(' ', '')
             transaction.summary = num.to_f.round(1)
           when 4
-            num = data.gsub(',', '')
+            num = data.gsub(',', '').gsub(' ', '')
             transaction.final_balance = num.to_f.round(1)
           else #5
-            transaction.account = data
+            transaction.account = data.gsub(' ', '')
           end
         end
       }
