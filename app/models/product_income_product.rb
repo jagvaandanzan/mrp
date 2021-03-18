@@ -80,7 +80,7 @@ class ProductIncomeProduct < ApplicationRecord
     else
       p = supply_features
               .average(:price_lo)
-      p = 0 if nil?
+      p = 0 if p.nil?
       self.unit_price = p
       p
     end
