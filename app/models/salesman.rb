@@ -14,7 +14,7 @@ class Salesman < ActiveRecord::Base
   enum gender: {male: 0, female: 1}
 
   validates :surname, :name, :register, presence: true, length: {maximum: 255}
-  validates :gender, :email, :phone, :avatar, :price, :price_at, :distribution, presence: true
+  validates :gender, :email, :phone, :avatar, presence: true
   validates :pin_code, length: {is: 4}, on: :update
   validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
   has_attached_file :avatar, :path => ":rails_root/public/salesman/:id_partition/:style.:extension", styles: {original: "800x800>", tumb: "200x200>"}, :url => '/salesman/:id_partition/:style.:extension'
