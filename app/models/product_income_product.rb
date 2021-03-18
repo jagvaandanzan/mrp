@@ -90,12 +90,16 @@ class ProductIncomeProduct < ApplicationRecord
       self[:exc_rate]
     else
       supply_feature = supply_features.first
-      logistic_transactions = LogisticTransaction.by_supply_order_id(supply_feature.order_item_id)
-      if logistic_transactions.present?
-        logistic_transaction = logistic_transactions.first
-        logistic_transaction.exc_rate
-        self.update_column(:exc_rate, logistic_transaction.exc_rate)
-        logistic_transaction.exc_rate
+      if supply_feature.present?
+        logistic_transactions = LogisticTransaction.by_supply_order_id(supply_feature.order_item_id)
+        if logistic_transactions.present?
+          logistic_transaction = logistic_transactions.first
+          logistic_transaction.exc_rate
+          self.update_column(:exc_rate, logistic_transaction.exc_rate)
+          logistic_transaction.exc_rate
+        else
+          0
+        end
       else
         0
       end
