@@ -5,7 +5,7 @@ describe "bank transaction check", type: :feature do
   it "signs me in" do
 
     Capybara.reset_sessions!
-    Capybara.current_session.current_window.resize_to(1200, 1200)
+    Capybara.current_session.current_window.resize_to(1600, 1200)
     visit('/')
 
     within(".ant-form-horizontal") do
@@ -23,6 +23,7 @@ describe "bank transaction check", type: :feature do
     find('i', class: 'icon-savingsFilled').click
     puts page.body
 
+    # page.execute_script("$(#{selector}).click()")
     find(:xpath, "//a[@href='/account/statement/#{ENV['ACCOUNT']}/MNT/OPR']").click
     # fill_in 'ctl00$cphMain$ctl00$numBegDate', with: '2020.01.09'
 
