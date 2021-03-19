@@ -5,6 +5,7 @@ describe "bank transaction check", type: :feature do
   it "signs me in" do
 
     Capybara.reset_sessions!
+    Capybara.current_session.current_window.resize_to(1200, 1200)
     visit('/')
 
     within(".ant-form-horizontal") do
