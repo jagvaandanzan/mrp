@@ -85,8 +85,10 @@ describe "bank transaction check", type: :feature do
         else
           transaction.save
           # орлого бол шалгана
-          transactions << transaction if transaction.summary > 0
-          is_created_new = true
+          if transaction.summary > 0
+            transactions << transaction
+            is_created_new = true
+          end
         end
       end
 
