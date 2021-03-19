@@ -24,6 +24,7 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
   def login
 
     Capybara.reset_sessions!
+    Capybara.current_session.current_window.resize_to(1200, 1200)
     visit('/')
 
     within(".ant-form-horizontal") do
