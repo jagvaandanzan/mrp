@@ -32,6 +32,10 @@ class ProductSaleStatus < ApplicationRecord
     where('id IN (?)', ids)
   }
 
+  scope :by_aliases, ->(aliases) {
+    where('alias IN (?)', aliases)
+  }
+
   scope :get_statuses, ->(user_type) {
     grouped_options = []
     items = where("user_type LIKE :value", value: "%#{user_type}%")

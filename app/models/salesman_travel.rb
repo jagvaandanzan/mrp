@@ -130,6 +130,7 @@ class SalesmanTravel < ApplicationRecord
         end
       end
 
+      # Бүгдийг хүргэсэн эсэхийг шалгаж байна
       if salesman_travel_routes.length == c
         self.delivered_at = Time.now
         self.delivery_time = ApplicationController.helpers.get_minutes(delivered_at, load_at)

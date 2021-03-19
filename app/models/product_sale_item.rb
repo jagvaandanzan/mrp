@@ -8,6 +8,7 @@ class ProductSaleItem < ApplicationRecord
   has_one :bonus_balance, dependent: :destroy
   has_one :salesman_travel, through: :product_sale
   has_one :status, through: :product_sale
+  has_one :salesman_travel_route, through: :product_sale
 
   before_save :set_product_balance
 
@@ -44,12 +45,13 @@ class ProductSaleItem < ApplicationRecord
   }
 
   scope :report_sale_delivered, ->(salesman_id, start_time, end_time) {
-    left_joins(:product_sale)
+    left_joins(:salesman_travel_route)
         .left_joins(:salesman_travel)
         .where("salesman_travels.salesman_id = ?", salesman_id)
-        .where("product_sale_items.created_at >= ?", start_time)
-        .where("product_sale_items.created_at <= ?", end_time)
-        .select("SUM(product_sale_items.sum_price) as price, SUM(bought_quantity) as bought, SUM(back_quantity) as back")
+        .where('salesman_travel_routes.delivered_at IS NOT ?', nil)
+        .where('salesman_travel_routes.delivered_at >= ?', start_time)
+        .where('salesman_travel_routes.delivered_at < ?', end_time + 1.days)
+        .where('product_sale_items.bought_quantity IS NOT ?', nil)
   }
 
   scope :count_item_quantity, ->(travel_id) {
@@ -90,6 +92,14 @@ class ProductSaleItem < ApplicationRecord
 
   def product_code
     product.code
+  end
+
+  def product_full_name
+    product_name + ", " + product_feature
+  end
+
+  def phone
+    product_sale.phone
   end
 
   def product_barcode

@@ -105,6 +105,17 @@ class ProductSale < ApplicationRecord
         .where('product_sale_statuses.alias = ?', status)
   }
 
+  scope :report_sale_delivered, ->(salesman_id, start_time, end_time) {
+    select("SUM(product_sales.paid) as paid, SUM(product_sales.bonus) as bonus")
+        .joins(:status)
+        .left_joins(:salesman_travel)
+        .where("salesman_travels.salesman_id = ?", salesman_id)
+        .where('salesman_travels.delivered_at IS NOT ?', nil)
+        .where('salesman_travels.delivered_at >= ?', start_time)
+        .where('salesman_travels.delivered_at < ?', end_time + 1.days)
+        .where('product_sale_statuses.alias = ?', 'sals_delivered')
+  }
+
   def bonus
     ApplicationController.helpers.get_f(self[:bonus])
   end

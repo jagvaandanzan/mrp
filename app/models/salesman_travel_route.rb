@@ -5,6 +5,9 @@ class SalesmanTravelRoute < ApplicationRecord
   belongs_to :location
   belongs_to :product_sale
 
+  has_one :status, through: :product_sale
+  has_many :product_sale_exchanges, through: :product_sale
+
   scope :order_queue, ->() {
     order(:queue)
   }
@@ -22,7 +25,7 @@ class SalesmanTravelRoute < ApplicationRecord
 
   scope :search, ->(start, finish, salesman_id) {
     joins(:salesman_travel)
-        .where('salesman_travels.delivery_at >= :s AND salesman_travels.delivery_at <= :f', s: "#{start}", f: "#{finish + 1.day}")
+        .where('salesman_travels.delivery_at >= :s AND salesman_travels.delivery_at < :f', s: "#{start}", f: "#{finish + 1.day}")
         .where('salesman_travels.salesman_id = ?', salesman_id)
         .order("salesman_travel_routes.delivery_at")
   }
@@ -33,6 +36,47 @@ class SalesmanTravelRoute < ApplicationRecord
 
   scope :nil_delivered_at, ->() {
     where("delivered_at IS ?", nil)
+  }
+
+  scope :by_salesman_id, ->(salesman_id) {
+    joins(:salesman_travel)
+        .where('salesman_travels.salesman_id = ?', salesman_id)
+  }
+
+  scope :by_day, ->(start_time, end_time) {
+    where('salesman_travel_routes.delivered_at IS NOT ?', nil)
+        .where('salesman_travel_routes.delivered_at >= ?', start_time)
+        .where('salesman_travel_routes.delivered_at < ?', end_time + 1.days)
+  }
+  scope :by_wage_nil, ->(is_nil) {
+    where("salesman_travel_routes.wage IS#{is_nil ? '' : ' NOT'} ?", nil)
+  }
+
+  scope :by_status, ->(status) {
+    left_joins(:status)
+        .where('product_sale_statuses.alias = ?', status)
+  }
+  scope :by_not_status, ->(status_ids) {
+    left_joins(:product_sale)
+        .where('product_sales.status_id NOT IN (?)', status_ids)
+  }
+  scope :contain_exchange, ->(cont) {
+    left_joins(:product_sale_exchanges)
+        .where("product_sale_exchanges.id IS#{cont ? ' NOT' : ''} ?", nil)
+  }
+  scope :can_delivery_time, ->() {
+    where("salesman_travel_routes.delivered_at >= salesman_travel_routes.delivered_at")
+  }
+
+  scope :by_daily, ->(salesman_id) {
+    select("DATE_FORMAT(salesman_travel_routes.delivered_at,'%Y-%m-%d') as day,
+                        SUM(salesman_travel_routes.wage) as wage,
+                        SUM(salesman_travel_routes.distribution) as distribution,
+                        SUM(product_sale_statuses.alias = 'sals_delivered') as delivered")
+        .joins(:salesman_travel)
+        .left_joins(:status)
+        .where('salesman_travels.salesman_id = ?', salesman_id)
+        .group("day")
   }
 
   def loc_name
@@ -88,7 +132,7 @@ class SalesmanTravelRoute < ApplicationRecord
   end
 
   def calculate_delivery
-    self.update_columns(delivered_at: Time.now, delivery_time: ApplicationController.helpers.get_minutes(Time.now, load_at))
+    self.update_columns(delivered_at: Time.now, delivery_time: ApplicationController.helpers.get_minutes(Time.now, delivery_at))
   end
 
   def calculate_wage

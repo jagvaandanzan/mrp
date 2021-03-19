@@ -46,11 +46,13 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
     page.has_selector?('table.statement-table')
     puts "tbl_Stmt: " + Time.now.to_s
 
-    transaction_last = nil
+    # transaction_last = nil
     bank_transactions = BankTransaction.by_day(Time.now.beginning_of_day)
-    if bank_transactions.present?
-      transaction_last = bank_transactions.first
-    end
+    hash_bank_transactions = bank_transactions.map {|i| ["#{i.value}_#{i.summary}_#{i.account}", i]}.to_h
+
+    # if bank_transactions.present?
+    #   transaction_last = bank_transactions.first
+    # end
     day = Time.now
     # puts page.body
     page.all('div#rc-tabs-0-panel-1 tr').each do |tr|
@@ -82,23 +84,23 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
       }
 
       if transaction.date.present?
-        time_now = Time.current
+        # time_now = Time.current
         # unless transaction_last.nil?
-        #   Rails.logger.debug("#{transaction_last.date.strftime('%F %R')} == #{transaction.date.strftime('%F %R')} == #{(transaction_last.date == transaction.date).to_s} ==> #{time_now.hour}")
+        #   Rails.logger.debug(" #{transaction_last.date.strftime('%F %R')} == #{transaction.date.strftime('%F %R')} == #{(transaction_last.date == transaction.date).to_s} ==> #{time_now.hour}")
         #   Rails.logger.debug("#{transaction_last.value} == #{transaction.value} == #{(transaction_last.value == transaction.value).to_s}")
         #   Rails.logger.debug("#{transaction_last.summary} == #{transaction.summary} == #{(transaction_last.summary == transaction.summary).to_s}")
         #   Rails.logger.debug("#{transaction_last.account} == #{transaction.account} == #{(transaction_last.account == transaction.account).to_s}")
         # end
 
         # Өмнөх гүйлгээ эсэхийг шалгана
-        is_old = (!transaction_last.nil? &&
-            (transaction_last.date == transaction.date || time_now.hour < 10) &&
-            transaction_last.value == transaction.value &&
-            transaction_last.summary == transaction.summary &&
-            transaction_last.account == transaction.account)
+        # is_old = (!transaction_last.nil? &&
+        #     (transaction_last.date == transaction.date || time_now.hour < 10) &&
+        #     transaction_last.value == transaction.value &&
+        #     transaction_last.summary == transaction.summary &&
+        #     transaction_last.account == transaction.account)
 
         # шинэ гүйлгээ тул хадгална
-        if is_old
+        if hash_bank_transactions["#{transaction.value}_#{transaction.summary}_#{transaction.account}"].present?
           break
         else
           transaction.save
@@ -114,4 +116,5 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
       Rails.logger.info(transaction.value)
     end
   end
+
 end

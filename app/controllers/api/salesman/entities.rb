@@ -52,8 +52,16 @@ module API
         expose :id, :name
       end
 
-      class SaleReport < Grape::Entity
-        expose :price, :bought, :back
+      class ReportCash < Grape::Entity
+        expose :product_full_name, :phone, :price, :bought_quantity
+      end
+
+      class ReportMoney < Grape::Entity
+        expose :paid, :bonus
+      end
+
+      class TravelRouteDaily < Grape::Entity
+        expose :day, :wage, :delivered, :distribution
       end
 
       class Notification < Grape::Entity
