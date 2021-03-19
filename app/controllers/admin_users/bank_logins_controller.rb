@@ -37,9 +37,9 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
     puts "Logged: " + Time.now.to_s
     # visit("/account/statement/5070341577/MNT/OPR")
     find('i', class: 'icon-savingsFilled').click
-    find(:xpath, "//a[@href='/account/statement/5070341577/MNT/OPR']").click
+    find(:xpath, "//a[@href='/account/statement/#{ENV['ACCOUNT']}/MNT/OPR']").click
 
-    sleep 1.minute
+    sleep 10.second
 
     page.has_selector?('div#rc-tabs-0-panel-1')
     page.has_selector?('table.statement-table')
@@ -50,9 +50,6 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
     if bank_transactions.present?
       transaction_last = bank_transactions.first
     end
-    it_is_new = transaction_last.nil?
-    is_created_new = false
-    transactions = []
     day = Time.now
     # puts page.body
     page.all('div#rc-tabs-0-panel-1 tr').each do |tr|
@@ -83,40 +80,31 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
         end
       }
 
-      transaction.it_is_new = it_is_new
-
       if transaction.date.present?
-        # хэрэв өмнө нь гүйлгээ байсан үед, тэрийг олтолоо гүйнэ
-        unless it_is_new
-          # өмнөх гүйлгээтэй ижил эсэхийг шалгаж байна
-          time_now = Time.current
-          it_is_new = (!transaction_last.nil? &&
-              (transaction_last.date == transaction.date || time_now.hour < 10) &&
-              transaction_last.value == transaction.value &&
-              transaction_last.summary == transaction.summary &&
-              transaction_last.account == transaction.account)
+        time_now = Time.current
+        # unless transaction_last.nil?
+        #   Rails.logger.debug("#{transaction_last.date.strftime('%F %R')} == #{transaction.date.strftime('%F %R')} == #{(transaction_last.date == transaction.date).to_s} ==> #{time_now.hour}")
+        #   Rails.logger.debug("#{transaction_last.value} == #{transaction.value} == #{(transaction_last.value == transaction.value).to_s}")
+        #   Rails.logger.debug("#{transaction_last.summary} == #{transaction.summary} == #{(transaction_last.summary == transaction.summary).to_s}")
+        #   Rails.logger.debug("#{transaction_last.account} == #{transaction.account} == #{(transaction_last.account == transaction.account).to_s}")
+        # end
 
-          # unless transaction_last.nil?
-          #   Rails.logger.debug("#{transaction_last.date.strftime('%F %R')} == #{transaction.date.strftime('%F %R')} == #{(transaction_last.date == transaction.date).to_s} ==> #{time_now.hour}")
-          #   Rails.logger.debug("#{transaction_last.value} == #{transaction.value} == #{(transaction_last.value == transaction.value).to_s}")
-          #   Rails.logger.debug("#{transaction_last.summary} == #{transaction.summary} == #{(transaction_last.summary == transaction.summary).to_s}")
-          #   Rails.logger.debug("#{transaction_last.account} == #{transaction.account} == #{(transaction_last.account == transaction.account).to_s}")
-          # end
-          # Rails.logger.debug("it_is_new_2=#{it_is_new}")
-        end
-        # Rails.logger.debug("it_is_new_3=#{it_is_new}")
+        # Өмнөх гүйлгээ эсэхийг шалгана
+        is_old = (!transaction_last.nil? &&
+            (transaction_last.date == transaction.date || time_now.hour < 10) &&
+            transaction_last.value == transaction.value &&
+            transaction_last.summary == transaction.summary &&
+            transaction_last.account == transaction.account)
+
         # шинэ гүйлгээ тул хадгална
-        if transaction.it_is_new
+        if is_old
+          break
+        else
           transaction.save
           # орлого бол шалгана
-          transactions << transaction if transaction.summary > 0
-          is_created_new = true
         end
       end
 
-    end
-    if is_created_new
-      check_payment(transactions)
     end
   end
 

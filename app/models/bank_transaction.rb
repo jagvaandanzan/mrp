@@ -28,12 +28,12 @@ class BankTransaction < ApplicationRecord
   before_save :check_salesman
   after_create :to_logistic
 
-  attr_accessor :it_is_new, :is_manual, :user_id
+  attr_accessor :is_manual, :user_id
 
   scope :by_day, ->(day) {
     where("date >= ?", day)
         .where("date < ?", day + 1.day)
-        .order(id: :desc)
+        .order(date: :desc)
   }
 
   scope :order_date, -> {
