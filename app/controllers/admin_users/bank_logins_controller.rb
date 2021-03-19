@@ -29,7 +29,7 @@ class AdminUsers::BankLoginsController < AdminUsers::BaseController
     within(".ant-form-horizontal") do
       fill_in 'username', with: ENV['KHAN_USER']
       fill_in 'password', with: ENV['KHAN_PASSWORD']
-      find('span', text: 'НЭВТРЭХ').click
+      find('button', class: 'login-button').click
     end
 
     # sleep 3.minute

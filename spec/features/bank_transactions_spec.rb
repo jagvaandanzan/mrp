@@ -11,7 +11,7 @@ describe "bank transaction check", type: :feature do
       fill_in 'username', with: ENV['KHAN_USER']
       fill_in 'password', with: ENV['KHAN_PASSWORD']
       sleep 2.second
-      find('span', text: 'Нэвтрэх').click
+      find('button', class: 'login-button').click
     end
     puts "click 1: " + Time.now.to_s
 
