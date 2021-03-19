@@ -16,19 +16,18 @@ describe "bank transaction check", type: :feature do
     end
     puts "click 1: " + Time.now.to_s
 
-    sleep 10.second
+    sleep 30.second
     page.has_selector?('li.icon-savingsFilled')
     puts "Logged: " + Time.now.to_s
 
     find('i', class: 'icon-savingsFilled').click
-    puts page.body
+    # puts page.body
 
     # page.execute_script("$(#{selector}).click()")
     find(:xpath, "//a[@href='/account/statement/#{ENV['ACCOUNT']}/MNT/OPR']").click
     # fill_in 'ctl00$cphMain$ctl00$numBegDate', with: '2020.01.09'
 
-    sleep 10.second
-    # sleep 1.minute
+    sleep 30.second
     page.has_selector?('div#rc-tabs-0-panel-1')
     page.has_selector?('table.statement-table')
     puts "tbl_Stmt: " + Time.now.to_s
