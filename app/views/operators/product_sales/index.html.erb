@@ -23,7 +23,7 @@
       </div>
       <div class="col-md-2 search">
         <%= f.hidden_field :status_id, value: @status_id %>
-        <%= f.collection_select :status, ProductSaleStatus.by_previous.by_types(['oper','auto']), :id, :name,
+        <%= f.collection_select :status, ProductSaleStatus.by_previous.by_types(['oper', 'auto']), :id, :name,
                                 {:selected => @status, :include_blank => t('activerecord.attributes.product_sale_call.status_id')}, {class: 'form-control selectpicker', onchange: 'call_next_status(this)'} %>
         <div id="div_status_sub" class="<%= @status_sub.present? && !@status_sub.blank? ? '' : 'none' %>">
           <%= f.collection_select :status_sub, ProductSaleStatus.by_previous(@status).by_type('oper'), :id, :name,
@@ -59,7 +59,7 @@
               <% @product_sales.each do |p| %>
                 <tr>
                   <td class="va-mid text-center"><%= link_to p.product_sale_items.count, operators_product_sale_path(p) %></td>
-                  <td class="va-mid"><%= link_to p.phone, operators_product_sale_path(p)  %></td>
+                  <td class="va-mid"><%= link_to p.phone, operators_product_sale_path(p) %></td>
                   <td class="va-mid" style="white-space: nowrap"><%= p.delivery_time.html_safe %></td>
                   <td class="va-mid"><%= p.location.full_name %>
                     <% if p.country.present? && p.country %>
@@ -67,7 +67,7 @@
                     <% end %></td>
                   <td class="va-mid"><%= p.loc_note %></td>
                   <td class="va-mid"><%= get_currency_mn(p.sum_price) %></td>
-                  <td class="va-mid"><%= p.status.name_with_parent%></td>
+                  <td class="va-mid"><%= p.status_name %></td>
                   <td class="va-mid"><%= p.created_operator.present? ? p.created_operator.name : "" %></td>
                   <td class="va-mid"><%= p.approved_date.present? ? p.approved_date.strftime('%F %R') : "" %></td>
                   <td style="display: none">

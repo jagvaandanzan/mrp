@@ -6,7 +6,8 @@ class ProductSale < ApplicationRecord
   belongs_to :created_operator, :class_name => "Operator", optional: true
   belongs_to :approved_operator, :class_name => "Operator", optional: true
   belongs_to :salesman_travel, optional: true
-  belongs_to :sale_call, :class_name => "ProductSaleCall"
+  belongs_to :sale_call, :class_name => "ProductSaleCall", optional: true
+  belongs_to :parent, :class_name => "ProductSale", optional: true
 
   has_many :product_sale_items
   has_many :product_sale_status_logs
@@ -14,12 +15,13 @@ class ProductSale < ApplicationRecord
   has_one :bonus_balance, dependent: :destroy
   has_one :sale_tax
   has_one :salesman_travel_route, dependent: :destroy
+  has_one :child, :class_name => "ProductSale", :foreign_key => "parent_id", dependent: :destroy
 
   accepts_nested_attributes_for :product_sale_items, allow_destroy: true
 
   enum money: {cash: 0, account: 1, mixed: 2}
 
-  attr_accessor :hour_now, :hour_start, :hour_end, :status_user_type, :update_status, :operator, :salesman, :status_m, :status_sub, :rc
+  attr_accessor :hour_now, :hour_start, :hour_end, :update_status, :operator, :salesman, :status_m, :status_sub
 
   before_save :create_log
   before_save :set_defaults
@@ -41,6 +43,8 @@ class ProductSale < ApplicationRecord
 
   with_options :if => Proc.new {|m| m.money != 'cash'} do
     validates :paid, presence: true
+  end
+  with_options :if => Proc.new {|m| m.money != 'cash' && !m.parent_id.present?} do
     validates_numericality_of :paid, less_than_or_equal_to: Proc.new(&:sum_price)
   end
 
@@ -88,7 +92,7 @@ class ProductSale < ApplicationRecord
   scope :by_salesman_nil, ->() {
     joins(:status)
         .where.not("approved_date IS ?", nil)
-        .where('product_sale_statuses.alias = ? OR product_sale_statuses.alias = ? OR product_sale_statuses.alias = ?', 'oper_confirmed', 'oper_replacement', 'oper_confirmed')
+        .where('product_sale_statuses.alias = ?', 'oper_confirmed')
         .where("salesman_travel_id IS ?", nil)
         .order(:approved_date)
   }
@@ -137,7 +141,15 @@ class ProductSale < ApplicationRecord
   end
 
   def status_name
-    status.name_with_parent
+    if status.present?
+      if parent_id.present?
+        "#{status.name_with_parent} (#{parent.status.name})"
+      else
+        status.name_with_parent
+      end
+    else
+      "Сонгоогүй"
+    end
   end
 
   def distribution

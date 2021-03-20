@@ -108,7 +108,7 @@
                     <tr>
                       <td class="va-mid"><%= p.created_at.strftime('%F %R') %></td>
                       <td class="va-mid"><%= p.operator.operator_name %></td>
-                      <td class="va-mid"><%= p.status.present? ? p.status.name_with_parent : "Сонгоогүй" %></td>
+                      <td class="va-mid"><%= p.status.present? ? p.status_name : "Сонгоогүй" %></td>
                       <td class="va-mid"><%= p.note %></td>
                     </tr>
                   <% end %>

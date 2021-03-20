@@ -12,8 +12,13 @@
   </section>
 
   <div class="action-buttons">
-    <%= link_to t('controls.button.edit'), edit_operators_product_sale_path(@product_sale), class: 'btn btn-info' %>
-    <%= link_to t('controls.button.delete'), operators_product_sale_path(@product_sale), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <% has_child = @product_sale.child.present? %>
+    <% if has_child %>
+      <%= link_to @product_sale.status.name + ' хийсэн бараа', operators_product_sale_path(@product_sale.child), class: 'btn btn-info' %>
+    <% else %>
+      <%= link_to t('controls.button.edit'), edit_operators_product_sale_path(@product_sale), class: 'btn btn-info' %>
+      <%= link_to t('controls.button.delete'), operators_product_sale_path(@product_sale), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <% end %>
     <%= link_to t('titles.back_to_list'), operators_product_sales_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>
   </div>
   <%= show_body do %>
@@ -50,7 +55,6 @@
                 </div>
               </div>
               <%= form_with model: @product_sale, url: update_status_operators_product_sales_path(id: @product_sale.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
-                <%= f.hidden_field :status_user_type %>
                 <div class="row">
                   <div class="col-md-6 field_div">
                     <%= f.label :status_id, class: 'control-label' %>
@@ -58,7 +62,7 @@
                       <%= f.hidden_field :status_id %>
                       <%= field_errors(@product_sale, :status_id) %>
                       <%= f.collection_select :status_m, ProductSaleStatus.by_previous.by_type('oper', @product_sale.status_m), :id, :name,
-                                              {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_next_status(this)'} %>
+                                              {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_next_status(this)', disabled: has_child} %>
                     </div>
                   </div>
                   <div id="div_status_sub" class="col-md-6 field_div <%= @product_sale.status_sub.present? ? '' : 'none' %>">
@@ -66,7 +70,7 @@
                     <div id="status" class="<%= get_error_class(@product_sale, :status_sub) %>">
                       <%= field_errors(@product_sale, :status_sub) %>
                       <%= f.collection_select :status_sub, ProductSaleStatus.by_previous(@product_sale.status_m).by_type('oper'), :id, :name,
-                                              {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_set_status(this)'} %>
+                                              {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_set_status(this)', disabled: has_child} %>
                     </div>
                   </div>
                 </div>
@@ -75,11 +79,13 @@
                     <%= f.label :status_note, class: 'control-label' %>
                     <div class="<%= get_error_class(@product_sale, :status_note) %>">
                       <%= field_errors(@product_sale, :status_note) %>
-                      <%= f.text_area :status_note, class: 'form-control', placeholder: t('activerecord.attributes.product_sale.status_note') %>
+                      <%= f.text_area :status_note, class: 'form-control', placeholder: t('activerecord.attributes.product_sale.status_note'), readonly: has_child %>
                     </div>
                   </div>
                   <div class="col-md-4 field_div">
-                    <%= f.submit t('controls.button.update'), class: 'btn btn-warning', style: 'margin-top: 25px' %>
+                    <% unless has_child %>
+                      <%= f.submit t('controls.button.update'), class: 'btn btn-warning', style: 'margin-top: 25px' %>
+                    <% end %>
                   </div>
                 </div>
               <% end %>
@@ -205,7 +211,7 @@
                       <td class="va-mid"><%= t.quantity %></td>
                       <td class="va-mid"><%= get_currency_mn(t.price) %></td>
                     <% else %>
-                    <td colspan="5"></td>
+                      <td colspan="5"></td>
                     <% end %>
                     <td class="va-mid"><%= e.operator.name %></td>
                     <td class="va-mid"><%= e.created_at.strftime('%F %R') %></td>
@@ -237,7 +243,7 @@
                   <tr>
                     <td class="va-mid"><%= p.created_at.strftime('%F %R') %></td>
                     <td class="va-mid"><%= p.operator.operator_name %></td>
-                    <td class="va-mid"><%= p.status.present? ? p.status.name_with_parent : "Сонгоогүй" %></td>
+                    <td class="va-mid"><%= p.status.present? ? p.status_name : "Сонгоогүй" %></td>
                     <td class="va-mid"><%= p.note %></td>
                   </tr>
                 <% end %>

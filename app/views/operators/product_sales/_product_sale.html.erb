@@ -5,7 +5,7 @@
   <td class="va-mid"><%= product_sale.location.full_name %></td>
   <td class="va-mid"><%= product_sale.loc_note %></td>
   <td class="va-mid"><%= get_currency_mn(product_sale.sum_price) %></td>
-  <td class="va-mid"><%= product_sale.status.name_with_parent %></td>
+  <td class="va-mid"><%= product_sale.status_name %></td>
   <td class="va-mid"><%= product_sale.created_operator.present? ? product_sale.created_operator.name : "" %></td>
   <td class="va-mid"><%= product_sale.approved_operator.present? ? product_sale.approved_operator.name : "" %></td>
   <td class="va-mid"><%= product_sale.approved_date.present? ? product_sale.approved_date.strftime('%F %R') : "" %></td>

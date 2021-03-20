@@ -22,7 +22,7 @@
 <div class="content-wrapper">
   <section class="content-header">
     <h1>
-      <% if @product_sale.rc.present? %>
+      <% if @product_sale.parent_id.present? %>
         Буцаалт, солилт
       <% else %>
         <%= t('activerecord.models.product_sale') + t(@product_sale.persisted? ? 'titles.edit' : 'titles.add') %>
@@ -34,9 +34,8 @@
     <div class="box box-info">
       <%= form_with model: @product_sale, url: @product_sale.persisted? ? operators_product_sale_path : operators_product_sales_path,
                     method: @product_sale.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
-        <%= f.hidden_field :status_user_type %>
         <%= f.hidden_field :sale_call_id %>
-        <%= f.hidden_field :rc %>
+        <%= f.hidden_field :parent_id %>
         <%= form_body do %>
           <div class="col-md-12 p-0">
             <div class="row">

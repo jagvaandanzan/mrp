@@ -55,7 +55,7 @@
                       <i class="fa fa-bus" style='font-size: 16px'></i>
                     <% end %></td>
                   <td class="va-mid"><%= get_currency_mn(p.bought_price) %></td>
-                  <td class="va-mid"><%= p.status.name_with_parent %></td>
+                  <td class="va-mid"><%= p.status_name %></td>
                   <td class="va-mid"><%= p.created_operator.present? ? p.created_operator.name : "" %></td>
                   <td class="va-mid"><%= sale_tax.present? ? sale_tax.created_at.strftime('%F %R') : "" %></td>
                 </tr>
