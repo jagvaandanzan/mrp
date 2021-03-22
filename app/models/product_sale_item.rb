@@ -2,6 +2,7 @@ class ProductSaleItem < ApplicationRecord
   belongs_to :product_sale
   belongs_to :product
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
+  belongs_to :parent, :class_name => "ProductSaleItem", optional: true
 
   has_many :salesman_returns, :class_name => "SalesmanReturn", :foreign_key => "sale_item_id", dependent: :destroy
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "sale_item_id", dependent: :destroy
@@ -11,10 +12,6 @@ class ProductSaleItem < ApplicationRecord
   has_one :salesman_travel_route, through: :product_sale
 
   before_save :set_product_balance
-
-  before_create -> {create_exchange('create')}
-  before_update -> {create_exchange('update')}
-  before_destroy -> {create_exchange('delete')}
 
   validates :product_id, :feature_item_id, :price, :quantity, presence: true
   validates :quantity, :price, numericality: {greater_than: 0}
@@ -148,41 +145,6 @@ class ProductSaleItem < ApplicationRecord
 
   def set_remainder
     self.remainder = feature_item.balance + (quantity_was.presence || 0) if product_id.present? && feature_item_id.present?
-  end
-
-  def create_exchange(method)
-    status_alias = self.product_sale.status.alias
-    if status_alias == 'oper_replacement' || status_alias == 'oper_return' #exchange
-      if method == "update"
-        sale_exchange = ProductSaleExchange.create(e_type: 0,
-                                                   product_sale_id: product_sale_id_was,
-                                                   product_id: product_id_was,
-                                                   feature_item_id: feature_item_id_was,
-                                                   quantity: quantity_was,
-                                                   price: price_was,
-                                                   sum_price: sum_price_was,
-                                                   operator: product_sale.operator)
-        ProductSaleExchange.create(e_type: 0,
-                                   exchange: sale_exchange,
-                                   product_sale: product_sale,
-                                   product: product,
-                                   feature_item: feature_item,
-                                   quantity: quantity,
-                                   price: self[:price],
-                                   sum_price: self[:sum_price],
-                                   operator: product_sale.operator)
-      else
-        method == "delete"
-        ProductSaleExchange.create(e_type: method == "create" ? 1 : 2,
-                                   product_sale: product_sale,
-                                   product: product,
-                                   feature_item: feature_item,
-                                   quantity: quantity,
-                                   price: self[:price],
-                                   sum_price: self[:sum_price],
-                                   operator: product_sale.operator)
-      end
-    end
   end
 
 end

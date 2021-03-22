@@ -15,8 +15,8 @@ class SalesmanTravel < ApplicationRecord
 
   scope :travels, ->(salesman_id, date) {
     where(salesman_id: salesman_id)
-        .where('delivery_at >= ?', date)
-        .where('delivery_at < ?', date + 1.days)
+        .where('delivered_at >= ?', date)
+        .where('delivered_at < ?', date + 1.days)
         .order(:delivery_at)
         .order(created_at: :desc)
   }

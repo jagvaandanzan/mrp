@@ -6,7 +6,6 @@ class SalesmanTravelRoute < ApplicationRecord
   belongs_to :product_sale
 
   has_one :status, through: :product_sale
-  has_many :product_sale_exchanges, through: :product_sale
 
   scope :order_queue, ->() {
     order(:queue)
@@ -56,13 +55,16 @@ class SalesmanTravelRoute < ApplicationRecord
     left_joins(:status)
         .where('product_sale_statuses.alias = ?', status)
   }
+  scope :by_status_ids, ->(status_ids) {
+    left_joins(:product_sale)
+        .where('product_sales.status_id IN (?)', status_ids)
+  }
   scope :by_not_status, ->(status_ids) {
     left_joins(:product_sale)
         .where('product_sales.status_id NOT IN (?)', status_ids)
   }
   scope :contain_exchange, ->(cont) {
-    left_joins(:product_sale_exchanges)
-        .where("product_sale_exchanges.id IS#{cont ? ' NOT' : ''} ?", nil)
+    where("product_sales.parent_id IS#{cont ? ' NOT' : ''} ?", nil)
   }
   scope :can_delivery_time, ->() {
     where("salesman_travel_routes.delivered_at >= salesman_travel_routes.delivered_at")
@@ -139,7 +141,7 @@ class SalesmanTravelRoute < ApplicationRecord
     # Үнэлгээ тооцох
     salesman = salesman_travel.salesman
     d = 1
-    if product_sale.product_sale_exchanges.count > 0
+    if product_sale.parent_id.present?
       self.update_column(:wage, wage.present? ? wage + Const::DISTRIBUTION[0] : Const::DISTRIBUTION[0])
     else
 

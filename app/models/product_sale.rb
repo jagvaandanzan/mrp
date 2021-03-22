@@ -11,7 +11,6 @@ class ProductSale < ApplicationRecord
 
   has_many :product_sale_items
   has_many :product_sale_status_logs
-  has_many :product_sale_exchanges
   has_one :bonus_balance, dependent: :destroy
   has_one :sale_tax
   has_one :salesman_travel_route, dependent: :destroy
@@ -26,6 +25,7 @@ class ProductSale < ApplicationRecord
   before_save :create_log
   before_save :set_defaults
   before_save :set_balance
+  after_create :balance_exchange
 
   with_options :if => Proc.new {|m| m.update_status == nil} do
     validates_numericality_of :hour_end, greater_than: Proc.new(&:hour_start)
@@ -107,6 +107,11 @@ class ProductSale < ApplicationRecord
   scope :by_status, ->(status) {
     joins(:status)
         .where('product_sale_statuses.alias = ?', status)
+  }
+
+  scope :by_delivered, ->() {
+    joins(:status)
+        .where('product_sale_statuses.alias = ? OR product_sale_statuses.alias = ? OR product_sale_statuses.alias = ? ', 'sals_delivered', 'oper_replacement', 'oper_return')
   }
 
   scope :report_sale_delivered, ->(salesman_id, start_time, end_time) {
@@ -280,4 +285,31 @@ class ProductSale < ApplicationRecord
     end
 
   end
+
+  # Буцаалт, Солилт хийсэн бол зөрүү үлдэгдэл болон бонус тооцох
+  def balance_exchange
+    if parent_id.present?
+      has_feature_items = product_sale_items.map {|i| [i.feature_item_id, i]}.to_h
+      parent.product_sale_items.each do |item|
+        if item.bought_quantity.present?
+          sale_item = has_feature_items[item.feature_item_id]
+          if sale_item.present?
+
+          else
+
+          end
+        end
+      end
+
+      if bonus_balance.present?
+        self.bonus_balance.update(bonu: b, bonus: -bonus)
+
+        BonusBalance.create(bonu_id: sales_item.bonus_balance.bonu_id,
+                            product_sale_item: sales_item,
+                            bonus: -ret.quantity * sales_item.price)
+
+      end
+    end
+  end
+
 end

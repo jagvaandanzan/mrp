@@ -27,19 +27,13 @@ module API
             routes = SalesmanTravelRoute.by_salesman_id(current_salesman.id)
                          .by_day(ApplicationController.helpers.local_date(params[:start_time]),
                                  ApplicationController.helpers.local_date(params[:end_time]))
-            delivered = routes.by_status('sals_delivered')
+            delivered_ids = ProductSaleStatus.by_aliases(%w(sals_delivered oper_replacement oper_return))
+            delivered = routes.by_status_ids(delivered_ids.map(&:id).to_a)
 
-            status_ids = ProductSaleStatus.by_aliases(%w(call_order sals_delivered))
-            contain_exchange = delivered.contain_exchange(true).select("COUNT(DISTINCT salesman_travel_routes.id) as cnt")
-            exchange = if contain_exchange.present?
-                         contain_exchange.first[:cnt]
-                       else
-                         0
-                       end
-
+            status_ids = ProductSaleStatus.by_aliases(%w(call_order sals_delivered oper_replacement oper_return))
             present :delivered, delivered.count
             present :not_delivered, routes.by_not_status(status_ids.map(&:id).to_a).count
-            present :exchange, exchange
+            present :exchange, delivered.contain_exchange(true).count
           end
         end
 
@@ -50,10 +44,11 @@ module API
             requires :end_time, type: DateTime
           end
           post do
+            delivered_ids = ProductSaleStatus.by_aliases(%w(sals_delivered oper_replacement oper_return))
             delivered = SalesmanTravelRoute.by_salesman_id(current_salesman.id)
                             .by_day(ApplicationController.helpers.local_date(params[:start_time]),
                                     ApplicationController.helpers.local_date(params[:end_time]))
-                            .by_status('sals_delivered')
+                            .by_status_ids(delivered_ids.map(&:id).to_a)
 
             present :delivered, delivered.count
             present :can_delivery_time, delivered.can_delivery_time.count

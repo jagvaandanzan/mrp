@@ -83,6 +83,7 @@ class Operators::ProductSalesController < Operators::BaseController
           sale_item.p_9_ = feature_item.p_9_.presence || 0
           sale_item.price = feature_item.price_quantity(sale_item.quantity).presence || 0
           sale_item.to_see = item.to_see
+          sale_item.parent = item
           # Хэрэв хямдралтай бол
           product_discounts = product.product_discounts.by_available
           if product_discounts.present?
@@ -357,6 +358,6 @@ class Operators::ProductSalesController < Operators::BaseController
         .permit(:sale_call_id, :parent_id, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :country, :building_code, :loc_note,
                 :sum_price, :money, :paid, :bonus, :tax,
                 :status_id, :status_m, :status_sub, :status_note,
-                product_sale_items_attributes: [:id, :product_id, :feature_item_id, :to_see, :quantity, :price, :p_discount, :discount, :sum_price, :remainder, :_destroy])
+                product_sale_items_attributes: [:id, :product_id, :parent_id, :feature_item_id, :to_see, :quantity, :price, :p_discount, :discount, :sum_price, :remainder, :_destroy])
   end
 end

@@ -124,8 +124,8 @@
                       <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
                       <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
                       <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.to_see') %></th>
-                      <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
-                      <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                      <th class="va-mid" style="font-size: 11px"><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
+                      <th class="va-mid" style="width: 200px"><%= t('activerecord.attributes.product_sale_item.price') %></th>
                       <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.p_discount') %></th>
                       <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.discount') %></th>
                       <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
@@ -402,6 +402,7 @@
             if (tr.is(':visible')) {
                 let quantity = tr.find('.item_quantity').val();
                 if (quantity !== undefined && quantity.length > 0) {
+                    if (quantity < 0) quantity = 0;
                     let price_tr = tr.find('.item_price');
                     let price = 0;
                     if (quantity < 6) {
@@ -432,7 +433,10 @@
                 }
             }
         });
-        total_price += (total_price > 0 && total_price < <%= Const::FREE_SHIPPING %>) ? <%= Const::SHIPPING_FEE %> : 0;
+
+        if (total_price > 0) {
+            total_price += (total_price > 0 && total_price < <%= Const::FREE_SHIPPING %>) ? <%= Const::SHIPPING_FEE %> : 0;
+        }
         $('#product_sale_sum_price').val(total_price);
         $('#bonus_available').text(getDecimalPay(total_price / 2));
 
@@ -441,6 +445,7 @@
             total_price -= parseInt(bonus);
         }
         $('#sum_price').val(getDecimalPay(total_price));
+
     }
 
     function set_bonus() {

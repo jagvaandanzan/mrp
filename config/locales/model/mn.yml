@@ -109,11 +109,6 @@ mn:
         cash: Бэлнээр
         account: Дансаар
         mixed: Данс+Бэлнээр
-    product_sale_exchange:
-      e_type:
-        is_exchange: Солисон
-        is_return: Буцаасан
-        is_add: Нэмсэн
     user_permission_rel:
       role:
         is_read: Харах
@@ -597,7 +592,6 @@ mn:
         product_sale_item: Бараа
         product_sale_items: Захиалгын бараанууд
         product_sale_status_logs: Статус түүх
-        product_sale_exchanges: Буцаалт, Солилт
         created_operator_id: Бүртгэсэн
         approved_operator_id: Батласан
         approved_date: Бат.Огноо
@@ -615,10 +609,6 @@ mn:
         discount: Хямдрал %
         sum_price: Нийт
         remainder: Үлдэгдэл
-      product_sale_exchange:
-        e_type: Төлөв
-        created_at: Огноо
-        operator: Оператор
       product_sale_status_log:
         operator_id: Оператор
         created_at: Огноо
