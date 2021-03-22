@@ -30,7 +30,7 @@ class ProductSupplyFeature < ApplicationRecord
                 .left_joins(:order_item)
     items = items.left_joins(:product_supply_order) unless order_type.nil?
     items = items.group("product_supply_features.id")
-                .having("product_supply_features.quantity_lo IS NOT NULL")
+                .having("product_supply_features.quantity_lo IS NOT NULL AND product_supply_features.quantity_lo > 0")
                 .having("SUM(shipping_er_features.quantity) IS NULL OR SUM(shipping_er_features.quantity) < product_supply_features.quantity_lo") # хэд хэд тасалж авсан тохиолдлыг шалгаж байна
                 .select("product_supply_features.*, #{order_type.nil? ? '' : 'product_supply_orders.code as order_code, '}product_supply_features.quantity_lo - IFNULL(SUM(shipping_er_features.quantity), 0) as remainder")
     items = items.where(product_id: product_id) unless product_id.nil?
