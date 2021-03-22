@@ -44,7 +44,7 @@ class ShippingUb < ApplicationRecord
   end
 
   def cargo
-    shipping_ub_products.sum(:cargo) + shipping_ub_samples.count
+    shipping_ub_products.sum(:cargo) + shipping_ub_samples.sum(:number)
   end
 
   def product_names

@@ -516,7 +516,7 @@ mn:
         cost: Зардал
         shipping_ub_products: Бараа
       shipping_ub_sample:
-        number: Дугаар
+        number: Тоо хэмжээ
         cargo: Ачааны тоо
         cost: Зардал
         created_at: Ачуулсан огноо

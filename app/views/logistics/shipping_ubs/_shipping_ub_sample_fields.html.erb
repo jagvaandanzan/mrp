@@ -1,7 +1,7 @@
 <tr class="nested-fields">
   <td class="va-mid">
     <%= field_errors f.object, :number %>
-    <%= f.text_field :number, class: 'form-control field', placeholder: t('activerecord.attributes.shipping_ub_sample.number') %>
+    <%= f.number_field :number, min: 0, step: 1, class: 'form-control field', placeholder: t('activerecord.attributes.shipping_ub_sample.number') %>
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :cost %>
