@@ -22,10 +22,11 @@ class ProductSale < ApplicationRecord
 
   attr_accessor :hour_now, :hour_start, :hour_end, :update_status, :operator, :salesman, :status_m, :status_sub
 
+  before_validation :check_exchange
   before_save :create_log
   before_save :set_defaults
   before_save :set_balance
-  after_create :balance_exchange
+  # after_create :balance_exchange
 
   with_options :if => Proc.new {|m| m.update_status == nil} do
     validates_numericality_of :hour_end, greater_than: Proc.new(&:hour_start)
@@ -62,6 +63,9 @@ class ProductSale < ApplicationRecord
 
   scope :by_tax, -> {
     where(tax: true)
+  }
+  scope :by_phone, ->(phone) {
+    where(phone: phone)
   }
 
   scope :send_tax, ->(send) {
@@ -115,7 +119,7 @@ class ProductSale < ApplicationRecord
   }
 
   scope :report_sale_delivered, ->(salesman_id, start_time, end_time) {
-    select("SUM(product_sales.paid) as paid, SUM(product_sales.bonus) as bonus")
+    select("SUM(product_sales.paid) as paid, SUM(product_sales.bonus) as bonus, SUM(product_sales.back_money) as back_money")
         .joins(:status)
         .left_joins(:salesman_travel)
         .where("salesman_travels.salesman_id = ?", salesman_id)
@@ -198,7 +202,7 @@ class ProductSale < ApplicationRecord
     sales = ProductSale.by_status('sals_delivered')
                 .by_phone(phone)
     if sales.present?
-      product_sale.product_sale_items.each(&:add_bonus)
+      product_sale_items.each(&:add_bonus)
     end
   end
 
@@ -209,6 +213,11 @@ class ProductSale < ApplicationRecord
     else
       self.status_m = status_id
     end
+  end
+
+  def is_exchange
+    status_alias = parent.present? ? parent.status.alias : status.alias
+    status_alias == "oper_replacement" || status_alias == "oper_return"
   end
 
   private
@@ -284,6 +293,22 @@ class ProductSale < ApplicationRecord
       end
     end
 
+  end
+
+  # тоо ширхэг нь - утгатай бол буцаалт, буцаалт солилт статустай + тоо ширхэгтэй бол устгана
+  def check_exchange
+    if is_exchange && !update_status.present?
+      product_sale_items.each do |item|
+        if item.parent_id.present?
+          if item.quantity >= 0
+            !item.destroy
+          elsif item.quantity < 0
+            self.back_money = 0 unless self.back_money.present?
+            self.back_money += item.sum_price
+          end
+        end
+      end
+    end
   end
 
   # Буцаалт, Солилт хийсэн бол зөрүү үлдэгдэл болон бонус тооцох

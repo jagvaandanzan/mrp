@@ -57,7 +57,7 @@ module API
       end
 
       class ReportMoney < Grape::Entity
-        expose :paid, :bonus
+        expose :paid, :bonus, :back_money
       end
 
       class TravelRouteDaily < Grape::Entity

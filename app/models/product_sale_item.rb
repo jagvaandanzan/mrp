@@ -14,8 +14,12 @@ class ProductSaleItem < ApplicationRecord
   before_save :set_product_balance
 
   validates :product_id, :feature_item_id, :price, :quantity, presence: true
-  validates :quantity, :price, numericality: {greater_than: 0}
+  validates :price, numericality: {greater_than: 0}
   validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
+
+  with_options :unless => Proc.new {|m| m.product_sale.is_exchange} do
+    validates :quantity, numericality: {greater_than: 0}
+  end
 
   before_validation :set_remainder
   attr_accessor :remainder, :p_price, :p_6_8, :p_9_

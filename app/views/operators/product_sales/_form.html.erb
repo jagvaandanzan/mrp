@@ -265,6 +265,10 @@
         $('#tb_product_sale_items .nested-fields select').each(function () {
             select_input_press($(this), "<%= search_product_path %>", false);
         });
+        <% if @product_sale.is_exchange %>
+        $('select.feature_item option:not(:selected)').attr('disabled', true);
+        calc_total_price();
+        <% end %>
         $('#btn_product_sale_item').on('click', function () {
             if ($('#tb_product_sale_items tbody tr').length > 0) {
                 let tr = $('#tb_product_sale_items tbody tr:last');
@@ -400,9 +404,10 @@
         $('#tb_product_sale_items tr.nested-fields').each(function () {
             let tr = $(this);
             if (tr.is(':visible')) {
-                let quantity = tr.find('.item_quantity').val();
+                let td_qau = tr.find('.item_quantity');
+                let quantity = td_qau.val();
                 if (quantity !== undefined && quantity.length > 0) {
-                    if (quantity < 0) quantity = 0;
+                    if (quantity >= 0 && td_qau.attr('parent_id') === "true") quantity = 0;
                     let price_tr = tr.find('.item_price');
                     let price = 0;
                     if (quantity < 6) {
@@ -429,7 +434,9 @@
                     let sum_price = price * parseInt(quantity);
                     tr.find('.item_sum').val(sum_price);
                     tr.find('.item_sum_show').val(getDecimalPay(sum_price));
-                    total_price += sum_price;
+                    if (quantity > 0) {
+                        total_price += sum_price;
+                    }
                 }
             }
         });

@@ -7,13 +7,13 @@
     <%= f.hidden_field :parent_id %>
     <%= f.collection_select :product_id, Product.search_by_id(f.object.product_id), :id, :full_name,
                             {:prompt => t('controls.select.none')},
-                            {class: 'form-control selectpicker select_product', onchange: 'func_change_product(this)', "data-live-search": "true", disabled: f.object.parent_id.present?} %>
+                            {class: 'form-control selectpicker select_product', onchange: 'func_change_product(this)', "data-live-search": !f.object.parent_id.present?} %>
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :feature_item_id %>
     <%= f.select :feature_item_id, ProductFeatureItem.search(f.object.product_id.presence || nil).collect {|p| [p.name, p.id, {:'data-subtext' => p.balance, product: p.product_id}]},
                  {:prompt => t('controls.select.none')},
-                 {class: 'form-control selectpicker feature_item', onchange: 'func_change_feature(this)', "data-live-search": "true", disabled: f.object.parent_id.present?} %>
+                 {class: 'form-control selectpicker feature_item', onchange: 'func_change_feature(this)', "data-live-search": !f.object.parent_id.present?, readonly: f.object.parent_id.present?} %>
   </td>
   <td class="va-mid text-center">
     <%= field_errors f.object, :to_see %>
@@ -21,7 +21,7 @@
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :quantity %>
-    <%= f.number_field :quantity, class: 'form-control field item_quantity', oninput: "calc_total_price()", placeholder: t('activerecord.attributes.product_sale_item.quantity') %>
+    <%= f.number_field :quantity, class: 'form-control field item_quantity',parent_id: f.object.parent_id.present?, oninput: "calc_total_price()", placeholder: t('activerecord.attributes.product_sale_item.quantity') %>
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :price %>
@@ -30,11 +30,11 @@
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :p_discount %>
-    <%= f.number_field :p_discount, class: 'form-control field item_p_discount', oninput: "calc_total_price()", placeholder: t('activerecord.attributes.product_sale_item.p_discount'), disabled: f.object.parent_id.present? %>
+    <%= f.number_field :p_discount, class: 'form-control field item_p_discount', oninput: "calc_total_price()", placeholder: t('activerecord.attributes.product_sale_item.p_discount'), readonly: f.object.parent_id.present? %>
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :discount %>
-    <%= f.number_field :discount, class: 'form-control field item_discount', oninput: "calc_total_price()", placeholder: '%', disabled: f.object.parent_id.present? %>
+    <%= f.number_field :discount, class: 'form-control field item_discount', oninput: "calc_total_price()", placeholder: '%', readonly: f.object.parent_id.present? %>
   </td>
   <td class="va-mid">
     <%= f.hidden_field :sum_price, class: 'item_sum' %>

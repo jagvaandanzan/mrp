@@ -66,9 +66,6 @@ class Operators::ProductSalesController < Operators::BaseController
         @product_sale.country = parent.country
         @product_sale.building_code = parent.building_code
         @product_sale.loc_note = parent.loc_note
-        @product_sale.money = parent.money
-        @product_sale.paid = parent.paid
-        @product_sale.bonus = parent.bonus
         @product_sale.tax = parent.tax
 
         parent.product_sale_items.each do |item|

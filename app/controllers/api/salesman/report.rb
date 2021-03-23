@@ -84,7 +84,6 @@ module API
             sales = ProductSale.report_sale_delivered(current_salesman.id, params[:start_time], params[:end_time])
 
             present :sales, sales.present? ? sales.first : nil, with: API::SALESMAN::Entities::ReportMoney
-            present :back_money, 0
             present :sale_items, sale_items, with: API::SALESMAN::Entities::ReportCash
           end
         end
