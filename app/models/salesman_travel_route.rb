@@ -119,13 +119,13 @@ class SalesmanTravelRoute < ApplicationRecord
 
   def calculate_payable
     s = 0
-    if product_sale.present? && product_sale.product_sale_items.present?
+    has_items = product_sale.product_sale_items.present?
+    if product_sale.present? && has_items
       product_sale.product_sale_items.each do |item|
-        s += (item.price * item.bought_quantity) if item.price.present? && item.bought_quantity.present?
+        s += (item.price * item.bought_quantity) if item.price.present? && item.bought_quantity.present? && item.bought_quantity > 0
       end
     end
-
-    self.payable = if s > 0
+    self.payable = if s >= 0 && has_items
                      s - (product_sale.paid.presence || 0)
                    else
                      nil

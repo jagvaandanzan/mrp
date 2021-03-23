@@ -173,7 +173,7 @@ module API
                         message = I18n.t('alert.removed_successfully')
                       else
                         quantity_was = product_sale_item.quantity - (product_sale_item.back_quantity.presence || 0)
-                        if params[:quantity] > 0 && params[:quantity] <= quantity_was
+                        if (params[:quantity] > 0 || params[:quantity] < 0) && params[:quantity] <= quantity_was
                           product_sale_item.update_columns(bought_quantity: params[:quantity], bought_at: Time.now, bought_price: product_sale_item.price * params[:quantity])
                           travel_route.calculate_payable
                           message = I18n.t('alert.info_updated')
