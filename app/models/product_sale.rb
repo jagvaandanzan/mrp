@@ -297,15 +297,17 @@ class ProductSale < ApplicationRecord
   # тоо ширхэг нь - утгатай бол буцаалт, буцаалт солилт статустай + тоо ширхэгтэй бол устгана
   def check_exchange
     if is_exchange && !update_status.present?
+      self.back_money = 0
       product_sale_items.each do |item|
         if item.parent_id.present?
           if item.quantity >= 0
             !item.destroy
           elsif item.quantity < 0
-            self.back_money = 0 unless self.back_money.present?
             self.back_money += item.sum_price
           end
         end
+
+        self.back_money = nil if back_money == 0
       end
     end
   end
