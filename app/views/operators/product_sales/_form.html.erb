@@ -265,7 +265,7 @@
         $('#tb_product_sale_items .nested-fields select').each(function () {
             select_input_press($(this), "<%= search_product_path %>", false);
         });
-        <% if @product_sale.is_exchange %>
+        <% if @product_sale.persisted? && @product_sale.is_exchange %>
         $('select.feature_item option:not(:selected)').attr('disabled', true);
         calc_total_price();
         <% end %>
