@@ -24,10 +24,11 @@ class ProductIncomeProduct < ApplicationRecord
     order(created_at: :desc)
   }
 
-  scope :search, ->(start, finish, product_name) {
+  scope :search, ->(start, finish, product_name, order_type) {
     items = date_desc
     items = items.where('? <= product_incomes.income_date AND product_incomes.income_date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{product_name}%") if product_name.present?
+    items = items.where("product_income_products.product_supply_order_id IS#{order_type == "is_basic" ? '' : ' NOT'} ?", nil) if order_type.present?
     items
   }
 

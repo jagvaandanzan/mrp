@@ -6,7 +6,9 @@ class Users::ProductIncomesController < Users::BaseController
     @by_start = params[:by_start]
     @by_end = params[:by_end]
     @by_product_name = params[:by_product_name]
-    @product_income_products = ProductIncomeProduct.search(@by_start, @by_end, @by_product_name).page(params[:page])
+    @order_type = params[:order_type]
+    @product_income_products = ProductIncomeProduct.search(@by_start, @by_end, @by_product_name, @order_type)
+                                   .page(params[:page])
   end
 
   def new

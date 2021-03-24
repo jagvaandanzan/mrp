@@ -14,10 +14,14 @@
           <%= f.hidden_field :by_end, value: @by_end %>
         </div>
       </div>
-      <div class="col-md-4 search">
+      <div class="col-md-3 search">
         <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.by_product')} %>
       </div>
-      <div class="col-md-5 search">
+      <div class="col-md-2 search">
+        <%= f.select :order_type, ProductSupplyOrder.order_types.keys.map {|k| [ProductSupplyOrder.order_types_i18n[k], k]},
+                     {:prompt => t('activerecord.attributes.product_supply_order.order_type'), selected: @order_type}, {class: 'form-control'} %>
+      </div>
+      <div class="col-md-4 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
         <% if can? :create, ProductIncome %>
           <%= link_to t('titles.product_incomes'), new_users_product_income_path, class: 'btn btn-warning pull-right' %>
