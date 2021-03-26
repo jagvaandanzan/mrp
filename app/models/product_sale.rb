@@ -303,6 +303,7 @@ class ProductSale < ApplicationRecord
           if item.quantity >= 0
             !item.destroy
           elsif item.quantity < 0
+            self.back_money = 0 if self.back_money.nil?
             self.back_money += item.sum_price
           end
         end
