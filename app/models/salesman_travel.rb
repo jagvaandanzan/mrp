@@ -165,7 +165,7 @@ class SalesmanTravel < ApplicationRecord
   end
 
   def check_only_back
-    product_sale_items = ProductSaleItem.by_salesman_travel_id(self.ud)
+    product_sale_items = ProductSaleItem.by_salesman_travel_id(self.id)
     if product_sale_items.count == product_sale_items.is_quantity_lower(0)
       now = Time.now
       self.update_columns(load_at: now, delivery_at: now + (duration * 60), sign_at: now)
