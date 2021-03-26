@@ -65,6 +65,7 @@ class Distribute
           }
           travel.duration = travel_duration
           travel.save
+          travel.check_only_back
 
           routing.each_with_index {|r, i|
             if i > 1 && r > 0

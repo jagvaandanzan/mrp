@@ -13,7 +13,10 @@ class AbilityUser
       when "product_income"
         can role, ProductIncome
       when "product_income_log"
+        can role, ProductIncome
         can role, ProductIncomeLog
+      when "supply_calculation"
+        can role, :supply_calculation
       when "product"
         can role, Product
         can role, ProductDiscount

@@ -30,7 +30,10 @@ class ProductSaleItem < ApplicationRecord
         .where(feature_item_id: feature_item_id)
         .where("quantity - IFNULL(bought_quantity, 0) - IFNULL(back_quantity, 0) > ?", 0)
   }
-
+  scope :by_salesman_travel_id, ->(salesman_travel_id) {
+    joins(:salesman_travel)
+        .where("salesman_travels.id = ?", salesman_travel_id)
+  }
   scope :sale_available, ->(salesman_id) {
     joins(:salesman_travel)
         .joins(:product)
@@ -69,6 +72,9 @@ class ProductSaleItem < ApplicationRecord
     joins(:salesman_travel)
         .where("salesman_travels.id IN (?)", travel_ids)
         .where("bought_quantity IS ?", nil)
+  }
+  scope :is_quantity_lower, ->(n) {
+    where("product_sale_items.quantity < ?", n)
   }
 
   def price

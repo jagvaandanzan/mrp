@@ -21,6 +21,13 @@
           <% end %>
         <% end %>
       <% end %>
+      <% if can? :read, :supply_calculation %>
+        <%= content_tag :li, class: controller_name == 'supply_calculations' ? 'active' : '' do %>
+          <%= link_to users_supply_calculations_supply_orders_path do %>
+            <i class="fa fa-calculator"></i><span><%= t('titles.supply_calculations') %></span>
+          <% end %>
+        <% end %>
+      <% end %>
       <% if can? :read, :delivery_report %>
         <%= content_tag :li, class: controller_name == 'delivery_reports' ? 'treeview active' : 'treeview' do %>
           <%= link_to "#" do %>

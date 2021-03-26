@@ -28,14 +28,16 @@ module API
             get do
               travel_id = params[:id]
               salesman_travel = SalesmanTravel.find(travel_id)
-              product_sale_items = ProductFeatureItem.by_travel_id(salesman_travel.id)
-
+              product_feature_items = ProductFeatureItem.by_travel_id(salesman_travel.id)
 
               # Тавиурын хаана байгаа дарааллыг бодож гаргана
-              product_sale_items.each {|item|
-                feature_item = ProductFeatureItem.find(item.feature_item_id)
-                if feature_item.product_warehouse_locs.by_travel(travel_id).count == 0
-                  create_warehouse_loc(item, params[:id], feature_item.product_id, feature_item.id)
+              product_feature_items.each {|item|
+                # Буцаалт бол алгасан
+                if item[:quantity] > 0
+                  feature_item = ProductFeatureItem.find(item.feature_item_id)
+                  if feature_item.product_warehouse_locs.by_travel(travel_id).count == 0
+                    create_warehouse_loc(item, params[:id], feature_item.product_id, feature_item.id)
+                  end
                 end
               }
               salesman_travel.save(validate: false)
@@ -45,11 +47,13 @@ module API
               else
                 # ямар нэг барааг тавиурт байршуулаагүйг тус бүр шалгана
                 product_name = nil
-                product_sale_items.each {|item|
-                  feature_item = ProductFeatureItem.find(item.feature_item_id)
-                  if feature_item.product_warehouse_locs.by_travel(travel_id).count == 0
-                    product_name = "#{feature_item.product.full_name}, #{feature_item.name}"
-                    break
+                product_feature_items.each {|item|
+                  if item[:quantity] > 0 # Буцаалт бол алгасан
+                    feature_item = ProductFeatureItem.find(item.feature_item_id)
+                    if feature_item.product_warehouse_locs.by_travel(travel_id).count == 0
+                      product_name = "#{feature_item.product.full_name}, #{feature_item.name}"
+                      break
+                    end
                   end
                 }
                 if product_name.nil?

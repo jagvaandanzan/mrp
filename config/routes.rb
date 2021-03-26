@@ -197,6 +197,10 @@ Rails.application.routes.draw do
       post 'track_log'
     end
 
+    namespace :supply_calculations do
+      get 'supply_orders'
+    end
+
     match "*any", to: "base#routing_error", via: :all
   end
 
