@@ -168,7 +168,7 @@ class SalesmanTravel < ApplicationRecord
     product_sale_items = ProductSaleItem.by_salesman_travel_id(self.ud)
     if product_sale_items.count == product_sale_items.is_quantity_lower(0)
       now = Time.now
-      self.update_columns(load_at: now, delivery_at: now + (duration * 60))
+      self.update_columns(load_at: now, delivery_at: now + (duration * 60), sign_at: now)
       salesman_travel_routes.each do |route|
         to_time = now + (route.duration * 60)
         route.update_columns(load_at: now, delivery_at: to_time)
