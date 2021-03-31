@@ -159,7 +159,7 @@ class Users::ProductIncomesController < Users::BaseController
   end
 
   def income_logs
-    @manage_log = can? :manage, ProductIncomeLog
+    @manage_log = params[:manage_log].present? ? params[:manage_log] == "true" : (can? :manage, ProductIncomeLog)
     @product_income_logs = ProductIncomeLog.by_income_item_id(params[:income_item_id])
     respond_to do |format|
       format.js {render 'users/product_incomes/income_logs_js'}

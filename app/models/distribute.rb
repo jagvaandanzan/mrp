@@ -1,6 +1,8 @@
 class Distribute
   include Singleton
-
+  # JmPyfk62rXHKjKXIImKpMQ
+  # Nz7632CpqM1wxZCpb20eaA
+  # oonoo0228@yahoo.com
   def create(salesman)
 
     return_signs = SalesmanReturnSign.by_salesman(salesman.id)
@@ -24,12 +26,16 @@ class Distribute
           # [1, 2687, 3727, 3, 16, 7, 2823]
 
           locations = Location.search_by_ids(location_ids)
-          location_travels = save_travels(locations)
+          # location_travels = save_travels(locations)
 
-          hash_location_travels = location_travels.map {|i| [i.location_from_id.to_s + "-" + i.location_to_id.to_s, i]}.to_h
-          routing = vrptw(location_ids, hash_location_travels).map(&:to_i)
-          Rails.logger.info("routing = #{routing}")
-          # routing = [138, 0, 4, 3, 1, 5, 6, 2, 0].map(&:to_i)
+          # hash_location_travels = location_travels.map {|i| [i.location_from_id.to_s + "-" + i.location_to_id.to_s, i]}.to_h
+          # routing = vrptw(location_ids, hash_location_travels).map(&:to_i)
+          r_arr = [138, 0]
+          (1..locations.length).each_with_index do |l, i|
+            r_arr << i
+          end
+          r_arr << 0
+          routing = r_arr.map(&:to_i)
 
           max_travel = travel_config.max_travel
           waiting_time = travel_config.waiting_time # хүртгэлт хооронд хүлээх минут
@@ -43,13 +49,13 @@ class Distribute
             if i > 1 && r > 0
               product_sale = product_sales[r - 1]
               location = product_sale.location
-              location_travel = hash_location_travels[loc_from_id.to_s + '-' + location.id.to_s]
+              # location_travel = hash_location_travels[loc_from_id.to_s + '-' + location.id.to_s]
               loc_from_id = location.id
 
               travel_route = SalesmanTravelRoute.new
               travel_route.queue = i - 2
-              travel_route.distance = location_travel.distance
-              travel_route.duration = location_travel.duration + waiting_time
+              travel_route.distance = 10
+              travel_route.duration = 3
               travel_duration += travel_route.duration
               travel_route.salesman_travel = travel
               travel_route.location = location
@@ -73,7 +79,7 @@ class Distribute
               product_sale.update_column(:salesman_travel_id, travel.id)
             end
           }
-          travel.send_notification
+          travel.send_notification if travel.product_count > 0
 
           [201, 'created', travel]
         end

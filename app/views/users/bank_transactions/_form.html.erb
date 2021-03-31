@@ -38,7 +38,7 @@
             </div>
           </div>
           <div class="col-md-12">
-            <% show_exchange = @bank_transaction.present? && @bank_transaction.dealing_account_id == 2 %>
+            <% show_exchange = @bank_transaction.present? && @bank_transaction.dealing_account_id == 4 %>
             <div class="row">
               <div class="col-md-<%= show_exchange ? '4' : '6' %> field_div exc_p">
                 <%= f.label :bank_account_id, class: 'control-label' %>
@@ -66,7 +66,7 @@
                 <%= f.label :exc_rate, class: 'control-label' %>
                 <div class="<%= get_error_class(@bank_transaction, :exc_rate) %>">
                   <%= field_errors(@bank_transaction, :exc_rate) %>
-                  <%= f.number_field :exc_rate, class: 'field form-control', step: 1, placeholder: t('activerecord.attributes.bank_transaction.exc_rate') %>
+                  <%= f.number_field :exc_rate, class: 'field form-control', step: 0.01, placeholder: t('activerecord.attributes.bank_transaction.exc_rate') %>
                 </div>
               </div>
             </div>
@@ -105,7 +105,7 @@
             locale: 'mn',
         });
         $('#bank_transaction_dealing_account_id').change(function () {
-            if (parseInt($(this).val()) === 2) {
+            if (parseInt($(this).val()) === 4) {
                 show_exchange = true;
                 $('.exc_p').each(function () {
                     $(this).removeClass("col-md-6")

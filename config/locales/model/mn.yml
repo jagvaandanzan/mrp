@@ -546,6 +546,7 @@ mn:
       product_income_product:
         quantity: Тоо
         cargo: Ачааны тоо
+        calculated: Тооцоо нийлсэн
       product_income_item:
         order_code: Захиалгын код
         order_number: Захиалсан
@@ -559,6 +560,7 @@ mn:
         remainder: Үлдэгдэл
         feature_item_id: Барааны шинж чанар
         income_locations: Агуулахын байршил
+        calculated: Тооцоо нийлсэн
         unit_price: Нэгж үнэ
         ext_rate: Ханш
         cost: Тээврийн өртөг

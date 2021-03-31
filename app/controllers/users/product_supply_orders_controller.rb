@@ -137,11 +137,6 @@ class Users::ProductSupplyOrdersController < Users::BaseController
 
   end
 
-  def set_calculated
-    supply_order = ProductSupplyOrder.find(params[:id])
-    supply_order.update_columns(calculated: params[:date], status: 4)
-  end
-
   def to_product
     product = @product_supply_order.products.first
     if product.present? && product.draft

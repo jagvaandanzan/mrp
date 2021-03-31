@@ -1,0 +1,230 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<div class="content-wrapper">
+  <div class="col-md-12 m-t-10 m-b-10">
+    <%= @by_start %> - <%= @by_end %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-bordered">
+              <thead>
+              <tr>
+                <th colspan="6"></th>
+                <th colspan="2" class="text-center">Зардал</th>
+                <th colspan="3"></th>
+              </tr>
+              <tr>
+                <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_code') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_name') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
+                <th class="va-mid"><%= t('activerecord.models.product_feature') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.order_number') %></th>
+                <th class="va-mid">УБ рүү илгээсэн</th>
+                <th class="va-mid">Эрээн</th>
+                <th class="va-mid">УБ</th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.quantity') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_supply_order_item.price') %></th>
+                <th class="va-mid" width="120px"><%= t('activerecord.attributes.product_income_item.calculated') %></th>
+              </tr>
+              <tr>
+                <th colspan="6"></th>
+                <% items = ProductIncomeItem
+                    .by_income_date(@by_start, @by_end)
+                    .by_calc_nil(@by_nil)
+                   sum_shipping_er_cost = items.sum_shipping_er_cost
+                   sum_shipping_ub_product_cost = items.sum_shipping_ub_product_cost + items.sum_shipping_ub_sample_cost
+                   sum_supply_feature_cost = items.sum_supply_feature_cost
+                %>
+                <th class="va-mid"><%= get_currency(sum_shipping_er_cost, Const::CURRENCY[0], 2) %></th>
+                <th class="va-mid"><%= get_currency(sum_shipping_ub_product_cost, Const::CURRENCY[0], 2) %></th>
+                <th class="va-mid"><%= items.sum(:quantity) %></th>
+                <th class="va-mid"><%= get_currency(sum_supply_feature_cost, Const::CURRENCY[0], 2) %></th>
+                <th class="va-mid"><%= get_currency(sum_shipping_er_cost + sum_shipping_ub_product_cost + sum_supply_feature_cost, Const::CURRENCY[0], 2) %></th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @income_products.each do |i| %>
+                <% product = i.product
+                   shipping_ub_product = i.shipping_ub_product
+                   shipping_ub_sample = i.shipping_ub_sample
+                   shipping_er = i.shipping_er
+                %>
+                <tr>
+                  <td class="va-mid"><%= product.code %></td>
+                  <td class="va-mid"><%= product.full_name %></td>
+                  <td class="va-mid">
+                    <% if product.picture.present? %>
+                      <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
+                        <%= t('controls.button.watch') %>
+                      <% end %>
+                    <% elsif i.product_supply_order.present? %>
+                      <% i.product_supply_order.product_sample_images.each {|img| %>
+                        <div style="display: inline-block">
+                          <%= link_to img.image.url, "data-lightbox": "roadtrip" do %>
+                            <%= t('controls.button.watch') %>
+                          <% end %>
+                        </div>
+                      <% } %>
+                    <% end %>
+                  </td>
+                  <td></td>
+                  <td></td>
+                  <td><%= shipping_ub_product.present? ? shipping_ub_product.quantity : '' %></td>
+                  <td></td>
+                  <td></td>
+                  <td class="va-mid"><strong><%= i.quantity %></strong></td>
+                  <td></td>
+                  <td><%= i.calculated.present? ? i.calculated.strftime('%F') : '' %></td>
+                </tr>
+                <% i.product_income_items.by_calc_nil(@by_nil).each {|item|
+                  feature_item = item.feature_item
+                  supply_feature = item.supply_feature
+                  shipping_ub_feature = item.shipping_ub_feature %>
+                  <tr>
+                    <td colspan="2"><%= item.id %></td>
+                    <td>
+                      <% if feature_item.img.present? %>
+                        <%= link_to feature_item.img.url, "data-lightbox": "roadtrip" do %>
+                          <%= t('titles.view') %>
+                        <% end %>
+                      <% end %>
+                    </td>
+                    <td class="va-mid no-wrap"><%= feature_item.name %>
+                      <% product_income_logs = item.product_income_logs.count %>
+                      <% if product_income_logs > 0 %>
+                        <span class="income_logs label label-<%= item.is_match ? 'warning' : 'danger' %> pull-right" style="cursor: pointer" onclick="show_log(<%= item.id %>)"><%= product_income_logs %></span>
+                      <% end %></td>
+                    <td class="va-mid"><%= supply_feature.quantity %></td>
+                    <td class="va-mid"><%= shipping_ub_feature.present? ? shipping_ub_feature.quantity : '' %></td>
+                    <td class="va-mid"><%= shipping_er.present? ? get_currency(shipping_er.per_price * item.quantity, Const::CURRENCY[0], 2) : '' %></td>
+                    <td class="va-mid">
+                      <% if shipping_ub_product.present? || shipping_ub_sample.present?
+                           per_price = shipping_ub_product.present? ? shipping_ub_product.per_price : shipping_ub_sample.per_cost %>
+                        <%= per_price.present? ? get_currency(per_price * item.quantity, Const::CURRENCY[0], 2) : '' %>
+                      <% end %>
+                    </td>
+                    <td class="va-mid"><%= item.quantity %></td>
+                    <td class="va-mid"><%= supply_feature.get_currency(supply_feature.price_lo * item.quantity) %></td>
+                    <td class="va-mid <%= item.clarify ? 'clarify' : '' %>" id="product_income_item_<%= item.id %>" style="cursor: pointer" onclick="update_calculated($(this), <%= item.id%>)"><%= item.calculated.present? ? item.calculated.strftime('%F') : item.description %></td>
+                  </tr>
+                <% } %>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <%= paginate @income_products %>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="modal fade" id="set-data-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span></button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="box box-info">
+        <%= form_body do %>
+          <div class="form-group">
+            <label class="col-sm-5 control-label" for="set_date">Тооцоо нийлсэн огноо</label>
+            <div class="col-sm-7 input-append input-group date" data-provide="datepicker">
+              <%= text_field_tag :set_date, nil, {class: ' form-control', placeholder: t('activerecord.attributes.product_supply_order.ordered_date')} %>
+              <div class="input-group-addon">
+                <i class="fa fa-calendar"></i>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="form-group">
+            <label class="col-sm-5 control-label" for="set_clarify">Тодруулах эсэх</label>
+            <div class="col-sm-7" style="padding: 0">
+              <%= check_box_tag :set_clarify, 0, false %>
+            </div>
+          </div>
+          <br>
+          <div class="form-group">
+            <label class="col-sm-5 control-label" for="description">Тайлбар</label>
+            <div class="col-sm-7" style="padding: 0">
+              <%= text_area_tag :description, nil, {class: ' form-control', placeholder: 'Тайлбар'} %>
+            </div>
+          </div>
+          <div class="modal-footer text-right" style="margin-top: 8px">
+            <button type="button" class="btn btn-default" data-dismiss="modal"><%= t('controls.button.close') %></button>
+            <button type="button" class="btn btn-warning" onclick="save_calculated()" id="save_btn"><%= t('controls.button.save') %></button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<%= render 'shared/form_modal', title: 'Орлогын түүх', modal_class: 'modal-lg' %>
+<script !src="">
+    function show_log(income_item_id) {
+        $('#form_modal').modal('show');
+        $('#form_modal_body').html("<div class='text-center'><img src='/images/loading.gif'></div>");
+        Rails.ajax({
+            url: "<%= income_logs_users_product_incomes_path %>",
+            type: "POST",
+            data: "manage_log=false&income_item_id=" + income_item_id
+        });
+    }
+
+    var product_income_item_id = 0;
+
+    function update_calculated(i, item_id) {
+        let date = i.html();
+        if (!date.trim()) {
+            date = $.datepicker.formatDate('yy-mm-dd', new Date());
+        }
+        product_income_item_id = item_id;
+        let modal = $('#set-data-modal');
+        if (i.hasClass('clarify')) {
+            modal.find('#description').val(date);
+        } else {
+            modal.find('#set_date').val(date.replace(/\s/g, ''));
+        }
+        modal.find('#set_clarify').prop('checked', i.hasClass('clarify'));
+        modal.modal('show');
+    }
+
+    function save_calculated() {
+        let modal = $('#set-data-modal');
+        let date = modal.find('#set_date').val();
+        if (date.length > 0) {
+            let btn = modal.find('#save_btn');
+            btn.attr('disabled', 'disabled');
+            Rails.ajax({
+                url: "<%= users_supply_calculations_set_calculated_path %>",
+                type: "PATCH",
+                data: "id=" + product_income_item_id + "&date=" + date + "&clarify=" + $('#set_clarify').prop('checked') + "&description=" + $('#description').val(),
+                success: function (data) {
+                    let td = $('td#product_income_item_' + product_income_item_id);
+                    if (data.clarify === "true") {
+                        td.addClass('clarify');
+                    } else {
+                        td.removeClass('clarify');
+                    }
+                    td.html(data.calculated);
+                    btn.removeAttr('disabled');
+                    modal.modal('hide');
+                }
+            });
+        } else {
+            alert("<%= t('alert.please_select_date') %>")
+        }
+    }
+</script>
+<style>
+  td.clarify {
+    background-color: lightyellow;
+  }
+</style>

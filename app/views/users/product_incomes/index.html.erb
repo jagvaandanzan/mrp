@@ -47,8 +47,7 @@
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_product.quantity') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_product.cargo') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_item.shipping_cost') %></th>
-                <th class="va-mid text-center" colspan="2"><%= t('activerecord.attributes.product_income_item.unit_price') %></th>
-                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.ext_rate') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_income_item.unit_price') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_item.cost') %></th>
               </tr>
               <% @product_income_products.each do |i| %>
@@ -83,12 +82,8 @@
                   <td class="va-mid"><%= i.quantity %></td>
                   <td class="va-mid"><%= i.cargo %></td>
                   <td class="va-mid"><%= get_currency_mn(income.cargo_price) %></td>
-                  <% unit_price = i.unit_price %>
-                  <% exc_rate = i.exc_rate %>
-                  <td class="va-mid"><%= get_currency(unit_price, Const::CURRENCY[0], 0) %></td>
-                  <td class="va-mid"><%= get_currency_mn(exc_rate * unit_price) %></td>
-                  <td class="va-mid"><%= get_currency_mn exc_rate %></td>
-                  <td class="va-mid"><%= get_currency_mn i.cost %></td>
+                  <td class="va-mid"><%= get_currency(i.unit_price, Const::CURRENCY[0], 0) %></td>
+                  <td class="va-mid"><%= get_currency(i.cost, Const::CURRENCY[0], 2) %> + <%= get_currency_mn i.cost_ub %></td>
                 </tr>
               <% end %>
             </table>

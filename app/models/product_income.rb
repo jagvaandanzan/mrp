@@ -9,6 +9,7 @@ class ProductIncome < ApplicationRecord
 
   validates :cargo_price, :logistic_id, :income_date, presence: true
   validates :product_income_products, :length => {:minimum => 1}
+  after_save :set_sample_per_cost
 
   attr_accessor :number
 
@@ -47,6 +48,16 @@ class ProductIncome < ApplicationRecord
       if value < sums[key]
         self.errors.add(:product_income_items, :over_quantity)
       end
+    end
+  end
+
+  def set_sample_per_cost
+    sample_ids = product_income_products.map(&:shipping_ub_sample_id).uniq
+    sample_ids.each do |id|
+      ub_sample = ShippingUbSample.find(id)
+      product_ids = product_income_products.by_ub_sample_id(id).map(&:id).to_a
+      q = product_income_items.quantity_income_product_ids(product_ids)
+      ub_sample.update_column(:per_cost, ub_sample.cost / q)
     end
   end
 end

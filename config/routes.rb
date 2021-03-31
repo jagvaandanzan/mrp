@@ -123,7 +123,6 @@ Rails.application.routes.draw do
       collection do
         patch 'form_feature'
         post 'last_product_price'
-        patch 'set_calculated'
         get 'to_product'
       end
     end
@@ -199,6 +198,8 @@ Rails.application.routes.draw do
 
     namespace :supply_calculations do
       get 'supply_orders'
+      get 'income_products'
+      patch 'set_calculated'
     end
 
     match "*any", to: "base#routing_error", via: :all

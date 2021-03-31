@@ -7,9 +7,13 @@ class ProductIncomeItem < ApplicationRecord
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
   has_many :income_locations, :class_name => "ProductIncomeLocation", :foreign_key => "income_item_id", dependent: :destroy
   has_many :product_income_logs, dependent: :destroy
+  has_one :shipping_er, through: :product_income_product
+  has_one :shipping_ub_product, through: :product_income_product
+  has_one :shipping_ub_sample, through: :product_income_product
 
   has_one :product_income_balance, :class_name => "ProductIncomeBalance", :foreign_key => "income_item_id", dependent: :destroy
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "income_item_id", dependent: :destroy
+  has_one :logistic_balance, dependent: :destroy
 
   accepts_nested_attributes_for :income_locations, allow_destroy: true
 
@@ -67,6 +71,44 @@ class ProductIncomeItem < ApplicationRecord
   }
   scope :not_match, ->() {
     where(is_match: false)
+  }
+  scope :quantity_income_product_ids, ->(income_product_ids) {
+    where("product_income_product_id IN (?)", income_product_ids)
+        .sum(:quantity)
+  }
+  scope :by_income_date, ->(start, finish) {
+    joins(:product_income)
+        .where('? <= product_incomes.income_date AND product_incomes.income_date <= ?', start.to_time, finish.to_time + 1.days)
+  }
+  scope :by_calc_nil, ->(is_nil) {
+    where("product_income_items.calculated IS#{is_nil == "true" ? '' : ' NOT'} ?", nil)
+  }
+  scope :sum_shipping_er_cost, ->() {
+    joins(:shipping_er)
+        .sum("shipping_ers.per_price * product_income_items.quantity")
+  }
+  scope :sum_shipping_er_cost, ->() {
+    joins(:shipping_er)
+        .pluck("shipping_ers.per_price * product_income_items.quantity")
+        .sum(&:to_f)
+  }
+  scope :sum_shipping_ub_product_cost, ->() {
+    joins(:shipping_ub_product)
+        .pluck("shipping_ub_products.per_price * product_income_items.quantity")
+        .sum(&:to_f)
+  }
+  scope :sum_shipping_ub_sample_cost, ->() {
+    joins(:shipping_ub_sample)
+        .pluck("shipping_ub_samples.per_cost * product_income_items.quantity")
+        .sum(&:to_f)
+  }
+  scope :sum_supply_feature_cost, ->() {
+    joins(:supply_feature)
+        .pluck("product_supply_features.price_lo * product_income_items.quantity")
+        .sum(&:to_f)
+  }
+  scope :by_clarify, ->(clarify) {
+    where("product_income_items.clarify = ?", clarify)
   }
 
   def get_balance

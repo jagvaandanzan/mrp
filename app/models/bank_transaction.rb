@@ -13,20 +13,21 @@ class BankTransaction < ApplicationRecord
     validates :summary, numericality: {greater_than: 1000, only_integer: true, message: :invalid}
   end
 
-  with_options :if => Proc.new {|m| m.is_manual.present? && m.dealing_account_id != 2} do
+  with_options :if => Proc.new {|m| m.is_manual.present? && m.dealing_account_id != 4} do
     validates :salesman_id, presence: true
     validates :billing_date, presence: true
     validates :value, presence: true, length: {maximum: 255}
   end
 
-  with_options :if => Proc.new {|m| m.is_manual.present? && m.dealing_account_id == 2} do
+  with_options :if => Proc.new {|m| m.is_manual.present? && m.dealing_account_id == 4} do
     validates :exchange, presence: true
     validates :exc_rate, presence: true
-    validates :exc_rate, numericality: {greater_than: 1, only_integer: true, message: :invalid}
+    validates :exc_rate, numericality: {greater_than: 1, message: :invalid}
   end
 
   before_save :check_salesman
-  after_create :to_logistic
+  before_save :set_exc_summary
+  # after_create :to_logistic Тооцоо нийлэх хэлбэр өөрчлөгдсөн
 
   attr_accessor :is_manual, :user_id
 
@@ -46,6 +47,18 @@ class BankTransaction < ApplicationRecord
 
   scope :by_manual, -> {
     where("dealing_account_id IS ?", nil)
+  }
+
+  scope :by_billing_date, ->(start, finish) {
+    where('? <= billing_date AND billing_date <= ?', start.to_time, finish.to_time + 1.days)
+  }
+
+  scope :by_before_start, ->(start) {
+    where('billing_date < ?', start.to_time)
+  }
+
+  scope :by_dalai, -> {
+    where(dealing_account_id: 4)
   }
 
   scope :search, ->(phones, value, account, min, max, date, salesman = nil, bank_account = nil, dealing_account = nil, billing_date = nil) {
@@ -81,7 +94,7 @@ class BankTransaction < ApplicationRecord
   def t_type
     if self.manual
       if self.is_logistic
-        "#{exchange_i18n}  #{ApplicationController.helpers.get_currency_mn(exc_rate)}"
+        "#{exchange_i18n}  #{ApplicationController.helpers.get_currency(exc_rate, Const::CURRENCY[6], 2)}"
       else
         2
       end
@@ -93,7 +106,7 @@ class BankTransaction < ApplicationRecord
   end
 
   def is_logistic
-    dealing_account_id == 2
+    dealing_account_id == 4
   end
 
   private
@@ -129,6 +142,12 @@ class BankTransaction < ApplicationRecord
         end
 
       end
+    end
+  end
+
+  def set_exc_summary
+    if exc_rate.present?
+      self.exc_summary = summary / exc_rate
     end
   end
 
