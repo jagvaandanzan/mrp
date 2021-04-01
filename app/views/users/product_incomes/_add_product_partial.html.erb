@@ -43,7 +43,7 @@
              id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_supply_feature_id">
       <input type="hidden" value="<%= feature_item.id %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][feature_item_id]"
              id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_feature_item_id">
-      <input type="hidden" value="<%= ub_feature.quantity %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][remainder]"
+      <input type="hidden" value="<%= ub_feature[:remainder] %>" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][remainder]"
              id="product_income_product_income_products_attributes_<%= row %>_product_income_items_attributes_<%= index %>_remainder">
       <td></td>
       <td></td>
@@ -56,7 +56,7 @@
         <% end %></td>
       <td class="va-mid"><%= ub_feature.supply_feature.quantity %></td>
       <td class="va-mid"></td>
-      <td class="va-mid"><%= ub_feature.quantity %></td>
+      <td class="va-mid"><%= ub_feature[:remainder] %></td>
       <td class="va-mid"></td>
       <td class="va-mid">
         <input class="form-control p-2 field" min="0" step="1" placeholder="Тоо" type="number" name="product_income[product_income_products_attributes][<%= row %>][product_income_items_attributes][<%= index %>][quantity]"
