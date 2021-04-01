@@ -69,7 +69,6 @@
                 <th class="va-mid text-center bg-3"><%= t('activerecord.attributes.product_supply_order_item.shipping_products') %></th>
                 <th class="va-mid text-center bg-3"><%= t('titles.cargo') %></th>
                 <th class="va-mid text-center">УБ-д ирсэн</th>
-                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.sum_price') %></th>
               </tr>
               <% @product_supply_orders.each do |i| %>
                 <% order_items = i.product_supply_order_items
@@ -142,7 +141,6 @@
                   <td class="va-mid text-center bg-3"><%= cargo %></td>
                   <% product_feature_ids = ProductIncomeItem.by_product_feature_ids(product.present? ? product.id : 0, feature_ids) %>
                   <td class="va-mid text-center"><%= product_feature_ids.present? ? product_feature_ids.first.product_income.income_date.strftime('%F') : '' %></td>
-                  <td class="va-mid" rowspan="<%= order_items_count %>"><%= get_currency_mn i.sum_price %></td>
                 </tr>
                 <% order_items.each_with_index {|item, index|
                   if index > 0
