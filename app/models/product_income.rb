@@ -54,9 +54,7 @@ class ProductIncome < ApplicationRecord
   def set_sample_per_cost
     sample_ids = product_income_products.map(&:shipping_ub_sample_id).uniq
     if sample_ids.present?
-      puts(sample_ids)
       sample_ids.each do |id|
-        puts("id = #{id};")
         if id.present?
           ub_sample = ShippingUbSample.find(id)
           product_ids = product_income_products.by_ub_sample_id(id).map(&:id).to_a
