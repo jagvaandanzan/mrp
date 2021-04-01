@@ -53,11 +53,13 @@ class ProductIncome < ApplicationRecord
 
   def set_sample_per_cost
     sample_ids = product_income_products.map(&:shipping_ub_sample_id).uniq
-    sample_ids.each do |id|
-      ub_sample = ShippingUbSample.find(id)
-      product_ids = product_income_products.by_ub_sample_id(id).map(&:id).to_a
-      q = product_income_items.quantity_income_product_ids(product_ids)
-      ub_sample.update_column(:per_cost, ub_sample.cost / q)
+    if sample_ids.present?
+      sample_ids.each do |id|
+        ub_sample = ShippingUbSample.find(id)
+        product_ids = product_income_products.by_ub_sample_id(id).map(&:id).to_a
+        q = product_income_items.quantity_income_product_ids(product_ids)
+        ub_sample.update_column(:per_cost, ub_sample.cost / q)
+      end
     end
   end
 end
