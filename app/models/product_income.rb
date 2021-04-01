@@ -56,6 +56,7 @@ class ProductIncome < ApplicationRecord
     if sample_ids.present?
       puts(sample_ids)
       sample_ids.each do |id|
+        puts("id = #{id};")
         ub_sample = ShippingUbSample.find(id)
         if ub_sample.present?
           product_ids = product_income_products.by_ub_sample_id(id).map(&:id).to_a
