@@ -28,7 +28,7 @@ class ProductIncome < ApplicationRecord
     product_income_products.sum(:quantity)
   end
 
-  # private
+  private
 
   def valid_quantity
     remainder = Hash.new

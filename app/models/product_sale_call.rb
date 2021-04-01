@@ -2,6 +2,7 @@ class ProductSaleCall < ApplicationRecord
   acts_as_paranoid
 
   belongs_to :operator, optional: true
+  belongs_to :active_opr, :class_name => "Operator", optional: true
   belongs_to :status, :class_name => "ProductSaleStatus", optional: true
   has_many :product_call_items
   has_many :products, through: :product_call_items
@@ -11,7 +12,7 @@ class ProductSaleCall < ApplicationRecord
   accepts_nested_attributes_for :product_call_items, allow_destroy: true
   before_save :create_log
 
-  attr_accessor :is_web, :status_m, :status_sub, :temp_operator
+  attr_accessor :is_web, :status_m, :status_sub, :temp_operator, :temp_salesman
 
   validates :phone, presence: true
   validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
@@ -61,10 +62,15 @@ class ProductSaleCall < ApplicationRecord
   }
 
   def status_name
-    if status.previous.present?
-      "#{status.previous_status.name} -- #{status.name}"
+    if status.alias == "call_connect_again"
+      product_sale_status_log = product_sale_status_logs.last
+      "#{status.name} (#{product_sale_status_log.salesman.present? ? product_sale_status_log.salesman.id_number : product_sale_status_log.operator.name})"
     else
-      status.name
+      if status.previous.present?
+        "#{status.previous_status.name} -- #{status.name}"
+      else
+        status.name
+      end
     end
   end
 
@@ -96,6 +102,7 @@ class ProductSaleCall < ApplicationRecord
 
   def create_log
     self.product_sale_status_logs << ProductSaleStatusLog.new(operator: temp_operator.presence || operator,
+                                                              salesman: temp_salesman,
                                                               status: status,
                                                               note: message) if operator.present? || temp_operator.present?
   end

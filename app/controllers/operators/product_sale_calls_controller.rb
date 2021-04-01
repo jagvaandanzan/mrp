@@ -2,6 +2,7 @@ class Operators::ProductSaleCallsController < Operators::BaseController
   before_action :set_sale_call, only: [:edit, :update, :show, :destroy]
 
   def index
+    current_operator.clear_active_call
     @start = params[:start]
     @finish = params[:finish]
     @product_name = params[:product_name]
@@ -26,6 +27,15 @@ class Operators::ProductSaleCallsController < Operators::BaseController
   def edit
     @sale_call.is_web = true
     @sale_call.set_statuses
+    operator_id = current_operator.id
+    if @sale_call.active_opr_id.present?
+      if operator_id != @sale_call.active_opr_id
+        flash[:alert] = "#{@sale_call.active_opr.name} орсон байна!"
+        redirect_to action: 'index'
+      end
+    else
+      @sale_call.update_column(:active_opr_id, operator_id)
+    end
   end
 
   def destroy

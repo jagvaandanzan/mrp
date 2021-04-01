@@ -306,7 +306,11 @@
         location_input_press(location_select, "<%= search_locations_operators_product_sales_path %>");
 
         $('#product_sale_country').on('ifChanged', function (e) {
-            // if (e.target.checked) {
+            if (e.target.checked) {
+                $('#product_sale_money_account').prop('checked', true);
+                $('div#paid_div').removeClass('none');
+                ;
+            }
             location_select.val("").selectpicker("refresh");
         });
         initSelectedMap();

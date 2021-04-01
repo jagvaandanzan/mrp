@@ -12,6 +12,7 @@ class Operator < ApplicationRecord
   has_many :created_product_sales, :class_name => "ProductSale", :foreign_key => "created_operator_id"
   has_many :approved_product_sales, :class_name => "ProductSale", :foreign_key => "approved_operator_id"
   has_many :product_sale_status_logs, :class_name => "ProductSaleStatusLog", :foreign_key => "operator_id"
+  has_many :product_sale_calls, :class_name => "ProductSaleCall", :foreign_key => "active_opr_id"
   has_many :operator_permission_rels, dependent: :destroy
 
   accepts_nested_attributes_for :operator_permission_rels, allow_destroy: true
@@ -46,6 +47,12 @@ class Operator < ApplicationRecord
 
   def operator_name
     "#{surname} #{name}"
+  end
+
+  def clear_active_call
+    product_sale_calls.each do |call|
+      call.update_column(:active_opr_id, nil)
+    end
   end
 
   def appear(flag)

@@ -2,6 +2,7 @@ class Operators::ProductSalesController < Operators::BaseController
   before_action :set_product_sale, only: [:edit, :update, :show, :update_status, :destroy]
 
   def index
+    current_operator.clear_active_call
     @product_name = params[:product_name]
     @status_id = params[:status_id]
     @status = params[:status]

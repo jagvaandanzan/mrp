@@ -215,8 +215,20 @@ class ProductSale < ApplicationRecord
   end
 
   def is_exchange
-    status_alias = parent.present? ? parent.status.alias : status.alias
-    status_alias == "oper_replacement" || status_alias == "oper_return"
+    if status.present?
+      status_alias = parent.present? ? parent.status.alias : status.alias
+      status_alias == "oper_replacement" || status_alias == "oper_return"
+    else
+      false
+    end
+  end
+
+  def salesman_delivered
+    if status.alias == "sals_delivered"
+      salesman_travel.salesman.name
+    else
+      ""
+    end
   end
 
   private
@@ -270,8 +282,9 @@ class ProductSale < ApplicationRecord
       next_status = status.next_status
       if next_status.user_type == "auto"
         self.status = next_status
-      elsif next_status.alias == "call_connect_again" || next_status.alias == "call_no_balance"
+      elsif next_status.alias == "call_connect_again" || next_status.alias == "call_no_balance" || next_status.alias == "call_address_changed"
         sale_call.temp_operator = operator
+        sale_call.temp_salesman = salesman
         sale_call.status = next_status
         sale_call.save(validate: false)
       end

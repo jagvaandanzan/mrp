@@ -52,9 +52,10 @@
                 <th><%= t('activerecord.attributes.product_sale.location_id') %></th>
                 <th><%= t('activerecord.attributes.product_sale.loc_note') %></th>
                 <th><%= t('activerecord.attributes.product_sale.sum_price') %></th>
-                <th><%= t('activerecord.attributes.product_sale.status_id') %></th>
-                <th><%= t('activerecord.attributes.product_sale.created_operator_id') %></th>
                 <th><%= t('activerecord.attributes.product_sale.approved_date') %></th>
+                <th><%= t('activerecord.attributes.product_sale.approved_operator_id') %></th>
+                <th><%= t('activerecord.attributes.product_sale.status_id') %></th>
+                <th>Жолооч</th>
               </tr>
               <% @product_sales.each do |p| %>
                 <tr>
@@ -67,9 +68,10 @@
                     <% end %></td>
                   <td class="va-mid"><%= p.loc_note %></td>
                   <td class="va-mid"><%= get_currency_mn(p.sum_price) %></td>
-                  <td class="va-mid"><%= p.status_name %></td>
-                  <td class="va-mid"><%= p.created_operator.present? ? p.created_operator.name : "" %></td>
                   <td class="va-mid"><%= p.approved_date.present? ? p.approved_date.strftime('%F %R') : "" %></td>
+                  <td class="va-mid"><%= p.approved_operator.present? ? p.approved_operator.name : "" %></td>
+                  <td class="va-mid"><%= p.status_name %></td>
+                  <td class="va-mid"><%= p.salesman_delivered %></td>
                   <td style="display: none">
                     <div class="btn-group">
                       <%= link_to edit_operators_product_sale_path(p), class: 'no-underline' do %>
