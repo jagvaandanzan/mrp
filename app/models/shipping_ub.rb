@@ -5,6 +5,7 @@ class ShippingUb < ApplicationRecord
   has_many :shipping_ub_boxes, dependent: :destroy
   has_many :shipping_ub_samples, dependent: :destroy
   has_many :products, through: :shipping_ub_products
+  has_many :product_income_products, through: :shipping_ub_products
 
   accepts_nested_attributes_for :shipping_ub_boxes, allow_destroy: true
   accepts_nested_attributes_for :shipping_ub_samples, allow_destroy: true
@@ -45,6 +46,10 @@ class ShippingUb < ApplicationRecord
 
   def cargo
     shipping_ub_products.sum(:cargo) + shipping_ub_samples.sum(:number)
+  end
+
+  def ub_income_cargo
+    product_income_products.sum(:cargo)
   end
 
   def product_names

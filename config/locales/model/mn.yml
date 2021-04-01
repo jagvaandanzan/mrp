@@ -529,6 +529,7 @@ mn:
         shipping_ub_products: Бараа
         shipping_ub_features: Барааны тоо
         shipping_ub_samples: Дээж хайрцаг
+        ub_income_cargo: УБ орлогод авсан ачаа
       shipping_ub_product:
         product_bought: Худалдан авсан тоо
         at_er: Эрээнд ирсэн огноо
@@ -553,7 +554,6 @@ mn:
         loaded: Ачуулсан
         cargo: Ачааны тоо
         quantity: Барааны тоо
-        shipping_cost: Ачааны зардал
         qr_printed: QR код хэвлэсэн тоо
         problematic: Асуудалтай барааны тоо
         shelf: Тавиурт байршуулах тоо
@@ -562,8 +562,10 @@ mn:
         income_locations: Агуулахын байршил
         calculated: Тооцоо нийлсэн
         unit_price: Нэгж үнэ
+        sum_price: Нийт үнэ
         ext_rate: Ханш
         cost: Тээврийн өртөг
+        cost_ub: Ачааны зардал
       product_income_location:
         quantity: Тоо
       product_income_feature_rel:

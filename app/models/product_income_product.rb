@@ -49,6 +49,10 @@ class ProductIncomeProduct < ApplicationRecord
     product_income_items.not_match.count
   end
 
+  def sum_price
+    unit_price * quantity
+  end
+
   def unit_price
     if self[:unit_price].present?
       self[:unit_price]

@@ -161,6 +161,7 @@ cn:
         shipping_ub_products: 产品
         shipping_ub_features: 产品的数量
         shipping_ub_samples: 样品
+        ub_income_cargo: UB收到的货物
       shipping_ub_product:
         product_bought: 购买产品的数量
         at_er: 到二连浩特的日期

@@ -46,9 +46,10 @@
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_product.quantity') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_product.cargo') %></th>
-                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.shipping_cost') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_income_item.unit_price') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_income_item.sum_price') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income_item.cost') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income_item.cost_ub') %></th>
               </tr>
               <% @product_income_products.each do |i| %>
                 <% product = i.product
@@ -81,9 +82,10 @@
                   <td class="va-mid"><%= shipping_ub_product.present? ? shipping_ub_product.quantity : '' %></td>
                   <td class="va-mid"><%= i.quantity %></td>
                   <td class="va-mid"><%= i.cargo %></td>
-                  <td class="va-mid"><%= get_currency_mn(income.cargo_price) %></td>
-                  <td class="va-mid"><%= get_currency(i.unit_price, Const::CURRENCY[0], 0) %></td>
-                  <td class="va-mid"><%= get_currency(i.cost, Const::CURRENCY[0], 2) %> + <%= get_currency_mn i.cost_ub %></td>
+                  <td class="va-mid"><%= get_currency(i.unit_price, Const::CURRENCY[0], 2) %></td>
+                  <td class="va-mid"><%= get_currency(i.sum_price, Const::CURRENCY[0], 2) %></td>
+                  <td class="va-mid"><%= get_currency(i.cost, Const::CURRENCY[0], 2) %></td>
+                  <td class="va-mid"><%= get_currency_mn i.cost_ub %></td>
                 </tr>
               <% end %>
             </table>
