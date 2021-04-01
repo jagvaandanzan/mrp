@@ -54,7 +54,7 @@ class ProductIncome < ApplicationRecord
   def set_sample_per_cost
     sample_ids = product_income_products.map(&:shipping_ub_sample_id).uniq
     if sample_ids.present?
-      Rails.logger.info(sample_ids)
+      puts(sample_ids)
       sample_ids.each do |id|
         ub_sample = ShippingUbSample.find(id)
         if ub_sample.present?
