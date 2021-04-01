@@ -57,8 +57,8 @@ class ProductIncome < ApplicationRecord
       puts(sample_ids)
       sample_ids.each do |id|
         puts("id = #{id};")
-        ub_sample = ShippingUbSample.find(id)
-        if ub_sample.present?
+        if id.present?
+          ub_sample = ShippingUbSample.find(id)
           product_ids = product_income_products.by_ub_sample_id(id).map(&:id).to_a
           q = product_income_items.quantity_income_product_ids(product_ids)
           ub_sample.update_column(:per_cost, ub_sample.cost / q)
