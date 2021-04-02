@@ -141,8 +141,8 @@ class ProductSaleItem < ApplicationRecord
       self.product_balance = ProductBalance.create(product: product,
                                                    feature_item: feature_item,
                                                    quantity: -bought_quantity)
-
-      self.product_sale.update_column(:back_money, self.product_sale.back_money + ((quantity - bought_quantity) * price))
+      upt_back_money = self.product_sale.back_money + ((quantity - bought_quantity) * price)
+      self.product_sale.update_column(:back_money, upt_back_money) if upt_back_money != self.product_sale.back_money
     end
   end
 
