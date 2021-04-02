@@ -97,18 +97,6 @@ class ProductIncomeProduct < ApplicationRecord
 
   end
 
-  def cost_ub
-    if self[:cost_ub].present?
-      self[:cost_ub]
-    else
-      pi = self.product_income
-      c = pi.cargo_price / pi.sum_quantity
-      self.update_column(:cost_ub, c)
-      c
-    end
-  end
-
-
   def set_default
     q = 0
     product_income_items.each do |item|

@@ -24,8 +24,11 @@
         </div>
       </div>
 
-      <div class="col-md-4 search">
-        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
+      <div class="col-md-1 search">
+        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left', style: 'height: 30px; font-size: smaller !important' %>
+      </div>
+      <div class="col-md-2 search">
+        <%= link_to 'Падаанаар', users_supply_calculations_for_invoice_path(by_start: @by_start, by_end: @by_end), target: '_blank', class: 'btn blck-btn pull-right' %>
       </div>
     <% end %>
   </div>
@@ -46,6 +49,7 @@
               <tr>
                 <th class="text-center">Нийлээгүй</th>
                 <th class="text-center">Нийлсэн</th>
+                <th class="text-center">Нийт</th>
               </tr>
               </thead>
               <tbody>
@@ -56,11 +60,13 @@
                 <td>Өмнөх үлдэгдэл</td>
                 <td><%= get_currency(prev_logistic - prev_transaction, Const::CURRENCY[0], 2) %></td>
                 <td colspan="2"><%= get_currency(prev_transaction - prev_logistic, Const::CURRENCY[0], 2) %></td>
+                <td></td>
               </tr>
               <tr>
                 <td>Орлого</td>
                 <td>-<%= get_currency_mn bank_transaction.sum(:summary) %></td>
                 <td colspan="2"><%= get_currency(bank_transaction.sum(:exc_summary), Const::CURRENCY[0], 2) %></td>
+                <td></td>
               </tr>
               <% income_products = ProductIncomeProduct.by_date(@by_start, @by_end) %>
               <% income_items = ProductIncomeItem.by_income_date(@by_start, @by_end) %>
@@ -75,35 +81,43 @@
                 <td></td>
                 <td><%= get_currency(sum_supply_feature_cost_n, Const::CURRENCY[0], 2) %></td>
                 <td><%= get_currency(sum_supply_feature_cost_c, Const::CURRENCY[0], 2) %></td>
+                <td><%= get_currency(sum_supply_feature_cost_n + sum_supply_feature_cost_c, Const::CURRENCY[0], 2) %></td>
               </tr>
               <tr>
                 <td>Эрээнд хүлээн авсан</td>
                 <td></td>
                 <td><%= get_currency(sum_shipping_er_cost_n, Const::CURRENCY[0], 2) %></td>
                 <td><%= get_currency(sum_shipping_er_cost_c, Const::CURRENCY[0], 2) %></td>
+                <td><%= get_currency(sum_shipping_er_cost_n + sum_shipping_er_cost_c, Const::CURRENCY[0], 2) %></td>
               </tr>
               <tr>
                 <td>Эрээнээс УБ-луу</td>
                 <td></td>
                 <td><%= get_currency(sum_shipping_ub_n, Const::CURRENCY[0], 2) %></td>
                 <td><%= get_currency(sum_shipping_ub_c, Const::CURRENCY[0], 2) %></td>
+                <td><%= get_currency(sum_shipping_ub_n + sum_shipping_ub_c, Const::CURRENCY[0], 2) %></td>
               </tr>
               <tr>
                 <td>Нийт</td>
                 <td></td>
-                <td style="font-weight: bold"><%= get_currency(sum_supply_feature_cost_n + sum_shipping_er_cost_n + sum_shipping_ub_n, Const::CURRENCY[0], 2) %></td>
-                <td style="font-weight: bold"><%= get_currency(sum_supply_feature_cost_c + sum_shipping_er_cost_c + sum_shipping_ub_c, Const::CURRENCY[0], 2) %></td>
+                <% s_n = sum_supply_feature_cost_n + sum_shipping_er_cost_n + sum_shipping_ub_n
+                   s_c = sum_supply_feature_cost_c + sum_shipping_er_cost_c + sum_shipping_ub_c %>
+                <td><%= get_currency(s_n, Const::CURRENCY[0], 2) %></td>
+                <td><%= get_currency(s_c, Const::CURRENCY[0], 2) %></td>
+                <td class="text-bold"><%= get_currency(s_n + s_c, Const::CURRENCY[0], 2) %></td>
               </tr>
               <tr>
                 <td>Тодруулах/ Түгжигдсэн</td>
                 <td></td>
                 <td colspan="2"><%= income_items.by_clarify(true).count %></td>
+                <td></td>
               </tr>
               <tr>
                 <td>Бараа</td>
                 <td></td>
                 <td><%= link_to income_products.by_calc_nil("true").count, users_supply_calculations_income_products_path(by_start: @by_start, by_end: @by_end, by_nil: true), target: '_blank' %></td>
                 <td><%= link_to income_products.by_calc_nil("false").count, users_supply_calculations_income_products_path(by_start: @by_start, by_end: @by_end, by_nil: false), target: '_blank' %></td>
+                <td></td>
               </tr>
               </tbody>
             </table>

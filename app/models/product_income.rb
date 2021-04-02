@@ -3,6 +3,7 @@ class ProductIncome < ApplicationRecord
   belongs_to :logistic
   has_many :product_income_items, dependent: :destroy
   has_many :product_income_products, dependent: :destroy
+  has_many :shipping_ub_samples, through: :product_income_products
 
   accepts_nested_attributes_for :product_income_items, allow_destroy: true
   accepts_nested_attributes_for :product_income_products, allow_destroy: true
@@ -19,13 +20,23 @@ class ProductIncome < ApplicationRecord
 
   scope :search, ->(code, start, finish) {
     items = income_date_desc
-    items = items.where('code LIKE :value', value: "%#{code}%") if code.present?
+    items = items.where('id LIKE :value', value: "%#{code}%") if code.present?
     items = items.where('? <= income_date AND income_date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items
   }
 
   def sum_quantity
     product_income_products.sum(:quantity)
+  end
+
+  def cargo_per
+    if self[:cargo_per].present?
+      self[:cargo_per]
+    else
+      c = self.cargo_price.to_f / self.sum_quantity
+      self.update_column(:cargo_per, c)
+      c
+    end
   end
 
   private

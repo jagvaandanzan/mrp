@@ -80,14 +80,14 @@
                   <td></td>
                   <td class="va-mid"><strong><%= i.quantity %></strong></td>
                   <td></td>
-                  <td><%= i.calculated.present? ? i.calculated.strftime('%F') : '' %></td>
+                  <td></td>
                 </tr>
                 <% i.product_income_items.by_calc_nil(@by_nil).each {|item|
                   feature_item = item.feature_item
                   supply_feature = item.supply_feature
                   shipping_ub_feature = item.shipping_ub_feature %>
                   <tr>
-                    <td colspan="2"><%= item.id %></td>
+                    <td colspan="2"><%= item.product_income.id %></td>
                     <td>
                       <% if feature_item.img.present? %>
                         <%= link_to feature_item.img.url, "data-lightbox": "roadtrip" do %>

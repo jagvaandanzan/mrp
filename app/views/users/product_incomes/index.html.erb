@@ -85,7 +85,7 @@
                   <td class="va-mid"><%= get_currency(i.unit_price, Const::CURRENCY[0], 2) %></td>
                   <td class="va-mid"><%= get_currency(i.sum_price, Const::CURRENCY[0], 2) %></td>
                   <td class="va-mid"><%= get_currency(i.cost, Const::CURRENCY[0], 2) %></td>
-                  <td class="va-mid"><%= get_currency_mn i.cost_ub %></td>
+                  <td class="va-mid"><%= get_currency_mn income.cargo_per * i.quantity  %></td>
                 </tr>
               <% end %>
             </table>

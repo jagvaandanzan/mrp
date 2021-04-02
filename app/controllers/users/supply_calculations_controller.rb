@@ -1,8 +1,6 @@
 class Users::SupplyCalculationsController < Users::BaseController
 
   def supply_orders
-    logistic = Logistic.find(4)
-    @balance = logistic.balance
     month_1 = Time.current.beginning_of_month
     @by_start = params[:by_start].presence || month_1.strftime("%Y/%m/%d")
     @by_end = params[:by_end].presence || (month_1 + 1.month).strftime("%Y/%m/%d")
@@ -18,6 +16,15 @@ class Users::SupplyCalculationsController < Users::BaseController
                            .date_desc
                            .page(params[:page])
 
+  end
+
+  def for_invoice
+    month_1 = Time.current.beginning_of_month
+    @by_start = params[:by_start].presence || month_1.strftime("%Y/%m/%d")
+    @by_end = params[:by_end].presence || (month_1 + 1.month).strftime("%Y/%m/%d")
+    @by_code = params[:by_code]
+    @product_incomes = ProductIncome.search(@by_code, @by_start, @by_end)
+                                   .page(params[:page])
   end
 
   def set_calculated

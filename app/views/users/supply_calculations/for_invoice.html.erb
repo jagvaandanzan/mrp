@@ -1,0 +1,109 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<div class="content-wrapper">
+
+  <div class="col-md-12 m-t-10 m-b-10">
+    <%= form_with url: users_supply_calculations_for_invoice_path, method: "get", class: "", local: true do |f| %>
+      <div class="col-md-3 search">
+        <div id="search-date" class="form-control search">
+          <i class="fa fa-calendar fa-lg p-r-0"></i>
+          <span><%= t("filters.by_date") %>...</span>
+          <%= f.hidden_field :by_start, value: @by_start %>
+          <%= f.hidden_field :by_end, value: @by_end %>
+        </div>
+      </div>
+      <div class="col-md-3 search">
+        <%= text_field_tag :by_code, @by_code, {class: 'form-control search', placeholder: 'Кодоор'} %>
+      </div>
+      <div class="col-md-3 search">
+        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left', style: 'height: 30px; font-size: smaller !important' %>
+      </div>
+    <% end %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-bordered">
+              <thead>
+              <tr>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income.number') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_income.income_date') %></th>
+                <th class="va-mid">Нийт барааны тоо</th>
+                <th class="va-mid">Барааны нийт дүн</th>
+                <th class="va-mid">Хүлээн авсан ачааны тоо</th>
+                <th class="va-mid">Эрээнд хүлээн авсан зардал</th>
+                <th class="va-mid">Эрээнээс УБ зардал</th>
+                <th class="va-mid">Ачааны зардал УБ-д</th>
+                <th class="va-mid">Падааны нийт дүн</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% s_quantity = 0
+                 s_feature_cost = 0
+                 s_cargo = 0
+                 s_er_cost = 0
+                 s_shipping_ub = 0
+                 s_cargo_ub = 0
+                 s_s = 0
+                 @product_incomes.each {|income|
+                   income_items = income.product_income_items.by_calc_nil("true") %>
+                <% quantity = income_items.sum(:quantity)
+                   sum_supply_feature_cost = income_items.sum_supply_feature_cost
+                   cargo = income.product_income_products.sum(:cargo) + income.shipping_ub_samples.sum(:number)
+                   sum_shipping_er_cost = income_items.sum_shipping_er_cost
+                   sum_shipping_ub = income_items.sum_shipping_ub_product_cost + income_items.sum_shipping_ub_sample_cost
+                   cargo_ub = income.cargo_per * quantity
+                   s = sum_supply_feature_cost + sum_shipping_er_cost + sum_shipping_ub
+
+                   s_quantity += quantity
+                   s_feature_cost += sum_supply_feature_cost
+                   s_cargo += cargo
+                   s_er_cost += sum_shipping_er_cost
+                   s_shipping_ub += sum_shipping_ub
+                   s_cargo_ub += cargo_ub
+                   s_s += s
+                %>
+                <% if quantity > 0 %>
+                  <tr>
+                    <td class="va-mid"><%= show_id(income.id) %></td>
+                    <td class="va-mid nowrap"><%= income.income_date.strftime('%F') %></td>
+                    <td class="va-mid"><%= quantity > 0 ? quantity : '' %></td>
+                    <td class="va-mid"><%= sum_supply_feature_cost > 0 ? get_currency(sum_supply_feature_cost, Const::CURRENCY[0], 2) : '' %></td>
+                    <td class="va-mid"><%= cargo > 0 ? cargo : '' %></td>
+                    <td class="va-mid"><%= sum_shipping_er_cost > 0 ? get_currency(sum_shipping_er_cost, Const::CURRENCY[0], 2) : '' %></td>
+                    <td class="va-mid"><%= sum_shipping_ub > 0 ? get_currency(sum_shipping_ub, Const::CURRENCY[0], 2) : '' %></td>
+                    <td class="va-mid"><%= get_currency_mn(cargo_ub) %></td>
+                    <td class="va-mid"><%= s > 0 ? get_currency(s, Const::CURRENCY[0], 2) : '' %></td>
+                  </tr>
+                <% end
+                   } %>
+              <tr class="bold">
+                <td colspan="2" class="text-right">Нийт</td>
+                <td class="va-mid"><%= s_quantity > 0 ? s_quantity : '' %></td>
+                <td class="va-mid"><%= s_feature_cost > 0 ? get_currency(s_feature_cost, Const::CURRENCY[0], 2) : '' %></td>
+                <td class="va-mid"><%= s_cargo > 0 ? s_cargo : '' %></td>
+                <td class="va-mid"><%= s_er_cost > 0 ? get_currency(s_er_cost, Const::CURRENCY[0], 2) : '' %></td>
+                <td class="va-mid"><%= s_shipping_ub > 0 ? get_currency(s_shipping_ub, Const::CURRENCY[0], 2) : '' %></td>
+                <td class="va-mid"><%= get_currency_mn(s_cargo_ub) %></td>
+                <td class="va-mid"><%= s_s > 0 ? get_currency(s_s, Const::CURRENCY[0], 2) : '' %></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <%= paginate @product_incomes %>
+      </div>
+    </div>
+  </section>
+</div>
+<%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>
+<style>
+  tr.bold td {
+    font-weight: bold;
+  }
+</style>
