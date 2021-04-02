@@ -147,6 +147,7 @@ class ProductSupplyOrderItem < ApplicationRecord
 
   def shipping_ub_product
     shipping_ub_products = ShippingUbProduct.by_product_id(self.product_id)
+                               .by_supply_order_id(self.product_supply_order_id)
     if shipping_ub_products.present?
       date = shipping_ub_products.first.shipping_ub.date.strftime('%F')
       costs = 0

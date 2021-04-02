@@ -47,6 +47,8 @@
 <tr class="nested-fields row-<%= rows %>">
   <input type="hidden" value="<%= product.id %>" name="shipping_er[shipping_er_products_attributes][<%= rows %>][product_id]"
          id="shipping_er_shipping_er_products_attributes_<%= rows %>_product_id">
+  <input type="hidden" value="<%= order_item.nil? ? '' : order_item.product_supply_order_id %>" name="shipping_er[shipping_er_products_attributes][<%= rows %>][supply_order_id]"
+         id="shipping_er_shipping_er_products_attributes_<%= rows %>_supply_order_id">
   <td></td>
   <td></td>
   <td class="va-mid">

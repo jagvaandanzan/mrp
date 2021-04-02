@@ -1,4 +1,5 @@
 class ShippingErProduct < ApplicationRecord
+  belongs_to :supply_order, :class_name => "ProductSupplyOrder"
   belongs_to :shipping_er
   belongs_to :product
 

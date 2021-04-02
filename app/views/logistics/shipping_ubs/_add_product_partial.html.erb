@@ -2,6 +2,8 @@
 <tr class="nested-fields">
   <input type="hidden" value="<%= product.id %>" name="shipping_ub[shipping_ub_boxes_attributes][<%= box_r %>][shipping_ub_products_attributes][<%= row %>][product_id]"
          id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row %>_product_id">
+  <input type="hidden" value="<%= shipping_er_product.supply_order_id %>" name="shipping_ub[shipping_ub_boxes_attributes][<%= box_r %>][shipping_ub_products_attributes][<%= row %>][supply_order_id]"
+         id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row %>_supply_order_id">
   <input type="hidden" value="<%= shipping_er_product.id %>" name="shipping_ub[shipping_ub_boxes_attributes][<%= box_r %>][shipping_ub_products_attributes][<%= row %>][shipping_er_product_id]"
          id="shipping_ub_shipping_ub_boxes_attributes_<%= box_r %>_shipping_ub_products_attributes_<%= row %>_shipping_er_product_id">
   <input type="hidden" value="<%= shipping_er_product[:remainder] %>" name="shipping_ub[shipping_ub_boxes_attributes][<%= box_r %>][shipping_ub_products_attributes][<%= row %>][remainder]"

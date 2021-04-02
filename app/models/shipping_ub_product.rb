@@ -1,4 +1,5 @@
 class ShippingUbProduct < ApplicationRecord
+  belongs_to :supply_order, :class_name => "ProductSupplyOrder"
   belongs_to :shipping_ub, optional: true
   belongs_to :shipping_ub_box
   belongs_to :product
@@ -19,6 +20,9 @@ class ShippingUbProduct < ApplicationRecord
 
   scope :by_product_id, ->(product_id) {
     where(product: product_id)
+  }
+  scope :by_supply_order_id, ->(supply_order_id) {
+    where(supply_order_id: supply_order_id)
   }
 
   scope :find_to_incomes, ->(is_box = false, id = nil, by_product_name) {

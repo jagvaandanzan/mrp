@@ -84,7 +84,7 @@ class Logistics::ShippingUbsController < Logistics::BaseController
   def shipping_ub_params
     params.require(:shipping_ub).permit(:date, :s_type, :description,
                                         shipping_ub_boxes_attributes: [:id, :box_type, :cost, :number, :_destroy,
-                                                                       shipping_ub_products_attributes: [:id, :product_id, :shipping_er_product_id, :remainder, :quantity, :cargo, :cost, :_destroy]],
+                                                                       shipping_ub_products_attributes: [:id, :product_id, :supply_order_id, :shipping_er_product_id, :remainder, :quantity, :cargo, :cost, :_destroy]],
                                         shipping_ub_samples_attributes: [:id, :number, :cost, :_destroy])
         .merge(:logistic => current_logistic)
   end
