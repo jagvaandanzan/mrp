@@ -136,20 +136,32 @@ class ProductSaleItem < ApplicationRecord
     end
   end
 
+  def exchange_balance
+    if bought_quantity < 0
+      self.product_balance = ProductBalance.create(product: product,
+                                                   feature_item: feature_item,
+                                                   quantity: -bought_quantity)
+
+      self.product_sale.update_column(:back_money, self.product_sale.back_money + ((quantity - bought_quantity) * price))
+    end
+  end
+
   private
 
   def set_product_balance
-    if product_balance.present?
-      self.product_balance.update(
-          product: product,
-          feature_item: feature_item,
-          operator: product_sale.created_operator,
-          quantity: -quantity)
-    else
-      self.product_balance = ProductBalance.create(product: product,
-                                                   feature_item: feature_item,
-                                                   operator: product_sale.created_operator,
-                                                   quantity: -quantity)
+    if quantity > 0
+      if product_balance.present?
+        self.product_balance.update(
+            product: product,
+            feature_item: feature_item,
+            operator: product_sale.created_operator,
+            quantity: -quantity)
+      else
+        self.product_balance = ProductBalance.create(product: product,
+                                                     feature_item: feature_item,
+                                                     operator: product_sale.created_operator,
+                                                     quantity: -quantity)
+      end
     end
   end
 

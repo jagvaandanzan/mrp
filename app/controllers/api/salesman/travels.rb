@@ -175,6 +175,7 @@ module API
                         quantity_was = product_sale_item.quantity - (product_sale_item.back_quantity.presence || 0)
                         if (params[:quantity] > 0 || params[:quantity] < 0) && params[:quantity] <= quantity_was
                           product_sale_item.update_columns(bought_quantity: params[:quantity], bought_at: Time.now, bought_price: product_sale_item.price * params[:quantity])
+                          product_sale_item.exchange_balance
                           travel_route.calculate_payable
                           message = I18n.t('alert.info_updated')
                         else
@@ -189,7 +190,7 @@ module API
                       error!("Couldn't find data", 404)
                     else
                       if r_s == 200
-                        {message: message, payable: travel_route.payable}
+                        {message: message, payable: travel_route.payable, back_money: product_sale.back_money}
                       else
                         error!(message, r_s)
                       end
@@ -203,7 +204,7 @@ module API
               desc "GET travels/routes/:id/payable"
               get do
                 travel_route = SalesmanTravelRoute.find(params[:id])
-                {payable: travel_route.main_payable}
+                {payable: travel_route.main_payable, back_money: travel_route.product_sale.back_money}
               end
             end
 
