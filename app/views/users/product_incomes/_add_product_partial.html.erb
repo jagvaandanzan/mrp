@@ -3,6 +3,7 @@
     <%= product = shipping_ub_product.product %>
     <input type="hidden" value="<%= product.id %>" name="product_income[product_income_products_attributes][<%= row %>][product_id]" id="product_income_product_income_products_attributes_<%= row %>_product_id">
     <input type="hidden" value="<%= shipping_ub_product.id %>" name="product_income[product_income_products_attributes][<%= row %>][shipping_ub_product_id]" id="product_income_product_income_products_attributes_<%= row %>_shipping_ub_product_id">
+    <input type="hidden" value="<%= shipping_ub_product.supply_order_id %>" name="product_income[product_income_products_attributes][<%= row %>][product_supply_order_id]" id="product_income_product_income_products_attributes_<%= row %>_product_supply_order_id">
     <td class="va-mid"><%= product.code %></td>
     <td class="va-mid"><%= product.name %></td>
     <td></td>

@@ -14,6 +14,10 @@ class ShippingUbBox < ApplicationRecord
 
   after_save :set_product_cost
 
+  scope :by_date, ->(start, finish) {
+    where('? <= created_at AND created_at <= ?', start.to_time, finish.to_time + 1.days)
+  }
+
   private
 
   def set_product_cost

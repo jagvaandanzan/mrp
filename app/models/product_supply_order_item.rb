@@ -171,6 +171,10 @@ class ProductSupplyOrderItem < ApplicationRecord
     self.update_column(:status, status) if status > ProductSupplyOrderItem.statuses[self.status]
   end
 
+  def income_date
+
+  end
+
   private
 
   def set_cn_name

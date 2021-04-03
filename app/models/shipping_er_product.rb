@@ -21,6 +21,10 @@ class ShippingErProduct < ApplicationRecord
     items
   }
 
+  scope :by_date, ->(start, finish) {
+    where('? <= created_at AND created_at <= ?', start.to_time, finish.to_time + 1.days)
+  }
+
   def product_bought
     ProductSupplyFeature.by_product_id(product_id)
         .sum(:quantity)

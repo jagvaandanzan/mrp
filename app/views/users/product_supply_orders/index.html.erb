@@ -25,7 +25,7 @@
                      {:prompt => t('activerecord.attributes.product_supply_order.order_type'), selected: @order_type}, {class: 'form-control'} %>
       </div>
       <div class="col-md-2 search none">
-        <%= f.select :is_equal, options_for_select([['Тэнцүү', true], ['Зөрүүтэй', false]], @is_equal),{:prompt => 'Захиалгын авалт'},{ class: 'form-control'} %>
+        <%= f.select :is_equal, options_for_select([['Тэнцүү', true], ['Зөрүүтэй', false]], @is_equal), {:prompt => 'Захиалгын авалт'}, {class: 'form-control'} %>
       </div>
       <div class="col-md-4 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
@@ -197,8 +197,9 @@
                       </td>
                       <td class="va-mid text-center bg-3"><%= loaded %></td>
                       <td class="va-mid text-center bg-3"><%= cargo %></td>
-                      <% product_feature_ids = ProductIncomeItem.by_product_feature_ids(product.id, feature_ids) %>
-                      <td class="va-mid text-center"><%= product_feature_ids.present? ? product_feature_ids.first.product_income.income_date.strftime('%F') : '' %></td>
+                      <% product_income_product = ProductIncomeProduct.by_product(product.id)
+                                                                      .by_supply_order(item.product_supply_order_id) %>
+                      <td class="va-mid text-center"><%= product_income_product.present? ? product_income_product.first.product_income.income_date.strftime('%F') : '' %></td>
                     </tr>
                   <% end } %>
               <% end %>

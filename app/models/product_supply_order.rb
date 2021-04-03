@@ -7,6 +7,7 @@ class ProductSupplyOrder < ApplicationRecord
   has_many :product_supply_order_items, dependent: :destroy
   has_many :products, through: :product_supply_order_items
   has_many :supply_features, through: :product_supply_order_items
+  has_many :product_income_products, dependent: :destroy
 
   accepts_nested_attributes_for :product_supply_order_items, allow_destroy: true
   accepts_nested_attributes_for :product_sample_images, allow_destroy: true

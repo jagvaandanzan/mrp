@@ -44,6 +44,12 @@ class ProductIncomeProduct < ApplicationRecord
   scope :by_ub_sample_id, ->(ub_sample_id) {
     where(shipping_ub_sample_id: ub_sample_id)
   }
+  scope :by_product, ->(product_id) {
+    where(product_id: product_id)
+  }
+  scope :by_supply_order, ->(supply_order_id) {
+    where(product_supply_order_id: supply_order_id)
+  }
 
   def sum_not_match
     product_income_items.not_match.count

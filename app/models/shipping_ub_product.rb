@@ -42,6 +42,9 @@ class ShippingUbProduct < ApplicationRecord
     where(shipping_er_product_id: er_product_id)
         .sum(:quantity)
   }
+  scope :by_date, ->(start, finish) {
+    where('? <= created_at AND created_at <= ?', start.to_time, finish.to_time + 1.days)
+  }
 
   def set_shipping_ub
     self.shipping_ub_id = shipping_ub_box.shipping_ub_id

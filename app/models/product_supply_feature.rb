@@ -69,6 +69,15 @@ class ProductSupplyFeature < ApplicationRecord
     where("feature_item_id IN (?)", feature_item_ids)
   }
 
+  scope :by_date, ->(start, finish) {
+    where('? <= updated_at AND updated_at <= ?', start.to_time, finish.to_time + 1.days)
+  }
+
+  scope :sum_price_lo, ->() {
+    pluck("price_lo * quantity_lo")
+        .sum(&:to_f)
+  }
+
   def price
     ApplicationController.helpers.get_f(self[:price])
   end
