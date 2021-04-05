@@ -85,7 +85,7 @@ class ProductSaleItem < ApplicationRecord
         .where('salesman_travels.delivered_at IS NOT ?', nil)
         .where('salesman_travels.delivered_at >= ?', start_time)
         .where('salesman_travels.delivered_at < ?', end_time + 1.days)
-        .sum("bought_quantity * bought_price")
+        .sum("bought_quantity * price")
   }
 
   def price
