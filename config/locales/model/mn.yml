@@ -727,7 +727,9 @@ mn:
         min: Дүн(min)
         max: Дүн(max)
         first_balance: Эхний үлдэгдэл
+        income: Орлого
         summary: Дүн
+        expenditure: Зарлага
         final_balance: Эцсийн үлдэгдэл
         date: Огноо
         billing_date: Тооцооны огноо

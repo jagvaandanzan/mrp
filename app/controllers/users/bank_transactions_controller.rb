@@ -67,7 +67,11 @@ class Users::BankTransactionsController < Users::BaseController
     @bank_transaction.is_manual = true
     if @bank_transaction.save
       flash[:success] = t('alert.info_updated')
-      redirect_to action: :index
+      if @bank_transaction.dealing_account_id.present? && !@bank_transaction.is_logistic
+        redirect_to users_bank_transaction_path(@bank_transaction, ask_print: 1)
+      else
+        redirect_to action: :index
+      end
     else
       render 'edit'
     end
