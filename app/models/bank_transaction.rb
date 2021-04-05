@@ -7,15 +7,15 @@ class BankTransaction < ApplicationRecord
 
   with_options :if => Proc.new {|m| m.is_manual.present?} do
     validates :date, presence: true
-    validates :bank_account_id, presence: true
-    validates :dealing_account_id, presence: true
+    # validates :bank_account_id, presence: true
+    # validates :dealing_account_id, presence: true
+    # validates :salesman_id, presence: true
+    # validates :billing_date, presence: true
     validates :summary, presence: true
     validates :summary, numericality: {greater_than: 1000, only_integer: true, message: :invalid}
   end
 
   with_options :if => Proc.new {|m| m.is_manual.present? && m.dealing_account_id != 4} do
-    validates :salesman_id, presence: true
-    validates :billing_date, presence: true
     validates :value, presence: true, length: {maximum: 255}
   end
 
@@ -88,7 +88,11 @@ class BankTransaction < ApplicationRecord
   end
 
   def manual
-    dealing_account.present?
+    !first_balance.present?
+  end
+
+  def summary
+   ApplicationController.helpers.get_f(self[:summary])
   end
 
   def t_type
@@ -112,12 +116,12 @@ class BankTransaction < ApplicationRecord
   private
 
   def check_salesman
-    unless dealing_account.present?
+    unless salesman.present?
       if value.present?
         p = value.match(/[789]\d{7}/)
         if p.present?
           self.salesman = Salesman.find_by_phone(p.to_s)
-          puts "p: #{p}"
+          # puts "p: #{p}"
           v = value.gsub(p.to_s, "")
           d = v.split(".")
           if d.length == 2

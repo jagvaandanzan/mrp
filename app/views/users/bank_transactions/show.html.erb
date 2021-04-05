@@ -7,9 +7,7 @@
   <div class="action-buttons">
     <% is_manual = @bank_transaction.manual %>
     <% if can? :manage, BankTransaction %>
-      <% if is_manual %>
-        <button class="btn btn-primary" type="button" onclick="print_info()"><%= t('controls.button.print') %></button>
-      <% end %>
+      <button class="btn btn-primary" type="button" onclick="print_info()"><%= t('controls.button.print') %></button>
       <%= link_to t('controls.button.edit'), edit_users_bank_transaction_path(@bank_transaction), class: 'btn btn-info' %>
       <%= link_to t('controls.button.delete'), users_bank_transaction_path(@bank_transaction), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <% end %>
@@ -36,11 +34,11 @@
         </div>
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.bank_transaction.bank_account_id') %> :</div>
-          <div class="col-data"><%= @bank_transaction.bank_account.full_name %></div>
+          <div class="col-data"><%= @bank_transaction.bank_account.present? ? @bank_transaction.bank_account.full_name : '---' %></div>
         </div>
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.bank_transaction.dealing_account_id') %> :</div>
-          <div class="col-data"><%= @bank_transaction.dealing_account.full_name %></div>
+          <div class="col-data"><%= @bank_transaction.dealing_account.present? ? @bank_transaction.dealing_account.full_name : '---' %></div>
         </div>
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.bank_transaction.summary') %> :</div>
@@ -50,29 +48,27 @@
     </div>
   <% end %>
 </div>
-<% if is_manual %>
-  <div id="print_div" class="none">
-    <%= render 'print', bank_transaction: @bank_transaction %>
-  </div>
-  <script !src="">
-      <% if params[:ask_print].present? %>
-      $(window).on('load', function () {
-          setTimeout(ask_print, 400);
-      });
-      <% end %>
+<div id="print_div" class="none">
+  <%= render 'print', bank_transaction: @bank_transaction %>
+</div>
+<script !src="">
+    <% if params[:ask_print].present? %>
+    $(window).on('load', function () {
+        setTimeout(ask_print, 400);
+    });
+    <% end %>
 
-      function ask_print() {
-          if (confirm("Бэлэн мөнгөний орлогын баримт хэвлэх үү?")) {
-              print_info();
-          }
-      }
+    function ask_print() {
+        if (confirm("Бэлэн мөнгөний орлогын баримт хэвлэх үү?")) {
+            print_info();
+        }
+    }
 
-      function print_info() {
-          var printContents = document.getElementById('print_div').innerHTML;
-          var originalContents = document.body.innerHTML;
-          document.body.innerHTML = "<link rel='stylesheet' href='css/bank_print.css' type='text/css' />" + printContents;
-          window.print();
-          document.body.innerHTML = originalContents;
-      }
-  </script>
-<% end %>
+    function print_info() {
+        var printContents = document.getElementById('print_div').innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = "<link rel='stylesheet' href='css/bank_print.css' type='text/css' />" + printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    }
+</script>

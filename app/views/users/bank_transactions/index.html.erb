@@ -79,7 +79,9 @@
               <tr>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.date') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.value') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.first_balance') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.summary') %></th>
+                <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.final_balance') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.account') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.salesman_id') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.bank_transaction.bank_account_id') %></th>
@@ -93,14 +95,12 @@
                 <% is_manual = bank_transaction.manual %>
                 <tr class="<%= is_manual ? 'is_manual' : '' %>">
                   <td class="va-mid">
-                    <% if is_manual %>
-                      <%= link_to bank_transaction.date_time, users_bank_transaction_path(bank_transaction) %>
-                    <% else %>
-                      <%= bank_transaction.date_time %>
-                    <% end %>
+                    <%= link_to bank_transaction.date_time, users_bank_transaction_path(bank_transaction), style: 'text-decoration: none' %>
                   </td>
                   <td class="va-mid"><%= bank_transaction.value %></td>
-                  <td class="va-mid"><%= get_currency_mn(bank_transaction.summary) %></td>
+                  <td class="va-mid"><%= get_currency_mn(bank_transaction.first_balance) %></td>
+                  <td class="va-mid <%= bank_transaction.summary < 0 ? 'text-danger' : '' %>"><%= get_currency_mn(bank_transaction.summary) %></td>
+                  <td class="va-mid"><%= get_currency_mn(bank_transaction.final_balance) %></td>
                   <td class="va-mid"><%= bank_transaction.account %></td>
                   <td class="va-mid"><%= bank_transaction.salesman.present? ? bank_transaction.salesman.full_name : '' %></td>
                   <td class="va-mid"><%= bank_transaction.bank_account.present? ? bank_transaction.bank_account.full_name : '' %></td>

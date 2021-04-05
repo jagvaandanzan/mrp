@@ -726,7 +726,9 @@ mn:
         account: Данс
         min: Дүн(min)
         max: Дүн(max)
+        first_balance: Эхний үлдэгдэл
         summary: Дүн
+        final_balance: Эцсийн үлдэгдэл
         date: Огноо
         billing_date: Тооцооны огноо
         t_type: Гүйлгээний төрөл

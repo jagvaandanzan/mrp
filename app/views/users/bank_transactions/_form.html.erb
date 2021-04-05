@@ -84,7 +84,7 @@
                 <%= f.label :summary, class: 'control-label' %>
                 <div class="<%= get_error_class(@bank_transaction, :summary) %>">
                   <%= field_errors(@bank_transaction, :summary) %>
-                  <%= f.number_field :summary, placeholder: t('activerecord.attributes.bank_transaction.summary'), class: 'form-control', step: 100 %>
+                  <%= f.number_field :summary, placeholder: t('activerecord.attributes.bank_transaction.summary'), class: 'form-control', step: 100, readonly:  @bank_transaction.persisted? && !@bank_transaction.manual  %>
                 </div>
               </div>
             </div>

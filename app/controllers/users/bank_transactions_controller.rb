@@ -60,9 +60,6 @@ class Users::BankTransactionsController < Users::BaseController
   end
 
   def edit
-    unless @bank_transaction.manual
-      redirect_to action: :index
-    end
   end
 
   def update
@@ -77,6 +74,9 @@ class Users::BankTransactionsController < Users::BaseController
   end
 
   def destroy
+    unless @bank_transaction.manual
+      redirect_to action: :index
+    end
     @bank_transaction.destroy!
 
     flash[:success] = t('alert.deleted_successfully')

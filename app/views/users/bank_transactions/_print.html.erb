@@ -59,10 +59,10 @@
               <td class="b-r">Гүйлгээний утгын код</td>
             </tr>
             <tr>
-              <td><%= bank_transaction.dealing_account.code %></td>
+              <td><%= bank_transaction.dealing_account.present? ? bank_transaction.dealing_account.code : '' %></td>
               <td></td>
               <td><%= get_currency_mn bank_transaction.summary %></td>
-              <td class="b-r"><%= bank_transaction.bank_account.code %></td>
+              <td class="b-r"><%= bank_transaction.bank_account.present? ? bank_transaction.bank_account.code : '' %></td>
             </tr>
             <tr>
               <td colspan="2" class="sum"></td>
