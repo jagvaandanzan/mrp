@@ -49,6 +49,14 @@ class BankTransaction < ApplicationRecord
     where("dealing_account_id IS ?", nil)
   }
 
+  scope :by_salesman_id, ->(salesman_id) {
+    where(salesman_id: salesman_id)
+  }
+
+  scope :sum_summary, ->() {
+    sum(:summary)
+  }
+
   scope :by_billing_date, ->(start, finish) {
     where('? <= billing_date AND billing_date <= ?', start.to_time, finish.to_time + 1.days)
   }
@@ -92,7 +100,7 @@ class BankTransaction < ApplicationRecord
   end
 
   def summary
-   ApplicationController.helpers.get_f(self[:summary])
+    ApplicationController.helpers.get_f(self[:summary])
   end
 
   def t_type

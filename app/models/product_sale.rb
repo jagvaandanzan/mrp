@@ -116,7 +116,15 @@ class ProductSale < ApplicationRecord
     joins(:status)
         .where('product_sale_statuses.alias = ? OR product_sale_statuses.alias = ? OR product_sale_statuses.alias = ? ', 'sals_delivered', 'oper_replacement', 'oper_return')
   }
+  scope :sum_paid_by_salesman, ->(salesman_id, start_time, end_time) {
+    left_joins(:salesman_travel)
+        .where("salesman_travels.salesman_id = ?", salesman_id)
+        .where('salesman_travels.delivered_at IS NOT ?', nil)
+        .where('salesman_travels.delivered_at >= ?', start_time)
+        .where('salesman_travels.delivered_at < ?', end_time + 1.days)
+        .sum(:paid)
 
+  }
   scope :report_sale_delivered, ->(salesman_id, start_time, end_time) {
     select("SUM(product_sales.paid) as paid, SUM(product_sales.bonus) as bonus, SUM(product_sales.back_money) as back_money")
         .joins(:status)

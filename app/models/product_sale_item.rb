@@ -64,7 +64,7 @@ class ProductSaleItem < ApplicationRecord
         .sum(:quantity)
   }
 
-  scope :not_nil_bought_quantity, ->() {
+  scope :bought_quantity, ->() {
     where("bought_quantity IS NOT ?", nil)
   }
 
@@ -75,6 +75,17 @@ class ProductSaleItem < ApplicationRecord
   }
   scope :is_quantity_lower, ->(n) {
     where("product_sale_items.quantity < ?", n)
+  }
+
+  scope :sum_price_by_salesman, ->(salesman_id, start_time, end_time) {
+    joins(:salesman_travel)
+        .where("salesman_travels.salesman_id = ?", salesman_id)
+        .where("bought_quantity IS NOT ?", nil)
+        .where("bought_quantity > ?", 0)
+        .where('salesman_travels.delivered_at IS NOT ?', nil)
+        .where('salesman_travels.delivered_at >= ?', start_time)
+        .where('salesman_travels.delivered_at < ?', end_time + 1.days)
+        .sum("bought_quantity * price")
   }
 
   def price
