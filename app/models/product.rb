@@ -42,7 +42,7 @@ class Product < ApplicationRecord
 
   attr_accessor :option_rels, :method_type, :tab_index, :filters, :instruction_id, :instruction_val, :specification_id, :specification_val, :deliveries
 
-  has_attached_file :picture, :path => ":rails_root/public/products/picture/:id_partition/:style.:extension", styles: {original: "1200x1200>", tumb: "400x400>"}, :url => '/products/picture/:id_partition/:style.:extension'
+  has_attached_file :picture, :path => ":rails_root/public/products/picture/:id_partition/:style.:extension", styles: {original: "1200x1200>", cover: "300x300>", tumb: "100x100>"}, :url => '/products/picture/:id_partition/:style.:extension'
   validates_attachment :picture,
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 4.megabytes}
 
