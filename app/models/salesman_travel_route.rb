@@ -110,7 +110,8 @@ class SalesmanTravelRoute < ApplicationRecord
   end
 
   def product_count
-    product_sale.count_product
+    c = product_sale.count_product
+    c.presence || 0
   end
 
   def status
