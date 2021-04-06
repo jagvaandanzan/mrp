@@ -125,8 +125,9 @@ class SalesmanTravelRoute < ApplicationRecord
         s += (item.price * item.bought_quantity) if item.price.present? && item.bought_quantity.present? && item.bought_quantity > 0
       end
     end
+
     self.payable = if s >= 0 && has_items
-                     s - (product_sale.paid.presence || 0)
+                     s - (product_sale.paid.presence || 0) + (s < Const::FREE_SHIPPING ? Const::SHIPPING_FEE : 0)
                    else
                      nil
                    end
