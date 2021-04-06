@@ -64,7 +64,7 @@ class ProductSaleItem < ApplicationRecord
         .sum(:quantity)
   }
 
-  scope :bought_quantity, ->() {
+  scope :not_nil_bought_quantity, ->() {
     where("bought_quantity IS NOT ?", nil)
   }
 
