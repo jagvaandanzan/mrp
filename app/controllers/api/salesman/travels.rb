@@ -190,7 +190,7 @@ module API
                       error!("Couldn't find data", 404)
                     else
                       if r_s == 200
-                        {message: message, payable: travel_route.payable, back_money: product_sale.back_money}
+                        {message: message, payable: travel_route.payable, shipping: Const::SHIPPING_FEE, back_money: product_sale.back_money}
                       else
                         error!(message, r_s)
                       end
@@ -204,7 +204,7 @@ module API
               desc "GET travels/routes/:id/payable"
               get do
                 travel_route = SalesmanTravelRoute.find(params[:id])
-                {payable: travel_route.main_payable, back_money: travel_route.product_sale.back_money}
+                {payable: travel_route.main_payable, shipping: Const::SHIPPING_FEE, back_money: travel_route.product_sale.back_money}
               end
             end
 
