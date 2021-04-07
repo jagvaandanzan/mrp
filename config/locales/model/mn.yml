@@ -303,7 +303,7 @@ mn:
         children: Дэд байршил
       customer:
         c_type: Төрөл
-        logo: Лого(23:8)~x10
+        logo: Лого(40:14)~x10
         name: Нэр
         code: Код
         queue: Дараалал
@@ -413,7 +413,7 @@ mn:
         photo: Бодит зураг
       brand:
         name: Нэр
-        logo: Лого(23:8)~x10
+        logo: Лого(40:14)~x10
         description: Тайлбар
       technical_specification:
         specification_gr: Бүлгийн нэр

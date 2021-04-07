@@ -192,7 +192,7 @@
                                             {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_next_status(this)'} %>
                   </div>
                 </div>
-                <div id="paid_div" class="col-md-4 field_div <%= (@product_sale.present? && !@product_sale.cash?) ? '' : 'none' %>">
+                <div id="paid_div" class="col-md-4 field_div <%= (@product_sale.persisted? && !@product_sale.cash?) ? '' : 'none' %>">
                   <%= f.label :paid, class: 'control-label' %>
                   <div class="<%= get_error_class(@product_sale, :paid) %>">
                     <%= field_errors(@product_sale, :paid) %>

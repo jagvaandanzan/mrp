@@ -10,9 +10,9 @@
             <div class="col-sm-9 <%= get_error_class(@customer, :logo) %>">
               <%= f.file_field :logo, accept: "image/*", class: 'image-file none-force' %>
               <%= field_errors(@customer, :logo) %>
-              <div class="preview noselect" style="width: 230px;height: 80px">
+              <div class="preview noselect" style="width: 200px;height: 70px">
                 <% if @customer.logo.present? %>
-                  <%= image_tag @customer.logo.url(:tumb), class: 'preview-img', style: 'width: 230px;height: 80px' %>
+                  <%= image_tag @customer.logo.url(:tumb), class: 'preview-img', style: 'width: 200px;height: 70px' %>
                 <% else %>
                   <span class="text"><%= t('upload_image') %></span>
                 <% end %>

@@ -7,7 +7,7 @@ class Brand < ApplicationRecord
   after_destroy -> {sync_web('delete')}
   attr_accessor :method_type
 
-  has_attached_file :logo, :path => ":rails_root/public/brands/logo/:id_partition/:style.:extension", styles: {original: "700x240>", tumb: "230x80>"}, :url => '/brands/logo/:id_partition/:style.:extension'
+  has_attached_file :logo, :path => ":rails_root/public/brands/logo/:id_partition/:style.:extension", styles: {original: "400x140>", tumb: "200x70>"}, :url => '/brands/logo/:id_partition/:style.:extension'
   validates_attachment :logo,
                        content_type: {content_type: ["image/jpeg", "image/x-png", "image/png"], message: :content_type}, size: {less_than: 3.megabytes}
 
