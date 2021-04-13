@@ -346,6 +346,12 @@ class ProductSale < ApplicationRecord
         params = {id: cart_id, status: stat == "oper_confirmed" ? 3 : 4}.to_json
         ApplicationController.helpers.api_request(url, 'patch', params)
       end
+
+      if stat == "oper_confirmed" && salesman_travel.present?
+        url = "sales/salesman"
+        salesman = salesman_travel.salesman
+        ApplicationController.helpers.api_request(url, 'patch', params)
+      end
     end
   end
 end
