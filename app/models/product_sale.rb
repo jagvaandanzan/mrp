@@ -26,6 +26,7 @@ class ProductSale < ApplicationRecord
   before_save :create_log
   before_save :set_defaults
   before_save :set_balance
+  after_save :sync_web
 
   with_options :if => Proc.new {|m| m.update_status == nil} do
     validates_numericality_of :hour_end, greater_than: Proc.new(&:hour_start)
@@ -332,6 +333,18 @@ class ProductSale < ApplicationRecord
         end
 
         self.back_money = nil if back_money == 0
+      end
+    end
+  end
+
+  def sync_web
+    #   Вебрүү статусаа явуулна
+    if cart_id.present?
+      stat = status.alias
+      if stat == "oper_confirmed" || stat == "sals_delivered"
+        url = "sales/status"
+        params = {id: cart_id, status: stat == "oper_confirmed" ? 3 : 4}.to_json
+        ApplicationController.helpers.api_request(url, 'patch', params)
       end
     end
   end

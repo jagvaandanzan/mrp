@@ -157,7 +157,8 @@ def check_payment(transactions)
                                        sum_price: cart['payment'],
                                        bonus: cart['bonus'],
                                        money: 1,
-                                       paid: cart['payment'])
+                                       paid: cart['payment'],
+                                       cart_id: cart['id'])
 
         if l['mrp_location_id'].present?
           product_sale.location = Location.find(l['mrp_location_id'])
