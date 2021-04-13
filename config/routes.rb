@@ -213,7 +213,8 @@ Rails.application.routes.draw do
       collection do
         patch 'get_product_features'
         post 'search_locations'
-        post 'add_location'
+        post 'edit_location'
+        post 'update_location'
         post 'search_khoroos'
         post 'get_last_location'
         post 'get_location'

@@ -1,5 +1,6 @@
 class Location < ApplicationRecord
   belongs_to :operator, optional: true
+  belongs_to :loc_district
   belongs_to :loc_khoroo
   belongs_to :station, :class_name => "Location", optional: true
 
@@ -7,17 +8,18 @@ class Location < ApplicationRecord
   has_many :location_travels, :foreign_key => "location_to_id", dependent: :destroy
   has_many :salesman_travel_routes, dependent: :destroy
   has_many :product_sales
-  has_one :loc_district, through: :loc_khoroo
 
   before_save :set_lng_lat
+  after_save :sync_web
   enum distance: {distance_a: 0, distance_b: 1, distance_c: 2, distance_d: 3}
 
-  validates :distance, :loc_khoroo, presence: true
+  attr_accessor :my_id
+  validates :distance, :loc_district_id, :loc_khoroo_id, presence: true
   validates :name, :name_la, presence: true
 
-  with_options :if => Proc.new {|m| m.loc_khoroo.loc_district.country} do
-    validates :station_id, presence: true
-  end
+  # with_options :if => Proc.new {|m| m.loc_district.country} do
+  #   validates :station_id, presence: true
+  # end
 
   validates_uniqueness_of :name, :name_la, scope: [:loc_khoroo_id]
 
@@ -28,7 +30,8 @@ class Location < ApplicationRecord
   }
 
   scope :search_by_name, ->(name, country) {
-    items = joins(:loc_district)
+    items = left_joins(:loc_district)
+                .left_joins(:loc_khoroos)
     items = if country == "true"
               items.where('loc_districts.name LIKE :value OR loc_khoroos.name LIKE :value OR locations.name LIKE :value OR locations.name_la LIKE :value', value: "%#{name}%")
                   .where("loc_districts.country = ?", true)
@@ -61,7 +64,7 @@ class Location < ApplicationRecord
   }
 
   def full_name
-    loc_khoroo.loc_district.name + ", " + loc_khoroo.name + ", " + name
+    "#{loc_district.name}, #{loc_khoroo.name}, #{name}"
   end
 
   private
@@ -71,6 +74,16 @@ class Location < ApplicationRecord
       self.latitude = station.latitude
       self.longitude = station.longitude
       self.distance = station.distance
+    end
+  end
+
+  def sync_web
+    if web_location_id.present?
+      update_column(:approved, true)
+
+      url = "sales/location"
+      params = {id: web_location_id, mrp_id: self.id}.to_json
+      ApplicationController.helpers.api_request(url, 'patch', params)
     end
   end
 end

@@ -208,7 +208,8 @@ class ProductSale < ApplicationRecord
     # 2 дахь худалдан авалтаас бонус бодно
     sales = ProductSale.by_status('sals_delivered')
                 .by_phone(phone)
-    if sales.present?
+                .count
+    if sales > 1
       product_sale_items.each(&:add_bonus)
     end
   end
@@ -246,9 +247,8 @@ class ProductSale < ApplicationRecord
   end
 
   def set_defaults
+    self.code = ApplicationController.helpers.get_code(ProductSale.last) unless code.present?
     if operator.present?
-      self.code = ApplicationController.helpers.get_code(ProductSale.last) unless code.present?
-
       self.delivery_end = delivery_start.change({hour: hour_end}) if hour_end.present?
       self.delivery_start = delivery_start.change({hour: hour_start}) if hour_start.present?
       self.sum_price -= bonus if bonus.present?
@@ -281,27 +281,29 @@ class ProductSale < ApplicationRecord
   end
 
   def create_log
-    self.product_sale_status_logs << ProductSaleStatusLog.new(operator: operator,
-                                                              salesman: salesman,
-                                                              status: status,
-                                                              note: status_note)
-    # set_status
-    if status.next.present?
-      next_status = status.next_status
-      if next_status.user_type == "auto"
-        self.status = next_status
-      elsif next_status.alias == "call_connect_again" || next_status.alias == "call_no_balance" || next_status.alias == "call_address_changed"
-        sale_call.temp_operator = operator
-        sale_call.temp_salesman = salesman
-        sale_call.status = next_status
-        sale_call.save(validate: false)
+    if operator.present? || salesman.present?
+      self.product_sale_status_logs << ProductSaleStatusLog.new(operator: operator,
+                                                                salesman: salesman,
+                                                                status: status,
+                                                                note: status_note)
+      # set_status
+      if status.next.present?
+        next_status = status.next_status
+        if next_status.user_type == "auto"
+          self.status = next_status
+        elsif next_status.alias == "call_connect_again" || next_status.alias == "call_no_balance" || next_status.alias == "call_address_changed"
+          sale_call.temp_operator = operator
+          sale_call.temp_salesman = salesman
+          sale_call.status = next_status
+          sale_call.save(validate: false)
+        end
       end
     end
 
   end
 
   def set_balance
-    if operator.present? && bonus.present? && bonus > 0
+    if bonus.present? && bonus > 0
       bonu = Bonu.by_phone(phone)
       if bonu.present?
         b = bonu.first

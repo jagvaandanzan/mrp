@@ -272,6 +272,7 @@ mn:
         latitude: Өргөрөг
         longitude: Уртраг
         locations: Байршил
+        loc_district_id: Дүүрэг/Аймаг
         loc_khoroo_id: Хороо/сум
         distance: Бүс
         country: Орон нутаг

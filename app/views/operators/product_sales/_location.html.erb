@@ -1,0 +1,130 @@
+<%= form_with model: location, url: update_location_operators_product_sales_path, method: :patch, remote: true, :html => {class: 'form-horizontal'} do |f| %>
+  <%= form_body do %>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-6 field_div">
+          <%= f.label :loc_district_id, class: 'control-label' %>
+          <div>
+            <%= field_errors(location, :loc_district_id) %>
+            <%= f.collection_select :loc_district_id, LocDistrict.order_country, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
+          </div>
+        </div>
+        <div class="col-md-6 field_div">
+          <%= f.label :loc_khoroo_id, class: 'control-label' %>
+          <div id="khoroo_id">
+            <%= field_errors(location, :loc_khoroo_id) %>
+            <% if location.loc_district_id.present? %>
+              <%= f.collection_select :loc_khoroo_id, LocKhoroo.by_district_id(location.loc_district_id).order_name, :id, :full_name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
+            <% else %>
+              <%= f.select :loc_khoroo_id, options_for_select([]), {:prompt => t('controls.select.none')}, {class: 'form-control'} %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-3 field_div">
+          <%= f.label :micro_region, class: 'control-label' %>
+          <div>
+            <%= field_errors(location, :micro_region) %>
+            <%= f.text_field :micro_region, class: 'form-control n_press', placeholder: t('activerecord.attributes.location.micro_region') %>
+          </div>
+        </div>
+        <div class="col-md-3 field_div">
+          <%= f.label :town, class: 'control-label' %>
+          <div>
+            <%= field_errors(location, :town) %>
+            <%= f.text_field :town, class: 'form-control n_press', placeholder: t('activerecord.attributes.location.town') %>
+          </div>
+        </div>
+        <div class="col-md-3 field_div">
+          <%= f.label :street, class: 'control-label' %>
+          <div>
+            <%= field_errors(location, :street) %>
+            <%= f.text_field :street, class: 'form-control n_press', placeholder: t('activerecord.attributes.location.street') %>
+          </div>
+        </div>
+        <div class="col-md-3 field_div">
+          <%= f.label :apartment, class: 'control-label' %>
+          <div>
+            <%= field_errors(location, :apartment) %>
+            <%= f.text_field :apartment, class: 'form-control n_press', placeholder: t('activerecord.attributes.location.apartment') %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-3 field_div">
+          <%= f.label :entrance, class: 'control-label' %>
+          <div>
+            <%= field_errors(location, :entrance) %>
+            <%= f.text_field :entrance, class: 'form-control n_press', placeholder: t('activerecord.attributes.location.entrance') %>
+          </div>
+        </div>
+        <div class="col-md-6 field_div">
+          <%= f.label :station_id, class: 'control-label' %>
+          <div>
+            <%= field_errors(location, :station_id) %>
+            <%= f.collection_select :station_id, Location.by_country, :id, :full_name, {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
+          </div>
+        </div>
+        <div class="col-md-3 field_div">
+          <%= f.label :distance, class: 'control-label' %>
+          <div id="khoroo_id">
+            <%= field_errors(location, :distance) %>
+            <%= f.select :distance, options_for_select(Location.distances_i18n.keys.reject {|k| k == 'st_leave'}.map {|k| [Location.distances_i18n[k], k]}, location.distance), {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-6 field_div">
+          <%= f.label :name, class: 'control-label' %>
+          <div>
+            <%= field_errors(location, :name) %>
+            <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.location.name') %>
+          </div>
+        </div>
+        <div class="col-md-6 field_div">
+          <%= f.label :name_la, class: 'control-label' %>
+          <div>
+            <%= field_errors(location, :name_la) %>
+            <%= f.text_field :name_la, class: 'form-control', placeholder: t('activerecord.attributes.location.name_la') %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12" style="padding-top: 8px">
+        <%= f.hidden_field :my_id %>
+        <%= f.hidden_field :latitude, id: 'latitude' %>
+        <%= f.hidden_field :longitude, id: 'longitude' %>
+        <div id="map"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><%= t('controls.button.close') %></button>
+      <button type="button" class="btn btn-warning" onclick="update_location()"><%= location.persisted? ? t('titles.edit') : t('titles.add') %></button>
+      <% f.submit location.persisted? ? t('titles.edit') : t('titles.add'), class: 'btn btn-warning' %>
+    </div>
+  <% end %>
+<% end %>
+<script !src="">
+    $('.n_press').keyup(function (e) {
+        if (e.which === 13) {
+            e.preventDefault();
+        } else {
+            set_location_full_name();
+        }
+    });
+    $('select#location_loc_district_id').on('change', function () {
+        call_khoroo($(this));
+    });
+
+    $('select#location_loc_khoroo_id').on('change', function () {
+        call_location($(this));
+    });
+</script>

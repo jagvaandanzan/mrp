@@ -11,13 +11,18 @@ class BonusBalance < ApplicationRecord
   }
 
   scope :balance_by_item, -> (item_ids) {
-    items = where("product_sale_item_id IN (?)",item_ids)
+    items = where("product_sale_item_id IN (?)", item_ids)
     items.sum(:bonus)
   }
 
   private
 
   def sync_web
-    bonu.update_column(:balance, bonu.balance_sum)
+    bal = bonu.balance_sum
+    bonu.update_column(:balance, bal)
+
+    url = "sales/bonus"
+    params = {phones: bonu.bonus_phones.map(&:phone).to_a, balance: bonus, bonus: bal}.to_json
+    ApplicationController.helpers.api_request(url, 'patch', params)
   end
 end

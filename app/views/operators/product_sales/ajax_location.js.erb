@@ -1,0 +1,7 @@
+<% if hide_modal %>
+selected_locatoion_refresh_marker(<%= location.latitude %>, <%=@location.longitude %>);
+$('#product_sale_location_id').html("<option selected='selected' value='<%= @location.id %>'><%= @location.full_name %></option>").selectpicker("refresh");
+$("#location-modal-lg").modal('hide');
+<% else %>
+$('#location-body').html("<%= escape_javascript render(partial: 'operators/product_sales/location', locals: {location: @location}) %>")
+<% end %>

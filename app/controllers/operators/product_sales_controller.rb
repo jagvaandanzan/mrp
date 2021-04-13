@@ -53,10 +53,10 @@ class Operators::ProductSalesController < Operators::BaseController
         end
         @product_sale.phone = sale_call.phone
 
-        @product_sale.location = Location.offset(rand(Location.count)).first
-        @product_sale.building_code = 4.times.map {rand(9)}.join
-        @product_sale.loc_note = (4.times.map {rand(9)}.join) + ', ' + (4.times.map {rand(9)}.join)
-        @product_sale.money = 0
+        # @product_sale.location = Location.offset(rand(Location.count)).first
+        # @product_sale.building_code = 4.times.map {rand(9)}.join
+        # @product_sale.loc_note = (4.times.map {rand(9)}.join) + ', ' + (4.times.map {rand(9)}.join)
+        # @product_sale.money = 0
 
         #   Буцаалт, солилт бол
       elsif params[:parent_id].present?
@@ -199,7 +199,11 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def show
-    @product_sale.set_statuses(true)
+    if @product_sale.status.alias == "oper_from_web"
+      redirect_to action: :edit
+    else
+      @product_sale.set_statuses(true)
+    end
   end
 
   def get_product_features
@@ -219,29 +223,51 @@ class Operators::ProductSalesController < Operators::BaseController
     render json: {price: price, features: features, tumb: img_url}
   end
 
-  def add_location
+  def edit_location
+    @location = params[:id].to_i > 0 ? Location.find(params[:id]) : Location.new(latitude: 47.918772, longitude: 106.917609)
+    @location.my_id = params[:id]
 
-    location = Location.create(
-        operator: current_operator,
-        loc_khoroo_id: params[:khoroo_id],
-        micro_region: params[:micro_region],
-        town: params[:town],
-        street: params[:street],
-        apartment: params[:apartment],
-        entrance: params[:entrance],
-        station_id: params[:station_id],
-        name: params[:name],
-        name_la: params[:name_la],
-        distance: params[:distance],
-        latitude: params[:latitude],
-        longitude: params[:longitude])
-
-    if location.valid?
-      render json: {status: :ok, id: location.id, name: location.full_name}
-    else
-      render json: {status: :error, error: location.errors.full_messages}
+    respond_to do |format|
+      format.js {render 'operators/product_sales/ajax_location', locals: {hide_modal: false}}
     end
+  end
 
+  def update_location
+    location = if params[:id].to_i > 0
+                   Location.find(params[:id])
+                 else
+                   Location.new
+                 end
+
+      location.operator = current_operator
+      location.loc_district_id = params[:loc_district_id]
+      location.loc_khoroo_id = params[:loc_khoroo_id]
+      location.micro_region = params[:micro_region]
+      location.town = params[:town]
+      location.street = params[:street]
+      location.apartment = params[:apartment]
+      location.entrance = params[:entrance]
+      location.station_id = params[:station_id]
+      location.name = params[:name]
+      location.name_la = params[:name_la]
+      location.distance = params[:distance]
+      location.latitude = params[:latitude]
+      location.longitude = params[:longitude]
+
+      if location.save
+        render json: {status: :ok, id: location.id, name: location.full_name}
+      else
+        render json: {status: :error, error: location.errors.full_messages}
+      end
+    # if params['location']['my_id'].to_i > 0
+    #   @location = Location.find(params['location']['my_id'])
+    #   @location.attributes = location_params
+    # else
+    #   @location = Location.new(location_params)
+    # end
+    # respond_to do |format|
+    #   format.js {render 'operators/product_sales/ajax_location', locals: {hide_modal: false}}
+    # end
   end
 
   def search_khoroos
@@ -358,4 +384,11 @@ class Operators::ProductSalesController < Operators::BaseController
                 :status_id, :status_m, :status_sub, :status_note,
                 product_sale_items_attributes: [:id, :product_id, :parent_id, :feature_item_id, :to_see, :quantity, :price, :p_discount, :discount, :sum_price, :remainder, :_destroy])
   end
+
+  def location_params
+    params.require(:location)
+        .permit(:loc_district_id, :loc_khoroo_id, :micro_region, :town, :street, :apartment, :entrance, :name, :name_la, :station_id, :distance, :is_new, :latitude, :longitude)
+        .merge(:operator => current_operator)
+  end
+
 end

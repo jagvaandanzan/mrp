@@ -12,6 +12,7 @@ class Operators::LocationsController < Operators::BaseController
   def new
     @location = Location.new
     @location.loc_khoroo = LocKhoroo.find_by!(id: params[:id])
+    @location.loc_district_id = @location.loc_khoroo.loc_district_id
 
     loo = Location.where(operator: current_operator)
 
@@ -70,7 +71,7 @@ class Operators::LocationsController < Operators::BaseController
 
   def location_params
     params.require(:location)
-        .permit(:loc_khoroo_id, :micro_region, :town, :street, :apartment, :entrance, :name, :name_la, :station_id, :distance, :latitude, :longitude)
+        .permit(:loc_district_id, :loc_khoroo_id, :micro_region, :town, :street, :apartment, :entrance, :name, :name_la, :station_id, :distance, :latitude, :longitude)
         .merge(:operator => current_operator)
   end
 end
