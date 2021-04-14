@@ -124,6 +124,8 @@ class Users::ProductFeatureItemsController < Users::BaseController
 
   def update_feature
     feature_item = ProductFeatureItem.find(params[:item_id])
+    feature_item.product_location_balances.destroy_all
+
     feature_item.is_update = true
     feature_item.barcode = params[:barcode]
     feature_item.price = params[:price]
