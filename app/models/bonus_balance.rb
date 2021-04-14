@@ -22,7 +22,8 @@ class BonusBalance < ApplicationRecord
     bonu.update_column(:balance, bal)
 
     url = "sales/bonus"
-    params = {phones: bonu.bonus_phones.map(&:phone).to_a, balance: bonus, bonus: bal}.to_json
+    cart_id = product_sale.cart_id.presence || 0
+    params = {phones: bonu.bonus_phones.map(&:phone).to_a, balance: bonus, bonus: bal, cart_id: cart_id}.to_json
     ApplicationController.helpers.api_request(url, 'patch', params)
   end
 end
