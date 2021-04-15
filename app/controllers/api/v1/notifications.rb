@@ -74,6 +74,23 @@ module API
             present :qr, '1430664350533053750475141026405108271689485368031610319801940237779770696663503181500249213931200741155140568804509581335789494940493038736835683284108142827879328166754490249488907717634489528234186972418490800353994184260206674997167819014082666894280317034698496925984658198527953347290113422948302779356839239640'
           end
         end
+
+        resource :socialpay do
+          desc "POST notifications/socialpay"
+          params do
+            requires :approval_code, type: String
+            requires :amount, type: String
+            requires :card_number, type: String
+            requires :resp_desc, type: String
+            requires :resp_code, type: String
+            requires :checksum, type: String
+            requires :invoice, type: String
+            optional :terminal, type: String
+          end
+          post do
+            Rails.logger.info("#{socialpay} == #{params}")
+          end
+        end
       end
     end
   end
