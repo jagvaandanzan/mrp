@@ -103,6 +103,22 @@
         $("#location_name").val(n);
     }
 
+    function set_map_marker(id) {
+        Rails.ajax({
+            url: "<%= get_location_operators_locations_path %>",
+            type: "POST",
+            data: "id=" + id,
+            success: function (data) {
+                let myCoords = new google.maps.LatLng(data.latitude, data.longitude);
+                marker.setPosition(myCoords);
+                map.setCenter(marker.getPosition());
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
     $(document).ready(function () {
         $('button.loc_btn').on('click', function () {
             let b_type = $(this).attr('b_type');
@@ -132,6 +148,7 @@
         let loc_name = $('#location_name').val();
         let loc_name_la = $('#location_name_la').val();
         let distance = $('#location_distance').val();
+        let station_id = $('#location_station_id').val();
 
         if (district_id.length === 0) {
             alert("<%= t('activerecord.models.loc_district')+t('controls.select.alert')%>");
@@ -141,7 +158,7 @@
             alert("<%= t('activerecord.attributes.location.name')+t('activerecord.errors.messages.blank')%>");
         } else if (loc_name_la.length === 0) {
             alert("<%= t('activerecord.attributes.location.name_la')+t('activerecord.errors.messages.blank')%>");
-        } else if (distance.length === 0) {
+        } else if (distance.length === 0 && station_id.length === 0) {
             alert("<%= t('activerecord.attributes.location.distance')+t('activerecord.errors.messages.blank')%>");
         } else {
             let btn = $(this);
@@ -155,13 +172,18 @@
                     "&street=" + $('#location_street').val() +
                     "&apartment=" + $('#location_apartment').val() +
                     "&entrance=" + $('#location_entrance').val() +
-                    "&station_id=" + $('#location_station_id').val() +
+                    "&station_id=" + station_id +
                     "&name=" + loc_name + "&distance=" + distance + "&name_la=" + loc_name_la + "&latitude=" + latitude + "&longitude=" + longitude,
                 success: function (data) {
                     btn.removeAttr('disabled');
                     if (data.status === "ok") {
+                        if(data.is_country){
+                            $('#product_sale_country').iCheck('check');
+                            $('#product_sale_money_account').prop('checked', true);
+                            $('div#paid_div').removeClass('none');
+                        }
                         $("#location-modal-lg").modal('hide');
-                        selected_locatoion_refresh_marker(latitude, longitude);
+                        selected_locatoion_refresh_marker(data.latitude, data.longitude);
                         $('#product_sale_location_id').html("<option selected='selected' value=" + data.id + ">" + data.name + "</option>").selectpicker("refresh");
                     } else {
                         alert(data.error)

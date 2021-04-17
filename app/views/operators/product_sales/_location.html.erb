@@ -70,7 +70,7 @@
             <%= f.collection_select :station_id, Location.by_country, :id, :full_name, {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
           </div>
         </div>
-        <div class="col-md-3 field_div">
+        <div class="col-md-3 field_div" id="div_distance">
           <%= f.label :distance, class: 'control-label' %>
           <div id="khoroo_id">
             <%= field_errors(location, :distance) %>
@@ -126,5 +126,13 @@
 
     $('select#location_loc_khoroo_id').on('change', function () {
         call_location($(this));
+    });
+    $('select#location_station_id').on('change', function () {
+        if ($(this).val().length > 0) {
+            set_map_marker($(this).val());
+            $('div#div_distance').addClass('none');
+        } else {
+            $('div#div_distance').removeClass('none');
+        }
     });
 </script>

@@ -63,6 +63,13 @@ class Operators::LocationsController < Operators::BaseController
     redirect_to action: :index, id: @location.loc_khoroo_id
   end
 
+  def get_location
+    location = Location.find(params[:id])
+    if location.present?
+      render json: {latitude: location.latitude, longitude: location.longitude}
+    end
+  end
+
   private
 
   def set_location

@@ -70,7 +70,7 @@
               <%= f.collection_select :station_id, Location.by_country, :id, :full_name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" id="div_distance">
             <%= f.label :distance, class: 'col-sm-3 control-label' %>
             <div class="col-sm-6 <%= get_error_class(@location, :distance) %>">
               <%= field_errors(@location, :distance) %>
@@ -93,6 +93,7 @@
   </section>
 </div>
 <script>
+    var map = null, marker;
 
     function initMap() {
         let lat = document.getElementById('latitude').value;
@@ -105,8 +106,8 @@
             mapTypeId: 'hybrid',
             output: 'embed'
         };
-        let map = new google.maps.Map(document.getElementById('map'), mapOptions);
-        let marker = new google.maps.Marker({
+        map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        marker = new google.maps.Marker({
             position: myCoords,
             animation: google.maps.Animation.DROP,
             map: map,
@@ -148,6 +149,14 @@
                 set_location_full_name();
             }
         });
+        $('select#location_station_id').on('change', function () {
+            if ($(this).val().length > 0) {
+                set_map_marker($(this).val());
+                $('div#div_distance').addClass('none');
+            } else {
+                $('div#div_distance').removeClass('none');
+            }
+        });
     });
 
     function set_location_full_name() {
@@ -160,5 +169,20 @@
         $("#location_name").val(n);
     }
 
+    function set_map_marker(id) {
+        Rails.ajax({
+            url: "<%= get_location_operators_locations_path %>",
+            type: "POST",
+            data: "id=" + id,
+            success: function (data) {
+                let myCoords = new google.maps.LatLng(data.latitude, data.longitude);
+                marker.setPosition(myCoords);
+                map.setCenter(marker.getPosition());
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
 
 </script>

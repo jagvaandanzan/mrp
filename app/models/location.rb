@@ -14,8 +14,12 @@ class Location < ApplicationRecord
   enum distance: {distance_a: 0, distance_b: 1, distance_c: 2, distance_d: 3}
 
   attr_accessor :my_id
-  validates :distance, :loc_district_id, :loc_khoroo_id, presence: true
+  validates :loc_district_id, :loc_khoroo_id, presence: true
   validates :name, :name_la, presence: true
+
+  with_options :unless => Proc.new {|m| m.station_id.present?} do
+    validates :distance, presence: true
+  end
 
   # with_options :if => Proc.new {|m| m.loc_district.country} do
   #   validates :station_id, presence: true

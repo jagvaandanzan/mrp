@@ -255,7 +255,7 @@ class Operators::ProductSalesController < Operators::BaseController
       location.longitude = params[:longitude]
 
       if location.save
-        render json: {status: :ok, id: location.id, name: location.full_name}
+        render json: {status: :ok, id: location.id, name: location.full_name, latitude: location.latitude, longitude: location.longitude, is_country: location.loc_district.country}
       else
         render json: {status: :error, error: location.errors.full_messages}
       end
@@ -291,13 +291,6 @@ class Operators::ProductSalesController < Operators::BaseController
     end
 
     render json: {latitude: latitude, longitude: longitude}
-  end
-
-  def get_location
-    location = Location.find(params[:id])
-    if location.present?
-      render json: {latitude: location.latitude, longitude: location.longitude}
-    end
   end
 
   def get_product_balance

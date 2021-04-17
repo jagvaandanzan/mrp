@@ -217,7 +217,6 @@ Rails.application.routes.draw do
         post 'update_location'
         post 'search_khoroos'
         post 'get_last_location'
-        post 'get_location'
         post 'get_product_balance'
         patch 'update_status'
         post 'get_bonus'
@@ -252,7 +251,11 @@ Rails.application.routes.draw do
     resources :loc_districts, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :bonus, only: [:index, :edit, :update, :destroy]
     resources :loc_khoroos, only: [:index, :create, :new, :edit, :update, :destroy]
-    resources :locations, only: [:index, :create, :new, :show, :edit, :update, :destroy]
+    resources :locations, only: [:index, :create, :new, :show, :edit, :update, :destroy] do
+      collection do
+        post 'get_location'
+      end
+    end
     namespace :distributing do
       get 'index'
       post 'set_travel'

@@ -282,7 +282,7 @@
             let id = $(this).val();
             if (valid_id(id)) {
                 Rails.ajax({
-                    url: "<%= get_location_operators_product_sales_path %>",
+                    url: "<%= get_location_operators_locations_path %>",
                     type: "POST",
                     data: "id=" + id,
                     success: function (data) {
@@ -309,9 +309,8 @@
             if (e.target.checked) {
                 $('#product_sale_money_account').prop('checked', true);
                 $('div#paid_div').removeClass('none');
-                ;
             }
-            location_select.val("").selectpicker("refresh");
+            // location_select.val("").selectpicker("refresh");
         });
         initSelectedMap();
     });
