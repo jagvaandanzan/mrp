@@ -31,7 +31,7 @@ class Location < ApplicationRecord
 
   scope :search_by_name, ->(name, country) {
     items = left_joins(:loc_district)
-                .left_joins(:loc_khoroos)
+                .left_joins(:loc_khoroo)
     items = if country == "true"
               items.where('loc_districts.name LIKE :value OR loc_khoroos.name LIKE :value OR locations.name LIKE :value OR locations.name_la LIKE :value', value: "%#{name}%")
                   .where("loc_districts.country = ?", true)

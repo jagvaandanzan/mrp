@@ -238,6 +238,10 @@ class ProductFeatureItem < ApplicationRecord
 
       self.product_balances << ProductBalance.new(product: product,
                                                   quantity: balance)
+      # шууд үлдэгдэлийг нь өгөөд үүсгэсэн бол
+    elsif !product_balances.present? && balance.present?
+      self.product_balances << ProductBalance.new(product: product,
+                                                  quantity: balance)
     end
   end
 
