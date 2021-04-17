@@ -97,6 +97,12 @@ class SalesmanTravelRoute < ApplicationRecord
     self[:payable]
   end
 
+  def has_any_bought
+    product_sale
+        .product_sale_items
+        .sum(:bought_quantity)
+  end
+
   def phone
     product_sale.phone
   end

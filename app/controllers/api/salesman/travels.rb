@@ -241,7 +241,7 @@ module API
                       message = I18n.t('activerecord.errors.models.salesman.attributes.payable.empty')
                     end
                   else # Аваагүй
-                    if travel_route.main_payable.present?
+                    if travel_route.has_any_bought.presence || 0 > 0
                       r_s = 422
                       message = I18n.t('activerecord.errors.models.salesman.attributes.payable.not_empty')
                     else
