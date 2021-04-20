@@ -42,6 +42,14 @@ class Users::ProductFeatureItemsController < Users::BaseController
   end
 
   def destroy
+    @feature_item
+    same_id_features = ProductFeatureItem.by_product_id(product_id)
+                           .by_same_id(@feature_item.id)
+    if same_id_features.present?
+      same_id_feature = same_id_features.first
+      same_id_feature.update_column(:same_id, nil)
+    end
+
     @feature_item.destroy!
 
     render json: {success: !@feature_item.errors.present?, errors: @feature_item.errors.full_messages}
