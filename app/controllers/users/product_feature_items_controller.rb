@@ -46,7 +46,7 @@ class Users::ProductFeatureItemsController < Users::BaseController
     same_id_features = ProductFeatureItem.by_same_id(@feature_item.id)
     if same_id_features.present?
       same_id_feature = same_id_features.first
-      same_id_feature.update_column(:same_id, nil)
+      same_id_feature.update_column(:same_item_id, nil)
     end
 
     @feature_item.destroy!
