@@ -49,7 +49,7 @@ class Users::ProductFeatureItemsController < Users::BaseController
       same_id_feature.update_column(:same_item_id, nil)
     end
 
-    @feature_item.destroy!
+    @feature_item.destroy
 
     render json: {success: !@feature_item.errors.present?, errors: @feature_item.errors.full_messages}
   end
