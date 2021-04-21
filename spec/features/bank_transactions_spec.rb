@@ -86,9 +86,8 @@ describe "bank transaction check", type: :feature do
         #     transaction_last.account == transaction.account)
 
         # шинэ гүйлгээ тул хадгална
-        if hash_bank_transactions["#{transaction.value}_#{transaction.summary}_#{transaction.account}"].present?
-          break
-        else
+        unless hash_bank_transactions["#{transaction.value}_#{transaction.summary}_#{transaction.account}"].present?
+          #   break
           transaction.save
           # орлого бол шалгана
           if transaction.summary > 0
