@@ -73,7 +73,7 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
       user_name: 'info@market.mn',
       password: 'MArket2013@',
-      port: 587,
+      port: 465,
       domain: 'market.mn',
       address: 'smtp.market.mn',
       authentication: :plain,
