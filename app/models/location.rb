@@ -71,6 +71,16 @@ class Location < ApplicationRecord
     "#{loc_district.name}, #{loc_khoroo.name}, #{name}"
   end
 
+  def address
+    s = "#{loc_district.name}, #{loc_khoroo.name}"
+    s += ", #{micro_region}" if micro_region.present?
+    s += ", #{town}" if town.present?
+    s += ", #{street}" if street.present?
+    s += ", #{apartment}" if apartment.present?
+    s += ", #{entrance}" if entrance.present?
+    s
+  end
+
   private
 
   def set_lng_lat

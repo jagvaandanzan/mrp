@@ -8,6 +8,7 @@ class ProductSaleWeb
     }
     response = ApplicationController.helpers.api_request('sales/payment', 'post', param.to_json)
     if response.code.to_i == 201
+      it_items = []
       json = JSON.parse(response.body)
       cart = json['cart']
       l = cart['location']
@@ -19,8 +20,8 @@ class ProductSaleWeb
                                      hour_start: start_time[0],
                                      hour_end: end_time[0],
                                      loc_note: cart['description'],
-                                     delivery_start: DateTime.new(d[0], d[1], d[2], start_time[0], 0, 0, 8),
-                                     delivery_end: DateTime.new(d[0], d[1], d[2], end_time[0], 0, 0, 8),
+                                     delivery_start: Time.zone.local(d[0], d[1], d[2], start_time[0]),
+                                     delivery_end: Time.zone.local(d[0], d[1], d[2], end_time[0]),
                                      sum_price: cart['payment'],
                                      bonus: cart['bonus'],
                                      money: 1,
@@ -69,10 +70,24 @@ class ProductSaleWeb
         sale_item.sum_price = sum_price
 
         product_sale.product_sale_items << sale_item
+
+        if feature_item.barcode.present?
+          it_items << {quantity: sale_item.quantity, serial_id: feature_item.barcode}
+        end
       end
 
       if product_sale.save
         ApplicationController.helpers.send_sms(product_sale.phone, "Tani zahialga batalgaajlaa. Market.mn")
+        param = {
+            phone: product_sale.phone,
+            address: product_sale.location.address,
+            method: "account",
+            order_id: code.to_i,
+            items: it_items
+        }
+        response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/putenquire", 'post', param.to_json)
+        Rails.logger.debug("43.231.114.241:8882/api/putenquire => #{param.to_json}")
+        Rails.logger.debug("43.231.114.241:8882/api/putenquire => #{response.code.to_s} => #{response.body.to_s}")
       else
         Rails.logger.info("SAVE_zahialga: #{product_sale.errors.full_messages}")
         ApplicationController.helpers.send_sms(product_sale.phone, "Tani zahialga amjiltgui bolloo. Ta 7777-9990 dugaart handana uu?")
