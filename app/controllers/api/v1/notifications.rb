@@ -96,6 +96,23 @@ module API
             end
           end
         end
+
+        resource :itoms do
+          desc "POST notifications/itoms"
+          params do
+            requires :barcode, type: Integer
+          end
+          post do
+            item = ProductFeatureItem.find_by_barcode(params[:barcode])
+            if item.present?
+              present :link, "#{ENV['WEB_DOMAIN']}products/#{item.product_id}"
+              present :image, item.img.present? ? "#{ENV['DOMAIN_NAME']}#{item.img.url}" : "#{ENV['WEB_DOMAIN']}images/no_image.png"
+            else
+              error!("Not found in barcode", 500)
+            end
+          end
+        end
+
       end
     end
   end
