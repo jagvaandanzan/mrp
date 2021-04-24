@@ -72,7 +72,7 @@ class ProductSaleWeb
         product_sale.product_sale_items << sale_item
 
         if feature_item.barcode.present?
-          it_items << {quantity: sale_item.quantity, serial_id: feature_item.barcode}
+          it_items << {quantity: sale_item.quantity, barcode: feature_item.barcode}
         end
       end
 
@@ -82,7 +82,7 @@ class ProductSaleWeb
             phone: product_sale.phone,
             address: product_sale.location.address,
             method: "account",
-            order_id: code.to_i,
+            order_id: code.to_i + 40000000,
             items: it_items
         }
         response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/putenquire", 'post', param.to_json)
