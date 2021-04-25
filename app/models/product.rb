@@ -113,6 +113,9 @@ class Product < ApplicationRecord
   scope :s_by_code, ->(code) {
     where('code LIKE :value', value: "%#{code}%") if code.present?
   }
+  scope :id_than, ->(id) {
+    where('id > ?', id)
+  }
 
   scope :s_by_price_max_min, ->(price_min, price_max) {
     left_joins(:product_feature_items)
