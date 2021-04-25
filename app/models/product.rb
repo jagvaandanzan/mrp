@@ -533,6 +533,7 @@ class Product < ApplicationRecord
   end
 
   def check_image_size
+    # rails paperclip:refresh:thumbnails CLASS=Product
     if self.picture.present?
       img = self.picture
       if img.queued_for_write[:original].present?

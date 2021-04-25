@@ -72,7 +72,7 @@ class ProductSaleWeb
         product_sale.product_sale_items << sale_item
 
         if feature_item.barcode.present?
-          it_items << {quantity: sale_item.quantity, barcode: feature_item.barcode}
+          it_items << {quantity: sale_item.quantity, serial_barcode: feature_item.barcode}
         end
       end
 
@@ -82,12 +82,12 @@ class ProductSaleWeb
             phone: product_sale.phone,
             address: product_sale.location.address,
             method: "account",
-            order_id: code.to_i + 40000000,
+            order_id: code.to_i + 50000100,
             items: it_items
         }
-        response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/putenquire", 'post', param.to_json)
-        Rails.logger.debug("43.231.114.241:8882/api/putenquire => #{param.to_json}")
-        Rails.logger.debug("43.231.114.241:8882/api/putenquire => #{response.code.to_s} => #{response.body.to_s}")
+        response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/mrp-enquire", 'post', param.to_json)
+        # Rails.logger.debug("43.231.114.241:8882/api/mrp-enquire => #{param.to_json}")
+        Rails.logger.debug("43.231.114.241:8882/api/mrp-enquire => #{response.code.to_s} => #{response.body.to_s}")
       else
         Rails.logger.info("SAVE_zahialga: #{product_sale.errors.full_messages}")
         ApplicationController.helpers.send_sms(product_sale.phone, "Tani zahialga amjiltgui bolloo. Ta 7777-9990 dugaart handana uu?")
