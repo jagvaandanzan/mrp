@@ -14,10 +14,6 @@ class ProductFeatureOptionRel < ApplicationRecord
     where("feature_option_id IN (?)", ids)
   }
 
-  scope :by_feature_option_ids, ->(ids) {
-    where("feature_option_id IN (?)", ids)
-  }
-
   scope :by_size_feature_option, ->() {
     joins(:product_feature)
         .joins(:feature_option)
