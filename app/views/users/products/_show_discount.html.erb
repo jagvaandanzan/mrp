@@ -9,6 +9,7 @@
         <table class="table table-hover table-bordered">
           <thead>
           <tr>
+            <th class="text-center"><%= t('activerecord.attributes.product_discount.price') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_discount.percent') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_discount.start_date') %></th>
             <th class="text-center"><%= t('activerecord.attributes.product_discount.end_date') %></th>
@@ -19,6 +20,7 @@
           <tbody>
           <% @product.product_discounts.order_date.each {|discount| %>
             <tr class="field_div">
+              <td><%= get_currency_mn discount.price %></td>
               <td><%= discount.percent %></td>
               <td><%= discount.start_date %></td>
               <td><%= discount.end_date %></td>

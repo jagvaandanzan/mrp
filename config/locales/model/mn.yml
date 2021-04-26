@@ -572,6 +572,7 @@ mn:
       product_income_feature_rel:
         feature_option_id: Шинж чанар, утга
       product_discount:
+        price: Хямдарсан үнэ
         percent: Хувь
         user_id: Зарласан
         start_date: Эхлэх огноо

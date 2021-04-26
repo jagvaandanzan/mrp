@@ -3,8 +3,12 @@ class Users::ProductDiscountsController < Users::BaseController
   before_action :set_product_discount, only: [:edit, :update, :destroy]
 
   def new
+    product_id = params[:pid]
+    feature = ProductFeatureItem.by_product_id(product_id).limit(1).first
     @product_discount = ProductDiscount.new
-    @product_discount.product_id = params[:pid]
+    @product_discount.product_id = product_id
+    @product_discount.real_price = feature.price
+    @product_discount.price = feature.price
   end
 
   def create
@@ -18,7 +22,10 @@ class Users::ProductDiscountsController < Users::BaseController
     end
   end
 
+
   def edit
+    feature = ProductFeatureItem.by_product_id(@product_discount.product_id).limit(1).first
+    @product_discount.real_price = feature.price
   end
 
 
@@ -46,7 +53,7 @@ class Users::ProductDiscountsController < Users::BaseController
   end
 
   def product_discount_params
-    params.require(:product_discount).permit(:product_id, :percent, :start_date, :end_date)
+    params.require(:product_discount).permit(:product_id, :price, :real_price, :start_date, :end_date)
         .merge(user: current_user)
   end
 
