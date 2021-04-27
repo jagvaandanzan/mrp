@@ -39,15 +39,15 @@ class ProductBalance < ApplicationRecord
     product.update_column(:balance, product.balance_sum)
     feature_item.update_column(:balance, feature_item.balance_sum) if feature_item.present?
 
-    if product.is_sync
-      if feature_item.present?
-        url = "product/balance"
-
-        params = {product_id: product_id, feature_item_id: feature_item_id, balance: feature_item.balance}.to_json
-        ApplicationController.helpers.api_request(url, 'patch', params)
-        # response =
-        # Rails.logger.info("response: #{response.body}")
-      end
-    end
+    # if product.is_sync
+    #   if feature_item.present?
+    #     url = "product/balance"
+    #
+    #     params = {product_id: product_id, feature_item_id: feature_item_id, balance: feature_item.balance}.to_json
+    #     ApplicationController.helpers.api_request(url, 'patch', params)
+    #     # response =
+    #     # Rails.logger.info("response: #{response.body}")
+    #   end
+    # end
   end
 end

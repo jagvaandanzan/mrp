@@ -113,6 +113,36 @@ module API
           end
         end
 
+        resource :balance do
+          desc "POST notifications/balance"
+          params do
+            requires :barcode, type: String
+            requires :price, type: String
+            requires :name, type: String
+            requires :company_id, type: String
+            requires :c2_qty, type: Integer
+            requires :item_serials, type: Array[JSON]
+          end
+          post do
+            items = []
+            product_id = nil
+            # Rails.logger.info("itoms_balance")
+            params['item_serials'].each {|ser|
+              item = ProductFeatureItem.find_by_barcode(ser['serial_barcode'])
+              if item.present?
+                product_id = item.product_id if product_id.nil?
+                items << {id: item.id, balance: ser['c2_qty']}
+              end
+              # Rails.logger.info("#{ser['serial_barcode']} == #{ser['c2_qty']}")
+            }
+
+            param = {product_id: product_id, balance: params['c2_qty'], items: items}.to_json
+            Rails.logger.info("itoms_balance_send=#{param}")
+            ApplicationController.helpers.api_request("product/balances", 'patch', param)
+
+          end
+        end
+
       end
     end
   end

@@ -122,7 +122,6 @@ def check_payment(transactions)
       end
 
       puts "bank_send_mrp-enquire => #{[1..transaction_id.length]} => #{payment}"
-      Rails.logger.debug("bank_send_mrp-enquire => #{[1..transaction_id.length]} => #{payment}")
       psw = ProductSaleWeb.instance
       psw.create(transaction_id[1..transaction_id.length], payment)
     end

@@ -8,7 +8,6 @@ class ProductSaleWeb
     }
     response = ApplicationController.helpers.api_request('sales/payment', 'post', param.to_json)
     puts "sales/payment => #{response.code.to_s} => #{response.body.to_s}"
-    Rails.logger.debug("sales/payment => #{response.code.to_s} => #{response.body.to_s}")
     if response.code.to_i == 201
       it_items = []
       json = JSON.parse(response.body)
@@ -88,12 +87,9 @@ class ProductSaleWeb
             items: it_items
         }
         response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/mrp-enquire", 'post', param.to_json)
-        # Rails.logger.debug("43.231.114.241:8882/api/mrp-enquire => #{param.to_json}")
         puts "43.231.114.241:8882/api/mrp-enquire => #{response.code.to_s} => #{response.body.to_s}"
-        Rails.logger.debug("43.231.114.241:8882/api/mrp-enquire => #{response.code.to_s} => #{response.body.to_s}")
       else
         puts "SAVE_zahialga: #{product_sale.errors.full_messages}"
-        Rails.logger.debug("SAVE_zahialga: #{product_sale.errors.full_messages}")
         # ApplicationController.helpers.send_sms(product_sale.phone, "Tani zahialga amjiltgui bolloo. Ta 7777-9990 dugaart handana uu?")
       end
     end
