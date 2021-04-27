@@ -10,7 +10,7 @@ class ProductCategory < ApplicationRecord
 
   accepts_nested_attributes_for :category_filter_groups, allow_destroy: true
 
-  has_attached_file :image, :path => ":rails_root/public/product/image/:id_partition/:style.:extension", styles: {original: "600x600>", tumb: "100x100>"}, :url => '/product/image/:id_partition/:style.:extension'
+  has_attached_file :image, :path => ":rails_root/public/product/image/:id_partition/:style.:extension", styles: {original: "300x300>", tumb: "100x100>"}, :url => '/product/image/:id_partition/:style.:extension'
   validates_attachment :image,
                        content_type: {content_type: ["image/jpeg", "image/jpg", "image/x-png", "image/png"], message: :content_type}
 
