@@ -116,24 +116,12 @@ def check_payment(transactions)
       if transaction.value.downcase.start_with?('qpay', 'mm:qpay')
         transaction_id = transaction.value.downcase.match(/[q]\d+[0-9]/).to_s
         payment = transaction.summary / 99 * 100
-        param_old = {
-            amount: payment,
-            type: "QPAY",
-            transactionNumber: transaction_id[1..transaction_id.length],
-            ibank_id: 0
-        }
       else
         transaction_id = transaction.value.downcase.match(/[w]\d+[0-9]/).to_s
         payment = transaction.summary
-        param_old = {
-            amount: payment,
-            type: "WEB",
-            transactionNumber: transaction_id[1..transaction_id.length],
-            ibank_id: 0
-        }
       end
-      ApplicationController.helpers.sent_market_web("https://market.mn/api/payments", 'post', param_old.to_json)
 
+      Rails.logger.debug("bank_send_mrp-enquire => #{[1..transaction_id.length]} => #{payment}")
       psw = ProductSaleWeb.instance
       psw.create(transaction_id[1..transaction_id.length], payment)
     end

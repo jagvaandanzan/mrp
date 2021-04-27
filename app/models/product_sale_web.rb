@@ -7,6 +7,7 @@ class ProductSaleWeb
         pay: payment
     }
     response = ApplicationController.helpers.api_request('sales/payment', 'post', param.to_json)
+    Rails.logger.debug("sales/payment => #{response.code.to_s} => #{response.body.to_s}")
     if response.code.to_i == 201
       it_items = []
       json = JSON.parse(response.body)
