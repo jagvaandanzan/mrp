@@ -9,6 +9,10 @@ class Users::SaleTaxesController < Users::BaseController
     @register = params[:register]
     @sale_taxes = SaleTax.search(@tax_type, @phone, @email, @register).page(params[:page])
     cookies[:sale_tax_page_number] = params[:page]
+
+    psw = ProductSaleWeb.instance
+    psw.create(10101033, 25000)
+
   end
 
   def new
