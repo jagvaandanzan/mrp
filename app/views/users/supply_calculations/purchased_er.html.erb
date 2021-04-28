@@ -1,0 +1,137 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<div class="content-wrapper">
+
+  <div class="col-md-12 m-t-10 m-b-10">
+    <%= @by_start %> - <%= @by_end %>
+    <h2>Худалдан авсан</h2>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box" id="div_list">
+          <div class="box-body table-responsive no-padding">
+            <%= render 'layouts/flash_message' %>
+            <table id='supply_table' class="table table-hover table-bordered col-xs-12">
+              <tr>
+                <th class="va-mid text-center">Падааны дугаар</th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.order_type') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.product_code') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_name') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
+                <th class="va-mid">Шинж чанар</th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order_item.total_quantity') %></th>
+                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order_item.purchase_quantity') %></th>
+                <th class="va-mid text-center bg-1">Огноо</th>
+                <th class="va-mid text-center bg-1">Зардал</th>
+                <th class="va-mid text-center bg-2">Нэгж үнэ</th>
+                <th class="va-mid text-center bg-2">Нийт үнэ</th>
+                <th class="va-mid text-center bg-2">Тайлбар</th>
+              </tr>
+              <tr>
+                <% sum_not_er_cost = ProductSupplyFeature.by_date(@by_start, @by_end).not_in_er_cost
+                   sum_not_er = ProductSupplyFeature.by_date(@by_start, @by_end).not_in_er%>
+                <th colspan="6">Нийт</th>
+                <th class="va-mid text-center"><%= @products.sum(:quantity) %></th>
+                <th class="va-mid text-center"><%= @products.sum(:quantity_lo) %></th>
+                <th class="va-mid"> </th>
+                <th class="va-mid"><%= sum_not_er_cost %></th>
+                <th><%=  %></th>
+                <th class="va-mid"><%=sum_not_er %></th>
+              </tr>
+              <%@products.each do |i| %>
+                <% order_items = i.order_item %>
+                <% supply_order = order_items.product_supply_order %>
+                <tr  id="supple_order_<%= i.id %>" class="row_product">
+                  <td class="va-mid" >
+                    <%= link_to i.code, users_product_supply_order_path(i, tab_index: 0) %>
+                  </td>
+                  <td class="va-mid">
+                    <%= supply_order.order_type_i18n %>
+                  </td>
+                  <% product = order_items.product if order_items.present? %>
+                  <td class="va-mid">
+                    <%= product.present? ? product.code : i.id %>
+                  </td>
+                  <td class="va-mid">
+                    <%= product.present? ? product.name : '' %>
+                  </td>
+                  <td class="va-mid">
+                    <% if product.present? && product.picture.present? %>
+                      <%= link_to product.picture.url, "data-lightbox": "roadtrip" do %>
+                        <%= t('titles.view') %>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <td class="va-mid">
+                    <% count = 0
+                      feature_ids = []
+                       total_quantity = 0
+                       total_quantity_lo = 0
+                       total_price = 0
+                       if order_items.present?
+                         order_items.supply_features.each_with_index {|supply_feature, index|
+                           feature_ids << supply_feature.id
+                           total_quantity += supply_feature.quantity if supply_feature.quantity.present?
+                           total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
+                           total_price += supply_feature.sum_price_lo
+                            count += 1 %>
+                      <% }
+                         end %>
+                  <%= count %>
+
+                  </td>
+                  <td class="va-mid text-center">
+                    <%= total_quantity > 0 ? total_quantity : '' %>
+                  </td>
+                  <td class="va-mid text-center">
+                    <%= total_quantity_lo > 0 ? total_quantity_lo : '' %>
+                  </td>
+                  <td class="va-mid">
+                    <%= order_items.present? ? order_items.purchase_date : '' %>
+                  </td>
+                  <td class="va-mid">
+                    <%= order_items.present? ? get_currency(order_items.cost, Const::CURRENCY[0], 2) : '' %>
+                  </td>
+                  <td class="va-mid text-center">
+                    <%= get_currency(i.price, Const::CURRENCY[0], 2) %>
+                  </td>
+                  <td>
+                    <%= get_currency(total_price, Const::CURRENCY[0], 2) %>
+                  </td>
+                  <td class="va-mid text-center">
+                    <%= order_items.present? ? order_items.note_lo : '' %>
+                  </td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+
+        <%= paginate @products %>
+      </div>
+    </div>
+  </section>
+</div>
+<%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>
+<script !src="">
+    function removeDuplicateRows($table){
+        function getVisibleRowText($row){
+            return $row.find('td:visible').text().toLowerCase();
+        }
+
+        $table.find('.row_product').each(function(index, row){
+            var $row = $(row);
+            $row.nextAll('tr').each(function(index, next){
+                var $next = $(next);
+                if(getVisibleRowText($next) === getVisibleRowText($row))
+                    $next.remove();
+            })
+        });
+    }
+
+    removeDuplicateRows($('table'));
+</script>

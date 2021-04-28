@@ -6,7 +6,7 @@ class ProductIncomeItem < ApplicationRecord
   belongs_to :product
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
   has_many :income_locations, :class_name => "ProductIncomeLocation", :foreign_key => "income_item_id", dependent: :destroy
-  has_many :product_income_logs, dependent: :destroy
+  has_many :product_income_logs, class_name: "ProductIncomeLog", foreign_key: "product_income_item_id", dependent: :destroy
   has_one :shipping_er, through: :product_income_product
   has_one :shipping_ub_product, through: :product_income_product
   has_one :shipping_ub_sample, through: :product_income_product
@@ -92,6 +92,8 @@ class ProductIncomeItem < ApplicationRecord
         .pluck("shipping_ers.per_price * product_income_items.quantity")
         .sum(&:to_f)
   }
+
+ 
   scope :sum_shipping_ub_product_cost, ->() {
     joins(:shipping_ub_product)
         .pluck("shipping_ub_products.per_price * product_income_items.quantity")

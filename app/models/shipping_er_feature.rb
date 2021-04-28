@@ -2,7 +2,7 @@ class ShippingErFeature < ApplicationRecord
   belongs_to :shipping_er_product
   belongs_to :product
   belongs_to :supply_feature, class_name: 'ProductSupplyFeature'
-  has_many :shipping_ub_features
+  has_many :shipping_ub_features, class_name: "ShippingUbFeature", primary_key: "supply_feature_id", foreign_key: "supply_feature_id", dependent: :destroy
 
   validates :quantity, presence: true
   validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
@@ -14,6 +14,12 @@ class ShippingErFeature < ApplicationRecord
         .where('product_supply_features.order_item_id = ?', order_item_id)
   }
 
+  scope :not_in_ub, ->{
+    joins(:shipping_ub_features, :supply_feature)
+      .pluck("product_supply_features.sum_price_lo")
+      .sum(&:to_f)
+  }
+
   scope :find_to_ub, ->(not_er_feature_ids = nil) {
     items = left_joins(:shipping_ub_features)
                 .group("shipping_er_features.id")
@@ -23,6 +29,10 @@ class ShippingErFeature < ApplicationRecord
       items = items.having("SUM(shipping_ub_features.quantity) IS NULL OR (SUM(shipping_ub_features.quantity) < shipping_er_features.quantity OR shipping_er_features.id IN (?))", not_er_feature_ids)
     end
     items.select("shipping_er_features.*, shipping_er_features.quantity - IFNULL(SUM(shipping_ub_features.quantity), 0) as remainder")
+  }
+
+  scope :by_date, ->(start, finish) {
+    where('? <= shipping_er_features.updated_at AND shipping_er_features.updated_at <= ?', start.to_time, finish.to_time + 1.days)
   }
 
   scope :sum_quantity, ->(er_feature_id) {

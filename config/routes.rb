@@ -201,6 +201,8 @@ Rails.application.routes.draw do
       get 'income_products'
       patch 'set_calculated'
       get 'for_invoice'
+      get 'purchased_er'
+      get 'received_er'
     end
 
     match "*any", to: "base#routing_error", via: :all

@@ -31,6 +31,10 @@ class ProductSupplyOrder < ApplicationRecord
     order(created_at: :desc)
   }
 
+  scope :by_date, ->(start, finish) {
+      where('? <= product_supply_orders.created_at AND product_supply_orders.created_at <= ?', start.to_time, finish.to_time + 1.days)
+  }
+
   scope :search, ->(start, finish, supply_code, product_name, order_type, is_equal) {
     items = order("product_supply_orders.ordered_date": :desc)
     items = items.where('product_supply_orders.code LIKE :value', value: "%#{supply_code}%") if supply_code.present?
