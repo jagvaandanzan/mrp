@@ -10,7 +10,7 @@ class Location < ApplicationRecord
   has_many :product_sales
 
   before_save :set_lng_lat
-  after_save :sync_web
+  after_update :sync_web
   enum distance: {distance_a: 0, distance_b: 1, distance_c: 2, distance_d: 3}
 
   attr_accessor :my_id
