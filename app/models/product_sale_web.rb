@@ -89,7 +89,6 @@ class ProductSaleWeb
             order_id: code.to_i + 50000100,
             items: it_items
         }
-        Rails.logger.info("mrp-enquire=#{param}")
         response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/mrp-enquire", 'post', param.to_json)
         puts "43.231.114.241:8882/api/mrp-enquire => #{response.code.to_s} => #{response.body.to_s}"
       else
