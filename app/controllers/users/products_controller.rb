@@ -72,6 +72,7 @@ class Users::ProductsController < Users::BaseController
   end
 
   def destroy
+    redirect_to action: 'index'
     @product.destroy!
     flash[:success] = t('alert.deleted_successfully')
     redirect_to action: 'index'
