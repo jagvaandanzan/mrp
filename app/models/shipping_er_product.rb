@@ -11,6 +11,7 @@ class ShippingErProduct < ApplicationRecord
 
   attr_accessor :remainder
 
+
   scope :find_to_ub, -> (id = nil, by_product_name) {
     items = left_joins(:shipping_ub_products)
                 .group("shipping_er_products.id")
@@ -21,8 +22,9 @@ class ShippingErProduct < ApplicationRecord
     items
   }
 
+
   scope :by_date, ->(start, finish) {
-    where('? <= created_at AND created_at <= ?', start.to_time, finish.to_time + 1.days)
+    where('? <= shipping_er_products.created_at AND shipping_er_products.created_at <= ?', start.to_time, finish.to_time + 1.days)
   }
 
   def product_bought

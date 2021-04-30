@@ -32,6 +32,7 @@ class ProductSupplyOrderItem < ApplicationRecord
     items
   }
 
+
   scope :order_pin, -> {
     order(pin: :desc)
         .order(:created_at)

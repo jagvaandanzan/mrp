@@ -19,6 +19,12 @@ class ShippingEr < ApplicationRecord
     order(:date)
   }
 
+  scope :by_date, ->(start, finish) {
+    where('? <= updated_at AND updated_at <= ?', start.to_time, finish.to_time + 1.days)
+  }
+
+
+
   scope :search, ->(start, finish, product_name, order_type) {
     items = order_created_at
     items = items.joins(:products)

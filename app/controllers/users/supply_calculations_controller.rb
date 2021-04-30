@@ -6,6 +6,21 @@ class Users::SupplyCalculationsController < Users::BaseController
     @by_end = params[:by_end].presence || (month_1 + 1.month).strftime("%Y/%m/%d")
   end
 
+  def purchased_er
+    @by_start = params[:by_start]
+    @by_end = params[:by_end]
+    @products = ProductSupplyFeature
+                  .by_date(@by_start, @by_end)
+                  .purchased_er
+                  .page(params[:page])
+  end
+
+  def received_er
+    @by_start = params[:by_start]
+    @by_end = params[:by_end]
+    @products = ProductSupplyFeature.by_date(@by_start, @by_end).received_er.page(params[:page])
+  end
+
   def income_products
     @by_start = params[:by_start]
     @by_end = params[:by_end]
