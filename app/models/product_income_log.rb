@@ -1,5 +1,5 @@
 class ProductIncomeLog < ApplicationRecord
-  belongs_to :product_income_item
+  belongs_to :product_income_item, :class_name => "ProductIncomeItem", optional: true
   belongs_to :feature_item_was, :class_name => "ProductFeatureItem", optional: true
   belongs_to :feature_item, :class_name => "ProductFeatureItem", optional: true
   belongs_to :owner, :class_name => "User"

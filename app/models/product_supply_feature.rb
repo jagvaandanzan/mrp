@@ -6,9 +6,12 @@ class ProductSupplyFeature < ApplicationRecord
   has_one :product_income_balance, :class_name => "ProductIncomeBalance", :foreign_key => "supply_feature_id", dependent: :destroy
   has_many :product_income_items, class_name: "ProductIncomeItem", foreign_key: "supply_feature_id", dependent: :destroy
   has_many :shipping_er_features, class_name: "ShippingErFeature", foreign_key: "supply_feature_id", dependent: :destroy
-
+  has_many :shipping_ub_features, class_name: "ShippingUbFeature", foreign_key: "supply_feature_id", dependent: :destroy
+  has_many :shipping_er_product, through: :shipping_er_features
   before_save :set_cn_name
   attr_accessor :is_create, :is_update, :remainder, :cn_name
+
+  enum order_type: {is_basic: 0, is_sample: 1}
 
   with_options :if => Proc.new {|m| m.is_create.present?} do
     validates :quantity, :price, presence: true
@@ -57,8 +60,76 @@ class ProductSupplyFeature < ApplicationRecord
     items
   }
 
+
+  scope :purchased_er, ->{
+    items = left_joins(:shipping_er_features)
+      .where("shipping_er_features.supply_feature_id IS NULL")
+    items = items.joins(:order_item)
+                 .where("product_supply_features.quantity_lo IS NOT NULL AND product_supply_features.price_lo IS NOT NULL AND product_supply_features.sum_price_lo IS NOT NULL AND product_supply_features.note_lo IS NOT NULL")
+    items = items.joins(:product_supply_order)
+    items
+  }
+
+  scope :received_er, ->{
+    items = left_joins(:shipping_er_features)
+                .where("shipping_er_features.supply_feature_id IS NOT NULL")
+    items = items.joins(:shipping_er_product)
+    items = items.joins(:order_item)
+    items = items.joins(:product_supply_order)
+    items
+  }
+
+  scope :not_in_er, ->{
+   left_joins(:shipping_er_features)
+      .where("shipping_er_features.supply_feature_id IS NULL")
+      .pluck("product_supply_features.sum_price_lo")
+      .sum(&:to_f)
+
+  }
+
+  scope :in_er, ->{
+    left_joins(:shipping_er_features)
+      .where("shipping_er_features.supply_feature_id IS not NULL")
+      .pluck("product_supply_features.price_lo * product_supply_features.quantity_lo")
+      .sum(&:to_f)
+  }
+
+
+  scope :not_in_er_cost, ->{
+    cost = left_joins(:shipping_er_features)
+      .where("shipping_er_features.supply_feature_id IS NULL")
+    cost = cost.joins(:order_item)
+               .group("product_supply_features.order_item_id")
+                .pluck("product_supply_order_items.cost")
+                .sum(&:to_f)
+    cost
+  }
+
+  scope :not_in_ub, ->{
+    left_joins(:shipping_ub_features)
+      .where("shipping_ub_features.supply_feature_id IS NULL")
+      .pluck("product_supply_features.sum_price_lo")
+      .sum(&:to_f)
+  }
+
+
+  scope :cargo_count, ->{
+    items = left_joins(:shipping_er_features)
+              .where("shipping_er_features.supply_feature_id IS NOT NULL")
+    items = items.joins(:shipping_er_product)
+                 .group("shipping_er_features.shipping_er_product_id")
+                 .pluck("shipping_er_products.cargo")
+                 .sum
+    items
+  }
+
+
   scope :by_feature_item_id, ->(feature_item_id) {
     where(feature_item_id: feature_item_id)
+  }
+
+  scope :by_feature_id, ->(feature_ids) {
+    where("id IN (?)", feature_ids)
   }
 
   scope :by_product_id, ->(product_id) {
@@ -69,13 +140,22 @@ class ProductSupplyFeature < ApplicationRecord
     where("feature_item_id IN (?)", feature_item_ids)
   }
 
+  scope :by_order_item_id, ->(order_item_id) {
+    where(order_item_id: order_item_id)
+  }
+
   scope :by_date, ->(start, finish) {
-    where('? <= updated_at AND updated_at <= ?', start.to_time, finish.to_time + 1.days)
+    where('? <= product_supply_features.updated_at AND product_supply_features.updated_at <= ?', start.to_time, finish.to_time + 1.days)
   }
 
   scope :sum_price_lo, ->() {
     pluck("price_lo * quantity_lo")
         .sum(&:to_f)
+  }
+
+  scope :sum_cost_lo, ->() {
+    pluck(:cost)
+      .sum(&:to_f)
   }
 
   def price

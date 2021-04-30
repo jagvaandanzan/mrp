@@ -3,13 +3,13 @@
   <%= stylesheet_link_tag "list" %>
 <% end %>
 <style>
-  #tb_calculated tr td {
-    text-align: center;
-  }
+  /*#tb_calculated tr td {*/
+  /*  text-align: center;*/
+  /*}*/
 
-  #tb_calculated tr td:first-child {
-    text-align: left;
-  }
+  /*#tb_calculated tr td:first-child {*/
+  /*  text-align: left;*/
+  /*}*/
 </style>
 <div class="content-wrapper">
 
@@ -35,13 +35,14 @@
 
   <section class="content container-fluid">
     <div class="row">
-      <div class="col-xs-8">
+      <div class="col-xs-12">
         <div class="box" id="div_list">
           <div class="box-body table-responsive no-padding">
             <%= render 'layouts/flash_message' %>
             <table class="table table-bordered" id="tb_calculated">
               <thead>
               <tr>
+                <th rowspan="2" class="va-mid"></th>
                 <th rowspan="2" class="va-mid"><%= @by_start %> - <%= @by_end %></th>
                 <th rowspan="2" class="va-mid">Маркет.мн</th>
                 <th colspan="3" class="text-center">Далай ложистик</th>
@@ -50,7 +51,7 @@
                 <th class="text-center">Зарцуулалт</th>
                 <th class="text-center">Нийлээгүй</th>
                 <th class="text-center">Нийлсэн</th>
-                <th class="text-center">Нийт</th>
+
               </tr>
               </thead>
               <tbody>
@@ -58,12 +59,14 @@
                  prev_transaction = BankTransaction.by_before_start(@by_start).by_dalai.sum(:exc_summary)
                  prev_logistic = LogisticBalance.by_before_start(@by_start).sum_price %>
               <tr>
+                <td></td>
                 <td>Өмнөх үлдэгдэл</td>
                 <td><%= get_currency(prev_logistic - prev_transaction, Const::CURRENCY[0], 2) %></td>
                 <td colspan="3"><%= get_currency(prev_transaction - prev_logistic, Const::CURRENCY[0], 2) %></td>
                 <td></td>
               </tr>
               <tr>
+                <td></td>
                 <td>Орлого</td>
                 <td>-<%= get_currency_mn bank_transaction.sum(:summary) %></td>
                 <td colspan="3"><%= get_currency(bank_transaction.sum(:exc_summary), Const::CURRENCY[0], 2) %></td>
@@ -71,66 +74,160 @@
               </tr>
               <% sum_supply_feature = ProductSupplyFeature.by_date(@by_start, @by_end).sum_price_lo
                  er_product_cost = ShippingErProduct.by_date(@by_start, @by_end).sum(:cost)
-
+                 sum_not_er = ProductSupplyFeature.by_date(@by_start, @by_end).not_in_er
+                 sum_not_er_cost = ProductSupplyFeature.by_date(@by_start, @by_end).not_in_er_cost
+                 sum_in_er = ProductSupplyFeature.by_date(@by_start, @by_end).in_er
+                 not_ub = ShippingErFeature.by_date(@by_start, @by_end).not_in_ub
                  ub_product_cost = ShippingUbProduct.by_date(@by_start, @by_end).sum(:cost)
                  ub_product_cost += ShippingUbBox.by_date(@by_start, @by_end).sum(:cost)
                  ub_product_cost += ShippingUbSample.by_date(@by_start, @by_end).sum(:cost)
+                 ub_sample_cost = ShippingUbSample.by_date(@by_start, @by_end).sum(:cost)
+                 ub_main_cost = ShippingUbProduct.by_date(@by_start, @by_end).sum(:cost)
+
               %>
               <% income_products = ProductIncomeProduct.by_date(@by_start, @by_end)
                  income_items = ProductIncomeItem.by_income_date(@by_start, @by_end)
+
                  sum_supply_feature_cost_n = income_items.by_calc_nil("true").sum_supply_feature_cost
                  sum_supply_feature_cost_c = income_items.by_calc_nil("false").sum_supply_feature_cost
                  sum_shipping_er_cost_n = income_items.by_calc_nil("true").sum_shipping_er_cost
                  sum_shipping_er_cost_c = income_items.by_calc_nil("false").sum_shipping_er_cost
                  sum_shipping_ub_n = income_items.by_calc_nil("true").sum_shipping_ub_product_cost + income_items.by_calc_nil("true").sum_shipping_ub_sample_cost
                  sum_shipping_ub_c = income_items.by_calc_nil("false").sum_shipping_ub_product_cost + income_items.by_calc_nil("false").sum_shipping_ub_sample_cost %>
+
               <tr>
-                <td>Худалдан авалт</td>
+                <td rowspan="3">Эрээнд хүлээж аваагүй</td>
+                <td>Барааны дүн</td>
+                <td> </td>
+                <td><%= get_currency(sum_not_er, Const::CURRENCY[0], 2) %> </td>
+                <td> </td>
                 <td></td>
-                <td><%= get_currency(sum_supply_feature, Const::CURRENCY[0], 2) %></td>
-                <td><%= get_currency(sum_supply_feature_cost_n, Const::CURRENCY[0], 2) %></td>
-                <td><%= get_currency(sum_supply_feature_cost_c, Const::CURRENCY[0], 2) %></td>
-                <td><%= get_currency(sum_supply_feature_cost_n + sum_supply_feature_cost_c, Const::CURRENCY[0], 2) %></td>
               </tr>
               <tr>
-                <td>Эрээнд хүлээн авсан</td>
+                <td>Ачааны зардал</td>
+                <td></td>
+                <td><%= get_currency(sum_not_er_cost, Const::CURRENCY[0], 2) %></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="text-right"><strong>Худалдан авалт хийсэн нийт дүн</strong></td>
+                <td></td>
+                <td><%= link_to get_currency(sum_not_er_cost + sum_not_er, Const::CURRENCY[0], 2), users_supply_calculations_purchased_er_path(by_start: @by_start, by_end: @by_end)%></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td rowspan="3">Эрээнд хүлээн авсан</td>
+                <td>Барааны дүн</td>
+                <td></td>
+                <td><%= get_currency(sum_in_er, Const::CURRENCY[0], 2) %></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Ачааны зардал</td>
                 <td></td>
                 <td><%= get_currency(er_product_cost, Const::CURRENCY[0], 2) %></td>
-                <td><%= get_currency(sum_shipping_er_cost_n, Const::CURRENCY[0], 2) %></td>
-                <td><%= get_currency(sum_shipping_er_cost_c, Const::CURRENCY[0], 2) %></td>
-                <td><%= get_currency(sum_shipping_er_cost_n + sum_shipping_er_cost_c, Const::CURRENCY[0], 2) %></td>
-              </tr>
-              <tr>
-                <td>Эрээнээс УБ-луу</td>
                 <td></td>
-                <td><%= get_currency(ub_product_cost, Const::CURRENCY[0], 2) %></td>
-                <td><%= get_currency(sum_shipping_ub_n, Const::CURRENCY[0], 2) %></td>
-                <td><%= get_currency(sum_shipping_ub_c, Const::CURRENCY[0], 2) %></td>
-                <td><%= get_currency(sum_shipping_ub_n + sum_shipping_ub_c, Const::CURRENCY[0], 2) %></td>
-              </tr>
-              <tr>
-                <td>Нийт</td>
                 <td></td>
-                <td><%= get_currency(sum_supply_feature + er_product_cost + ub_product_cost, Const::CURRENCY[0], 2) %></td>
-                <% s_n = sum_supply_feature_cost_n + sum_shipping_er_cost_n + sum_shipping_ub_n
-                   s_c = sum_supply_feature_cost_c + sum_shipping_er_cost_c + sum_shipping_ub_c %>
-                <td><%= get_currency(s_n, Const::CURRENCY[0], 2) %></td>
-                <td><%= get_currency(s_c, Const::CURRENCY[0], 2) %></td>
-                <td class="text-bold"><%= get_currency(s_n + s_c, Const::CURRENCY[0], 2) %></td>
               </tr>
               <tr>
-                <td>Тодруулах/ Түгжигдсэн</td>
+                <td class="text-right"><strong>Нийт дүн</strong></td>
+                <td></td>
+                <td><%= link_to get_currency(sum_in_er + er_product_cost, Const::CURRENCY[0], 2), users_supply_calculations_received_er_path(by_start: @by_start, by_end: @by_end)%></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td rowspan="4"> Улаанбаатарлуу Ачуулсан</td>
+                <td>Нийт барааны мөнгөн дүн</td>
+                <td></td>
+                <td><%= get_currency(not_ub, Const::CURRENCY[0], 2) %></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Үндсэн барааны ачааны тээврийн зардал</td>
+                <td></td>
+                <td><%= get_currency(ub_main_cost, Const::CURRENCY[0], 2) %></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Дээж барааны ачааны тээврийн зардал</td>
+                <td></td>
+                <td><%= get_currency(ub_sample_cost, Const::CURRENCY[0], 2) %></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="text-right"><strong>Нийт дүн</strong></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td rowspan="4">Орлогод авсан</td>
+                <td>Худалдаж авсан барааны дүн </td>
+                <td></td>
+                <td class="text-center"><%= get_currency(sum_supply_feature_cost_n + sum_supply_feature_cost_c, Const::CURRENCY[0], 2) %></td>
+                <td class="text-center"><%= get_currency(sum_supply_feature_cost_n, Const::CURRENCY[0], 2) %></td>
+                <td class="text-center"><%= get_currency(sum_supply_feature_cost_c, Const::CURRENCY[0], 2) %></td>
+              </tr>
+              <tr>
+                <td>Эрээнд хүлээн авсан ачааны зардал</td>
+                <td></td>
+                <td class="text-center"><%= get_currency(sum_shipping_er_cost_c + sum_shipping_er_cost_n, Const::CURRENCY[0], 2) %></td>
+                <td class="text-center"><%= get_currency(sum_shipping_er_cost_n, Const::CURRENCY[0], 2) %></td>
+                <td class="text-center"><%= get_currency(sum_shipping_er_cost_c, Const::CURRENCY[0], 2) %></td>
+              </tr>
+              <tr>
+                <td>УБ-луу ачуулсан тээврийн зардал</td>
+                <td></td>
+                <td class="text-center"><%= get_currency(sum_shipping_ub_c + sum_shipping_ub_n, Const::CURRENCY[0], 2) %></td>
+                <td class="text-center"><%= get_currency(sum_shipping_ub_n, Const::CURRENCY[0], 2) %></td>
+                <td class="text-center"><%= get_currency(sum_shipping_ub_c, Const::CURRENCY[0], 2) %></td>
+              </tr>
+              <tr>
+                <td class="text-right"><strong>Нийт дүн</strong></td>
+                <td></td>
+                <td class="text-center"><%= get_currency(sum_shipping_ub_c + sum_shipping_ub_n + sum_shipping_er_cost_c + sum_shipping_er_cost_n + sum_supply_feature_cost_n + sum_supply_feature_cost_c, Const::CURRENCY[0], 2) %></td>
+                <td class="text-center"><%= get_currency(sum_shipping_ub_n + sum_shipping_er_cost_n + sum_supply_feature_cost_n, Const::CURRENCY[0], 2) %></td>
+                <td class="text-center"><%= get_currency(sum_shipping_ub_c + sum_shipping_er_cost_c + sum_supply_feature_cost_c, Const::CURRENCY[0], 2) %></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td class="text-right"><strong>Нийт зарцуулалт</strong></td>
+                <td></td>
+                <td><strong><%= get_currency(sum_supply_feature + er_product_cost + ub_product_cost + sum_not_er_cost, Const::CURRENCY[0], 2) %></strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td class="text-right">Тодруулах/ Түгжигдсэн</td>
                 <td></td>
                 <td colspan="3"><%= income_items.by_clarify(true).count %></td>
-                <td></td>
               </tr>
               <tr>
-                <td>Бараа</td>
+                <td></td>
+                <td class="text-right">Барааны тоо</td>
                 <td></td>
                 <td></td>
                 <td><%= link_to income_products.by_calc_nil("true").count, users_supply_calculations_income_products_path(by_start: @by_start, by_end: @by_end, by_nil: true), target: '_blank' %></td>
                 <td><%= link_to income_products.by_calc_nil("false").count, users_supply_calculations_income_products_path(by_start: @by_start, by_end: @by_end, by_nil: false), target: '_blank' %></td>
+              </tr>
+              <tr>
                 <td></td>
+                <td class="text-right">Далайгийн үлдэгдэл</td>
+                <td></td>
+                <% sum = bank_transaction.sum(:summary) + prev_logistic - prev_transaction
+                   sum_product = sum_supply_feature + er_product_cost + ub_product_cost + sum_not_er_cost
+                %>
+                <td><%= get_currency( sum_product - sum, Const::CURRENCY[0], 2) %></td>
+                <td><%= link_to income_products.by_calc_nil("true").count, users_supply_calculations_income_products_path(by_start: @by_start, by_end: @by_end, by_nil: true), target: '_blank' %></td>
+                <td><%= link_to income_products.by_calc_nil("false").count, users_supply_calculations_income_products_path(by_start: @by_start, by_end: @by_end, by_nil: false), target: '_blank' %></td>
               </tr>
               </tbody>
             </table>
