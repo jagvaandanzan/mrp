@@ -150,6 +150,11 @@ class ProductFeatureItem < ApplicationRecord
       where("products.category_id IN (?)", ids)
     end
   }
+  scope :by_category_ids, ->(ids) {
+    left_joins(:product)
+        .where("products.category_id IN (?)", ids)
+        .where("barcode IS ?", nil)
+  }
   scope :by_balance, ->(balance) {
     having("#{balance == "true" ? 'SUM(product_balances.quantity) > ?' : 'SUM(product_balances.quantity) IS NULL OR SUM(product_balances.quantity) = ?'} ", 0) if balance.present?
   }
