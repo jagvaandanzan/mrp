@@ -38,6 +38,8 @@
                     <th><%= t('activerecord.attributes.product_sale_item.price') %></th>
                     <th><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
                     <th><%= t('activerecord.attributes.product_sale_item.remainder') %></th>
+                    <th>Харилцагчийн агуулах</th>
+                    <th>Ажиллах хуваарь</th>
                     <th width="50px">
                       <%= link_to_add_association f, :product_call_items, data: {association_insertion_node: '#tb_product_call_items', association_insertion_method: :append} do %>
                         <%= nested_add_btn('btn_product_call_item') %>
@@ -165,7 +167,7 @@
     function set_product_call_item() {
         let last_tr = "#tb_product_call_items .nested-fields:last";
         $(last_tr).find('.selectpicker').selectpicker('refresh');
-        select_input_press($(last_tr + ' select:first'), "<%= search_product_path %>", true);
+        select_input_press($(last_tr + ' select:first'), "<%= search_product_path %>", false);
     }
 
     function reset_input_vals(tr) {
@@ -206,7 +208,6 @@
                     parentTr.find('.image').html("<a href='<%= ENV['WEB_DOMAIN'] %>products/" + product_id + "' target='_blank'> <img src='" + data.tumb + "', class='tumb'></a>");
                     parentTr.find("input.item_price").attr('price', data.price).val(getDecimalPay(data.price));
 
-
                     calc_total_price();
                 },
                 error: function (data) {
@@ -226,12 +227,15 @@
             Rails.ajax({
                 url: "<%= get_product_balance_operators_product_sales_path %>",
                 type: "POST",
-                data: "product_id=" + product_id + "&feature_item_id=" + feature_id,
+                data: "product_id=" + product_id + "&feature_item_id=" + feature_id + "&date=<%= (@sale_call.persisted? ? @sale_call.created_at : Time.current).strftime('%F') %>",
                 success: function (data) {
                     parentTr.find("input.item_price").val(data.price);
                     parentTr.find("input.item_price_show").val(getDecimalPay(data.price));
                     parentTr.find('.remainder').val(data.balance);
                     parentTr.find('.image a').html("<img src='" + data.tumb + "', class='tumb'>");
+                    parentTr.find("td.warehouse").text(data.warehouse);
+                    parentTr.find("td.working_hours").text(data.working_hours);
+
                     calc_total_price();
                 },
                 error: function (data) {

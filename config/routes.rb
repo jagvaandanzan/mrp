@@ -94,6 +94,12 @@ Rails.application.routes.draw do
 
     resources :product_categories, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :customers, only: [:index, :create, :new, :show, :edit, :update, :destroy]
+    resources :customer_warehouses, only: [:create, :new, :edit, :update, :destroy]
+    resources :customer_imports, only: [:new, :create] do
+      collection do
+        post 'customer_warehouse'
+      end
+    end
     resources :product_feature_groups, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_features, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :product_feature_options, only: [:index, :create, :new, :edit, :update, :destroy]

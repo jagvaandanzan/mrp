@@ -1,0 +1,73 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<div class="content-wrapper index">
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-8">
+        <div class="box">
+          <div class="p-l-10"><strong>Харилцагчийн үлдэгдэл оруулах</strong></div>
+          <div class="box-info">
+            <%= form_with model: @customer_import, url: users_customer_imports_path, method: :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+              <%= form_body do %>
+                <div class="form-group">
+                  <%= f.label :customer_id, class: 'col-sm-3 control-label' do %>Харилцагч
+                  <% end %>
+                  <div class="col-sm-9 <%= get_error_class(@customer_import, :customer_id) %>">
+                    <%= field_errors(@customer_import, :customer_id) %>
+                    <%= f.collection_select :customer_id, Customer.order_by_name, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <%= f.label :warehouse_id, class: 'col-sm-3 control-label' do %>Агуулах
+                  <% end %>
+                  <div class="col-sm-9 <%= get_error_class(@customer_import, :warehouse_id) %>">
+                    <%= field_errors(@customer_import, :warehouse_id) %>
+                    <% if @customer_import.customer_id.present? %>
+                      <%= f.collection_select :warehouse_id, CustomerWarehouse.by_customer_id(@customer_import.customer_id), :id, :full_name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
+                    <% else %>
+                      <%= f.select :warehouse_id, options_for_select([]), {:prompt => t('controls.select.none')}, {class: 'form-control'} %>
+                    <% end %>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <%= f.label :file, class: 'col-sm-3 control-label' do %>
+                    Эксел файл хуулах
+                  <% end %>
+                  <div class="col-sm-7 <%= get_error_class(@customer_import, :file) %>">
+                    <%= field_errors(@customer_import, :file) %>
+                    <%= f.file_field :file, accept: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" %>
+                  </div>
+                  <div class="col-sm-2">
+                    <%= link_to '/files/Hariltsagchiin aguulahiin uldegdel tatah file.xlsx', class: 'pull-right' do %>
+                      <button type="button" class="btn-xs btn-info"><i class="fa fa-file-excel-o"></i>&nbsp;Загвар татах
+                      </button>
+                    <% end %>
+                  </div>
+                </div>
+                <div class="action-buttons">
+                  <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+    $(function () {
+        $('#customer_import_customer_id').on('change', function () {
+            let id = $(this).val();
+            if (id !== "" && id !== undefined && id !== null) {
+                Rails.ajax({
+                    url: "<%= customer_warehouse_users_customer_imports_path %>",
+                    type: "POST",
+                    data: "id=" + id
+                });
+            }
+        });
+    });
+</script>

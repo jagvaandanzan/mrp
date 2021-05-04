@@ -3,6 +3,7 @@ class ProductFeatureItem < ApplicationRecord
   belongs_to :option1, -> {with_deleted}, :class_name => "ProductFeatureOption"
   belongs_to :option2, -> {with_deleted}, :class_name => "ProductFeatureOption"
   belongs_to :same_item, :class_name => "ProductFeatureItem", optional: true
+  belongs_to :customer_warehouse, optional: true
 
   has_many :product_sale_items, :class_name => "ProductSaleItem", :foreign_key => "feature_item_id", dependent: :destroy
   has_many :product_supply_features, :class_name => "ProductSupplyFeature", :foreign_key => "feature_item_id", dependent: :destroy
@@ -83,6 +84,9 @@ class ProductFeatureItem < ApplicationRecord
 
   scope :by_product_id, ->(product_id) {
     where(product_id: product_id)
+  }
+  scope :by_barcode, ->(barcode) {
+    where(barcode: barcode)
   }
   scope :search, ->(product_id) {
     if product_id.nil?
@@ -224,6 +228,34 @@ class ProductFeatureItem < ApplicationRecord
       end
     else
       0
+    end
+  end
+
+  def warehouse
+    "#{product.customer.name}: #{customer_warehouse.name}" if customer_warehouse.present?
+  end
+
+  def working_hours(date)
+    if customer_warehouse.present?
+      w = customer_warehouse
+      case date.to_date.wday
+      when 1
+        "Да: #{ApplicationController.helpers.get_hours(w.mo_start, w.mo_end)}"
+      when 2
+        "Мя: #{ApplicationController.helpers.get_hours(w.tu_start, w.tu_end)}"
+      when 3
+        "Лх: #{ApplicationController.helpers.get_hours(w.we_start, w.we_end)}"
+      when 4
+        "Пү: #{ApplicationController.helpers.get_hours(w.th_start, w.th_end)}"
+      when 5
+        "Ба: #{ApplicationController.helpers.get_hours(w.fr_start, w.fr_end)}"
+      when 6
+        "Бя: #{ApplicationController.helpers.get_hours(w.sa_start, w.sa_end)}"
+      else
+        "Ня: #{ApplicationController.helpers.get_hours(w.su_start, w.su_end)}"
+      end
+    else
+      ""
     end
   end
 

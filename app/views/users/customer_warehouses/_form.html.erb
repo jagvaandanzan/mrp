@@ -1,0 +1,133 @@
+<% provide :head_tags do %>
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_KEY'] %>&libraries=places"></script>
+<% end %>
+<div class="content-wrapper">
+  <%= render 'layouts/breadcrumbs', data: [
+      [users_customers_path, t('activerecord.models.customer')],
+      [users_customer_path(@warehouse.customer), @warehouse.customer.name], t('activerecord.models.customer_warehouse') + t(@warehouse.persisted? ? 'titles.edit' : 'titles.add')] %>
+
+  <section class="content">
+    <div class="box box-info">
+      <%= form_with model: @warehouse, url: @warehouse.persisted? ? users_customer_warehouse_path : users_customer_warehouses_path, method: @warehouse.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <%= f.hidden_field :customer_id %>
+          <div class="form-group">
+            <%= f.label :name, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@warehouse, :name) %>">
+              <%= field_errors(@warehouse, :name) %>
+              <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.customer_warehouse.name') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :description, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-9 <%= get_error_class(@warehouse, :description) %>">
+              <%= field_errors(@warehouse, :description) %>
+              <%= f.text_area :description, class: 'form-control', placeholder: t('activerecord.attributes.customer_warehouse.description') %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="col-sm-3 control-label">Цагийн хуваарь</label>
+            <div class="col-sm-9">
+              <table class="table table-bordered">
+                <tr>
+                  <th></th>
+                  <th>Даваа</th>
+                  <th>Мягмар</th>
+                  <th>Лхагва</th>
+                  <th>Пүрэв</th>
+                  <th>Баасан</th>
+                  <th>Бямба</th>
+                  <th>Ням</th>
+                </tr>
+                <tr>
+                  <td>Нээх цаг</td>
+                  <td><%= f.select :mo_start, (@warehouse.mo_start.present? ? 0 : @warehouse.mo_start.to_i)..23, {}, {class: 'form-control'} %></td>
+                  <td><%= f.select :tu_start, (@warehouse.tu_start.present? ? 0 : @warehouse.tu_start.to_i)..23, {}, {class: 'form-control'} %></td>
+                  <td><%= f.select :we_start, (@warehouse.we_start.present? ? 0 : @warehouse.we_start.to_i)..23, {}, {class: 'form-control'} %></td>
+                  <td><%= f.select :th_start, (@warehouse.th_start.present? ? 0 : @warehouse.th_start.to_i)..23, {}, {class: 'form-control'} %></td>
+                  <td><%= f.select :fr_start, (@warehouse.fr_start.present? ? 0 : @warehouse.fr_start.to_i)..23, {}, {class: 'form-control'} %></td>
+                  <td><%= f.select :sa_start, (@warehouse.sa_start.present? ? 0 : @warehouse.sa_start.to_i)..23, {}, {class: 'form-control'} %></td>
+                  <td><%= f.select :su_start, (@warehouse.su_start.present? ? 0 : @warehouse.su_start.to_i)..23, {}, {class: 'form-control'} %></td>
+                </tr>
+                <tr>
+                  <td>Хаах цаг</td>
+                  <td><%= f.select :mo_end, (@warehouse.mo_end.present? ? 0 : @warehouse.mo_end.to_i)..23, {}, {class: 'form-control'} %></td>
+                  <td><%= f.select :tu_end, (@warehouse.tu_end.present? ? 0 : @warehouse.tu_end.to_i)..23, {}, {class: 'form-control'} %></td>
+                  <td><%= f.select :we_end, (@warehouse.we_end.present? ? 0 : @warehouse.we_end.to_i)..23, {}, {class: 'form-control'} %></td>
+                  <td><%= f.select :th_end, (@warehouse.th_end.present? ? 0 : @warehouse.th_end.to_i)..23, {}, {class: 'form-control'} %></td>
+                  <td><%= f.select :fr_end, (@warehouse.fr_end.present? ? 0 : @warehouse.fr_end.to_i)..23, {}, {class: 'form-control'} %></td>
+                  <td><%= f.select :sa_end, (@warehouse.sa_end.present? ? 0 : @warehouse.sa_end.to_i)..23, {}, {class: 'form-control'} %></td>
+                  <td><%= f.select :su_end, (@warehouse.su_end.present? ? 0 : @warehouse.su_end.to_i)..23, {}, {class: 'form-control'} %></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <%= f.hidden_field :latitude, id: 'latitude' %>
+          <%= f.hidden_field :longitude, id: 'longitude' %>
+          <div class="form-group">
+            <div class="col-sm-12">
+              <div id="map"></div>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>
+<script>
+    var map = null, marker;
+
+    function initMap() {
+        let lat = document.getElementById('latitude').value;
+        let lng = document.getElementById('longitude').value;
+
+        let myCoords = new google.maps.LatLng(lat, lng);
+        let mapOptions = {
+            center: myCoords,
+            zoom: 17,
+            mapTypeId: 'hybrid',
+            output: 'embed'
+        };
+        map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        marker = new google.maps.Marker({
+            position: myCoords,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            draggable: true
+        });
+
+        // refresh marker position and recenter map on marker
+        function refreshMarker() {
+            let lat = document.getElementById('latitude').value;
+            let lng = document.getElementById('longitude').value;
+            let myCoords = new google.maps.LatLng(lat, lng);
+            marker.setPosition(myCoords);
+            map.setCenter(marker.getPosition());
+        }
+
+        // when input values change call refreshMarker
+        document.getElementById('latitude').onchange = refreshMarker;
+        document.getElementById('longitude').onchange = refreshMarker;
+        // when marker is dragged update input values
+        marker.addListener('drag', function () {
+            latlng = marker.getPosition();
+            newlat = (Math.round(latlng.lat() * 1000000)) / 1000000;
+            newlng = (Math.round(latlng.lng() * 1000000)) / 1000000;
+            document.getElementById('latitude').value = newlat;
+            document.getElementById('longitude').value = newlng;
+        });
+        // When drag ends, center (pan) the map on the marker position
+        marker.addListener('dragend', function () {
+            map.panTo(marker.getPosition());
+        });
+    }
+
+    $(function () {
+        initMap();
+    });
+
+</script>

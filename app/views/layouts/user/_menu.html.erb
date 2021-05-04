@@ -64,6 +64,7 @@
       <% end %>
       <% if can? :read, Product %>
         <%= content_tag :li, class: (controller_name == 'products' || controller_name == 'product_feature_rels' || controller_name == 'product_feature_items' ||
+            controller_name == 'customer_imports' ||
             controller_name == 'product_reports') ? 'treeview active' : 'treeview' do %>
           <%= link_to "#" do %>
             <i class="fa fa-cube"></i><span><%= t('titles.products') %></span>
@@ -77,7 +78,7 @@
                 <i class="fa fa-list"></i><span><%= t('titles.list') %></span>
               <% end %>
             <% end %>
-            <%= content_tag :li, class: controller_name == 'product_feature_items' ? 'active' : '' do %>
+            <%= content_tag :li, class: controller_name == 'product_feature_items' || controller_name == 'customer_imports' ? 'active' : '' do %>
               <%= link_to balance_users_product_feature_items_path do %>
                 <i class="fa fa-balance-scale"></i><span><%= t('titles.balance') %></span>
               <% end %>
@@ -127,21 +128,6 @@
           <% end %>
         <% end %>
       <% end %>
-      <% if can? :read, BankTransaction %>
-        <%= content_tag :li, class: controller_name == 'bank_transactions' ? 'active' : '' do %>
-          <%= link_to users_bank_transactions_path do %>
-            <i class="fa fa-dollar"></i><span><%= t('titles.bank_transactions') %></span>
-          <% end %>
-        <% end %>
-      <% end %>
-      <% if can? :read, SmsMessage %>
-        <%= content_tag :li, class: controller_name == 'sms_messages' ? 'active' : '' do %>
-          <%= link_to users_sms_messages_path do %>
-            <i class="fa fa-send"></i><span><%= t('titles.sms_messages') %></span>
-          <% end %>
-        <% end %>
-      <% end %>
-
       <% if (can? :read, Location) || (can? :read, Product) || (can? :read, ProductLocation) || (can? :read, Operator) || (can? :read, ProductSupplier) %>
         <%= content_tag :li, class: controller_name == 'product_categories' || controller_name == 'customers' ||
             controller_name == 'product_feature_groups' || controller_name == 'product_features' || controller_name == 'product_feature_options' ||
@@ -219,6 +205,20 @@
                 <% end %>
               <% end %>
             <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <% if can? :read, BankTransaction %>
+        <%= content_tag :li, class: controller_name == 'bank_transactions' ? 'active' : '' do %>
+          <%= link_to users_bank_transactions_path do %>
+            <i class="fa fa-dollar"></i><span><%= t('titles.bank_transactions') %></span>
+          <% end %>
+        <% end %>
+      <% end %>
+      <% if can? :read, SmsMessage %>
+        <%= content_tag :li, class: controller_name == 'sms_messages' ? 'active' : '' do %>
+          <%= link_to users_sms_messages_path do %>
+            <i class="fa fa-send"></i><span><%= t('titles.sms_messages') %></span>
           <% end %>
         <% end %>
       <% end %>

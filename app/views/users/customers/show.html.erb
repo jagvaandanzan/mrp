@@ -87,7 +87,76 @@
             </table>
           </div>
         </div>
+        <div class="m30">
+          <div class="align-left">Агуулахын мэдээлэл :</div>
+          <div class="col-data">
+            <%= link_to new_users_customer_warehouse_path(customer_id: @customer.id) do %>
+              <button type="button" class="btn btn-success btn-xs">
+                <i class="fa fa-plus" style="color: white"></i></button>
+            <% end %>
+            <% @customer.customer_warehouses.each {|warehouse| %>
+              <table style="width: 100%;margin-bottom: 8px">
+                <tr>
+                  <td><strong>Нэр</strong></td>
+                  <td><%= warehouse.name %>
+                    <%= link_to t('controls.button.delete'), users_customer_warehouse_path(warehouse), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn-sm btn-danger pull-right' %>
+                    <%= link_to t('controls.button.edit'), edit_users_customer_warehouse_path(warehouse), class: 'btn-sm btn-info pull-right' %>
+                  </td>
+                  <td rowspan="3">
+                    <iframe src="http://maps.google.com/maps?q=<%= warehouse.latitude %>,<%= warehouse.longitude %>&z=15&output=embed&t=k&f=l"></iframe>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: top"><strong>Цагийн хуваарь</strong></td>
+                  <td>
+                    <table class="inner-table">
+                      <tr>
+                        <td></td>
+                        <td>Даваа</td>
+                        <td>Мягмар</td>
+                        <td>Лхагва</td>
+                        <td>Пүрэв</td>
+                        <td>Баасан</td>
+                        <td>Бямба</td>
+                        <td>Ням</td>
+                      </tr>
+                      <tr>
+                        <td>Нээх цаг</td>
+                        <td><%= warehouse.mo_start %></td>
+                        <td><%= warehouse.tu_start %></td>
+                        <td><%= warehouse.we_start %></td>
+                        <td><%= warehouse.th_start %></td>
+                        <td><%= warehouse.fr_start %></td>
+                        <td><%= warehouse.sa_start %></td>
+                        <td><%= warehouse.su_start %></td>
+                      </tr>
+                      <tr>
+                        <td>Хаах цаг</td>
+                        <td><%= warehouse.mo_end %></td>
+                        <td><%= warehouse.tu_end %></td>
+                        <td><%= warehouse.we_end %></td>
+                        <td><%= warehouse.th_end %></td>
+                        <td><%= warehouse.fr_end %></td>
+                        <td><%= warehouse.sa_end %></td>
+                        <td><%= warehouse.su_end %></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Тайлбар</strong></td>
+                  <td><%= warehouse.description %></td>
+                </tr>
+              </table>
+            <% } %>
+          </div>
+        </div>
       </div>
     </div>
   <% end %>
 </div>
+<style>
+  .inner-table td {
+    border: 1px solid darkgray;
+  }
+</style>

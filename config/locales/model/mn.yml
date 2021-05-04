@@ -187,6 +187,7 @@ mn:
       product_category: Ангилал
       product_location: Байршил
       customer: Харилцагч
+      customer_warehouse: Агуулахын мэдээлэл
       product_feature: Шинж чанар
       product_feature_group: Өнгө
       product_feature_option: Шинж чанарын утга
@@ -311,6 +312,9 @@ mn:
         description: Дэлгэрэнгүй
         supply_price: Нийлүүлэх үнээр тохиролцсон гэрээ
         customer_contacts: Хүргэлтийн нөхцөл сонгох
+      customer_warehouse:
+        name: Нэр
+        description: Тайлбар
       customer_contact:
         delivery: Хүгэлтийн нөхцөл
         condition: Мөнгөн дүн

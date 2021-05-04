@@ -103,4 +103,8 @@ module ApplicationHelper
     end
     code
   end
+
+  def get_hours(s, e)
+    "#{s < 10 ? '0' : ''}#{s}-#{e < 10 ? '0' : ''}#{e}"
+  end
 end

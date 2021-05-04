@@ -27,7 +27,7 @@
       <div class="col-md-1 search">
         <%= text_field_tag :code, @code, {class: 'form-control search', placeholder: t('activerecord.attributes.product.code')} %>
       </div>
-      <div class="col-md-2 search">
+      <div class="col-md-1 search">
         <%= text_field_tag :name, @name, {class: 'form-control search', placeholder: t('activerecord.attributes.product.name')} %>
       </div>
       <div class="col-md-2 search">
@@ -71,11 +71,12 @@
         <% end %>
       </div>
       <div class="col-md-1 search">
-        <%= submit_tag "#{t('controls.button.searching')} (#{@product_count})", :class => 'btn blck-btn pull-left' %>
+        <%= submit_tag "#{t('controls.button.searching')} (#{@product_count})", :class => 'btn-sm blck-btn pull-left' %>
       </div>
       <% if can? :create, Product %>
-        <div class="col-md-1 search">
-          <%= link_to 'Үлдэгдэл нэмэх', set_balance_users_product_feature_items_path, class: 'btn btn-warning', id: 'set_balance' %>
+        <div class="col-md-2 search">
+          <%= link_to 'Харилцагч', new_users_customer_import_path, class: 'btn-sm btn-warning' %>
+          <%= link_to 'Үлдэгдэл нэмэх', set_balance_users_product_feature_items_path, class: 'btn-sm btn-warning', id: 'set_balance' %>
         </div>
       <% end %>
     <% end %>

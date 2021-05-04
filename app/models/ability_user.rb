@@ -36,6 +36,7 @@ class AbilityUser
         can role, :delivery_report
       when "product_supplier"
         can role, Customer
+        can role, CustomerWarehouse
       when "product_location"
         can role, ProductLocation
       when "fb_post"

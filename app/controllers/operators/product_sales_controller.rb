@@ -234,31 +234,31 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def update_location
     location = if params[:id].to_i > 0
-                   Location.find(params[:id])
-                 else
-                   Location.new
-                 end
+                 Location.find(params[:id])
+               else
+                 Location.new
+               end
 
-      location.operator = current_operator
-      location.loc_district_id = params[:loc_district_id]
-      location.loc_khoroo_id = params[:loc_khoroo_id]
-      location.micro_region = params[:micro_region]
-      location.town = params[:town]
-      location.street = params[:street]
-      location.apartment = params[:apartment]
-      location.entrance = params[:entrance]
-      location.station_id = params[:station_id]
-      location.name = params[:name]
-      location.name_la = params[:name_la]
-      location.distance = params[:distance]
-      location.latitude = params[:latitude]
-      location.longitude = params[:longitude]
+    location.operator = current_operator
+    location.loc_district_id = params[:loc_district_id]
+    location.loc_khoroo_id = params[:loc_khoroo_id]
+    location.micro_region = params[:micro_region]
+    location.town = params[:town]
+    location.street = params[:street]
+    location.apartment = params[:apartment]
+    location.entrance = params[:entrance]
+    location.station_id = params[:station_id]
+    location.name = params[:name]
+    location.name_la = params[:name_la]
+    location.distance = params[:distance]
+    location.latitude = params[:latitude]
+    location.longitude = params[:longitude]
 
-      if location.save
-        render json: {status: :ok, id: location.id, name: location.full_name, latitude: location.latitude, longitude: location.longitude, is_country: location.loc_district.country}
-      else
-        render json: {status: :error, error: location.errors.full_messages}
-      end
+    if location.save
+      render json: {status: :ok, id: location.id, name: location.full_name, latitude: location.latitude, longitude: location.longitude, is_country: location.loc_district.country}
+    else
+      render json: {status: :error, error: location.errors.full_messages}
+    end
     # if params['location']['my_id'].to_i > 0
     #   @location = Location.find(params['location']['my_id'])
     #   @location.attributes = location_params
@@ -301,7 +301,9 @@ class Operators::ProductSalesController < Operators::BaseController
                   p_9_: feature_item.p_9_.presence || 0,
                   p_6_8: feature_item.p_6_8.presence || 0,
                   img: feature_item.img.present? ? feature_item.img.url : '/assets/no-image.png',
-                  tumb: feature_item.img.present? ? feature_item.img.url(:tumb) : '/assets/no-image.png'}
+                  tumb: feature_item.img.present? ? feature_item.img.url(:tumb) : '/assets/no-image.png',
+                  warehouse: feature_item.warehouse,
+                  working_hours: feature_item.working_hours(params[:date].presence || Time.current)}
   end
 
   def get_bonus

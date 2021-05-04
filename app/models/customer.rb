@@ -3,6 +3,7 @@ class Customer < ApplicationRecord
 
   has_many :customer_contacts
   has_many :customer_contact_fees
+  has_many :customer_warehouses, dependent: :destroy
   accepts_nested_attributes_for :customer_contacts, allow_destroy: true
   accepts_nested_attributes_for :customer_contact_fees, allow_destroy: true
 
