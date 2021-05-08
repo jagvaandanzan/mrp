@@ -77,23 +77,24 @@ class ProductSaleWeb
         end
       end
 
+      ApplicationController.helpers.send_sms(product_sale.phone, "Tani zahialga batalgaajlaa. Market.mn")
+      param = {
+          phone: product_sale.phone,
+          date: product_sale.delivery_start.strftime('%F'),
+          start_hour: product_sale.delivery_start.hour,
+          end_hour: product_sale.delivery_end.hour,
+          address: product_sale.location.address,
+          method: "account",
+          order_id: code.to_i + 50000100,
+          items: it_items
+      }
+      response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/mrp-enquire", 'post', param.to_json)
+      puts "43.231.114.241:8882/api/mrp-enquire => #{response.code.to_s} => #{response.body.to_s}"
+
       if product_sale.save
-        ApplicationController.helpers.send_sms(product_sale.phone, "Tani zahialga batalgaajlaa. Market.mn")
-        param = {
-            phone: product_sale.phone,
-            date: product_sale.delivery_start.strftime('%F'),
-            start_hour: product_sale.delivery_start.hour,
-            end_hour: product_sale.delivery_end.hour,
-            address: product_sale.location.address,
-            method: "account",
-            order_id: code.to_i + 50000100,
-            items: it_items
-        }
-        response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/mrp-enquire", 'post', param.to_json)
-        puts "43.231.114.241:8882/api/mrp-enquire => #{response.code.to_s} => #{response.body.to_s}"
       else
         puts "SAVE_zahialga: #{product_sale.errors.full_messages}"
-        ApplicationController.helpers.send_sms(product_sale.phone, "Tani zahialga amjiltgui bolloo. Ta 7777-9990 dugaart handana uu?")
+        # ApplicationController.helpers.send_sms(product_sale.phone, "Tani zahialga amjiltgui bolloo. Ta 7777-9990 dugaart handana uu?")
       end
     end
   end
