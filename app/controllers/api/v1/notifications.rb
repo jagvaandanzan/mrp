@@ -129,9 +129,10 @@ module API
             # Rails.logger.info("itoms_balance")
             params['item_serials'].each {|ser|
               item = ProductFeatureItem.find_by_barcode(ser['serial_barcode'])
+              item.update_column(:price, ser['serial_price'].to_i)
               if item.present?
                 product_id = item.product_id if product_id.nil?
-                items << {id: item.id, balance: ser['c2_qty']}
+                items << {id: item.id, balance: ser['c2_qty'], price: ser['serial_price'].to_i}
               end
               # Rails.logger.info("#{ser['serial_barcode']} == #{ser['c2_qty']}")
             }
