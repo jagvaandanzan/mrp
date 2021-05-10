@@ -39,6 +39,18 @@ class ProductIncome < ApplicationRecord
     end
   end
 
+  def sum_number_of_ub_sample
+    sample_id = Hash.new
+    s = 0
+    shipping_ub_samples.each do |sample|
+      unless sample_id[sample.id]
+        s += sample.number
+        sample_id[sample.id] = sample.id
+      end
+    end
+    s
+  end
+
   private
 
   def valid_quantity

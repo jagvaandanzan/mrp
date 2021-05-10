@@ -54,7 +54,7 @@
                    income_items = income.product_income_items.by_calc_nil("true") %>
                 <% quantity = income_items.sum(:quantity)
                    sum_supply_feature_cost = income_items.sum_supply_feature_cost
-                   cargo = income.product_income_products.sum(:cargo) + income.shipping_ub_samples.group(:shipping_ub_id).sum(:number)
+                   cargo = income.product_income_products.sum(:cargo) + income.sum_number_of_ub_sample
                    sum_shipping_er_cost = income_items.sum_shipping_er_cost
                    sum_shipping_ub = income_items.sum_shipping_ub_product_cost + income_items.sum_shipping_ub_sample_cost
                    cargo_ub = income.cargo_per * quantity
