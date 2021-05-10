@@ -74,7 +74,7 @@
                     <td class="va-mid nowrap"><%= income.income_date.strftime('%F') %></td>
                     <td class="va-mid"><%= quantity > 0 ? quantity : '' %></td>
                     <td class="va-mid"><%= sum_supply_feature_cost > 0 ? get_currency(sum_supply_feature_cost, Const::CURRENCY[0], 2) : '' %></td>
-                    <td class="va-mid"><%= cargo > 0 ? cargo : '' %></td>
+                    <td class="va-mid" sample="<%= income.shipping_ub_samples.sum(:number) %>"><%= cargo > 0 ? cargo : '' %></td>
                     <td class="va-mid"><%= sum_shipping_er_cost > 0 ? get_currency(sum_shipping_er_cost, Const::CURRENCY[0], 2) : '' %></td>
                     <td class="va-mid"><%= sum_shipping_ub > 0 ? get_currency(sum_shipping_ub, Const::CURRENCY[0], 2) : '' %></td>
                     <td class="va-mid"><%= get_currency_mn(cargo_ub) %></td>
