@@ -72,6 +72,10 @@ class ProductIncomeProduct < ApplicationRecord
     end
   end
 
+  def items_quantity
+    product_income_items.sum(:quantity)
+  end
+
   # def exc_rate
   #   if self[:exc_rate].present?
   #     self[:exc_rate]
