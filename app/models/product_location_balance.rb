@@ -5,6 +5,7 @@ class ProductLocationBalance < ApplicationRecord
   belongs_to :income_location, :class_name => "ProductIncomeLocation", optional: true
   belongs_to :transfer_to, :class_name => "ProductLocationTransTo", optional: true
   belongs_to :travel, :class_name => "SalesmanTravel", optional: true
+  belongs_to :salesman_return, optional: true
   belongs_to :warehouse_loc, :class_name => "ProductWarehouseLoc", optional: true
 
   before_validation :check_location

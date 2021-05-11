@@ -26,5 +26,6 @@ class CreateProductLocationTransfers < ActiveRecord::Migration[5.2]
       t.timestamps
     end
     add_reference :product_location_balances, :transfer_to, foreign_key: {to_table: :product_location_trans_tos}, after: 'income_location_id'
+    add_reference :product_location_balances, :salesman_return, foreign_key: true, after: 'travel_id'
   end
 end
