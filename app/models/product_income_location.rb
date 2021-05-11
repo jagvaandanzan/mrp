@@ -4,7 +4,7 @@ class ProductIncomeLocation < ApplicationRecord
   has_one :product_location_balance, :class_name => "ProductLocationBalance", :foreign_key => "income_location_id", dependent: :destroy
 
   before_create :check_location
-  before_save :set_location_balance
+  before_create :set_location_balance
   validates :quantity, :x, :y, :z, presence: true
 
   attr_accessor :x, :y, :z
