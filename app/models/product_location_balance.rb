@@ -19,6 +19,9 @@ class ProductLocationBalance < ApplicationRecord
   scope :by_feature_item_id, ->(feature_item_id) {
     where(product_feature_item_id: feature_item_id)
   }
+  scope :sum_quantity, ->() {
+    sum(:quantity)
+  }
 
   private
 

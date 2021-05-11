@@ -8,6 +8,7 @@ module API
             requires :x, type: Integer
             requires :y, type: Integer
             requires :z, type: Integer
+            optional :get_products
           end
           post do
             locations = ProductLocation.by_xyz(params[:x], params[:y], params[:z])
@@ -17,6 +18,9 @@ module API
                          ProductLocation.create(x: params[:x], y: params[:y], z: params[:z])
                        end
             present :location_id, location.id
+            if params[:get_products].present?
+              present :products, ProductLocationBalance.by_location_id(location.id).sum_quantity
+            end
           end
 
           route_param :id do
