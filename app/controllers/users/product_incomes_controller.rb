@@ -136,6 +136,7 @@ class Users::ProductIncomesController < Users::BaseController
   end
 
   def locations
+    redirect_to action: 'index'
     @product_income.product_income_items.each do |item|
       # item.remainder = item.shipping_ub_feature.quantity
       item.income_locations.each {|loc|
@@ -183,7 +184,7 @@ class Users::ProductIncomesController < Users::BaseController
   private
 
   def set_product_income
-
+    @product_income = ProductIncome.find(params[:id])
   end
 
   def product_income_params

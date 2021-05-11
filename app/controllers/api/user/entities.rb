@@ -16,7 +16,7 @@ module API
       end
 
       class ProductFeatureItem < Grape::Entity
-        expose :id, :name, :barcode
+        expose :id, :barcode, :product_id, :product_name, :name, :image_url, :quantity
       end
 
       class ProductWarehouse < Grape::Entity
@@ -45,6 +45,24 @@ module API
 
       class SalesmanReturn < Grape::Entity
         expose :id, :quantity, :product_code, :product_name, :product_image, :product_feature, :product_barcode
+      end
+
+      class ProductFeatureItemList < Grape::Entity
+        expose :id, :barcode, :product_name, :name, :thumb_url, :image_url
+      end
+
+      class LocationTransferItem < Grape::Entity
+        expose :id, :quantity, :transferred, :desk
+        expose :product_feature_item, using: API::USER::Entities::ProductFeatureItemList
+      end
+
+      class LocationTransfer < Grape::Entity
+        expose :id, :location_name
+        expose :product_location_trans_items, using: API::USER::Entities::LocationTransferItem
+      end
+
+      class LocationTransferList < Grape::Entity
+        expose :id, :location_name, :quantity, :transferred
       end
 
     end

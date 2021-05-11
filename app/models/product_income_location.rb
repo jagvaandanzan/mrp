@@ -3,7 +3,7 @@ class ProductIncomeLocation < ApplicationRecord
   belongs_to :location, :class_name => "ProductLocation"
   has_one :product_location_balance, :class_name => "ProductLocationBalance", :foreign_key => "income_location_id", dependent: :destroy
 
-  before_validation :check_location
+  before_create :check_location
   before_save :set_location_balance
   validates :quantity, :x, :y, :z, presence: true
 
@@ -23,7 +23,7 @@ class ProductIncomeLocation < ApplicationRecord
   def set_location_balance
     if product_location_balance.present?
       self.product_location_balance.update(product_location: location,
-                                           feature_item: income_item.feature_item,
+                                           product_feature_item: income_item.feature_item,
                                            income_item: income_item,
                                            quantity: quantity)
     else

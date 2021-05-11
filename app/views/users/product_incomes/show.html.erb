@@ -9,7 +9,7 @@
 
   <div class="action-buttons">
     <% if can? :update, ProductIncome %>
-      <%= link_to "Агуулхын байршил", locations_users_product_incomes_path(id: @product_income.id), class: 'btn btn-info' %>
+      <%= link_to "Агуулхын байршил", locations_users_product_incomes_path(id: @product_income.id), class: 'btn btn-info none' %>
       <%= link_to t('controls.button.edit'), edit_users_product_income_path(@product_income), class: 'btn btn-warning' %>
     <% end %>
     <%= link_to t('titles.back_to_list'), users_product_incomes_path(page: cookies[:page_number]), {class: "btn blck-btn"} %>

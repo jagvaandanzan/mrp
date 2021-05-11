@@ -18,6 +18,7 @@ class ProductFeatureItem < ApplicationRecord
 
   before_save :set_default
   validate :check_image_size
+  attr_accessor :quantity
 
   with_options :if => Proc.new {|m| ((m.tab_index.present? && m.tab_index.to_i == 1) || m.is_add.present?) && m.barcode.present?} do
     validates_uniqueness_of :barcode
@@ -191,9 +192,23 @@ class ProductFeatureItem < ApplicationRecord
     c_name.presence || name
   end
 
+  def product_name
+    product.name
+  end
+
   def image_url
     if img.present?
       img.url
+    else
+      "#{ENV['DOMAIN_NAME']}/images/no-image.png"
+    end
+  end
+
+  def thumb_url
+    if img.present?
+      img.url(:tumb)
+    else
+      "#{ENV['DOMAIN_NAME']}/images/no-image.png"
     end
   end
 

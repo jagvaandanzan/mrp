@@ -22,7 +22,7 @@ class ProductLocation < ApplicationRecord
   }
 
   def name
-    "x#{x} y#{y} z#{z}"
+    "X#{x}Y#{y}Z#{z}"
   end
 
 end

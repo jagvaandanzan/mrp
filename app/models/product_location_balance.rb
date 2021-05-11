@@ -3,6 +3,7 @@ class ProductLocationBalance < ApplicationRecord
   belongs_to :product_feature_item
   belongs_to :income_item, :class_name => "ProductIncomeItem", optional: true
   belongs_to :income_location, :class_name => "ProductIncomeLocation", optional: true
+  belongs_to :transfer_to, :class_name => "ProductLocationTransTo", optional: true
   belongs_to :travel, :class_name => "SalesmanTravel", optional: true
   belongs_to :warehouse_loc, :class_name => "ProductWarehouseLoc", optional: true
 

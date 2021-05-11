@@ -28,7 +28,7 @@ class ProductIncomeItem < ApplicationRecord
   # with_options :if => Proc.new {|m| m.remainder.present?} do
   #   validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
   # end
-  validate :income_locations_count_check, on: :update
+  # validate :income_locations_count_check, on: :update
   attr_accessor :is_income_order, :remainder
 
   scope :search, ->(start, finish, income_code, supply_code, product_name) {
@@ -93,7 +93,6 @@ class ProductIncomeItem < ApplicationRecord
         .sum(&:to_f)
   }
 
- 
   scope :sum_shipping_ub_product_cost, ->() {
     joins(:shipping_ub_product)
         .pluck("shipping_ub_products.per_price * product_income_items.quantity")
@@ -190,6 +189,9 @@ class ProductIncomeItem < ApplicationRecord
                                                        quantity: quantity,
                                                        owner: product_income.user)
     end
+
+    #   set default location x1y1z1
+    self.income_locations << ProductIncomeLocation.new(x: 1, y: 1, z: 1, quantity: quantity)
   end
 
   def check_match_feature
@@ -204,6 +206,12 @@ class ProductIncomeItem < ApplicationRecord
                                                          owner: product_income.user)
         self.is_match = false
       end
+    end
+
+    #   set default location x1y1z1
+    if income_locations.present?
+      income_location = income_locations.first
+      income_location.update_attribute(:quantity, quantity)
     end
   end
 
