@@ -247,7 +247,7 @@ class ProductFeatureItem < ApplicationRecord
   end
 
   def warehouse
-    "#{product.customer.name}: #{customer_warehouse.name}" if customer_warehouse.present?
+    customer_warehouse.present? ? "#{product.customer.name}: #{customer_warehouse.name}" : ""
   end
 
   def working_hours(date)
