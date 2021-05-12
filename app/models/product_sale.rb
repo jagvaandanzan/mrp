@@ -26,6 +26,7 @@ class ProductSale < ApplicationRecord
   before_save :create_log
   before_save :set_defaults
   before_save :set_balance
+  after_create :set_sale_call_status
   after_save :sync_web
 
   with_options :if => Proc.new {|m| m.update_status == nil} do
@@ -352,6 +353,13 @@ class ProductSale < ApplicationRecord
         salesman = salesman_travel.salesman
         ApplicationController.helpers.api_request(url, 'patch', params)
       end
+    end
+  end
+
+  def set_sale_call_status
+    if sale_call.present?
+      call_status = ProductSaleStatus.find_by_alias("call_order")
+      sale_call.update_column(:status_id, call_status.id)
     end
   end
 end

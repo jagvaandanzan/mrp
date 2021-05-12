@@ -14,7 +14,9 @@ class ProductSaleStatus < ApplicationRecord
       where('previous = ?', id.to_s)
     end
   }
-
+  scope :skip_id, ->(id) {
+    where.not(id: id)
+  }
   scope :by_types, ->(user_types) {
     where('user_type IN (?)', user_types)
   }

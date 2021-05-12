@@ -37,6 +37,7 @@ mn:
       add_sample_box: Дээж хайрцаг нэмэх
     select:
       none: Сонгох
+      all: Бүгд
       alert: " сонгоно уу!"
     link:
       forget_password: Нууц үгээ мартсан

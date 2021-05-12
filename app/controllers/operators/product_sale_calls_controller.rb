@@ -11,11 +11,20 @@ class Operators::ProductSaleCallsController < Operators::BaseController
     @status = params[:status]
     @status_sub = params[:status_sub]
     cookies[:product_sale_call_page_number] = params[:page]
+
+    status_ids = nil
+    if @status.present?
+      status = ProductSaleStatus.find(@status)
+      if status.next.present?
+        status_ids = status.next.split(",").map(&:to_i)
+      end
+    end
+
     @sale_calls = if @status_id.present?
-                    ProductSaleCall.search(@start, @finish, @phone, @product_name, @status_id).page(params[:page])
+                    ProductSaleCall.search(@start, @finish, @phone, @product_name, @status_id, status_ids).page(params[:page])
                   else
                     ProductSaleCall.by_not_status('call_order')
-                        .search(@start, @finish, @phone, @product_name, @status_id).page(params[:page])
+                        .search(@start, @finish, @phone, @product_name, @status_id, status_ids).page(params[:page])
                   end
   end
 
@@ -45,6 +54,7 @@ class Operators::ProductSaleCallsController < Operators::BaseController
   end
 
   def update
+    status_id_was = @sale_call.status_id
     @sale_call.attributes = sale_call_params
 
     if @sale_call.save
@@ -54,6 +64,7 @@ class Operators::ProductSaleCallsController < Operators::BaseController
         if @sale_call.product_sale.present?
           redirect_to edit_operators_product_sale_path(@sale_call.product_sale)
         else
+          @sale_call.update_column(:status_id, status_id_was)
           redirect_to new_operators_product_sale_path(sale_call_id: @sale_call.id)
         end
       else

@@ -22,7 +22,7 @@
       </div>
       <div class="col-md-2 search" id="select_product_status">
         <%= f.hidden_field :status_id, value: @status_id %>
-        <%= f.collection_select :status, ProductSaleStatus.by_previous.by_type('call'), :id, :name,
+        <%= f.collection_select :status, ProductSaleStatus.by_previous.skip_id(1).by_type('call'), :id, :name,
                                 {:selected => @status, :include_blank => t('activerecord.attributes.product_sale_call.status_id')}, {class: 'form-control selectpicker', onchange: 'call_next_status(this)'} %>
         <div id="div_status_sub" class="<%= @status_sub.present? && !@status_sub.blank? ? '' : 'none' %>">
           <%= f.collection_select :status_sub, ProductSaleStatus.by_previous(@status).by_type('call'), :id, :name,

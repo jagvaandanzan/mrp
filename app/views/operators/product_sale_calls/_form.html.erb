@@ -65,7 +65,7 @@
             <div class="col-sm-6 <%= get_error_class(@sale_call, :status_id) %>">
               <%= field_errors(@sale_call, :status_id) %>
               <%= f.hidden_field :status_id %>
-              <%= f.collection_select :status_m, ProductSaleStatus.by_previous.by_type('call'), :id, :name,
+              <%= f.collection_select :status_m, ProductSaleStatus.by_previous.skip_id(1).by_type('call'), :id, :name,
                                       {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_next_status(this)'} %>
             </div>
           </div>
