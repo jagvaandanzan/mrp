@@ -6,9 +6,21 @@ class ProductLocationTransTo < ApplicationRecord
 
   has_one :product_location_balance, :class_name => "ProductLocationBalance", :foreign_key => "transfer_to_id", dependent: :destroy
 
+  before_create :check_location
   after_create :set_location_balance
 
-  attr_accessor :cr_balance
+  attr_accessor :x, :y, :z
+
+  private
+
+  def check_location
+    locs = ProductLocation.by_xyz(x, y, z)
+    if locs.present?
+      self.product_location = locs.first
+    else
+      self.product_location = ProductLocation.create(x: x, y: y, z: z)
+    end
+  end
 
   def set_location_balance
     self.product_location_balance = ProductLocationBalance.create(product_location: product_location,

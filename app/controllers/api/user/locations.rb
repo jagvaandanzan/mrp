@@ -85,7 +85,9 @@ module API
         resource :to_transfer do
           desc "POST locations/to_transfer"
           params do
-            requires :location_id, type: Integer
+            requires :x, type: Integer
+            requires :y, type: Integer
+            requires :z, type: Integer
             requires :transfer_id, type: Integer
             requires :trans_item_id, type: Integer
             requires :feature_item_id, type: Integer
@@ -93,6 +95,7 @@ module API
           end
           post do
             transfer = ProductLocationTransTo.new(
+                x: params[:x], y: params[:y], z: params[:z],
                 location_transfer_id: params[:transfer_id],
                 trans_item_id: params[:trans_item_id],
                 product_location_id: params[:location_id],
