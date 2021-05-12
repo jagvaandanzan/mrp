@@ -30,7 +30,7 @@
     <%= f.text_field :remainder, class: 'form-control field remainder', value: f.object.remainder.presence || f.object.get_balance, readonly: true, placeholder: t('activerecord.attributes.product_sale_item.remainder') %>
   </td>
   <% feature_item = f.object.feature_item %>
-  <td class="va-mid warehouse"><%= f.object.persisted? ? feature_item.warehouse : '' %></td>
+  <td class="va-mid warehouse"><%= (f.object.persisted? && feature_item.present?) ? feature_item.warehouse : '' %></td>
   <td class="va-mid working_hours"><%= f.object.persisted? ? feature_item.working_hours(f.object.created_at) : '' %></td>
   <td class="va-mid remove">
     <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
