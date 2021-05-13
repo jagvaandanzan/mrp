@@ -7,8 +7,8 @@ class ProductIncomeItem < ApplicationRecord
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
   has_many :income_locations, :class_name => "ProductIncomeLocation", :foreign_key => "income_item_id", dependent: :destroy
   has_many :product_income_logs, class_name: "ProductIncomeLog", foreign_key: "product_income_item_id", dependent: :destroy
-  has_one :shipping_er, through: :product_income_product
   has_one :shipping_ub_product, through: :product_income_product
+  has_one :shipping_er_product, through: :shipping_ub_product
   has_one :shipping_ub_sample, through: :product_income_product
 
   has_one :product_income_balance, :class_name => "ProductIncomeBalance", :foreign_key => "income_item_id", dependent: :destroy
@@ -84,15 +84,14 @@ class ProductIncomeItem < ApplicationRecord
     where("product_income_items.calculated IS#{is_nil == "true" ? '' : ' NOT'} ?", nil)
   }
   scope :sum_shipping_er_cost, ->() {
-    joins(:shipping_er)
-        .sum("shipping_ers.per_price * product_income_items.quantity")
+    joins(:shipping_er_product)
+        .sum("shipping_er_products.per_price * product_income_items.quantity")
   }
   scope :sum_shipping_er_cost, ->() {
-    joins(:shipping_er)
-        .pluck("shipping_ers.per_price * product_income_items.quantity")
+    joins(:shipping_er_product)
+        .pluck("shipping_er_products.per_price * product_income_items.quantity")
         .sum(&:to_f)
   }
-
   scope :sum_shipping_ub_product_cost, ->() {
     joins(:shipping_ub_product)
         .pluck("shipping_ub_products.per_price * product_income_items.quantity")

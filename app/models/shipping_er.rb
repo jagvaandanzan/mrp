@@ -9,7 +9,7 @@ class ShippingEr < ApplicationRecord
 
   enum s_type: {post_cargo: 0, post_er: 1, cargo_er: 2}
 
-  before_save :set_per_price
+  after_save :set_per_price
   attr_accessor :number
 
   validates :date, :s_type, :shipping_er_products, presence: true
@@ -22,7 +22,6 @@ class ShippingEr < ApplicationRecord
   scope :by_date, ->(start, finish) {
     where('? <= updated_at AND updated_at <= ?', start.to_time, finish.to_time + 1.days)
   }
-
 
 
   scope :search, ->(start, finish, product_name, order_type) {
@@ -63,14 +62,13 @@ class ShippingEr < ApplicationRecord
   end
 
   def set_per_price
-    q = 0
     co = 0
-    shipping_er_products.each do |er_p|
-      q += er_p.quantity
+    self.shipping_er_products.each do |er_p|
+      er_p.update_columns(per_price: er_p.cost / er_p.quantity)
       co += er_p.cost
     end
-    self.cost = co
-    self.per_price = co / q
+
+    self.update_column(:cost, co)
   end
 
 end
