@@ -113,7 +113,8 @@
         <%= f.label :code, class: 'control-label' %>
         <div class="<%= get_error_class(@product, :code) %>">
           <%= field_errors(@product, :code) %>
-          <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product.code'), readonly: @product.persisted?  %>
+<!--          @product.persisted?-->
+          <%= f.text_field :code, class: 'form-control', placeholder: t('activerecord.attributes.product.code'), readonly: false  %>
         </div>
       </div>
       <div class="col-md-1 field_div">
