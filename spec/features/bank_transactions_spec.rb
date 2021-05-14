@@ -112,9 +112,9 @@ def check_payment(transactions)
 
   ids = []
   transactions.each do |transaction|
-    if transaction.value.downcase.match(/[wq][0-9]{8}/)
+    if transaction.value.downcase.match(/[wk][0-9]{8}/)
       if transaction.value.downcase.start_with?('qpay', 'mm:qpay')
-        transaction_id = transaction.value.downcase.match(/[q]\d+[0-9]/).to_s
+        transaction_id = transaction.value.downcase.match(/[k]\d+[0-9]/).to_s
         payment = transaction.summary / 99 * 100
       else
         transaction_id = transaction.value.downcase.match(/[w]\d+[0-9]/).to_s
