@@ -98,7 +98,6 @@ module API
                 x: params[:x], y: params[:y], z: params[:z],
                 location_transfer_id: params[:transfer_id],
                 trans_item_id: params[:trans_item_id],
-                product_location_id: params[:location_id],
                 product_feature_item_id: params[:feature_item_id],
                 quantity: params[:quantity]
             )

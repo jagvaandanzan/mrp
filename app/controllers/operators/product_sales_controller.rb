@@ -192,8 +192,8 @@ class Operators::ProductSalesController < Operators::BaseController
         redirect_to action: :index
       end
     else
-      render 'show'
       logger.debug(@product_sale.errors.full_messages)
+      render 'show'
     end
 
   end

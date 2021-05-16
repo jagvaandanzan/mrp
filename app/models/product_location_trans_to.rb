@@ -6,7 +6,7 @@ class ProductLocationTransTo < ApplicationRecord
 
   has_one :product_location_balance, :class_name => "ProductLocationBalance", :foreign_key => "transfer_to_id", dependent: :destroy
 
-  before_create :check_location
+  before_validation :check_location
   after_create :set_location_balance
 
   attr_accessor :x, :y, :z
