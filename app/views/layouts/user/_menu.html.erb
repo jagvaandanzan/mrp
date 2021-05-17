@@ -56,6 +56,11 @@
             <i class="fa fa-shopping-cart"></i><span><%= t('titles.product_sales') %></span>
           <% end %>
         <% end %>
+        <%= content_tag :li, class: controller_name == 'report' ? 'active' : '' do %>
+          <%= link_to report_users_product_sales_path do %>
+            <i class="fa fa-shopping-cart"></i><span><%= t('titles.report') %></span>
+          <% end %>
+        <% end %>
         <%= content_tag :li, class: controller_name == 'sale_taxes' ? 'active' : '' do %>
           <%= link_to users_sale_taxes_path do %>
             <i class="fa fa-hand-o-left"></i><span><%= t('activerecord.models.sale_tax') %></span>
