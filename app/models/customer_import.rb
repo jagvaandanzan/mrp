@@ -60,7 +60,7 @@ class CustomerImport
       count
     else
       imported_items.each_with_index do |item, index|
-        self.errors.add :file, "-row #{index + 1}: #{item.errors.full_messages}" unless item.valid?
+        self.errors.add :file, "-row #{index + 2}: #{item.errors.full_messages}" unless item.valid?
       end
       0
     end

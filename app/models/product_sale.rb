@@ -50,7 +50,7 @@ class ProductSale < ApplicationRecord
     validates_numericality_of :paid, less_than_or_equal_to: Proc.new(&:sum_price)
   end
 
-  with_options :if => Proc.new {|m| m.bonus.present?} do
+  with_options :if => Proc.new {|m| !m.update_status.present? && m.bonus.present?} do
     validate :check_bonus
   end
 
@@ -160,11 +160,7 @@ class ProductSale < ApplicationRecord
 
   def status_name
     if status.present?
-      if parent_id.present?
-        "#{status.name_with_parent} (#{parent.status.name})"
-      else
-        status.name_with_parent
-      end
+      status.name_with_parent
     else
       "Сонгоогүй"
     end
