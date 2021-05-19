@@ -77,23 +77,18 @@ module API
 
         resource :socialpay do
           desc "POST notifications/socialpay"
-          # params do
-          #   requires :amount, type: String
-          #   requires :bank, type: String
-          #   requires :errorDesc, type: String
-          #   requires :checksum, type: String
-          #   requires :errorCode, type: String
-          #   requires :cardHolder, type: String
-          #   optional :transactionId, type: String
-          #   requires :cardNumber, type: String
-          #   optional :token, type: String
-          # end
+          params do
+            requires :errorCode, type: String
+            requires :amount, type: String
+            requires :transactionId, type: String
+          end
           post do
             Rails.logger.info("socialpay == #{params}")
-            # if params[:errorCode] == "000"
-            #   psw = ProductSaleWeb.instance
-            #   psw.create(params[:transactionId], params[:amount])
-            # end
+            if params[:errorCode] == "000"
+              transaction_id = params[:transactionId]
+              psw = ProductSaleWeb.instance
+              psw.create(transaction_id[1..transaction_id.length], params[:amount])
+            end
           end
         end
 
