@@ -89,6 +89,7 @@ module API
               psw = ProductSaleWeb.instance
               psw.create(transaction_id[1..transaction_id.length], params[:amount])
             end
+            {send: true}
           end
         end
 
