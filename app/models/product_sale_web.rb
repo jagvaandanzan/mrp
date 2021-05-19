@@ -6,6 +6,7 @@ class ProductSaleWeb
         code: code,
         pay: payment
     }
+    Rails.logger.debugg("sales/payment => #{response.code.to_s} => #{response.body.to_s}")
     response = ApplicationController.helpers.api_request('sales/payment', 'post', param.to_json)
     puts "sales/payment => #{response.code.to_s} => #{response.body.to_s}"
     if response.code.to_i == 201
