@@ -277,8 +277,8 @@ class ProductFeatureItem < ApplicationRecord
   private
 
   def set_default
-    self.p_6_8 = price - ((price * p_6_8_p) / 100) if p_6_8_p.present? && price.present? && !p_6_8.present?
-    self.p_9_ = price - ((price * p_9_p) / 100) if p_9_p.present? && price.present? && !p_9_.present?
+    self.p_6_8 = price - ((price * p_6_8_p) / 100) if p_6_8_p.present? && price.present?# && !p_6_8.present?
+    self.p_9_ = price - ((price * p_9_p) / 100) if p_9_p.present? && price.present?# && !p_9_.present?
 
     if is_add.present?
       was_option_ids = product.product_feature_option_rels.map(&:feature_option_id).to_a

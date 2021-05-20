@@ -62,14 +62,14 @@
       <%= f.label :p_6_8_p, class: 'col-sm-3 control-label' %>
       <div class="col-sm-9 <%= get_error_class(@feature_item, :p_6_8_p) %>">
         <%= field_errors(@feature_item, :p_6_8_p) %>
-        <%= f.number_field :p_6_8_p, class: 'form-control', step: 1, placeholder: t('activerecord.attributes.product_feature_item.p_6_8_p') %>
+        <%= f.number_field :p_6_8_p, class: 'form-control', step: 1,readonly: true, placeholder: t('activerecord.attributes.product_feature_item.p_6_8_p') %>
       </div>
     </div>
     <div class="form-group">
       <%= f.label :p_9_p, class: 'col-sm-3 control-label' %>
       <div class="col-sm-9 <%= get_error_class(@feature_item, :p_9_p) %>">
         <%= field_errors(@feature_item, :p_9_p) %>
-        <%= f.number_field :p_9_p, class: 'form-control', step: 1, placeholder: t('activerecord.attributes.product_feature_item.p_9_p') %>
+        <%= f.number_field :p_9_p, class: 'form-control', step: 1, readonly: true, placeholder: t('activerecord.attributes.product_feature_item.p_9_p') %>
       </div>
     </div>
     <div class="form-group">
