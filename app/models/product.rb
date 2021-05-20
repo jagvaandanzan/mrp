@@ -93,6 +93,7 @@ class Product < ApplicationRecord
     where("is_web = ?", 1)
         .where("draft = ?", 0)
         .where("sync_at IS ?", nil)
+        .order(id: :desc)
   }
   scope :order_by_name, -> {
     order(:n_name)
