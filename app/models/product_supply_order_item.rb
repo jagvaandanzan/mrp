@@ -140,7 +140,7 @@ class ProductSupplyOrderItem < ApplicationRecord
         cost_text += "; " if index > 0
         cost_text += "#{er.product.full_name}"
       }
-      [shipping_er.date.strftime('%F'), self.get_currency(shipping_er.cost), er_product.quantity, er_product.cargo, cost_text]
+      [shipping_er.date.strftime('%F'), shipping_er.cost, er_product.quantity, er_product.cargo, cost_text]
     else
       ["", "", "", "", ""]
     end
@@ -162,7 +162,7 @@ class ProductSupplyOrderItem < ApplicationRecord
         cost_text += "; " if index > 0
         cost_text += "#{er.product.full_name}"
       }
-      [date, self.get_currency(costs), loaded, cargo, cost_text]
+      [date, costs, loaded, cargo, cost_text]
     else
       ["", "", "", "", ""]
     end

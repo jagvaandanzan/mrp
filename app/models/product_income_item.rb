@@ -113,6 +113,10 @@ class ProductIncomeItem < ApplicationRecord
     where("product_income_items.clarify = ?", clarify)
   }
 
+  scope :by_income_product_id, -> (income_product_id){
+    where("product_income_items.product_income_product_id in (?)", income_product_id)
+  }
+
   def get_balance
     ProductIncomeBalance.balance(product_id)
   end

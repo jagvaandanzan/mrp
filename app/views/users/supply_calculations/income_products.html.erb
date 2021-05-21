@@ -62,15 +62,15 @@
                    shipping_ub_sample = i.shipping_ub_sample
                    shipping_er = i.shipping_er
                    income = i.product_income
-                   income_item = i.product_income_items
+                   income_item = i.product_income_items.by_calc_nil(@by_nil)
                 %>
                 <tr >
                   <td class="va-mid " ><%= order_item.code%></td>
-                  <td class="va-mid " style="background-color: #f5f5f5" data-toggle="collapse"  data-target=".<%= product.code %>"><%= product.code %></td>
+                  <td class="va-mid " style="background-color: #f5f5f5" data-toggle="collapse"  data-target=".<%= order_item.code %>"><%= product.code %></td>
                   <td class="va-mid"><%= product.full_name %>
                     <% $count = 0
                        items = nil%>
-                    <% income_item.each {|item| %>
+                    <% i.product_income_items.by_calc_nil(@by_nil).each {|item| %>
                       <%items = item %>
                       <% product_income_logs = item.product_income_logs.count %>
                       <% if product_income_logs > 0 %>
@@ -124,13 +124,14 @@
                   <td class="va-mid"><strong><%= i.quantity %></strong></td>
                   <td><%= get_currency(i.sum_price, Const::CURRENCY[0], 2) %></td>
                   <td><%=get_currency(price, Const::CURRENCY[0], 2)  %></td>
-                  <td class="va-mid"><%= income.income_date.strftime("%Y/%m/%d") %></td>
+                  <td><%= income_item.distinct.pluck(:calculated).first.present? ? income_item.distinct.pluck(:calculated).first.strftime('%F') : income_item.distinct.pluck(:description).first.present? ? income_item.distinct.pluck(:description).first : ''%></td>
+
                 </tr>
                 <% i.product_income_items.by_calc_nil(@by_nil).each {|item|
                   feature_item = item.feature_item
                   supply_feature = item.supply_feature
                   shipping_ub_feature = item.shipping_ub_feature %>
-                  <tr class="collapse <%= product.code %>">
+                  <tr class="collapse <%= order_item.code %>">
                     <td colspan="3"><%= item.product_income.id %></td>
                     <td>
                       <% if feature_item.img.present? %>
@@ -144,7 +145,7 @@
                       <% if product_income_logs > 0 %>
                         <span class="income_logs label label-<%= item.is_match ? 'warning' : 'danger' %> pull-right" style="cursor: pointer" onclick="show_log(<%= item.id %>)"><%= product_income_logs %></span>
                       <% end %></td>
-                    <td class="va-mid"><%= supply_feature.quantity %></td>
+                     <td class="va-mid"><%= supply_feature.quantity %></td>
                     <td class="va-mid"><%= shipping_ub_feature.present? ? shipping_ub_feature.quantity : '' %></td>
                     <td class="va-mid"><%= shipping_er.present? ? get_currency(shipping_er.per_price * item.quantity, Const::CURRENCY[0], 2) : '' %></td>
                     <td class="va-mid">
@@ -156,7 +157,7 @@
                     <td class="va-mid"><%= item.quantity %></td>
                     <td class="va-mid"><%= supply_feature.get_currency(supply_feature.price_lo * item.quantity) %></td>
                     <td class="va-mid"><%= supply_feature.price %> </td>
-                    <td class="va-mid <%= item.clarify ? 'clarify' : '' %>" id="product_income_item_<%= item.id %>" style="cursor: pointer" onclick="update_calculated($(this), <%= item.id%>)"><%= item.calculated.present? ? item.calculated.strftime('%F') : item.description %></td>
+                    <td class="va-mid product_income_product_<%= item.product_income_product_id %> <%= item.clarify ? 'clarify' : '' %>" id="product_income_item_<%= item.id %>"  style="cursor: pointer" onclick="update_calculated($(this), <%= item.id%>, <%= item.product_income_product_id %>)"><%= item.calculated.present? ? item.calculated.strftime('%F') : item.description %></td>
                   </tr>
                 <% } %>
               <% end %>
@@ -165,9 +166,6 @@
           </div>
         </div>
         <%= paginate @income_products %>
-      </div>
-      <div class="col-md-12 m-t-10 m-b-10" id = "info">
-
       </div>
     </div>
   </section>
@@ -209,6 +207,7 @@
           <div class="modal-footer text-right" style="margin-top: 8px">
             <button type="button" class="btn btn-default" data-dismiss="modal"><%= t('controls.button.close') %></button>
             <button type="button" class="btn btn-warning" onclick="save_calculated()" id="save_btn"><%= t('controls.button.save') %></button>
+            <button type="button" class="btn btn-warning" onclick="save_all_calculated()" id="save_all_btn"> Бүх барааг хадгалах</button>
           </div>
         <% end %>
       </div>
@@ -229,13 +228,15 @@
     }
 
     var product_income_item_id = 0;
+    var product_income_product_id = 0;
 
-    function update_calculated(i, item_id) {
+    function update_calculated(i, item_id, product_id) {
         let date = i.html();
         if (!date.trim()) {
             date = $.datepicker.formatDate('yy-mm-dd', new Date());
         }
         product_income_item_id = item_id;
+        product_income_product_id = product_id;
         let modal = $('#set-data-modal');
         if (i.hasClass('clarify')) {
             modal.find('#description').val(date);
@@ -247,6 +248,7 @@
     }
 
     function save_calculated() {
+        console.log()
         let modal = $('#set-data-modal');
         let date = modal.find('#set_date').val();
         if (date.length > 0) {
@@ -258,12 +260,42 @@
                 data: "id=" + product_income_item_id + "&date=" + date + "&clarify=" + $('#set_clarify').prop('checked') + "&description=" + $('#description').val(),
                 success: function (data) {
                     let td = $('td#product_income_item_' + product_income_item_id);
+                    console.log(td);
                     if (data.clarify === "true") {
                         td.addClass('clarify');
                     } else {
                         td.removeClass('clarify');
                     }
                     td.html(data.calculated);
+                    btn.removeAttr('disabled');
+                    modal.modal('hide');
+                }
+            });
+        } else {
+            alert("<%= t('alert.please_select_date') %>")
+        }
+    }
+
+    function save_all_calculated() {
+        let modal = $('#set-data-modal');
+        let date = modal.find('#set_date').val();
+        if (date.length > 0) {
+            let btn = modal.find('#save_all_btn');
+            btn.attr('disabled', 'disabled');
+            Rails.ajax({
+                url: "<%= users_supply_calculations_set_all_calculated_path %>",
+                type: "PATCH",
+                data: "id=" + product_income_product_id + "&date=" + date + "&clarify=" + $('#set_clarify').prop('checked') + "&description=" + $('#description').val(),
+                success: function (data) {
+                    $.each( data, function(i, obj) {
+                        let td = $('td#product_income_item_' + obj.id);
+                        if (obj.clarify === "true") {
+                            td.addClass('clarify');
+                        } else {
+                            td.removeClass('clarify');
+                        }
+                        td.html(obj.calculated);
+                    });
                     btn.removeAttr('disabled');
                     modal.modal('hide');
                 }

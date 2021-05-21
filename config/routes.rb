@@ -200,9 +200,11 @@ Rails.application.routes.draw do
       get 'supply_orders'
       get 'income_products'
       patch 'set_calculated'
+      patch 'set_all_calculated'
       get 'for_invoice'
       get 'purchased_er'
       get 'received_er'
+      get 'ship_ub'
     end
 
     match "*any", to: "base#routing_error", via: :all
