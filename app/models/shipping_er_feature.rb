@@ -14,10 +14,23 @@ class ShippingErFeature < ApplicationRecord
         .where('product_supply_features.order_item_id = ?', order_item_id)
   }
 
+  scope :by_order_item, ->(order_item_id) {
+    items = joins(:shipping_er_product)
+    items = items.joins(:supply_feature)
+              .where('product_supply_features.order_item_id IN (?)', order_item_id)
+    items
+  }
+
   scope :not_in_ub, ->{
     joins(:shipping_ub_features, :supply_feature)
-      .pluck("product_supply_features.sum_price_lo")
-      .sum(&:to_f)
+  }
+
+
+  scope :ship_ub, ->{
+    items = left_joins(:shipping_ub_features)
+              .where("shipping_ub_features.supply_feature_id IS not NULL")
+    items = items.joins(:supply_feature)
+    items
   }
 
   scope :find_to_ub, ->(not_er_feature_ids = nil) {
@@ -42,6 +55,10 @@ class ShippingErFeature < ApplicationRecord
 
   scope :by_supply_feature_ids, -> (ids) {
     where("supply_feature_id IN (?)", ids)
+  }
+
+  scope :quantity, ->(id){
+    where(supply_feature_id: id).pluck(:quantity).sum
   }
 
 end

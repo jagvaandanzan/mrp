@@ -1,0 +1,127 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Sheet1") do |sheet|
+
+title = sheet.styles.add_style(
+:b=>true,
+:border=>Axlsx::STYLE_THIN_BORDER,
+:alignment=>{:horizontal => :center,:vertical => :center, :wrap_text => true})
+
+left = sheet.styles.add_style(
+:border=>Axlsx::STYLE_THIN_BORDER,
+:alignment=>{:horizontal => :left,:wrap_text => false})
+
+right = sheet.styles.add_style(
+:border=>Axlsx::STYLE_THIN_BORDER,
+:alignment=>{:horizontal => :right})
+
+default = sheet.styles.add_style(
+:border=>Axlsx::STYLE_THIN_BORDER,
+:alignment=>{:horizontal => :center, :vertical => :center})
+
+
+none = sheet.styles.add_style(
+:alignment=>{:horizontal => :center, :vertical => :center})
+
+below = sheet.styles.add_style(
+{ :border => { :style => :thin, :color=> "000000", :edges => [:top, :left, :right] },
+:alignment=>{:horizontal => :center, :vertical => :center}})
+
+above = sheet.styles.add_style(
+{ :border => { :style => :thin, :color=> "000000", :edges => [:top] }})
+
+
+warning = sheet.styles.add_style(
+:fg_color=>"f3640f",
+:border=>Axlsx::STYLE_THIN_BORDER,
+:alignment=>{:horizontal => :left, :vertical => :center})
+
+
+# Create the header row
+sheet.add_row [
+t('activerecord.attributes.product_supply_order.code'),
+t('activerecord.attributes.product_supply_order.order_type'),
+t('activerecord.attributes.product_supply_order.product_code'),
+t('activerecord.attributes.product_supply_order.product_name'),
+t('activerecord.attributes.product_supply_feature.feature_item_id'),
+t('activerecord.attributes.product_supply_order_item.total_quantity'),
+t('activerecord.attributes.product_supply_order_item.purchase_quantity'),
+t('activerecord.attributes.shipping_er_feature.quantity'),
+t('activerecord.attributes.shipping_er_product.cargo'),
+t('activerecord.attributes.shipping_er.date'),
+t('activerecord.attributes.shipping_er.cost'),
+t('activerecord.attributes.product_supply_feature.price'),
+t('activerecord.attributes.product_supply_feature.sum_price'),
+t('activerecord.attributes.product_supply_feature.note_lo'),
+],:style=>title
+
+pur_ids = @er_products_x.pluck(:order_item_id)
+
+sheet.add_row [
+t('activerecord.attributes.product_supply_feature.sum_price'),
+t('activerecord.attributes.product_supply_order.ordered_date'),
+t('activerecord.attributes.product_supply_order_item.cost'),
+t('activerecord.attributes.product_supply_feature.price'),
+t('activerecord.attributes.product_supply_feature.sum_price'),
+ProductSupplyFeature.by_order_item_id(pur_ids).sum(:quantity),
+ProductSupplyFeature.by_order_item_id(pur_ids).sum(:quantity_lo),
+ShippingErFeature.by_order_item(pur_ids).sum("shipping_er_features.quantity"),
+@er_products_x.group("shipping_er_products.id").pluck("shipping_er_products.cargo").sum,
+'',
+@er_products_x.group("shipping_er_products.id").pluck("shipping_er_products.cost").sum,
+'',
+@er_products_x.pluck("product_supply_features.price_lo * product_supply_features.quantity_lo").sum,
+''
+],:style=>title
+
+sheet.merge_cells sheet.rows.last.cells[(0..4)]
+
+
+item = nil
+code = 0
+@er_products_x.each do |i|
+        order_items = i.order_item
+        shipping_er_feature = i.shipping_er_features
+        supply_order = order_items.product_supply_order
+        count = 0
+        product = order_items.product if order_items.present?
+               feature_ids = []
+               total_quantity = 0
+               total_quantity_lo = 0
+               total_price = 0
+               date, costs, quantity, cargo, cost_text = order_items.present? ? order_items.shipping_er_feature : ''
+               if order_items.present?
+                 if item != order_items.supply_features
+                     order_items.supply_features.each_with_index {|supply_feature, index|
+                       feature_ids << supply_feature.id
+                       total_quantity += supply_feature.quantity if supply_feature.quantity.present?
+                       total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
+                       total_price += supply_feature.sum_price_lo
+                       count += 1
+                       var = i.code
+                       sheet.add_row [
+                       i.code,
+                       supply_order.order_type_i18n,
+                       product.present? ? product.code : i.id,
+                       product.present? ? product.name : '',
+                        supply_feature.feature_item.name,
+                        supply_feature.quantity,
+                        supply_feature.quantity_lo,
+                        supply_feature.shipping_er_features.quantity(supply_feature.id),
+                        i.code == code ? '' : cargo,
+                        date,
+                        i.code == code ? '' : costs,
+                        i.price,
+                        supply_feature.sum_price_lo,
+                        order_items.present? ? order_items.note_lo : '',
+                        ],style:[default,default,default,default,default,default,default,default,count > 1 ? i.code == var ? none : below : below,default,count > 1 ? i.code == var ? none : below : below, default, default,default,default]
+                        item = order_items.supply_features
+                        code = i.code
+                   }
+                 end
+         end
+     end
+    sheet.add_row [
+    '','','','','','','','','','','',''
+    ],:style=>above
+end
