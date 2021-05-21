@@ -1,0 +1,21 @@
+<tr class="nested-fields">
+  <% item = f.object.product_sale_item %>
+  <%= f.hidden_field :product_sale_item_id %>
+  <%= f.hidden_field :remainder %>
+  <td class="image va-mid">
+    <%= product_img_web_link(item) %>
+  </td>
+  <td class="va-mid"><%= item.product.name_with_code %></td>
+  <td class="va-mid"><%= item.feature_item.name %></td>
+  <td class="va-mid">
+    <%= field_errors f.object, :quantity %>
+    <%= f.number_field :quantity, class: 'form-control field return_quantity', oninput: "calc_total_price()", max: item.bought_quantity, placeholder: t('activerecord.attributes.product_sale_item.quantity') %>
+  </td>
+  <td class="va-mid item_price" price="<%= item.price %>"><%= get_currency_mn(item.price) %></td>
+  <td class="va-mid"><%= get_currency_mn(item.price * item.bought_quantity) %></td>
+  <td class="va-mid remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>

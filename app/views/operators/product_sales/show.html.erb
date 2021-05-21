@@ -97,13 +97,7 @@
           </div>
         </div>
 
-        <% if @product_sale.product_sale_items.present? %>
           <div class="col-md-12 group_div m-t-10">
-            <div class="col-md-12 field_div">
-              <b><%= t('activerecord.attributes.product_sale.product_sale_items') %></b>
-            </div>
-
-            <div style="clear: both"></div>
             <div class="col-md-4 field_div">
               <div class="div_input">
                 <b><%= t('activerecord.attributes.product_sale.sum_price') %>
@@ -124,6 +118,41 @@
                 :</b> <%= get_currency_mn(@product_sale.paid) %>
                 <% end %>
               </div>
+            </div>
+            <div style="clear: both"></div>
+            <% is_exchange = @product_sale.parent_id.present?
+               if is_exchange %>
+              <div class="col-md-12 field_div">
+                <b>Буцаах бараа</b>
+              </div>
+              <div class="col-md-12 field_div">
+                <table style="background: white;" class="table table-bordered">
+                  <tr>
+                    <th class="va-mid" class="va-mid"><%= t('activerecord.attributes.product_feature_item.image') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
+                    <th class="va-mid" style="font-size: 11px"><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
+                    <th class="va-mid" style="width: 200px"><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
+                  </tr>
+                  <% @product_sale.product_sale_returns.each do |ret|
+                     i = ret.product_sale_item %>
+                    <tr>
+                      <td class="va-mid"><%= product_img_web_link(i) %></td>
+                      <td class="va-mid"><%= i.product.name_with_code %></td>
+                      <td class="va-mid"><%= i.feature_item.name %></td>
+                      <td class="va-mid"><%= i.quantity %></td>
+                      <td class="va-mid"><%= get_currency_mn(i.price) %></td>
+                      <td class="va-mid"><%= get_currency_mn(i.price * i.bought_quantity)  %></td>
+                    </tr>
+                  <% end %>
+                </table>
+              </div>
+            <% end %>
+
+            <% if @product_sale.product_sale_items.present? %>
+            <div class="col-md-12 field_div">
+              <b><%= is_exchange ? 'Өгөх бараа' : t('activerecord.attributes.product_sale.product_sale_items') %></b>
             </div>
             <div style="clear: both"></div>
             <div class="col-md-12 field_div">
@@ -162,8 +191,8 @@
                 </tbody>
               </table>
             </div>
+            <% end %>
           </div>
-        <% end %>
 
         <% if @product_sale.product_sale_status_logs.present? %>
           <div class="col-md-12 group_div m-t-20">

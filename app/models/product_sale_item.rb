@@ -2,7 +2,6 @@ class ProductSaleItem < ApplicationRecord
   belongs_to :product_sale
   belongs_to :product
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
-  belongs_to :parent, :class_name => "ProductSaleItem", optional: true
 
   has_many :salesman_returns, :class_name => "SalesmanReturn", :foreign_key => "sale_item_id", dependent: :destroy
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "sale_item_id", dependent: :destroy
@@ -16,10 +15,7 @@ class ProductSaleItem < ApplicationRecord
   validates :product_id, :feature_item_id, :price, :quantity, presence: true
   validates :price, numericality: {greater_than: 0}
   validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
-
-  with_options :unless => Proc.new {|m| m.product_sale.is_exchange} do
-    validates :quantity, numericality: {greater_than: 0}
-  end
+  validates :quantity, numericality: {greater_than: 0}
 
   before_validation :set_remainder
   attr_accessor :remainder, :p_price, :p_6_8, :p_9_
@@ -144,16 +140,6 @@ class ProductSaleItem < ApplicationRecord
       else
         self.bonus_balance = BonusBalance.create(bonu: b_model, product_sale_item: self, bonus: ApplicationController.helpers.get_percentage(bought_quantity * price, 5))
       end
-    end
-  end
-
-  def exchange_balance
-    if bought_quantity < 0
-      self.product_balance = ProductBalance.create(product: product,
-                                                   feature_item: feature_item,
-                                                   quantity: -bought_quantity)
-      upt_back_money = self.product_sale.back_money + ((quantity - bought_quantity) * price)
-      self.product_sale.update_column(:back_money, upt_back_money) if upt_back_money != self.product_sale.back_money
     end
   end
 

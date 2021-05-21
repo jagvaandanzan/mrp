@@ -173,9 +173,8 @@ module API
                         message = I18n.t('alert.removed_successfully')
                       else
                         quantity_was = product_sale_item.quantity - (product_sale_item.back_quantity.presence || 0)
-                        if (params[:quantity] > 0 || params[:quantity] < 0) && params[:quantity] <= quantity_was
+                        if params[:quantity] > 0 && params[:quantity] <= quantity_was
                           product_sale_item.update_columns(bought_quantity: params[:quantity], bought_at: Time.now, bought_price: product_sale_item.price * params[:quantity])
-                          product_sale_item.exchange_balance
                           travel_route.calculate_payable
                           message = I18n.t('alert.info_updated')
                         else
@@ -194,6 +193,52 @@ module API
                       else
                         error!(message, r_s)
                       end
+                    end
+                  end
+                end
+              end
+
+              resource :take do
+                desc "PATCH travels/routes/:id/product/take"
+                params do
+                  requires :return_id, type: Integer
+                  requires :quantity, type: Integer
+                end
+                patch do
+                  message = ""
+                  r_s = 200
+                  salesman = current_salesman
+                  product_sale_return = ProductSaleReturn.find(params[:return_id])
+                  travel_route = SalesmanTravelRoute.find(params[:id])
+
+                  product_sale = product_sale_return.product_sale
+                  travel = product_sale.salesman_travel
+
+                  if travel.present? && salesman.id == travel.salesman_id
+                    if product_sale_return.take_at.present?
+                      product_sale_return.update_columns(take_quantity: nil, take_at: nil)
+                      message = I18n.t('alert.removed_successfully')
+                    else
+                      quantity_was = product_sale_return.quantity - (product_sale_return.take_quantity.presence || 0)
+                      if params[:quantity] > 0 && params[:quantity] <= quantity_was
+                        product_sale_return.update_columns(take_quantity: params[:quantity], take_at: Time.now)
+                        product_sale_return.exchange_balance
+                        message = I18n.t('alert.info_updated')
+                      else
+                        r_s = 422
+                        message = I18n.t('activerecord.attributes.product_sale_item.quantity') +
+                            I18n.t('errors.messages.less_than_or_equal_to', count: quantity_was)
+                      end
+                    end
+                  end
+
+                  if message.empty?
+                    error!("Couldn't find data", 404)
+                  else
+                    if r_s == 200
+                      {message: message, payable: travel_route.payable, shipping: Const::SHIPPING_FEE, back_money: product_sale.back_money}
+                    else
+                      error!(message, r_s)
                     end
                   end
                 end
@@ -224,16 +269,17 @@ module API
 
                 if travel.present? && salesman.id == travel.salesman_id
                   if params[:status] == "sals_delivered" # Авсан
-                    if travel_route.main_payable.present?
+                    product_sale = travel_route.product_sale
+                    if travel_route.main_payable.present? || product_sale.is_return
                       travel_route.calculate_delivery
                       travel_route.calculate_wage
                       travel.calculate_delivery
                       status = ProductSaleStatus.find_by_alias("sals_delivered")
-                      product_sale = travel_route.product_sale
                       product_sale.salesman = salesman
                       product_sale.status = status
                       product_sale.save(validate: false)
                       product_sale.add_bonus
+                      product_sale.remove_bonus
                       r_s = 200
                       message = I18n.t('alert.info_updated')
                     else

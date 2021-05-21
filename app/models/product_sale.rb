@@ -10,6 +10,7 @@ class ProductSale < ApplicationRecord
   belongs_to :parent, :class_name => "ProductSale", optional: true
 
   has_many :product_sale_items
+  has_many :product_sale_returns
   has_many :product_sale_status_logs
   has_one :bonus_balance, dependent: :destroy
   has_one :sale_tax
@@ -17,12 +18,13 @@ class ProductSale < ApplicationRecord
   has_one :child, :class_name => "ProductSale", :foreign_key => "parent_id", dependent: :destroy
 
   accepts_nested_attributes_for :product_sale_items, allow_destroy: true
+  accepts_nested_attributes_for :product_sale_returns, allow_destroy: true
 
   enum money: {cash: 0, account: 1, mixed: 2}
 
   attr_accessor :hour_now, :hour_start, :hour_end, :update_status, :operator, :salesman, :status_m, :status_sub
 
-  before_validation :check_exchange
+  before_save :check_exchange
   before_save :create_log
   before_save :set_defaults
   before_save :set_balance
@@ -31,7 +33,7 @@ class ProductSale < ApplicationRecord
 
   with_options :if => Proc.new {|m| m.update_status == nil} do
     validates_numericality_of :hour_end, greater_than: Proc.new(&:hour_start)
-    validates :phone, :location_id, :product_sale_items, :money, presence: true
+    validates :phone, :location_id, :money, presence: true
     validates :code, uniqueness: true
     validate :feature_rel_should_be_uniq
     validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
@@ -48,6 +50,12 @@ class ProductSale < ApplicationRecord
   end
   with_options :if => Proc.new {|m| m.money != 'cash' && !m.parent_id.present?} do
     validates_numericality_of :paid, less_than_or_equal_to: Proc.new(&:sum_price)
+  end
+  with_options :if => Proc.new {|m| m.parent_id.present?} do
+    validates :product_sale_returns, presence: true
+  end
+  with_options :if => Proc.new {|m| !m.parent_id.present?} do
+    validates :product_sale_items, presence: true
   end
 
   with_options :if => Proc.new {|m| !m.update_status.present? && m.bonus.present?} do
@@ -96,7 +104,7 @@ class ProductSale < ApplicationRecord
 
   scope :by_salesman_nil, ->() {
     joins(:status)
-        .where.not("approved_date IS ?", nil)
+        .where("approved_date IS NOT ? OR is_return = ?", nil, true)
         .where('product_sale_statuses.alias = ?', 'oper_confirmed')
         .where("salesman_travel_id IS ?", nil)
         .order(:approved_date)
@@ -104,6 +112,9 @@ class ProductSale < ApplicationRecord
 
   scope :by_delivery_end, ->(date) {
     where("delivery_end <= ?", date) if date.present?
+  }
+  scope :by_available_time, ->(date) {
+    where("delivery_start <= ?", date) if date.present?
   }
 
   scope :by_travel_ids, ->(ids) {
@@ -160,7 +171,11 @@ class ProductSale < ApplicationRecord
 
   def status_name
     if status.present?
-      status.name_with_parent
+      if parent_id.present?
+        "#{status.name_with_parent} (#{parent.status.name})"
+      else
+        status.name_with_parent
+      end
     else
       "Сонгоогүй"
     end
@@ -210,6 +225,10 @@ class ProductSale < ApplicationRecord
     if sales > 1
       product_sale_items.each(&:add_bonus)
     end
+  end
+
+  def remove_bonus
+    product_sale_returns.each(&:remove_bonus)
   end
 
   def set_statuses(is_edit)
@@ -285,7 +304,7 @@ class ProductSale < ApplicationRecord
                                                                 status: status,
                                                                 note: status_note)
       # set_status
-      if status.next.present?
+      if status.present? && status.next.present?
         next_status = status.next_status
         if next_status.user_type == "auto"
           self.status = next_status
@@ -315,22 +334,18 @@ class ProductSale < ApplicationRecord
 
   end
 
-  # тоо ширхэг нь - утгатай бол буцаалт, буцаалт солилт статустай + тоо ширхэгтэй бол устгана
+  # буцаах мөнгийг тооцно
   def check_exchange
-    if is_exchange && !update_status.present?
-      self.back_money = 0
-      product_sale_items.each do |item|
-        if item.parent_id.present?
-          if item.quantity >= 0
-            item.destroy
-          elsif item.quantity < 0
-            self.back_money = 0 if self.back_money.nil?
-            self.back_money += item.sum_price
-          end
-        end
-
-        self.back_money = nil if back_money == 0
+    if is_exchange
+      self.is_return = product_sale_returns.present? && !product_sale_items.present?
+      if sum_price < 0
+        self.back_money = -sum_price
+      else
+        self.back_money = nil
       end
+    else
+      self.back_money = nil
+      self.is_return = false
     end
   end
 

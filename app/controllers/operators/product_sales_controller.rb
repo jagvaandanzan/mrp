@@ -52,6 +52,7 @@ class Operators::ProductSalesController < Operators::BaseController
           @product_sale.product_sale_items << sale_item
         end
         @product_sale.phone = sale_call.phone
+        total_price += total_price < Const::FREE_SHIPPING ? Const::SHIPPING_FEE : 0
 
         # @product_sale.location = Location.offset(rand(Location.count)).first
         # @product_sale.building_code = 4.times.map {rand(9)}.join
@@ -68,35 +69,17 @@ class Operators::ProductSalesController < Operators::BaseController
         @product_sale.building_code = parent.building_code
         @product_sale.loc_note = parent.loc_note
         @product_sale.tax = parent.tax
-
-        parent.product_sale_items.each do |item|
-          product = item.product
-          sale_item = ProductSaleItem.new(product: product)
-          feature_item = item.feature_item
-          sale_item.feature_item = feature_item
-          sale_item.quantity = item.quantity.presence || 0
-          sale_item.remainder = feature_item.balance + sale_item.quantity
-          sale_item.p_price = feature_item.price.presence || 0
-          sale_item.p_6_8 = feature_item.p_6_8.presence || 0
-          sale_item.p_9_ = feature_item.p_9_.presence || 0
-          sale_item.price = feature_item.price_quantity(sale_item.quantity).presence || 0
-          sale_item.to_see = item.to_see
-          sale_item.parent = item
-          # Хэрэв хямдралтай бол
-          product_discounts = product.product_discounts.by_available
-          if product_discounts.present?
-            discount = product_discounts.first
-            sale_item.discount = discount.percent
-            sale_item.price -= ApplicationController.helpers.get_percentage(sale_item.price, discount.percent)
-          end
-          sum_price = sale_item.price * sale_item.quantity
-          sale_item.sum_price = sum_price
-          total_price += sum_price
-          @product_sale.product_sale_items << sale_item
+        @product_sale.sum_price = -parent.sum_price
+        parent.product_sale_items.not_nil_bought_quantity.each do |item|
+          sale_return = ProductSaleReturn.new(product_sale: parent,
+                                              product_sale_item: item,
+                                              quantity: item.bought_quantity.presence || 0,
+                                              remainder: item.bought_quantity.presence || 0)
+          total_price -= item.price * item.bought_quantity
+          @product_sale.product_sale_returns << sale_return
         end
       end
 
-      total_price += total_price < Const::FREE_SHIPPING ? Const::SHIPPING_FEE : 0
       @product_sale.sum_price = total_price
 
       time = Time.current
@@ -377,7 +360,8 @@ class Operators::ProductSalesController < Operators::BaseController
         .permit(:sale_call_id, :parent_id, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :country, :building_code, :loc_note,
                 :sum_price, :money, :paid, :bonus, :tax,
                 :status_id, :status_m, :status_sub, :status_note,
-                product_sale_items_attributes: [:id, :product_id, :parent_id, :feature_item_id, :to_see, :quantity, :price, :p_discount, :discount, :sum_price, :remainder, :_destroy])
+                product_sale_returns_attributes: [:id, :product_sale_item_id, :quantity, :remainder, :_destroy],
+                product_sale_items_attributes: [:id, :product_id, :feature_item_id, :to_see, :quantity, :price, :p_discount, :discount, :sum_price, :remainder, :_destroy])
   end
 
   def location_params

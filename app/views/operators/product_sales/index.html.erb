@@ -57,9 +57,10 @@
                 <th><%= t('activerecord.attributes.product_sale.status_id') %></th>
                 <th>Жолооч</th>
               </tr>
-              <% @product_sales.each do |p| %>
+              <% @product_sales.each do |p|
+                sale_returns = p.product_sale_returns.count   %>
                 <tr>
-                  <td class="va-mid text-center"><%= link_to p.product_sale_items.count, operators_product_sale_path(p) %></td>
+                  <td class="va-mid text-center"><%= p.product_sale_items.count %><%= sale_returns > 0 ? "-#{sale_returns}" : '' %></td>
                   <td class="va-mid"><%= link_to p.phone, operators_product_sale_path(p) %></td>
                   <td class="va-mid" style="white-space: nowrap"><%= p.delivery_time.html_safe %></td>
                   <td class="va-mid"><%= p.location.full_name %>

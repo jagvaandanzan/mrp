@@ -72,7 +72,7 @@ class ProductSaleStatus < ApplicationRecord
   def name_with_parent
     if self.previous.present?
       if previous_status.alias == "sals_delivered"
-        self.name
+        previous_status.name
       else
         (self.previous.present? ? self.previous_status.name + " >> " : "") + self.name
       end

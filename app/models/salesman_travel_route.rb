@@ -120,6 +120,10 @@ class SalesmanTravelRoute < ApplicationRecord
     c.presence || 0
   end
 
+  def return_count
+    product_sale.product_sale_returns.count
+  end
+
   def status
     product_sale.status_name
   end

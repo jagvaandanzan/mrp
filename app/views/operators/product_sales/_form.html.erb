@@ -111,10 +111,33 @@
                 </div>
               </div>
             </div>
-
+            <% is_exchange = @product_sale.parent_id.present?
+               if is_exchange %>
+              <div class="col-md-12 field_div">
+                <label class="control-label" for="product_sale_product_returns">Буцаах бараа</label>
+                <div class="cocoon-nested-form">
+                  <div class="<%= get_error_class(@product_sale, :product_returns) %>">
+                    <%= field_errors(@product_sale, :product_returns) %>
+                    <table class="table table-bordered" id="tb_product_sale_returns">
+                      <tr>
+                        <th class="va-mid" class="va-mid"><%= t('activerecord.attributes.product_feature_item.image') %></th>
+                        <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
+                        <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
+                        <th class="va-mid" style="font-size: 11px"><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
+                        <th class="va-mid" style="width: 200px"><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                        <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
+                        <th width="50px"></th>
+                      </tr>
+                      <%= f.fields_for :product_sale_returns do |m| %>
+                        <%= render 'product_sale_return_fields', :f => m %>
+                      <% end %>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            <% end %>
             <div class="col-md-12 field_div">
-              <%= f.label :product_sale_items, class: 'control-label' %>
-
+              <label class="control-label" for="product_sale_product_sale_items"><%= is_exchange ? 'Өгөх бараа' : t('activerecord.attributes.product_sale.product_sale_items') %></label>
               <div class="cocoon-nested-form">
                 <div class="<%= get_error_class(@product_sale, :product_sale_items) %>">
                   <%= field_errors(@product_sale, :product_sale_items) %>
@@ -165,7 +188,7 @@
                 </div>
                 <div class="col-md-3 field_div">
                   <label class="control-label" for="product_sale_bonus">Бонус:
-                    <span id="bonus_available"><%= (@product_sale.present? && @product_sale.sum_price.present?) ? get_currency_mn(@product_sale.sum_price / 2) : 0 %></span>
+                    <span id="bonus_available"><%= (@product_sale.present? && @product_sale.sum_price.present? && @product_sale.sum_price > 0) ? get_currency_mn(@product_sale.sum_price / 2) : 0 %></span>
                     / <span id="bonus_extra"><%= get_currency_mn(@product_sale.bonus_show) %></span></label>
                   <div class="<%= get_error_class(@product_sale, :bonus) %>">
                     <%= field_errors(@product_sale, :bonus) %>
@@ -355,7 +378,7 @@
                         }
                         select.selectpicker("refresh");
                     }
-                    parentTr.find('.image').html("<a href='<%= ENV['WEB_DOMAIN'] %>products/" + product_id + "' target='_blank'> <img src='" + data.tumb + "', class='tumb'></a>");
+                    parentTr.find('.image').html("<a href='<%= ENV['WEB_DOMAIN'] %>products/" + product_id + "' target='_blank'> <img src='" + data.tumb + "', class='thumb'></a>");
                     parentTr.find("input.item_price").attr('price', data.price).val(getDecimalPay(data.price));
 
                     calc_total_price();
@@ -403,14 +426,23 @@
     }
 
     function calc_total_price() {
-        var total_price = 0;
+        var total_price = 0, give_back = 0;
+        $('#tb_product_sale_returns tr.nested-fields').each(function () {
+            let tr = $(this);
+            if (tr.is(':visible')) {
+                let quantity = tr.find('.return_quantity').val();
+                if (quantity !== undefined && quantity.length > 0) {
+                    let price = tr.find('.item_price').attr('price');
+                    give_back += parseInt(price) * parseInt(quantity);
+                }
+            }
+        });
         $('#tb_product_sale_items tr.nested-fields').each(function () {
             let tr = $(this);
             if (tr.is(':visible')) {
                 let td_qau = tr.find('.item_quantity');
                 let quantity = td_qau.val();
                 if (quantity !== undefined && quantity.length > 0) {
-                    if (quantity >= 0 && td_qau.attr('parent_id') === "true") quantity = 0;
                     let price_tr = tr.find('.item_price');
                     let price = 0;
                     if (quantity < 6) {
@@ -444,18 +476,17 @@
             }
         });
 
-        if (total_price > 0) {
+        if (total_price > 0 && give_back === 0) {
             total_price += (total_price > 0 && total_price < <%= Const::FREE_SHIPPING %>) ? <%= Const::SHIPPING_FEE %> : 0;
         }
-        $('#product_sale_sum_price').val(total_price);
-        $('#bonus_available').text(getDecimalPay(total_price / 2));
+        $('#product_sale_sum_price').val(total_price - give_back);
+        $('#bonus_available').text(total_price > 0 ? getDecimalPay(total_price / 2) : 0);
 
         let bonus = $('#product_sale_bonus').val();
         if (bonus.length > 0) {
             total_price -= parseInt(bonus);
         }
-        $('#sum_price').val(getDecimalPay(total_price));
-
+        $('#sum_price').val(getDecimalPay(total_price - give_back));
     }
 
     function set_bonus() {

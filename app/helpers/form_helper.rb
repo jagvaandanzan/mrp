@@ -86,7 +86,7 @@ module FormHelper
     if object.product.present?
       link_to "#{ENV['WEB_DOMAIN']}products/#{object.product_id}", target: '_blank' do
         if object.feature_item.present?
-          image_tag object.feature_item.img.present? ? object.feature_item.img.url(:tumb) : 'no-image.png', style: 'width: 80px; height: 80px'
+          image_tag object.feature_item.img.present? ? object.feature_item.img.url(:tumb) : 'no-image.png', class: 'thumb'
         else
           t('controls.link.web')
         end

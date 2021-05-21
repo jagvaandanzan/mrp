@@ -5,11 +5,12 @@ class SalesmanTravel < ApplicationRecord
   has_many :salesman_travel_routes, -> {with_deleted.order(:queue)}
   has_many :product_sales
   has_many :product_sale_items, through: :product_sales
+  has_many :product_sale_returns, through: :product_sales
   has_one :salesman_travel_sign, dependent: :destroy
   has_many :product_warehouse_locs, -> {order(:queue)}, dependent: :destroy
 
   scope :open_delivery, ->(salesman_id) {
-    where(salesman_id: salesman_id)
+    where(salesman_id: salesman_id) 
         .where("delivered_at IS ?", nil)
         .order(:created_at)
   }
@@ -65,6 +66,10 @@ class SalesmanTravel < ApplicationRecord
 
   def salesman_at_count
     product_warehouse_locs.by_salesman_at(true).count
+  end
+
+  def return_count
+    product_sale_returns.count
   end
 
   def load_sum
