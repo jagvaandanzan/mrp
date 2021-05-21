@@ -4,9 +4,14 @@
 <% end %>
 <div class="content-wrapper">
 
-  <div class="col-md-12 m-t-10 m-b-10">
-    <%= @by_start %> - <%= @by_end %>
-    <h2>Эрээнд хүлээн авсан</h2>
+  <div style="display: flex; justify-content: space-between">
+    <div class="col-md-12 m-t-10 m-b-10">
+      <%= @by_start %> - <%= @by_end %>
+      <h2>Эрээнд хүлээн авсан</h2>
+    </div>
+    <div class="col-md-12 m-t-40 m-b-10" style="padding-left: 50%">
+      <%=link_to 'Export to Excel', users_supply_calculations_received_er_path(by_start: @by_start, by_end: @by_end, format: 'xlsx'), :class => "btn btn-primary" %>
+    </div>
   </div>
 
   <section class="content container-fluid">
@@ -17,42 +22,57 @@
             <%= render 'layouts/flash_message' %>
             <table id='supply_table' class="table table-hover table-bordered col-xs-12">
               <tr>
-                <th class="va-mid text-center">Падааны дугаар</th>
+                <th class="va-mid text-center"><%=t('activerecord.attributes.product_supply_order.code')%></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.order_type') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.product_code') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_name') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
-                <th class="va-mid">Шинж чанар</th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_supply_feature.feature_item_id') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order_item.total_quantity') %></th>
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order_item.purchase_quantity') %></th>
-                <th class="va-mid text-center bg-1">Хүлээж авсан тоо</th>
-                <th class="va-mid text-center bg-1">Ачааны тоо</th>
-                <th class="va-mid text-center bg-1">Огноо</th>
-                <th class="va-mid text-center bg-1">Зардал</th>
-                <th class="va-mid text-center bg-2">Нэгж үнэ</th>
-                <th class="va-mid text-center bg-2">Нийт үнэ</th>
-                <th class="va-mid text-center bg-2">Тайлбар</th>
+                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.shipping_er_feature.quantity') %></th>
+                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.shipping_er_product.cargo') %></th>
+                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.shipping_er.date') %></th>
+                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.shipping_er.cost') %></th>
+                <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.product_supply_feature.price') %></th>
+                <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.product_supply_feature.sum_price') %></th>
+                <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.product_supply_feature.note_lo') %></th>
               </tr>
               <tr>
                 <th colspan="6">Нийт</th>
-                <% cargo = ProductSupplyFeature.by_date(@by_start, @by_end).cargo_count
-                  sum_in_er = ProductSupplyFeature.by_date(@by_start, @by_end).in_er
+                <%
+                  sum_in_er = @er_products.pluck("product_supply_features.price_lo * product_supply_features.quantity_lo").sum(&:to_f)
                    er_product_cost = ShippingErProduct.by_date(@by_start, @by_end).sum(:cost)
-                   pur_ids = @products.pluck(:order_item_id)%>
+                   pur_ids = @er_products.pluck(:order_item_id)%>
                 <th class="va-mid  text-center"><%=ProductSupplyFeature.by_order_item_id(pur_ids).sum(:quantity) %></th>
-                <th class="va-mid text-center"><%=@products.sum(:quantity_lo) %></th>
-                <th class="va-mid text-center"><%= @products.sum("shipping_er_features.quantity") %></th>
-                <th class="va-mid text-center"><%=cargo %></th>
+                <th class="va-mid text-center"><%=ProductSupplyFeature.by_order_item_id(pur_ids).sum(:quantity_lo)%></th>
+                <th class="va-mid text-center"><%= ShippingErFeature.by_order_item(pur_ids).sum("shipping_er_features.quantity") %></th>
+                <th class="va-mid text-center"><%= @er_products.group("shipping_er_products.id").pluck("shipping_er_products.cargo").sum%></th>
                 <th></th>
-                <th class="va-mid text-center"><%=er_product_cost%></th>
+                <th class="va-mid text-center"><%=@er_products.group("shipping_er_products.id").pluck("shipping_er_products.cost").sum %></th>
                 <th><%= %></th>
                 <th><%=sum_in_er%></th>
                 <th></th>
               </tr>
-              <%@products.each do |i| %>
+              <%@er_products.each do |i| %>
                 <% order_items = i.order_item %>
-                <% supply_order = order_items.product_supply_order %>
-                <tr  id="supple_order_<%= i.id %>" class="row_product">
+                <% supply_order = order_items.product_supply_order
+                   er_product = i.shipping_er_product%>
+                <% count = 0
+                   feature_ids = []
+                   total_quantity = 0
+                   total_quantity_lo = 0
+                   total_price = 0
+                   if order_items.present?
+                     order_items.supply_features.each_with_index {|supply_feature, index|
+                       feature_ids << supply_feature.id
+                       total_quantity += supply_feature.quantity if supply_feature.quantity.present?
+                       total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
+                       total_price += supply_feature.sum_price_lo
+                       count += 1 %>
+                  <% }
+                     end %>
+                <tr id="supple_order_<%= i.id %>" class="row_product">
                   <td class="va-mid" >
                     <%= link_to i.code, users_product_supply_order_path(i, tab_index: 0) %>
                   </td>
@@ -74,22 +94,7 @@
                     <% end %>
                   </td>
                   <td class="va-mid">
-                    <% count = 0
-                       feature_ids = []
-                       total_quantity = 0
-                       total_quantity_lo = 0
-                       total_price = 0
-                       if order_items.present?
-                         order_items.supply_features.each_with_index {|supply_feature, index|
-                           feature_ids << supply_feature.id
-                           total_quantity += supply_feature.quantity if supply_feature.quantity.present?
-                           total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
-                           total_price += supply_feature.sum_price_lo
-                           count += 1 %>
-                      <% }
-                         end %>
                     <%= count %>
-
                   </td>
                   <td class="va-mid text-center">
                     <%= total_quantity > 0 ? total_quantity : '' %>
@@ -126,12 +131,13 @@
           </div>
         </div>
 
-        <%= paginate @products %>
+        <%= paginate @er_products %>
       </div>
     </div>
   </section>
 </div>
 <%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>
+
 <script !src="">
     function removeDuplicateRows($table){
         function getVisibleRowText($row){
@@ -142,11 +148,10 @@
             var $row = $(row);
             $row.nextAll('tr').each(function(index, next){
                 var $next = $(next);
-                if(getVisibleRowText($next) == getVisibleRowText($row))
+                if(getVisibleRowText($next) === getVisibleRowText($row))
                     $next.remove();
             })
         });
     }
-
     removeDuplicateRows($('table'));
 </script>

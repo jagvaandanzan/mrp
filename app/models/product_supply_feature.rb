@@ -8,8 +8,11 @@ class ProductSupplyFeature < ApplicationRecord
   has_many :shipping_er_features, class_name: "ShippingErFeature", foreign_key: "supply_feature_id", dependent: :destroy
   has_many :shipping_ub_features, class_name: "ShippingUbFeature", foreign_key: "supply_feature_id", dependent: :destroy
   has_many :shipping_er_product, through: :shipping_er_features
+  has_many :shipping_ub_product, through: :shipping_ub_features
   before_save :set_cn_name
   attr_accessor :is_create, :is_update, :remainder, :cn_name
+
+  paginates_per 100
 
   enum order_type: {is_basic: 0, is_sample: 1}
 
@@ -70,12 +73,24 @@ class ProductSupplyFeature < ApplicationRecord
     items
   }
 
-  scope :received_er, ->{
-    items = left_joins(:shipping_er_features)
-                .where("shipping_er_features.supply_feature_id IS NOT NULL")
+  scope :received_er, ->(start, finish){
+    items = joins(:shipping_er_features)
     items = items.joins(:shipping_er_product)
     items = items.joins(:order_item)
     items = items.joins(:product_supply_order)
+                 .where('? <= shipping_er_features.created_at AND shipping_er_features.created_at <= ?', start.to_time, finish.to_time + 1.days)
+    items
+  }
+
+  scope :ship_ub, ->(start, finish){
+    items = joins(:shipping_er_features)
+    items = items.joins(:shipping_er_product)
+    items = items.joins(:order_item)
+    items = items.left_joins(:shipping_ub_features)
+              .where("shipping_ub_features.supply_feature_id IS not NULL")
+    items = items.joins(:shipping_ub_product)
+    items = items.joins(:product_supply_order)
+              .where('? <= shipping_ub_features.created_at AND shipping_ub_features.created_at <= ?', start.to_time, finish.to_time + 1.days)
     items
   }
 
@@ -113,19 +128,13 @@ class ProductSupplyFeature < ApplicationRecord
   }
 
 
-  scope :cargo_count, ->{
-    items = left_joins(:shipping_er_features)
-              .where("shipping_er_features.supply_feature_id IS NOT NULL")
-    items = items.joins(:shipping_er_product)
-                 .group("shipping_er_features.shipping_er_product_id")
-                 .pluck("shipping_er_products.cargo")
-                 .sum
-    items
-  }
-
 
   scope :by_feature_item_id, ->(feature_item_id) {
     where(feature_item_id: feature_item_id)
+  }
+
+  scope :by_order_item, ->(order_item_id) {
+    where('product_supply_features.order_item_id IN (?)', order_item_id)
   }
 
   scope :by_feature_id, ->(feature_ids) {
@@ -156,6 +165,10 @@ class ProductSupplyFeature < ApplicationRecord
   scope :sum_cost_lo, ->() {
     pluck(:cost)
       .sum(&:to_f)
+  }
+
+  scope :quantity, ->(id){
+    where(order_item_id:  id).pluck(:quantity_lo).sum
   }
 
   def price

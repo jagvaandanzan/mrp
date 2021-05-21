@@ -27,6 +27,7 @@ class ShippingErProduct < ApplicationRecord
     where('? <= shipping_er_products.created_at AND shipping_er_products.created_at <= ?', start.to_time, finish.to_time + 1.days)
   }
 
+
   def product_bought
     ProductSupplyFeature.by_product_id(product_id)
         .sum(:quantity)

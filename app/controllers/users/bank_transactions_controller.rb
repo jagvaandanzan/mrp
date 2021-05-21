@@ -29,7 +29,6 @@ class Users::BankTransactionsController < Users::BaseController
             'Content-Disposition'
         ] = "attachment; filename=" + "Банкны хуулга" + ".xlsx"
       }
-
       format.html {render :index}
     end
   end

@@ -38,4 +38,8 @@ class ShippingUbFeature < ApplicationRecord
   scope :by_shipping_er_feature, ->(shipping_er_feature_id) {
     where(shipping_er_feature_id: shipping_er_feature_id)
   }
+
+  scope :quantity, ->(id){
+    where(supply_feature_id: id).pluck(:quantity).sum
+  }
 end

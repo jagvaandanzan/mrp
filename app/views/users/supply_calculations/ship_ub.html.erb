@@ -4,17 +4,15 @@
 <% end %>
 <div class="content-wrapper">
 
-    <div style="display: flex; justify-content: space-between">
-      <div class="col-md-12 m-t-10 m-b-10">
-        <%= @by_start %> - <%= @by_end %>
-        <h2>Худалдан авсан</h2>
-      </div>
-      <div class="col-md-12 m-t-40 m-b-10" style="padding-left: 50%">
-        <%=link_to 'Export to Excel', users_supply_calculations_purchased_er_path(by_start: @by_start, by_end: @by_end, format: 'xlsx'), :class => "btn btn-primary" %>
-      </div>
+  <div style="display: flex; justify-content: space-between">
+    <div class="col-md-12 m-t-10 m-b-10">
+      <%= @by_start %> - <%= @by_end %>
+      <h3>Улаанбаатарлуу ачуулсан</h3>
     </div>
-
-
+    <div class="col-md-12 m-t-40 m-b-10" style="padding-left: 50%">
+      <%=link_to 'Export to Excel', users_supply_calculations_ship_ub_path(by_start: @by_start, by_end: @by_end, format: 'xlsx'), :class => "btn btn-primary" %>
+    </div>
+  </div>
 
   <section class="content container-fluid">
     <div class="row">
@@ -24,36 +22,48 @@
             <%= render 'layouts/flash_message' %>
             <table id='supply_table' class="table table-hover table-bordered col-xs-12">
               <tr>
+                <td colspan="7"></td>
+                <td class="va-mid text-center" colspan="3"><strong>Хүлээн авсан</strong></td>
+                <td class="va-mid text-center" colspan="3"><strong>Улаанбаатарлуу ачуулсан</strong></td>
+              </tr>
+              <tr>
                 <th class="va-mid text-center"><%=t('activerecord.attributes.product_supply_order.code')%></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.order_type') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.product_code') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_name') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_supply_feature.feature_item_id') %></th>
-                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order_item.total_quantity') %></th>
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order_item.purchase_quantity') %></th>
-                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order.ordered_date') %></th>
-                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order_item.cost') %></th>
-                <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.product_supply_feature.price') %></th>
+                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.shipping_er_feature.quantity') %></th>
+                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.shipping_er_product.cargo') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.shipping_er.date') %></th>
+                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.shipping_ub_product.quantity') %></th>
+                <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.shipping_ub_product.cargo') %></th>
+                <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.shipping_ub_product.cost') %></th>
                 <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.product_supply_feature.sum_price') %></th>
-                <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.product_supply_feature.note_lo') %></th>
+                <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.shipping_ub.date') %></th>
               </tr>
               <tr>
-                <% sum_not_er_cost = ProductSupplyFeature.by_date(@by_start, @by_end).not_in_er_cost
-                   sum_not_er = ProductSupplyFeature.by_date(@by_start, @by_end).not_in_er%>
                 <th colspan="6">Нийт</th>
-                <th class="va-mid text-center"><%= @pur_products.pluck("product_supply_features.quantity").sum %></th>
-                <th class="va-mid text-center"><%= @pur_products.pluck("product_supply_features.quantity_lo").sum %></th>
-                <th class="va-mid"> </th>
-                <th class="va-mid"><%= sum_not_er_cost %></th>
-                <th><%=  %></th>
-                <th class="va-mid"><%=@pur_products.group("product_supply_order_items.id").pluck("product_supply_order_items.sum_price_lo").sum %></th>
+                <% sum_in_er = @ub_products.pluck("product_supply_features.price_lo * product_supply_features.quantity_lo").sum(&:to_f)
+                   er_product_cost = ShippingErProduct.by_date(@by_start, @by_end).sum(:cost)
+                   pur_ids = @ub_products.pluck(:order_item_id)%>
+                <th class="va-mid  text-center"><%= ProductSupplyFeature.by_order_item(pur_ids).sum("product_supply_features.quantity") %></th>
+                <th class="va-mid text-center"><%=  ShippingErFeature.by_order_item(pur_ids).sum("shipping_er_features.quantity") %></th>
+                <th class="va-mid text-center"><%=  @ub_products.group("shipping_er_products.id").pluck("shipping_er_products.cargo").sum %></th>
+                <th class="va-mid text-center"><%= %></th>
+                <th class="va-mid text-center"><%=@ub_products.sum("shipping_ub_features.quantity") %></th>
+                <th class="va-mid text-center"><%= @ub_products.group("shipping_ub_products.id").pluck("shipping_ub_products.cargo").sum%></th>
+                <th><%=@ub_products.group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum %></th>
+                <th><%= @ub_products.group("product_supply_order_items.id").pluck("product_supply_order_items.sum_price_lo").sum%></th>
+                <th></th>
               </tr>
-              <%@pur_products.each do |i| %>
+              <%@ub_products.each do |i| %>
                 <% order_items = i.order_item %>
                 <% supply_order = order_items.product_supply_order %>
+                <% shipping_ub = i.shipping_ub_features %>
                 <tr  id="supple_order_<%= i.id %>" class="row_product">
-                  <td class="va-mid " >
+                  <td class="va-mid" >
                     <%= link_to i.code, users_product_supply_order_path(i, tab_index: 0) %>
                   </td>
                   <td class="va-mid">
@@ -75,7 +85,7 @@
                   </td>
                   <td class="va-mid">
                     <% count = 0
-                      feature_ids = []
+                       feature_ids = []
                        total_quantity = 0
                        total_quantity_lo = 0
                        total_price = 0
@@ -85,32 +95,40 @@
                            total_quantity += supply_feature.quantity if supply_feature.quantity.present?
                            total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
                            total_price += supply_feature.sum_price_lo
-                            count += 1 %>
+                           count += 1 %>
                       <% }
                          end %>
-                  <%= count %>
+                    <%= count %>
 
-                  </td>
-                  <td class="va-mid text-center">
-                    <%= total_quantity > 0 ? total_quantity : '' %>
                   </td>
                   <td class="va-mid text-center">
                     <%= total_quantity_lo > 0 ? total_quantity_lo : '' %>
                   </td>
-                  <td class="va-mid">
-                    <%= order_items.present? ? order_items.purchase_date : '' %>
+                  <% date, costs, quantity, cargo, cost_text = order_items.present? ? order_items.shipping_er_feature : '' %>
+                  <td class="va-mid text-center">
+                    <%= quantity %>
                   </td>
-                  <td class="va-mid">
-                    <%= order_items.present? ? get_currency(order_items.cost, Const::CURRENCY[0], 2) : '' %>
+
+                  <td class="va-mid text-center bg-2"><%= cargo %></td>
+                  <td class="va-mid text-center bg-2">
+                    <%= date %>
+                  </td>
+                  <td class="va-mid text-center bg-2">
+                    <% date, costs, quantity, cargo, cost_text = order_items.present? ? order_items.shipping_ub_product : '' %>
+                    <%= quantity %>
                   </td>
                   <td class="va-mid text-center">
-                    <%= get_currency(i.price, Const::CURRENCY[0], 2) %>
+                    <%= cargo %>
+                  </td>
+                  <td class="va-mid text-center">
+                    <%= costs %>
                   </td>
                   <td>
-                    <%= get_currency(total_price, Const::CURRENCY[0], 2) %>
+                    <%= total_price %>
                   </td>
+
                   <td class="va-mid text-center">
-                    <%= order_items.present? ? order_items.note_lo : '' %>
+                    <%= date %>
                   </td>
                 </tr>
               <% end %>
@@ -118,16 +136,25 @@
           </div>
         </div>
 
-        <%= paginate @pur_products %>
+        <%= paginate @ub_products %>
       </div>
     </div>
   </section>
 </div>
 <%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>
-
-
+<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
 <script !src="">
-
+    $(document).ready(function(){
+        $("#excel").click(function() {
+            let table = document.getElementById("supply_table");
+            TableToExcel.convert(table, {
+                name: `эрээнд_хүлээн_авсан.xlsx`,
+                sheet: {
+                    name: 'Sheet 1'
+                }
+            });
+        });
+    });
     function removeDuplicateRows($table){
         function getVisibleRowText($row){
             return $row.find('td:visible').text().toLowerCase();
@@ -142,6 +169,6 @@
             })
         });
     }
-    removeDuplicateRows($('table'));
 
+    removeDuplicateRows($('table'));
 </script>
