@@ -406,11 +406,11 @@ class ProductFeatureItem < ApplicationRecord
           product.product_feature_option_rels.by_feature_option_ids(delete_ids).destroy_all
         end
       else
-        Rails.logger.info("Sync")
         params = self.to_json(only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :balance, :same_item_id], :methods => [:method_type, :image_url])
       end
 
-      ApplicationController.helpers.api_request(url, method, params)
+     response = ApplicationController.helpers.api_request(url, method, params)
+      Rails.logger.debug("feature_item_sync => #{response.code} => #{response.body.to_s}")
     end
   end
 
