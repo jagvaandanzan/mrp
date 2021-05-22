@@ -277,8 +277,8 @@ class ProductFeatureItem < ApplicationRecord
   private
 
   def set_default
-    self.p_6_8 = price - ((price * p_6_8_p) / 100) if p_6_8_p.present? && price.present?# && !p_6_8.present?
-    self.p_9_ = price - ((price * p_9_p) / 100) if p_9_p.present? && price.present?# && !p_9_.present?
+    self.p_6_8 = price - ((price * p_6_8_p) / 100) if p_6_8_p.present? && price.present? # && !p_6_8.present?
+    self.p_9_ = price - ((price * p_9_p) / 100) if p_9_p.present? && price.present? # && !p_9_.present?
 
     if is_add.present?
       was_option_ids = product.product_feature_option_rels.map(&:feature_option_id).to_a
@@ -406,7 +406,7 @@ class ProductFeatureItem < ApplicationRecord
           product.product_feature_option_rels.by_feature_option_ids(delete_ids).destroy_all
         end
       else
-
+        Rails.logger.info("Sync")
         params = self.to_json(only: [:id, :product_id, :option1_id, :option2_id, :price, :p_6_8, :p_9_, :balance, :same_item_id], :methods => [:method_type, :image_url])
       end
 
