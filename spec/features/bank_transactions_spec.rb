@@ -114,7 +114,7 @@ def check_payment(transactions)
   transactions.each do |transaction|
     Rails.logger.debug "transaction.value => #{transaction.value}"
     if transaction.value.downcase.match(/[wk][0-9]{8}/)
-      if transaction.value.downcase.start_with?('qpay', 'mm:qpay')
+      if transaction.value.downcase.include?('qpay')
         transaction_id = transaction.value.downcase.match(/[k]\d+[0-9]/).to_s
         payment = transaction.summary / 99 * 100
       else
@@ -122,8 +122,8 @@ def check_payment(transactions)
         payment = transaction.summary
       end
 
-      puts "bank_send_mrp-enquire => #{[1..transaction_id.length]} => #{payment}"
-      Rails.logger.debug "bank_send_mrp-enquire => #{[1..transaction_id.length]} => #{payment}"
+      puts "bank_send_mrp-enquire => #{transaction_id[1..transaction_id.length]} => #{payment}"
+      Rails.logger.debug "bank_send_mrp-enquire => #{transaction_id[1..transaction_id.length]} => #{payment}"
       psw = ProductSaleWeb.instance
       psw.create(transaction_id[1..transaction_id.length], payment)
     end
