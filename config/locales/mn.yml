@@ -111,6 +111,7 @@ mn:
     ordered: Захиалсан
     not_ordered: Захиалаагүй
     report: Тайлан
+    date: Огноо
   app_name: “MRP”
   app_short_name: M
   alert:

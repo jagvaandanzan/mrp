@@ -51,14 +51,24 @@
         <% end %>
       <% end %>
       <% if can? :read, SaleTax %>
-        <%= content_tag :li, class: controller_name == 'product_sales' ? 'active' : '' do %>
-          <%= link_to users_product_sales_path do %>
+        <%= content_tag :li, class: controller_name == 'product_sales' ? 'treeview active' : 'treeview' do %>
+          <%= link_to "#" do %>
             <i class="fa fa-shopping-cart"></i><span><%= t('titles.product_sales') %></span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
           <% end %>
-        <% end %>
-        <%= content_tag :li, class: controller_name == 'report' ? 'active' : '' do %>
-          <%= link_to report_users_product_sales_path do %>
-            <i class="fa fa-shopping-cart"></i><span><%= t('titles.report') %></span>
+          <%= content_tag :ul, class: 'treeview-menu' do %>
+            <%= content_tag :li, class: action_name == 'index' ? 'active' : '' do %>
+              <%= link_to users_product_sales_path do %>
+                <i class="fa fa-list"></i><span><%= t('titles.list') %></span>
+              <% end %>
+            <% end %>
+            <%= content_tag :li, class: action_name == 'report' ? 'active' : '' do %>
+              <%= link_to report_users_product_sales_path do %>
+                <i class="fa fa-file-excel-o"></i><span><%= t('titles.report') %></span>
+              <% end %>
+            <% end %>
           <% end %>
         <% end %>
         <%= content_tag :li, class: controller_name == 'sale_taxes' ? 'active' : '' do %>

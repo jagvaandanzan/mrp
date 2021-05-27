@@ -1,0 +1,61 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Sheet1") do |sheet|
+
+title = sheet.styles.add_style(
+:b=>true,
+:border=>Axlsx::STYLE_THIN_BORDER,
+:alignment=>{:horizontal => :center,:vertical => :center, :wrap_text => true})
+
+left = sheet.styles.add_style(
+:border=>Axlsx::STYLE_THIN_BORDER,
+:alignment=>{:horizontal => :left,:wrap_text => false})
+
+right = sheet.styles.add_style(
+:border=>Axlsx::STYLE_THIN_BORDER,
+:alignment=>{:horizontal => :right})
+
+default = sheet.styles.add_style(
+:border=>Axlsx::STYLE_THIN_BORDER,
+:alignment=>{:horizontal => :center, :vertical => :center})
+
+warning = sheet.styles.add_style(
+:fg_color=>"f3640f",
+:border=>Axlsx::STYLE_THIN_BORDER,
+:alignment=>{:horizontal => :left, :vertical => :center})
+
+
+# Create the header row
+sheet.add_row [
+t('activerecord.attributes.bank_transaction.date'),
+t('activerecord.attributes.bank_transaction.value'),
+t('activerecord.attributes.bank_transaction.first_balance'),
+t('activerecord.attributes.bank_transaction.summary'),
+t('activerecord.attributes.bank_transaction.final_balance'),
+t('activerecord.attributes.bank_transaction.account'),
+t('activerecord.attributes.bank_transaction.salesman_id'),
+t('activerecord.attributes.bank_transaction.bank_account_id'),
+t('activerecord.attributes.bank_transaction.dealing_account_id'),
+t('activerecord.attributes.bank_transaction.billing_date'),
+t('activerecord.attributes.bank_transaction.t_type'),
+],:style=>title
+# Create entries for each item
+
+  @bank_transactions.each do |bank_transaction|
+ st = bank_transaction.manual ? warning : left
+    sheet.add_row [bank_transaction.date_time,
+                   bank_transaction.value,
+                bank_transaction.first_balance,
+                bank_transaction.summary,
+                bank_transaction.final_balance,
+                bank_transaction.account,
+                bank_transaction.salesman.present? ? bank_transaction.salesman.full_name : "",
+                bank_transaction.bank_account.present? ? bank_transaction.bank_account.full_name : "",
+                bank_transaction.dealing_account.present? ? bank_transaction.dealing_account.full_name : "",
+                bank_transaction.billing_date.present? ? bank_transaction.billing_date.strftime('%F') : "",
+                bank_transaction.t_type
+    ],
+        style:[st,st,st,st,st,st,st,st,st,st,st]
+
+  end
+end

@@ -223,6 +223,7 @@ mn:
       shipping_er: Үйлдвэр-Эрээн тээвэрлэлт
       shipping_ub: Эрээн-УБ тээвэрлэлт
       shipping_ub_box: Хайрцаг
+      salesman: Түгээгч
     attributes:
       admin_user:
         email: Имэйл

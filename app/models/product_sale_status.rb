@@ -20,6 +20,9 @@ class ProductSaleStatus < ApplicationRecord
   scope :by_types, ->(user_types) {
     where('user_type IN (?)', user_types)
   }
+  scope :by_next, ->(n) {
+    where("next IS #{n.nil? ? '' : 'NOT '}?", nil)
+  }
   scope :not_types, ->(user_types) {
     where('user_type NOT IN (?)', user_types)
   }

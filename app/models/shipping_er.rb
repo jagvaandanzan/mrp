@@ -27,7 +27,7 @@ class ShippingEr < ApplicationRecord
   scope :search, ->(start, finish, product_name, order_type) {
     items = order_created_at
     items = items.joins(:products)
-                .where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{product_name}%").group("id") if product_name.present?
+                .where('products.code LIKE :value OR products.n_name LIKE :value OR products.c_name LIKE :value', value: "%#{product_name}%").group("id") if product_name.present?
     items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items.where(order_type: order_type)
   }
@@ -38,7 +38,7 @@ class ShippingEr < ApplicationRecord
       if index > 0
         names += ", "
       end
-      names += product.full_name
+      names += product.c_name if product.c_name.present?
     }
     names
   end
