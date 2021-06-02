@@ -488,6 +488,17 @@ class Product < ApplicationRecord
       ProductFeatureItem.create(tab_index: 1, product: self, option1_id: product_feature_option.feature_option_id, option2_id: product_feature_option.feature_option_id,
                                 p_6_8_p: is_own ? 5 : nil, p_9_p: is_own ? 6 : nil)
     end
+
+    if draft
+      product_feature_items.each_with_index {|item, index|
+        c = if index < 10
+              "0#{index + 1}"
+            else
+              "#{index + 1}"
+            end
+        item.update_column(:barcode, "#{code}#{c}")
+      }
+    end
   end
 
   def set_filters
