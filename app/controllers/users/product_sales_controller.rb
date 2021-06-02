@@ -41,11 +41,11 @@ class Users::ProductSalesController < Users::BaseController
       today = Time.now.beginning_of_day - 1.day
       @start = @finish = today.strftime('%Y/%m/%d')
     end
-    if params[:list_type].present?
-      @list_type = params[:list_type].to_i
-    else
-      1
-    end
+    @list_type = if params[:list_type].present?
+                   params[:list_type].to_i
+                 else
+                   1
+                 end
     @salesman_id = params[:salesman_id]
     @operator_id = params[:operator_id]
     @product_code = params[:product_code]
