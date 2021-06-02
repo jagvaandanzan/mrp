@@ -170,7 +170,7 @@
                         </td>
                         <td rowspan="<%= len %>" class="va-mid"><%= sale.created_operator_id.present? ? sale.created_operator.name : '' %></td>
                         <td rowspan="<%= len %>" class="va-mid"><%= sale.phone %></td>
-                        <td rowspan="<%= len %>" class="va-mid"><%= sale.location.full_name %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= sale.location.address %></td>
                       <% end %>
                       <td><%= item.product.n_name %></td>
                       <td><%= item.product.code %></td>
@@ -216,7 +216,7 @@
                     </td>
                     <td class="va-mid"><%= sale.created_operator_id.present? ? sale.created_operator.name : '' %></td>
                     <td class="va-mid"><%= sale.phone %></td>
-                    <td class="va-mid"><%= sale.location.full_name %></td>
+                    <td class="va-mid"><%= sale.location.address %></td>
                     <td><%= sale.product_sale_items.sum(:quantity) %></td>
                     <td><%= get_currency_mn sale.product_sale_items.sum(:price) %></td>
                     <td class="va-mid"><%= sale.bonus.present? && sale.bonus > 0 ? get_currency_mn(sale.bonus) : '' %></td>
