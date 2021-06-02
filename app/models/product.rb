@@ -177,6 +177,13 @@ class Product < ApplicationRecord
         .group(:id)
   }
 
+  scope :by_barcode_nil, ->() {
+    left_joins(:product_feature_items)
+        .where("product_feature_items.barcode IS ? OR product_feature_items.barcode=''", nil)
+        .where("products.code LIKE :value", value: "1%")
+        .group('products.id')
+  }
+
   def all_categories
     if category.present?
       categories = get_parent_category([category], category)
