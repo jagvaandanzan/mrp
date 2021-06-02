@@ -199,7 +199,7 @@
                         <td rowspan="<%= len %>" class="va-mid"><%= sale.delivery_start.strftime('%F') %></td>
                         <td rowspan="<%= len %>" class="va-mid"><%= sale.delivery_start.strftime('%H') %>
                           -<%= sale.delivery_end.strftime('%H') %></td>
-                        <td rowspan="<%= len %>" class="va-mid"><%= salesman_travel.present? ? salesman_travel.delivered_at.strftime('%F %R') : '' %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= salesman_travel.present? && salesman_travel.delivered_at.present? ? salesman_travel.delivered_at.strftime('%F %R') : '' %></td>
                         <td rowspan="<%= len %>" class="va-mid"><%= salesman_travel.present? ? salesman_travel.salesman.name : '' %></td>
                         <td rowspan="<%= len %>" class="va-mid"><%= (salesman_travel.present? && salesman_travel.delivered_at.present? && salesman_travel.delivery_at.present?) ? ApplicationController.helpers.get_minutes(salesman_travel.delivered_at, salesman_travel.delivery_at).to_i : '' %></td>
                       <% end %>
@@ -238,7 +238,7 @@
                     <td class="va-mid"><%= sale.delivery_start.strftime('%F') %></td>
                     <td class="va-mid"><%= sale.delivery_start.strftime('%H') %>
                       -<%= sale.delivery_end.strftime('%H') %></td>
-                    <td class="va-mid"><%= salesman_travel.present? ? salesman_travel.delivered_at.strftime('%F %R') : '' %></td>
+                    <td class="va-mid"><%= salesman_travel.present? && salesman_travel.delivered_at.present? ? salesman_travel.delivered_at.strftime('%F %R') : '' %></td>
                     <td class="va-mid"><%= salesman_travel.present? ? salesman_travel.salesman.name : '' %></td>
                     <td class="va-mid"><%= (salesman_travel.present? && salesman_travel.delivered_at.present? && salesman_travel.delivery_at.present?) ? ApplicationController.helpers.get_minutes(salesman_travel.delivered_at, salesman_travel.delivery_at).to_i : '' %></td>
                   </tr>
