@@ -38,7 +38,7 @@ class Users::ProductSalesController < Users::BaseController
       @start = params[:start]
       @finish = params[:finish]
     else
-      today = Time.now.beginning_of_day
+      today = Time.now.beginning_of_day - 1.day
       @start = @finish = today.strftime('%Y/%m/%d')
     end
     if params[:list_type].present?
