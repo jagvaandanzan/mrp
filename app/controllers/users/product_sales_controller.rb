@@ -38,9 +38,8 @@ class Users::ProductSalesController < Users::BaseController
       @start = params[:start]
       @finish = params[:finish]
     else
-      today = Time.now.beginning_of_month - 2.months
-      @start = today.strftime('%Y/%m/%d')
-      @finish = Time.now.strftime('%Y/%m/%d')
+      today = Time.now.beginning_of_day
+      @start = @finish = today.strftime('%Y/%m/%d')
     end
     if params[:list_type].present?
       @list_type = params[:list_type].to_i
