@@ -109,6 +109,14 @@ mn:
         cash: Бэлнээр
         account: Дансаар
         mixed: Данс+Бэлнээр
+      source:
+        sr_comment: Коммент
+        sr_operator: Оператор
+        sr_web: Веб
+    product_sale_call:
+      source:
+        sr_comment: Коммент
+        sr_operator: Оператор
     user_permission_rel:
       role:
         is_read: Харах

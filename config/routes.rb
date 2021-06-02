@@ -194,7 +194,6 @@ Rails.application.routes.draw do
         post 'check_register'
         post 'tax'
         get 'report'
-        post 'excel'
       end
     end
 

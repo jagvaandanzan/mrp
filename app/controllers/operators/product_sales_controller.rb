@@ -52,6 +52,7 @@ class Operators::ProductSalesController < Operators::BaseController
           @product_sale.product_sale_items << sale_item
         end
         @product_sale.phone = sale_call.phone
+        @product_sale.source = sale_call.source
         total_price += total_price < Const::FREE_SHIPPING ? Const::SHIPPING_FEE : 0
 
         # @product_sale.location = Location.offset(rand(Location.count)).first
@@ -357,7 +358,7 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def product_sale_params
     params.require(:product_sale)
-        .permit(:sale_call_id, :parent_id, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :country, :building_code, :loc_note,
+        .permit(:sale_call_id, :parent_id, :source, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :country, :building_code, :loc_note,
                 :sum_price, :money, :paid, :bonus, :tax,
                 :status_id, :status_m, :status_sub, :status_note,
                 product_sale_returns_attributes: [:id, :product_sale_item_id, :quantity, :remainder, :_destroy],

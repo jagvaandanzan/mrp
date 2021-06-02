@@ -9,7 +9,7 @@ title = sheet.styles.add_style(
 
 left = sheet.styles.add_style(
 :border=>Axlsx::STYLE_THIN_BORDER,
-:alignment=>{:horizontal => :left,:wrap_text => false})
+:alignment=>{:horizontal => :left,:wrap_text => false,:vertical => :center})
 
 right = sheet.styles.add_style(
 :border=>Axlsx::STYLE_THIN_BORDER,
@@ -24,38 +24,158 @@ warning = sheet.styles.add_style(
 :border=>Axlsx::STYLE_THIN_BORDER,
 :alignment=>{:horizontal => :left, :vertical => :center})
 
-
 # Create the header row
+if @list_type == 0
 sheet.add_row [
-t('activerecord.attributes.bank_transaction.date'),
-t('activerecord.attributes.bank_transaction.value'),
-t('activerecord.attributes.bank_transaction.first_balance'),
-t('activerecord.attributes.bank_transaction.summary'),
-t('activerecord.attributes.bank_transaction.final_balance'),
-t('activerecord.attributes.bank_transaction.account'),
-t('activerecord.attributes.bank_transaction.salesman_id'),
-t('activerecord.attributes.bank_transaction.bank_account_id'),
-t('activerecord.attributes.bank_transaction.dealing_account_id'),
-t('activerecord.attributes.bank_transaction.billing_date'),
-t('activerecord.attributes.bank_transaction.t_type'),
+'#',
+'Захиалга бүртгэсэн огноо',
+'Бүртгэсэн оператор',
+'Утасны дугаар',
+'Хаяг',
+'Барааны нэр',
+'Барааны код',
+'Баркод',
+'Өнгө хэмжээ',
+'Тоо',
+'Бараан үнэ',
+'Хямдралын хэмжээ',
+'Ашигласан бонус',
+'Төлсөн нийт дүн',
+'НӨАТ авах эсэх',
+'Статус 1',
+'Стаус 2',
+'Статус тайлбар',
+'Баталсан огноо',
+'Баталсан оператор',
+'Эргэн холбогдсон хугацаа',
+'Хүргэж өгөх огноо',
+'Хүргэж өгөх цаг',
+'Хүргэсэн хугацаа',
+'Хүргэлтийн ажилтан',
+'Хэтэрсэн хугацаа (minute)',
 ],:style=>title
 # Create entries for each item
+  q = 1
+  @sales.each do |sale|
+    salesman_travel = sale.salesman_travel
+    len = sale.product_sale_items.length
+    if len > 1
+      sheet.merge_cells "B#{q+1}:B#{q+len}"
+      sheet.merge_cells "C#{q+1}:C#{q+len}"
+      sheet.merge_cells "D#{q+1}:D#{q+len}"
+      sheet.merge_cells "E#{q+1}:E#{q+len}"
+      sheet.merge_cells "M#{q+1}:M#{q+len}"
+      sheet.merge_cells "N#{q+1}:N#{q+len}"
+      sheet.merge_cells "O#{q+1}:O#{q+len}"
+      sheet.merge_cells "P#{q+1}:P#{q+len}"
+      sheet.merge_cells "Q#{q+1}:Q#{q+len}"
+      sheet.merge_cells "R#{q+1}:R#{q+len}"
+      sheet.merge_cells "S#{q+1}:S#{q+len}"
+      sheet.merge_cells "T#{q+1}:T#{q+len}"
+      sheet.merge_cells "U#{q+1}:U#{q+len}"
+      sheet.merge_cells "V#{q+1}:V#{q+len}"
+      sheet.merge_cells "W#{q+1}:W#{q+len}"
+      sheet.merge_cells "X#{q+1}:X#{q+len}"
+      sheet.merge_cells "Y#{q+1}:Y#{q+len}"
+      sheet.merge_cells "Z#{q+1}:Z#{q+len}"
+    end
+    sale.product_sale_items.each_with_index do |item, index|
+    feature_item = item.feature_item
+      if index == 0
+        sheet.add_row [q,
+                       sale.created_at.strftime('%F %R'),
+                    sale.created_operator_id.present? ? sale.created_operator.name : '',
+                    sale.phone,
+                    sale.location.full_name,
+                    item.product.n_name,
+                    item.product.code,
+                    feature_item.barcode,
+                    feature_item.name,
+                    item.quantity,
+                    item.price,
+                    item.discount_price.present? ? item.discount_price : '',
+                    (sale.bonus.present? && sale.bonus > 0) ? sale.bonus : '',
+                    sale.sum_price.to_i,
+                    sale.tax.present? ? sale.tax ? 'Тийм':'Үгүй' : '',
+                    sale.status.name,
+                    sale.status.previous.present? ? sale.status.previous_status.name : '',
+                    sale.status_note,
+                    sale.approved_date.present? ? sale.approved_date.strftime('%F %R') : '',
+                    sale.approved_operator_id.present? ? sale.approved_operator.name : '',
+                    sale.feedback_period.present? ? sale.feedback_time : '',
+                    sale.delivery_start.strftime('%F'),
+                    "#{sale.delivery_start.strftime('%H')}-#{sale.delivery_end.strftime('%H')}",
+                    salesman_travel.present? ? salesman_travel.delivered_at.strftime('%F %R') : '',
+                    salesman_travel.present? ? salesman_travel.salesman.name : '',
+                    (salesman_travel.present? && salesman_travel.delivered_at.present? && salesman_travel.delivery_at.present?) ? ApplicationController.helpers.get_minutes(salesman_travel.delivered_at, salesman_travel.delivery_at).to_i : '',
+        ],
+        style:[left,left,left,left,left,left,left,left,left,left, left,left,left,left,left,left,left,left,left,left,left,left,left,left,left,left]
+      else
+          sheet.add_row [q,'','','','',
+                    item.product.n_name,
+                    item.product.code,
+                    feature_item.barcode,
+                    feature_item.name,
+                    item.quantity,
+                    item.price,
+                    item.discount_price.present? ? item.discount_price : '',
+                      '','','','','','','', '', '', '','', '','',''],
+        style:[left,left,left,left,left,left,left,left,left,left, left,left,left,left,left,left,left,left,left,left,left,left,left,left,left,left]
+      end
+    q += 1
+    end
+  end
+else
 
-  @bank_transactions.each do |bank_transaction|
- st = bank_transaction.manual ? warning : left
-    sheet.add_row [bank_transaction.date_time,
-                   bank_transaction.value,
-                bank_transaction.first_balance,
-                bank_transaction.summary,
-                bank_transaction.final_balance,
-                bank_transaction.account,
-                bank_transaction.salesman.present? ? bank_transaction.salesman.full_name : "",
-                bank_transaction.bank_account.present? ? bank_transaction.bank_account.full_name : "",
-                bank_transaction.dealing_account.present? ? bank_transaction.dealing_account.full_name : "",
-                bank_transaction.billing_date.present? ? bank_transaction.billing_date.strftime('%F') : "",
-                bank_transaction.t_type
-    ],
-        style:[st,st,st,st,st,st,st,st,st,st,st]
-
+sheet.add_row [
+    '#',
+    'Захиалга бүртгэсэн огноо',
+    'Бүртгэсэн оператор',
+    'Утасны дугаар',
+    'Хаяг',
+    'Тоо',
+    'Бараан үнэ',
+    'Ашигласан бонус',
+    'Төлсөн нийт дүн',
+    'НӨАТ авах эсэх',
+    'Статус 1',
+    'Стаус 2',
+    'Статус тайлбар',
+    'Баталсан огноо',
+    'Баталсан оператор',
+    'Эргэн холбогдсон хугацаа',
+    'Хүргэж өгөх огноо',
+    'Хүргэж өгөх цаг',
+    'Хүргэсэн хугацаа',
+    'Хүргэлтийн ажилтан',
+    'Хэтэрсэн хугацаа (minute)',
+    ],:style=>title
+    # Create entries for each item
+    @sales.each_with_index do |sale, index|
+      salesman_travel = sale.salesman_travel
+      sheet.add_row [index + 1,
+      sale.created_at.strftime('%F %R'),
+      sale.created_operator_id.present? ? sale.created_operator.name : '',
+      sale.phone,
+      sale.location.full_name,
+      sale.product_sale_items.sum(:quantity),
+      sale.product_sale_items.sum(:price),
+      (sale.bonus.present? && sale.bonus > 0) ? sale.bonus : '',
+      sale.sum_price.to_i,
+      sale.tax.present? ? sale.tax ? 'Тийм':'Үгүй' : '',
+      sale.status.name,
+      sale.status.previous.present? ? sale.status.previous_status.name : '',
+      sale.status_note,
+      sale.approved_date.present? ? sale.approved_date.strftime('%F %R') : '',
+      sale.approved_operator_id.present? ? sale.approved_operator.name : '',
+      sale.feedback_period.present? ? sale.feedback_time : '',
+      sale.delivery_start.strftime('%F'),
+      "#{sale.delivery_start.strftime('%H')}-#{sale.delivery_end.strftime('%H')}",
+      salesman_travel.present? ? salesman_travel.delivered_at.strftime('%F %R') : '',
+      salesman_travel.present? ? salesman_travel.salesman.name : '',
+      (salesman_travel.present? && salesman_travel.delivered_at.present? && salesman_travel.delivery_at.present?) ? ApplicationController.helpers.get_minutes(salesman_travel.delivered_at, salesman_travel.delivery_at).to_i : '',
+      ],
+     style:[left,left,left,left,left,left,left,left,left,left, left,left,left,left,left,left,left,left,left,left,left]
+    end
   end
 end

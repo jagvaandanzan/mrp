@@ -27,6 +27,7 @@ class ProductSaleWeb
                                      sum_price: cart['payment'],
                                      bonus: cart['bonus'],
                                      money: 1,
+                                     source: "sr_web",
                                      paid: cart['payment'],
                                      cart_id: cart['id'])
 

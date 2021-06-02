@@ -16,11 +16,13 @@ class ProductSale < ApplicationRecord
   has_one :sale_tax
   has_one :salesman_travel_route, dependent: :destroy
   has_one :child, :class_name => "ProductSale", :foreign_key => "parent_id", dependent: :destroy
+  has_many :products, through: :product_sale_items
 
   accepts_nested_attributes_for :product_sale_items, allow_destroy: true
   accepts_nested_attributes_for :product_sale_returns, allow_destroy: true
 
   enum money: {cash: 0, account: 1, mixed: 2}
+  enum source: {sr_comment: 0, sr_operator: 1, sr_web: 2}
 
   attr_accessor :hour_now, :hour_start, :hour_end, :update_status, :operator, :salesman, :status_m, :status_sub
 
@@ -91,7 +93,7 @@ class ProductSale < ApplicationRecord
 
   scope :search, ->(code_name, start, finish, phone, status) {
     items = joins(:status)
-    items = items.where('phone LIKE :value', value: "%#{phone}%") if phone.present?
+    items = items.where('product_sales.phone LIKE :value', value: "%#{phone}%") if phone.present?
     items = items.joins(product_sale_items: :product)
                 .where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{code_name}%").group("id") if code_name.present?
     items = items.where('product_sale_statuses.alias = ?', status) if status.present?
@@ -147,6 +149,45 @@ class ProductSale < ApplicationRecord
         .where('salesman_travels.delivered_at >= ?', start_time)
         .where('salesman_travels.delivered_at < ?', end_time + 1.days)
         .where('product_sale_statuses.alias = ?', 'sals_delivered')
+  }
+  scope :report_excel, ->(start_date, end_date, salesman_id, operator_id, product_code, customer_id, order_0, order_1, order_2, order_3, status_ids) {
+    items = where("product_sales.created_at >= ?", start_date.to_date)
+                .where("product_sales.created_at <= ?", end_date.to_date)
+    items = items.left_joins(:salesman_travel)
+                .where("salesman_travels.salesman_id = ?", salesman_id) if salesman_id.present?
+    items = items.where("product_sales.created_operator_id = ?", operator_id) if operator_id.present?
+    items = items.left_joins(:products) if product_code.present? || customer_id.present?
+    items = items.where("products.code = ?", product_code) if product_code.present?
+    items = items.where("products.customer_id = ?", customer_id) if customer_id.present?
+    unless order_0.present?
+      qr = ""
+      if order_1.present?
+        qr += "product_sales.source = 2"
+      end
+      if order_2.present?
+        qr += " OR " if qr.length > 0
+        qr += "product_sales.source = 0"
+      end
+      if order_3.present?
+        qr += " OR " if qr.length > 0
+        qr += "product_sales.source = 1"
+      end
+      items = items.where(qr) if qr.length > 0
+    end
+
+    if status_ids.present?
+      ids = []
+      statuses = ProductSaleStatus.by_ids(status_ids)
+      statuses.each {|status|
+        ids.push status.id
+        if status.next.present?
+          ids += status.next.split(",").map(&:to_i)
+        end
+      }
+      items = items.where("product_sales.status_id IN (?)", ids) if ids.length > 0
+    end
+
+    items
   }
 
   def bonus
@@ -252,6 +293,15 @@ class ProductSale < ApplicationRecord
   def salesman_delivered
     if status.alias == "sals_delivered"
       salesman_travel.salesman.name
+    else
+      ""
+    end
+  end
+
+  def feedback_time
+    if feedback_period.present?
+      h = (feedback_period / 60).to_i
+      "#{h}:#{(h * 60) - feedback_period}"
     else
       ""
     end
@@ -371,6 +421,8 @@ class ProductSale < ApplicationRecord
     if sale_call.present?
       call_status = ProductSaleStatus.find_by_alias("call_order")
       sale_call.update_column(:status_id, call_status.id)
+
+      self.update_column(:feedback_period, ApplicationController.helpers.get_minutes(created_at, sale_call.created_at))
     end
   end
 end

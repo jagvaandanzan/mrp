@@ -38,12 +38,26 @@ class Users::ProductSalesController < Users::BaseController
       @start = params[:start]
       @finish = params[:finish]
     else
-      today = Time.now.beginning_of_day - 1
-      @start = @finish = today.strftime('%Y/%m/%d')
+      today = Time.now.beginning_of_month - 2.months
+      @start = today.strftime('%Y/%m/%d')
+      @finish = Time.now.strftime('%Y/%m/%d')
     end
-
-    @products = ProductSale.all
-
+    if params[:list_type].present?
+      @list_type = params[:list_type].to_i
+    else
+      1
+    end
+    @salesman_id = params[:salesman_id]
+    @operator_id = params[:operator_id]
+    @product_code = params[:product_code]
+    @customer_id = params[:customer_id]
+    @order_0 = params[:order_0]
+    @order_1 = params[:order_1]
+    @order_2 = params[:order_2]
+    @order_3 = params[:order_3]
+    @status_ids = params[:status_ids].map(&:to_i) if params[:status_ids].present?
+    @sales = ProductSale.report_excel(@start, @finish, @salesman_id, @operator_id, @product_code, @customer_id, @order_0, @order_1, @order_2, @order_3, @status_ids)
+    @product_sales = @sales.page(params[:page])
     respond_to do |format|
       format.xlsx {
         response.headers[
@@ -52,9 +66,5 @@ class Users::ProductSalesController < Users::BaseController
       }
       format.html {render :report}
     end
-  end
-
-  def excel
-    puts "params = #{params}"
   end
 end

@@ -143,6 +143,14 @@ class ProductSaleItem < ApplicationRecord
     end
   end
 
+  def discount_price
+    if discount.present?
+      discount
+    else
+      (p_discount.present? && price.present?) ? ApplicationController.helpers.get_percentage(price, p_discount) : ''
+    end
+  end
+
   private
 
   def set_product_balance
