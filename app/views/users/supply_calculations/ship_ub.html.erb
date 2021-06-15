@@ -45,17 +45,17 @@
               </tr>
               <tr>
                 <th colspan="6">Нийт</th>
-                <% sum_in_er = @ub_products.pluck("product_supply_features.price_lo * product_supply_features.quantity_lo").sum(&:to_f)
-                   er_product_cost = ShippingErProduct.by_date(@by_start, @by_end).sum(:cost)
-                   pur_ids = @ub_products.pluck(:order_item_id)%>
-                <th class="va-mid  text-center"><%= ProductSupplyFeature.by_order_item(pur_ids).sum("product_supply_features.quantity") %></th>
+                  <% ub_ids = @ub_products_x.pluck("shipping_er_features.shipping_er_product_id")
+                   pur_ids = @ub_products_x.pluck(:order_item_id)
+                   order_ids = @ub_products_x.pluck("product_supply_order_items.product_supply_order_id")%>
+                <th class="va-mid  text-center"><%= ProductSupplyFeature.by_order_item(pur_ids).sum("product_supply_features.quantity_lo") %></th>
                 <th class="va-mid text-center"><%=  ShippingErFeature.by_order_item(pur_ids).sum("shipping_er_features.quantity") %></th>
-                <th class="va-mid text-center"><%=  @ub_products.group("shipping_er_products.id").pluck("shipping_er_products.cargo").sum %></th>
+                <th class="va-mid text-center"><%= ShippingErProduct.by_ship_id(@by_start, @by_end, order_ids).sum("shipping_er_products.cargo")%></th>
                 <th class="va-mid text-center"><%= %></th>
-                <th class="va-mid text-center"><%=@ub_products.sum("shipping_ub_features.quantity") %></th>
-                <th class="va-mid text-center"><%= @ub_products.group("shipping_ub_products.id").pluck("shipping_ub_products.cargo").sum%></th>
-                <th><%=@ub_products.group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum %></th>
-                <th><%= @ub_products.group("product_supply_order_items.id").pluck("product_supply_order_items.sum_price_lo").sum%></th>
+                <th class="va-mid text-center"><%=ShippingUbFeature.by_order_item(pur_ids).sum("shipping_ub_features.quantity") %></th>
+                <th class="va-mid text-center"><%=ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cargo").sum%></th>
+                <th class="va-mid text-center"><%=ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cost").sum %></th>
+                <th class="va-mid text-center"><%=ProductSupplyFeature.by_order_item(pur_ids).pluck(:sum_price_lo).sum%></th>
                 <th></th>
               </tr>
               <%@ub_products.each do |i| %>
@@ -106,10 +106,12 @@
                   </td>
                   <% date, costs, quantity, cargo, cost_text = order_items.present? ? order_items.shipping_er_feature : '' %>
                   <td class="va-mid text-center">
-                    <%= quantity %>
+                    <%= ShippingErProduct.by_order_id_item(@by_start, @by_end,supply_order.id).pluck(:quantity).sum %>
                   </td>
 
-                  <td class="va-mid text-center bg-2"><%= cargo %></td>
+                  <td class="va-mid text-center bg-2">
+                    <%= ShippingErProduct.by_order_id_item(@by_start, @by_end,supply_order.id).pluck(:cargo).sum %>
+                  </td>
                   <td class="va-mid text-center bg-2">
                     <%= date %>
                   </td>
@@ -124,7 +126,7 @@
                     <%= costs %>
                   </td>
                   <td>
-                    <%= total_price %>
+                    <%= total_price.round(2) %>
                   </td>
 
                   <td class="va-mid text-center">
@@ -144,17 +146,6 @@
 <%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>
 <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
 <script !src="">
-    $(document).ready(function(){
-        $("#excel").click(function() {
-            let table = document.getElementById("supply_table");
-            TableToExcel.convert(table, {
-                name: `эрээнд_хүлээн_авсан.xlsx`,
-                sheet: {
-                    name: 'Sheet 1'
-                }
-            });
-        });
-    });
     function removeDuplicateRows($table){
         function getVisibleRowText($row){
             return $row.find('td:visible').text().toLowerCase();

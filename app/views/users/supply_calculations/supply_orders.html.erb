@@ -74,15 +74,19 @@
               </tr>
               <% sum_supply_feature = ProductSupplyFeature.by_date(@by_start, @by_end).sum_price_lo
                  er_product_cost = ShippingErProduct.by_date(@by_start, @by_end).sum(:cost)
-                 sum_not_er = ProductSupplyFeature.by_date(@by_start, @by_end).purchased_er.group("product_supply_order_items.id").pluck("product_supply_order_items.sum_price_lo").sum
+                 ids = @pur_products_x.pluck(:order_item_id)
+                 order_ids = @ub_products_x.pluck("product_supply_order_items.product_supply_order_id")
+                 pur_ids = @er_products_x.pluck(:order_item_id)
+                 ub_ids = @er_products_x.pluck(:order_item_id)
+                 sum_not_er = ProductSupplyFeature.by_order_item(ids).pluck(:sum_price_lo).sum
                  sum_not_er_cost = ProductSupplyFeature.by_date(@by_start, @by_end).not_in_er_cost
-                 sum_in_er = ProductSupplyFeature.received_er(@by_start, @by_end).pluck("product_supply_features.price_lo * product_supply_features.quantity_lo").sum(&:to_f)
-                 not_ub = ShippingErFeature.by_date(@by_start, @by_end).ship_ub.sum(:sum_price_lo)
+                 sum_in_er = ProductSupplyFeature.by_order_item(pur_ids).pluck(:sum_price_lo).sum
+                 not_ub = ProductSupplyFeature.by_order_item(ub_ids).pluck(:sum_price_lo).sum
                  ub_product_cost = ShippingUbProduct.by_date(@by_start, @by_end).sum(:cost)
                  ub_product_cost += ShippingUbBox.by_date(@by_start, @by_end).sum(:cost)
                  ub_product_cost += ShippingUbSample.by_date(@by_start, @by_end).sum(:cost)
                  ub_sample_cost = ShippingUbSample.by_date(@by_start, @by_end).sum(:cost)
-                 ub_main_cost = ShippingUbProduct.by_date(@by_start, @by_end).sum(:cost)
+                 ub_main_cost = ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cost").sum
 
               %>
               <% income_products = ProductIncomeProduct.by_date(@by_start, @by_end)

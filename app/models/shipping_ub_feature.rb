@@ -42,4 +42,18 @@ class ShippingUbFeature < ApplicationRecord
   scope :quantity, ->(id){
     where(supply_feature_id: id).pluck(:quantity).sum
   }
+
+  scope :by_order_item, ->(order_item_id) {
+    items = joins(:supply_feature)
+              .where('product_supply_features.order_item_id IN (?)', order_item_id)
+    items = items.joins(:shipping_ub_product)
+    items
+  }
+
+  scope :by_feature_id, ->(start, finish, feature_id) {
+    items = joins(:shipping_ub_product)
+    items = items.where('shipping_ub_features.supply_feature_id IN (?)', feature_id)
+              .where('? <= shipping_ub_features.created_at AND shipping_ub_features.created_at <= ?', start.to_time, finish.to_time + 1.days)
+    items
+  }
 end

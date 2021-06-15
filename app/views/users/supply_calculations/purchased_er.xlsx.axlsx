@@ -51,6 +51,7 @@ t('activerecord.attributes.product_supply_feature.sum_price'),
 t('activerecord.attributes.product_supply_feature.note_lo'),
 ],:style=>title
 
+ids = @pur_products_x.pluck(:order_item_id)
 
 sheet.add_row [
 t('activerecord.attributes.product_supply_feature.sum_price'),
@@ -58,12 +59,12 @@ t('activerecord.attributes.product_supply_order_item.purchase_quantity'),
 t('activerecord.attributes.product_supply_order.ordered_date'),
 t('activerecord.attributes.product_supply_order_item.cost'),
 t('activerecord.attributes.product_supply_feature.price'),
-@pur_products_x.sum(:quantity),
-@pur_products_x.sum(:quantity_lo),
+ProductSupplyFeature.by_order_item(ids).pluck(:quantity).sum,
+ProductSupplyFeature.by_order_item(ids).pluck(:quantity_lo).sum,
 '',
 ProductSupplyFeature.by_date(@by_start, @by_end).not_in_er_cost,
 '',
-@pur_products_x.group("product_supply_order_items.id").pluck("product_supply_order_items.sum_price_lo").sum,
+ProductSupplyFeature.by_order_item(ids).pluck(:sum_price_lo).sum,
 ''
 ],:style=>title
 # Create entries for each item
@@ -73,7 +74,7 @@ sheet.merge_cells sheet.rows.last.cells[(0..4)]
 
 item = nil
 code = 0
-        @pur_products_x.each do |i|
+        @pur_products_x.uniq(&:order_item_id).each do |i|
             order_items = i.order_item
             supply_order = order_items.product_supply_order
             count = 0

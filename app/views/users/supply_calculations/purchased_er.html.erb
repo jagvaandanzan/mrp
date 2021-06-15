@@ -40,14 +40,14 @@
               </tr>
               <tr>
                 <% sum_not_er_cost = ProductSupplyFeature.by_date(@by_start, @by_end).not_in_er_cost
-                   sum_not_er = ProductSupplyFeature.by_date(@by_start, @by_end).not_in_er%>
+                   ids = @pur_products_x.pluck(:order_item_id)%>
                 <th colspan="6">Нийт</th>
-                <th class="va-mid text-center"><%= @pur_products.pluck("product_supply_features.quantity").sum %></th>
-                <th class="va-mid text-center"><%= @pur_products.pluck("product_supply_features.quantity_lo").sum %></th>
+                <th class="va-mid text-center"><%= ProductSupplyFeature.by_order_item(ids).pluck(:quantity).sum %></th>
+                <th class="va-mid text-center"><%= ProductSupplyFeature.by_order_item(ids).pluck(:quantity_lo).sum %></th>
                 <th class="va-mid"> </th>
                 <th class="va-mid"><%= sum_not_er_cost %></th>
                 <th><%=  %></th>
-                <th class="va-mid"><%=@pur_products.group("product_supply_order_items.id").pluck("product_supply_order_items.sum_price_lo").sum %></th>
+                <th class="va-mid"><%=ProductSupplyFeature.by_order_item(ids).pluck(:sum_price_lo).sum %></th>
               </tr>
               <%@pur_products.each do |i| %>
                 <% order_items = i.order_item %>

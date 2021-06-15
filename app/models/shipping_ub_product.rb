@@ -7,6 +7,7 @@ class ShippingUbProduct < ApplicationRecord
   has_many :product_income_products
 
   has_many :shipping_ub_features, dependent: :destroy
+
   before_save :set_shipping_ub
 
   attr_accessor :remainder
@@ -42,9 +43,21 @@ class ShippingUbProduct < ApplicationRecord
     where(shipping_er_product_id: er_product_id)
         .sum(:quantity)
   }
+
+  scope :by_order_id, ->(order_id) {
+    where('shipping_ub_products.supply_order_id IN (?)', order_id)
+  }
+
+  scope :by_ub_date, ->(start, finish) {
+    items = joins(:shipping_er_product)
+    items = items.where('? <= shipping_ub_products.created_at AND shipping_ub_products.created_at <= ?', start.to_time, finish.to_time + 1.days)
+    items
+  }
+
   scope :by_date, ->(start, finish) {
     where('? <= created_at AND created_at <= ?', start.to_time, finish.to_time + 1.days)
   }
+
 
   def set_shipping_ub
     self.shipping_ub_id = shipping_ub_box.shipping_ub_id
