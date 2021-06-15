@@ -23,9 +23,30 @@ class ShippingErProduct < ApplicationRecord
   }
 
 
+
+
   scope :by_date, ->(start, finish) {
     where('? <= shipping_er_products.created_at AND shipping_er_products.created_at <= ?', start.to_time, finish.to_time + 1.days)
   }
+
+  scope :by_order_id, ->(order_id) {
+    where('shipping_er_products.supply_order_id IN (?)', order_id)
+  }
+
+  scope :by_ship_id, ->(start, finish, order_id){
+    items = joins(:shipping_ub_products)
+    items = items.where('shipping_er_products.supply_order_id IN (?)', order_id)
+                 .where('? <= shipping_ub_products.created_at AND shipping_ub_products.created_at <= ?', start.to_time, finish.to_time + 1.days)
+    items
+  }
+
+  scope :by_order_id_item, ->(start, finish,order_id) {
+    items = joins(:shipping_ub_products)
+    items = items.where('shipping_er_products.supply_order_id IN (?)', order_id)
+      .where('? <= shipping_ub_products.created_at AND shipping_ub_products.created_at <= ?', start.to_time, finish.to_time + 1.days)
+    items
+  }
+
 
 
   def product_bought

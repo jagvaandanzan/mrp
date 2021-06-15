@@ -61,6 +61,7 @@
                    shipping_ub_product = i.shipping_ub_product
                    shipping_ub_sample = i.shipping_ub_sample
                    shipping_er = i.shipping_er
+                   shipping_er_product = i.shipping_er_product
                    income = i.product_income
                    income_item = i.product_income_items.by_calc_nil(@by_nil)
                 %>
@@ -147,7 +148,8 @@
                       <% end %></td>
                      <td class="va-mid"><%= supply_feature.quantity %></td>
                     <td class="va-mid"><%= shipping_ub_feature.present? ? shipping_ub_feature.quantity : '' %></td>
-                    <td class="va-mid"><%= shipping_er.present? ? get_currency(shipping_er.per_price * item.quantity, Const::CURRENCY[0], 2) : '' %></td>
+
+                    <td class="va-mid"><%= shipping_er.present? ? get_currency(shipping_er_product.per_price * item.quantity, Const::CURRENCY[0], 2) : '' %></td>
                     <td class="va-mid">
                       <% if shipping_ub_product.present? || shipping_ub_sample.present?
                            per_price = shipping_ub_product.present? ? shipping_ub_product.per_price : shipping_ub_sample.per_cost %>
@@ -248,7 +250,6 @@
     }
 
     function save_calculated() {
-        console.log()
         let modal = $('#set-data-modal');
         let date = modal.find('#set_date').val();
         if (date.length > 0) {
@@ -260,7 +261,7 @@
                 data: "id=" + product_income_item_id + "&date=" + date + "&clarify=" + $('#set_clarify').prop('checked') + "&description=" + $('#description').val(),
                 success: function (data) {
                     let td = $('td#product_income_item_' + product_income_item_id);
-                    console.log(td);
+                    console.log(data);
                     if (data.clarify === "true") {
                         td.addClass('clarify');
                     } else {

@@ -66,11 +66,11 @@ t('activerecord.attributes.product_supply_feature.sum_price'),
 ProductSupplyFeature.by_order_item_id(pur_ids).sum(:quantity),
 ProductSupplyFeature.by_order_item_id(pur_ids).sum(:quantity_lo),
 ShippingErFeature.by_order_item(pur_ids).sum("shipping_er_features.quantity"),
-@er_products_x.group("shipping_er_products.id").pluck("shipping_er_products.cargo").sum,
+ShippingErProduct.by_date(@by_start, @by_end).sum(:cargo),
 '',
-@er_products_x.group("shipping_er_products.id").pluck("shipping_er_products.cost").sum,
+ShippingErProduct.by_date(@by_start, @by_end).sum(:cost),
 '',
-@er_products_x.pluck("product_supply_features.price_lo * product_supply_features.quantity_lo").sum,
+ProductSupplyFeature.by_order_item(pur_ids).pluck(:sum_price_lo).sum,
 ''
 ],:style=>title
 
@@ -79,7 +79,7 @@ sheet.merge_cells sheet.rows.last.cells[(0..4)]
 
 item = nil
 code = 0
-@er_products_x.each do |i|
+@er_products_x.uniq(&:order_item_id).each do |i|
         order_items = i.order_item
         shipping_er_feature = i.shipping_er_features
         supply_order = order_items.product_supply_order
@@ -107,10 +107,10 @@ code = 0
                         supply_feature.feature_item.name,
                         supply_feature.quantity,
                         supply_feature.quantity_lo,
-                        supply_feature.shipping_er_features.quantity(supply_feature.id),
-                        i.code == code ? '' : cargo,
+                        supply_feature.shipping_er_features.quantity(supply_feature.id, order_items.id),
+                        i.code == code ? '' : ShippingErProduct.by_date(@by_start, @by_end).by_order_id(supply_order.id).pluck(:cargo).sum,
                         date,
-                        i.code == code ? '' : costs,
+                        i.code == code ? '' : ShippingErProduct.by_date(@by_start, @by_end).by_order_id(supply_order.id).pluck(:cost).sum,
                         i.price,
                         supply_feature.sum_price_lo,
                         order_items.present? ? order_items.note_lo : '',

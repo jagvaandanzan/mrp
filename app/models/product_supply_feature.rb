@@ -78,7 +78,7 @@ class ProductSupplyFeature < ApplicationRecord
     items = items.joins(:shipping_er_product)
     items = items.joins(:order_item)
     items = items.joins(:product_supply_order)
-                 .where('? <= shipping_er_features.created_at AND shipping_er_features.created_at <= ?', start.to_time, finish.to_time + 1.days)
+                 .where('? <= shipping_er_features.updated_at AND shipping_er_features.updated_at <= ?', start.to_time, finish.to_time + 1.days)
     items
   }
 

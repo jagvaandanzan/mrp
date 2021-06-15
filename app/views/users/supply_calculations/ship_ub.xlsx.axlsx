@@ -77,6 +77,8 @@ t('activerecord.attributes.shipping_ub.date'),
 ],:style=>title
 
 pur_ids = @ub_products_x.pluck(:order_item_id)
+order_ids = @ub_products_x.pluck("product_supply_order_items.product_supply_order_id")
+product_ids = @ub_products_x.pluck(:product_id)
 
 sheet.add_row [
 t('activerecord.attributes.product_supply_feature.sum_price'),
@@ -84,14 +86,14 @@ t('activerecord.attributes.product_supply_order.ordered_date'),
 t('activerecord.attributes.product_supply_order_item.cost'),
 t('activerecord.attributes.product_supply_feature.price'),
 t('activerecord.attributes.product_supply_feature.sum_price'),
-@ub_products_x.sum(:quantity),
+ProductSupplyFeature.by_order_item(pur_ids).sum("product_supply_features.quantity_lo"),
 ShippingErFeature.by_order_item(pur_ids).sum("shipping_er_features.quantity"),
-@ub_products_x.group("shipping_er_products.id").pluck("shipping_er_products.cargo").sum,
+ShippingErProduct.by_ship_id(@by_start, @by_end, order_ids).sum("shipping_er_products.cargo"),
 '',
-@ub_products_x.sum("shipping_ub_features.quantity"),
-@ub_products_x.group("shipping_ub_products.id").pluck("shipping_ub_products.cargo").sum,
-@ub_products_x.group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum,
-@ub_products_x.group("product_supply_order_items.id").pluck("product_supply_order_items.sum_price_lo").sum,
+ShippingUbFeature.by_order_item(pur_ids).sum("shipping_ub_features.quantity"),
+ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cargo").sum,
+ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cost").sum,
+ProductSupplyFeature.by_order_item(pur_ids).pluck(:sum_price_lo).sum,
 ''
 ],:style=>title
 
@@ -99,7 +101,7 @@ sheet.merge_cells sheet.rows.last.cells[(0..4)]
 
 item = nil
 code = 0
-@ub_products_x.each do |i|
+@ub_products_x.uniq(&:order_item_id).each do |i|
         order_items = i.order_item
         supply_order = order_items.product_supply_order
         count = 0
@@ -126,8 +128,8 @@ code = 0
                   product.present? ? product.name : '',
                    supply_feature.feature_item.name,
                    supply_feature.quantity_lo,
-                   supply_feature.shipping_er_features.quantity(supply_feature.id),
-                   i.code == code ? '' : cargo,
+                   supply_feature.shipping_er_features.quantity(supply_feature.id, order_items.id).present? ? supply_feature.shipping_er_features.quantity(supply_feature.id, order_items.id) : 0,
+                   i.code == code ? '' : ShippingErProduct.by_order_id_item(@by_start, @by_end,supply_order.id).pluck(:cargo).sum,
                    date,
                    supply_feature.shipping_ub_features.quantity(supply_feature.id),
                    i.code == code ? '' : cargoUB,

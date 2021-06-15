@@ -4,6 +4,9 @@ class Users::SupplyCalculationsController < Users::BaseController
     month_1 = Time.current.beginning_of_month
     @by_start = params[:by_start].presence || month_1.strftime("%Y/%m/%d")
     @by_end = params[:by_end].presence || (month_1 + 1.month).strftime("%Y/%m/%d")
+    @pur_products_x = ProductSupplyFeature.by_date(@by_start, @by_end).purchased_er
+    @ub_products_x = ProductSupplyFeature.ship_ub(@by_start, @by_end)
+    @er_products_x = ProductSupplyFeature.received_er(@by_start, @by_end)
   end
 
   def purchased_er
@@ -17,9 +20,10 @@ class Users::SupplyCalculationsController < Users::BaseController
                       .by_date(@by_start, @by_end)
                       .purchased_er
 
+
     respond_to do |format|
       format.xlsx{
-        render template: 'users/supply_calculations/purchased_er', xlsx: 'Эрээнд_ирээгүй_бараа'
+        render template: 'users/supply_calculations/purchased_er', xlsx: 'Худалдан_авсан_бараа'
       }
       format.html {render :purchased_er}
     end
@@ -32,7 +36,7 @@ class Users::SupplyCalculationsController < Users::BaseController
     @er_products_x = ProductSupplyFeature.received_er(@by_start, @by_end)
     respond_to do |format|
       format.xlsx{
-        render template: 'users/supply_calculations/received_er', xlsx: 'Эрээнд_эрсэн_бараа'
+        render template: 'users/supply_calculations/received_er', xlsx: 'Эрээнд_ирсэн_бараа'
       }
       format.html {render :received_er}
     end
@@ -78,17 +82,17 @@ class Users::SupplyCalculationsController < Users::BaseController
     item = ProductIncomeItem.by_income_product_id(params[:id])
     logistic = Logistic.find(4)
     item.each do |income_item|
-      json = nil
     income_item.update_columns(calculated: params[:clarify] == "true" ? nil : params[:date], clarify: params[:clarify], description: params[:description])
 
     ip = income_item.product_income_product
     shipping_ub_product = ip.shipping_ub_product
     shipping_ub_sample = ip.shipping_ub_sample
     shipping_er = ip.shipping_er
+    shipping_er_product = ip.shipping_er_product
 
     price = income_item.supply_feature.price_lo * income_item.quantity
 
-    price += (shipping_er.per_price * income_item.quantity) if shipping_er.present?
+    price += (shipping_er_product.per_price * income_item.quantity) if shipping_er_product.present?
 
     if shipping_ub_product.present? || shipping_ub_sample.present?
       per_cargo = shipping_ub_product.present? ? shipping_ub_product.per_price : shipping_ub_sample.per_cost
@@ -116,7 +120,6 @@ class Users::SupplyCalculationsController < Users::BaseController
     render json: data
   end
 
-  #array zarlaj bgad rendereer butsaa tgd income deeree irsen dataga each hiiged gargaj aw inspect bas hii
 
   def set_calculated
     income_item = ProductIncomeItem.find(params[:id])
@@ -127,10 +130,11 @@ class Users::SupplyCalculationsController < Users::BaseController
     shipping_ub_product = ip.shipping_ub_product
     shipping_ub_sample = ip.shipping_ub_sample
     shipping_er = ip.shipping_er
+    shipping_er_product = ip.shipping_er_product
 
     price = income_item.supply_feature.price_lo * income_item.quantity
 
-    price += (shipping_er.per_price * income_item.quantity) if shipping_er.present?
+    price += (shipping_er_product.per_price * income_item.quantity) if shipping_er_product.present?
 
     if shipping_ub_product.present? || shipping_ub_sample.present?
       per_cargo = shipping_ub_product.present? ? shipping_ub_product.per_price : shipping_ub_sample.per_cost

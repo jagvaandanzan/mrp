@@ -43,15 +43,16 @@
                 <%
                   sum_in_er = @er_products.pluck("product_supply_features.price_lo * product_supply_features.quantity_lo").sum(&:to_f)
                    er_product_cost = ShippingErProduct.by_date(@by_start, @by_end).sum(:cost)
-                   pur_ids = @er_products.pluck(:order_item_id)%>
-                <th class="va-mid  text-center"><%=ProductSupplyFeature.by_order_item_id(pur_ids).sum(:quantity) %></th>
-                <th class="va-mid text-center"><%=ProductSupplyFeature.by_order_item_id(pur_ids).sum(:quantity_lo)%></th>
+                   pur_ids = @er_products_x.pluck(:order_item_id)
+                  order_ids = @er_products.group("shipping_er_products.id").pluck("shipping_er_products.cost")%>
+                <th class="va-mid  text-center"><%=ProductSupplyFeature.by_order_item(pur_ids).sum("product_supply_features.quantity") %></th>
+                <th class="va-mid text-center"><%=ProductSupplyFeature.by_order_item(pur_ids).sum("product_supply_features.quantity_lo")%></th>
                 <th class="va-mid text-center"><%= ShippingErFeature.by_order_item(pur_ids).sum("shipping_er_features.quantity") %></th>
-                <th class="va-mid text-center"><%= @er_products.group("shipping_er_products.id").pluck("shipping_er_products.cargo").sum%></th>
+                <th class="va-mid text-center"><%= ShippingErProduct.by_date(@by_start, @by_end).sum(:cargo)%></th>
                 <th></th>
-                <th class="va-mid text-center"><%=@er_products.group("shipping_er_products.id").pluck("shipping_er_products.cost").sum %></th>
+                <th class="va-mid text-center"><%=ShippingErProduct.by_date(@by_start, @by_end).sum(:cost)%></th>
                 <th><%= %></th>
-                <th><%=sum_in_er%></th>
+                <th><%=ProductSupplyFeature.by_order_item(pur_ids).pluck(:sum_price_lo).sum%></th>
                 <th></th>
               </tr>
               <%@er_products.each do |i| %>
@@ -103,9 +104,9 @@
                     <%= total_quantity_lo > 0 ? total_quantity_lo : '' %>
                   </td>
                   <% date, costs, quantity, cargo, cost_text = order_items.present? ? order_items.shipping_er_feature : '' %>
-                  <td class="va-mid text-center bg-2"><%= quantity %></td>
+                  <td class="va-mid text-center bg-2"><%=  ShippingErProduct.by_date(@by_start, @by_end).by_order_id(supply_order.id).pluck(:quantity).sum %></td>
                   <td class="va-mid text-center bg-2">
-                    <%= cargo %>
+                    <%= ShippingErProduct.by_date(@by_start, @by_end).by_order_id(supply_order.id).pluck(:cargo).sum %>
                   </td>
                   <td class="va-mid bg-2">
                     <%= date %>
@@ -114,7 +115,7 @@
                     <% end %>
                   </td>
                   <td class="va-mid">
-                    <%= costs %>
+                    <%= ShippingErProduct.by_date(@by_start, @by_end).by_order_id(supply_order.id).pluck(:cost).sum %>
                   </td>
                   <td class="va-mid text-center">
                     <%= i.price %>
