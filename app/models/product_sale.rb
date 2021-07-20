@@ -32,6 +32,7 @@ class ProductSale < ApplicationRecord
   before_save :set_balance
   after_create :set_sale_call_status
   after_save :sync_web
+  after_save :send_to_channel
 
   with_options :if => Proc.new {|m| m.update_status == nil} do
     validates_numericality_of :hour_end, greater_than: Proc.new(&:hour_start)
@@ -189,6 +190,14 @@ class ProductSale < ApplicationRecord
 
     items
   }
+  scope :travel_nil, ->(id) {
+    items = if id.nil?
+              where("salesman_travel_id IS ?", nil)
+            else
+              where("salesman_travel_id IS ? OR id = ?", nil, id)
+            end
+    items.order(:delivery_start)
+  }
 
   def bonus
     ApplicationController.helpers.get_f(self[:bonus])
@@ -200,6 +209,10 @@ class ProductSale < ApplicationRecord
 
   def delivery_time
     delivery_start.strftime('%Y/%m/%d') + '&nbsp;&nbsp;' + delivery_start.hour.to_s + "-" + delivery_end.hour.to_s
+  end
+
+  def delivery_hour
+    "#{delivery_start.hour}-#{delivery_end.hour.to_s}"
   end
 
   def count_product
@@ -307,7 +320,25 @@ class ProductSale < ApplicationRecord
     end
   end
 
+  def allocation_type
+    if delivery_end.hour < Time.current.hour
+      "danger"
+    elsif status.alias == "auto_redistribution"
+      "primary"
+    else
+      "default"
+    end
+  end
+
+  def with_location
+    "#{location.full_name} (#{delivery_hour}), #{phone}"
+  end
+
   private
+
+  def send_to_channel
+    SalesmanTravelJob.perform_later("sale", self) if status.alias == "oper_confirmed"
+  end
 
   def check_money
     self.errors.add(:money, " заавал дансаар төлсөн байх ёстой!") unless account?

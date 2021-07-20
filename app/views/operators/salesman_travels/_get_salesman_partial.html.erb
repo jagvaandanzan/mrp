@@ -1,0 +1,83 @@
+<%= form_with model: @salesman_travel, url: @salesman_travel.persisted? ? operators_salesman_travel_path : operators_salesman_travels_path, method: @salesman_travel.persisted? ? :patch : :post, remote: true, :html => {class: 'form-horizontal'} do |f| %>
+  <%= form_body do %>
+    <div class="row">
+      <div class="col-md-12">
+        <div class=" col-md-4">
+          <%= f.label :created_at, class: 'control-label' %>
+          <div>
+            <%= text_field_tag :created_at, Time.current.strftime('%F %T'), {class: 'form-control', readonly: true} %>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :number, class: 'control-label' %>
+          <div>
+            <%= f.text_field :number, {class: 'form-control', readonly: true} %>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :operator_id, class: 'control-label' %>
+          <div class="<%= get_error_class(@salesman_travel, :operator_id) %>">
+            <%= field_errors(@salesman_travel, :operator_id) %>
+            <%= f.collection_select :operator_id, Operator.order_name, :id, :name, {}, {class: 'form-control', disabled: true} %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 m-t-20">
+        <div class="col-md-4" style="border-top: 1px solid lightgrey;padding-top: 10px">
+          <%= f.hidden_field :sale_ids %>
+          <%= f.hidden_field :zone_ids %>
+          Хувиарлах захиалгын тоо: <%= @salesman_travel.sale_ids.split(",").map(&:to_i).length %>
+        </div>
+        <div class="col-md-8" style="border-top: 1px solid lightgrey;padding-top: 10px">
+          <% if @salesman_travel.zone_ids.present? %>
+            Хүргэлтийн бүс:
+            <% LocationZone.by_ids(@salesman_travel.zone_ids.split(",").map(&:to_i))
+               .order_queue.each_with_index {|zone, index| %><%= index > 0 ? ", #{zone.name}" : zone.name %>
+            <% } %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 m-t-10">
+      <label class="control-label" for="salesman_travel_salesman_id">Хүргэлтийн ажилтан сонгох</label>
+      <%= field_errors(@salesman_travel, :salesman_id) %>
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th></th>
+          <th>Хүсэлт илгээсэн огноо</th>
+          <th>Ажилтны нэр</th>
+          <th>Сүүлийн рейс огноо</th>
+          <th>Сүүлийн захиалгын тоо</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @salesman_requests.each {|req| %>
+          <tr>
+            <td class="text-center">
+              <input type="radio" name="salesman_travel[salesman_id]" value="<%= req.salesman_id %>">
+            </td>
+            <td><%= req.created_at.strftime('%F %R') %></td>
+            <td><%= req.salesman.name %></td>
+            <td><%= req.last_travel_at.present? ? req.last_travel_at.strftime('%F %R') : "" %></td>
+            <td><%= req.last_route.present? ? req.last_route : "" %></td>
+          </tr>
+        <% } %>
+        </tbody>
+      </table>
+    </div>
+    <div class="form-group>">
+      <%= f.label :description, class: 'col-sm-3 control-label' %>
+      <div class="col-sm-9 radio-group <%= get_error_class(@salesman_travel, :description) %>">
+        <%= field_errors(@salesman_travel, :description) %>
+        <%= f.text_area :description, class: 'form-control', placeholder: t('activerecord.attributes.customer.description') %>
+      </div>
+    </div>
+    <div class="modal-footer text-right">
+      <button type="button" class="btn btn-default m-t-20" data-dismiss="modal"><%= t('controls.button.close') %></button>
+      <%= f.submit t('controls.button.save'), class: 'btn btn-warning m-t-20' %>
+    </div>
+  <% end %>
+<% end %>

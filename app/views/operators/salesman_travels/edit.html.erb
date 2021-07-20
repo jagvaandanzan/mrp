@@ -1,0 +1,73 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "form" %>
+<% end %>
+<div class="content-wrapper">
+  <div class="action-buttons">
+    <%= link_to t('titles.back_to_list'), operators_salesman_travels_path(page: cookies[:salesman_travel_page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <section class="content m-t-40">
+    <div class="box box-info">
+      <%= form_with model: @salesman_travel, url: @salesman_travel.persisted? ? operators_salesman_travel_path : operators_salesman_travels_path,
+                    method: @salesman_travel.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <div class="form-group">
+            <%= f.label :number, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6"><%= text_field_tag :name, @salesman_travel.id, {class: 'form-control', readonly: true} %></div>
+          </div>
+          <div class="form-group">
+            <%= f.label :created_at, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6"><%= text_field_tag :created_at, @salesman_travel.created_at.strftime('%F %R'), {class: 'form-control', readonly: true} %></div>
+          </div>
+          <div class="form-group">
+            <%= f.label :salesman_id, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@salesman_travel, :salesman_id) %>">
+              <%= field_errors(@salesman_travel, :salesman_id) %>
+              <%= f.collection_select :salesman_id, SalesmanRequest.by_travel_nil(@salesman_travel.salesman_id), :salesman_id, :salesman_name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :description, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6">
+              <%= f.text_area :description, {class: 'form-control', placeholder: t('activerecord.attributes.salesman_travel.description')} %>
+            </div>
+          </div>
+          <div class="col-md-12 field_div">
+            <%= f.label :salesman_travel_routes, class: 'control-label' %>
+            <div class="cocoon-nested-form">
+              <div class="<%= get_error_class(@salesman_travel, :salesman_travel_routes) %>">
+                <%= field_errors(@salesman_travel, :salesman_travel_routes) %>
+                <table class="table table-bordered" id="tb_salesman_travel_routes">
+                  <%= f.fields_for :salesman_travel_routes do |m| %>
+                    <%= render 'salesman_travel_route_fields', :f => m %>
+                  <% end %>
+                </table>
+              </div>
+              <div class="links item_append">
+                <%= link_to_add_association f, :salesman_travel_routes, data: {association_insertion_node: '#tb_salesman_travel_routes', association_insertion_method: :append} do %>
+                  <%= nested_add_btn('btn_travel_route') %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+        $('tr.nested-fields .selectpicker').selectpicker('refresh');
+
+        $('#btn_travel_route').on('click', function () {
+            setTimeout(set_travel_routes, 300);
+        });
+    });
+
+    function set_travel_routes() {
+        const last_tr = "#tb_salesman_travel_routes .nested-fields:last";
+        $(last_tr).find('.selectpicker').selectpicker('refresh');
+    }
+</script>

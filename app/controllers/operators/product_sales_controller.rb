@@ -183,6 +183,8 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def show
+    SalesmanTravelJob.perform_later("sale", @product_sale)
+
     if @product_sale.status.alias == "oper_from_web"
       redirect_to action: :edit
     else
