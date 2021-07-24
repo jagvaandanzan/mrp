@@ -31,6 +31,11 @@ class ProductIncomeItem < ApplicationRecord
   # validate :income_locations_count_check, on: :update
   attr_accessor :is_income_order, :remainder
 
+  scope :in_ub, ->(start, finish){
+    joins(:supply_feature)
+      .where('? <= product_supply_features.updated_at AND product_supply_features.updated_at <= ?', start.to_time, finish.to_time + 1.days)
+  }
+
   scope :search, ->(start, finish, income_code, supply_code, product_name) {
     items = income_date_desc
     items = items.joins(:product_income) if income_code.present? || (start.present? && finish.present?)

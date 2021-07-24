@@ -18,6 +18,10 @@ class ShippingUbBox < ApplicationRecord
     where('? <= created_at AND created_at <= ?', start.to_time, finish.to_time + 1.days)
   }
 
+  scope :by_shipping_id, ->(ids){
+    where(shipping_ub_id: ids)
+  }
+
   private
 
   def set_product_cost

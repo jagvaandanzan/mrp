@@ -5,8 +5,9 @@ class Users::SupplyCalculationsController < Users::BaseController
     @by_start = params[:by_start].presence || month_1.strftime("%Y/%m/%d")
     @by_end = params[:by_end].presence || (month_1 + 1.month).strftime("%Y/%m/%d")
     @pur_products_x = ProductSupplyFeature.by_date(@by_start, @by_end).purchased_er
-    @ub_products_x = ProductSupplyFeature.ship_ub(@by_start, @by_end)
-    @er_products_x = ProductSupplyFeature.received_er(@by_start, @by_end)
+    @ub_products_x = ProductSupplyFeature.by_date(@by_start, @by_end).ship_ub
+    @er_products_x = ProductSupplyFeature.by_date(@by_start, @by_end).received_er
+    @in_ub_x = ProductSupplyFeature.by_date(@by_start, @by_end).in_ub
   end
 
   def purchased_er
@@ -15,10 +16,12 @@ class Users::SupplyCalculationsController < Users::BaseController
     @pur_products = ProductSupplyFeature
                   .by_date(@by_start, @by_end)
                   .purchased_er
+                  .order(code: :asc)
                   .page(params[:page])
     @pur_products_x = ProductSupplyFeature
                       .by_date(@by_start, @by_end)
                       .purchased_er
+                      .order(code: :asc)
 
 
     respond_to do |format|
@@ -32,8 +35,12 @@ class Users::SupplyCalculationsController < Users::BaseController
   def received_er
     @by_start = params[:by_start]
     @by_end = params[:by_end]
-    @er_products = ProductSupplyFeature.received_er(@by_start, @by_end).page(params[:page])
-    @er_products_x = ProductSupplyFeature.received_er(@by_start, @by_end)
+    @er_products = ProductSupplyFeature.by_date(@by_start, @by_end)
+                                       .received_er
+                                       .page(params[:page])
+    @er_products_x = ProductSupplyFeature
+                       .by_date(@by_start, @by_end)
+                       .received_er
     respond_to do |format|
       format.xlsx{
         render template: 'users/supply_calculations/received_er', xlsx: 'Эрээнд_ирсэн_бараа'
@@ -45,12 +52,38 @@ class Users::SupplyCalculationsController < Users::BaseController
   def ship_ub
     @by_start = params[:by_start]
     @by_end = params[:by_end]
-    @ub_products = ProductSupplyFeature.ship_ub(@by_start, @by_end)
-                                       .page(params[:page])
-    @ub_products_x = ProductSupplyFeature.ship_ub(@by_start, @by_end)
+    @ub_products = ProductSupplyFeature
+                     .by_date(@by_start, @by_end)
+                     .ship_ub
+                     .order(code: :asc)
+                     .page(params[:page])
+    @ub_products_x = ProductSupplyFeature
+                       .by_date(@by_start, @by_end)
+                       .ship_ub
+                       .order(code: :asc)
     respond_to do |format|
       format.xlsx{
         render template: 'users/supply_calculations/ship_ub', xlsx: 'Улаанбаатарлуу_ачуулсан_бараа'
+      }
+      format.html {render :ship_ub}
+    end
+  end
+
+  def calculate
+    @by_start = params[:by_start]
+    @by_end = params[:by_end]
+    @in_ub = ProductSupplyFeature
+                     .by_date(@by_start, @by_end)
+                     .in_ub
+                     .order(code: :asc)
+                     .page(params[:page])
+    @in_ub_x = ProductSupplyFeature
+                       .by_date(@by_start, @by_end)
+                       .in_ub
+                       .order(code: :asc)
+    respond_to do |format|
+      format.xlsx{
+        render template: 'users/supply_calculations/ship_ub', xlsx: 'Орлогод_авсан_бараа'
       }
       format.html {render :ship_ub}
     end
@@ -60,12 +93,15 @@ class Users::SupplyCalculationsController < Users::BaseController
     @by_start = params[:by_start]
     @by_end = params[:by_end]
     @by_nil = params[:by_nil]
-    @income_products = ProductIncomeProduct.by_date(@by_start, @by_end)
+    @income_products = ProductIncomeProduct.in_ub(@by_start, @by_end)
                            .by_calc_nil(@by_nil)
                            .group("product_income_products.id")
                            .date_desc
                            .page(params[:page])
-
+    @in_ub_x = ProductSupplyFeature
+                 .by_date(@by_start, @by_end)
+                 .in_ub
+                 .by_calc_nil(@by_nil)
   end
 
   def for_invoice

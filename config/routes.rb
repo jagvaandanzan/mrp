@@ -213,6 +213,7 @@ Rails.application.routes.draw do
       get 'purchased_er'
       get 'received_er'
       get 'ship_ub'
+      get 'calculate'
     end
 
     match "*any", to: "base#routing_error", via: :all
