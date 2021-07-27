@@ -117,7 +117,7 @@ class Operators::SalesmanTravelsController < Operators::BaseController
   end
 
   def salesman_travel_params
-    params.require(:salesman_travel).permit(:sale_ids, :zone_ids, :salesman_id, :description)
+    params.require(:salesman_travel).permit(:sale_ids, :zone_ids, :allocation, :salesman_id, :description)
   end
 
   def travel_update_params
