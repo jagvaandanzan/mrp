@@ -5,6 +5,8 @@ class ShippingErProduct < ApplicationRecord
 
   has_many :shipping_er_features, dependent: :destroy
   has_many :shipping_ub_products, dependent: :destroy
+
+  has_many :supply_feature, class_name: 'ProductSupplyFeature', through: :shipping_er_features
   accepts_nested_attributes_for :shipping_er_features, allow_destroy: true
 
   validates :quantity, :cargo, presence: true
@@ -27,6 +29,11 @@ class ShippingErProduct < ApplicationRecord
 
   scope :by_date, ->(start, finish) {
     where('? <= shipping_er_products.created_at AND shipping_er_products.created_at <= ?', start.to_time, finish.to_time + 1.days)
+  }
+
+  scope :by_pur_date, ->(start, finish) {
+    joins(:supply_feature)
+             .where('? <= product_supply_features.updated_at AND product_supply_features.updated_at <= ?', start.to_time, finish.to_time + 1.days)
   }
 
   scope :by_order_id, ->(order_id) {

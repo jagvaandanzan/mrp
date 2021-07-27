@@ -15,7 +15,7 @@
             <table class="table table-bordered">
               <thead>
               <tr>
-                <th colspan="6"></th>
+                <th colspan="7"></th>
                 <th colspan="2" class="text-center">Зардал</th>
                 <th colspan="3"></th>
               </tr>
@@ -36,16 +36,19 @@
               </tr>
               <tr>
                 <th colspan="7"></th>
-                <% items = ProductIncomeItem
+                <%
+                  items = ProductIncomeItem
                     .by_income_date(@by_start, @by_end)
                     .by_calc_nil(@by_nil)
-                   sum_shipping_er_cost = items.sum_shipping_er_cost
-                   sum_shipping_ub_product_cost = items.sum_shipping_ub_product_cost + items.sum_shipping_ub_sample_cost
-                   sum_supply_feature_cost = items.sum_supply_feature_cost
+                  shipping_ub_ids = ProductSupplyFeature.by_date(@by_start, @by_end).in_ub.shipping_ub
+                  sum_shipping_er_cost = @in_ub_x.group("shipping_er_products.id").pluck("shipping_er_products.cost").sum
+                  sum_shipping_ub_product_cost = @in_ub_x.group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum + ShippingUbSample.cost(shipping_ub_ids).pluck("shipping_ub_samples.per_cost * product_income_items.quantity").sum
+                  sum_supply_feature_cost = @in_ub_x.pluck("product_supply_features.price_lo * product_income_items.quantity").sum
+
                 %>
                 <th class="va-mid"><%= get_currency(sum_shipping_er_cost, Const::CURRENCY[0], 2) %></th>
                 <th class="va-mid"><%= get_currency(sum_shipping_ub_product_cost, Const::CURRENCY[0], 2) %></th>
-                <th class="va-mid"><%= items.sum(:quantity) %></th>
+                <th class="va-mid"><%= @in_ub_x.sum(:quantity) %></th>
                 <th class="va-mid"><%= get_currency(sum_supply_feature_cost, Const::CURRENCY[0], 2) %></th>
                 <th></th>
                 <th class="va-mid"><%= get_currency(sum_shipping_er_cost + sum_shipping_ub_product_cost + sum_supply_feature_cost, Const::CURRENCY[0], 2) %></th>
@@ -77,10 +80,10 @@
                       <% if product_income_logs > 0 %>
                         <% $count += 1%>
                       <% end %>
-                <% } %>
+                    <% } %>
                     <% if $count > 0 %>
                       <span class="income_logs label label-<%= items.is_match ? 'warning' : 'danger' %> pull-right" style="cursor: pointer" onclick="show_log(<%= items.id %>)"><%= $count == 0 ? '' : $count %></span>
-                      <%end %>
+                    <%end %>
                   </td>
                   <td class="va-mid">
                     <% if product.picture.present? %>
@@ -106,16 +109,16 @@
                     <%= count %>
                   </td>
                   <%
-                     total_quantity = 0
-                     price = 0
-                     feature_ids = 0
-                     if supply_features.present?
-                       supply_features.each_with_index {|supply_feature, index|
-                         feature_ids << supply_feature.id
-                         total_quantity += supply_feature.quantity if supply_feature.quantity.present?
-                         price = supply_feature.price if supply_feature.price.present?
-                     }
-                       end
+                    total_quantity = 0
+                    price = 0
+                    feature_ids = 0
+                    if supply_features.present?
+                      supply_features.each_with_index {|supply_feature, index|
+                        feature_ids << supply_feature.id
+                        total_quantity += supply_feature.quantity if supply_feature.quantity.present?
+                        price = supply_feature.price if supply_feature.price.present?
+                      }
+                    end
 
                   %>
                   <td><strong><%= ProductSupplyFeature.by_order_item_id(order_ids).sum(:quantity) %></strong></td>
@@ -146,7 +149,7 @@
                       <% if product_income_logs > 0 %>
                         <span class="income_logs label label-<%= item.is_match ? 'warning' : 'danger' %> pull-right" style="cursor: pointer" onclick="show_log(<%= item.id %>)"><%= product_income_logs %></span>
                       <% end %></td>
-                     <td class="va-mid"><%= supply_feature.quantity %></td>
+                    <td class="va-mid"><%= supply_feature.quantity %></td>
                     <td class="va-mid"><%= shipping_ub_feature.present? ? shipping_ub_feature.quantity : '' %></td>
 
                     <td class="va-mid"><%= shipping_er.present? ? get_currency(shipping_er_product.per_price * item.quantity, Const::CURRENCY[0], 2) : '' %></td>
@@ -307,7 +310,7 @@
     }
 </script>
 <style>
-  td.clarify {
-    background-color: lightyellow;
-  }
+    td.clarify {
+        background-color: lightyellow;
+    }
 </style>

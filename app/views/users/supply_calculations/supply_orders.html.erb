@@ -73,31 +73,54 @@
                 <td></td>
               </tr>
               <% sum_supply_feature = ProductSupplyFeature.by_date(@by_start, @by_end).sum_price_lo
-                 er_product_cost = ShippingErProduct.by_date(@by_start, @by_end).sum(:cost)
-                 ids = @pur_products_x.pluck(:order_item_id)
+                 pur_ids = @pur_products_x.pluck("product_supply_features.id")
+                 er_ids = @er_products_x.pluck("product_supply_features.id")
+                 ub_ids = @ub_products_x.pluck("product_supply_features.id")
+                 in_ub_ids = @in_ub_x.pluck("product_supply_features.id")
                  order_ids = @ub_products_x.pluck("product_supply_order_items.product_supply_order_id")
-                 pur_ids = @er_products_x.pluck(:order_item_id)
-                 ub_ids = @er_products_x.pluck(:order_item_id)
-                 sum_not_er = ProductSupplyFeature.by_order_item(ids).pluck(:sum_price_lo).sum
+                 ship_ub_ids = @ub_products_x.pluck("shipping_ub_products.shipping_ub_id")
+                 # sum_not_er = ProductSupplyFeature.by_feature_id(pur_ids).pluck(:sum_price_lo).sum
+                 sum_not_er = ProductSupplyFeature.by_order_item(@pur_products_x.pluck(:order_item_id)).sum(:sum_price_lo)
                  sum_not_er_cost = ProductSupplyFeature.by_date(@by_start, @by_end).not_in_er_cost
-                 sum_in_er = ProductSupplyFeature.by_order_item(pur_ids).pluck(:sum_price_lo).sum
-                 not_ub = ProductSupplyFeature.by_order_item(ub_ids).pluck(:sum_price_lo).sum
-                 ub_product_cost = ShippingUbProduct.by_date(@by_start, @by_end).sum(:cost)
-                 ub_product_cost += ShippingUbBox.by_date(@by_start, @by_end).sum(:cost)
-                 ub_product_cost += ShippingUbSample.by_date(@by_start, @by_end).sum(:cost)
-                 ub_sample_cost = ShippingUbSample.by_date(@by_start, @by_end).sum(:cost)
+                 # sum_in_er = ProductSupplyFeature.by_feature_id(er_ids).pluck(:sum_price_lo).sum
+                 sum_in_er = ProductSupplyFeature.by_order_item(@er_products_x.pluck(:order_item_id)).sum(:sum_price_lo)
+                 er_product_cost = @er_products_x.group("shipping_er_products.id").pluck("shipping_er_products.cost").sum
+                 # not_ub = ProductSupplyFeature.by_feature_id(ub_ids).pluck(:sum_price_lo).sum
+                 not_ub = ProductSupplyFeature.by_order_item(@ub_products_x.pluck(:order_item_id)).sum(:sum_price_lo)
+                 calculate = ProductSupplyFeature.by_feature_id(in_ub_ids).pluck(:sum_price_lo).sum
+                 cal_cost_er = @in_ub_x.by_calc_nil("false").group("shipping_er_products.id").pluck("shipping_er_products.cost").sum
+                 cal_cost_ub = @in_ub_x.group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum
+                 ub_box_cost = ShippingUbBox.by_shipping_id(ship_ub_ids).sum(:cost)
+                 ub_sample_cost = ShippingUbSample.by_shipping_id(ship_ub_ids).sum(:cost)
                  ub_main_cost = ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cost").sum
+                 cost_ids = @pur_products_x.pluck("product_supply_order_items.product_supply_order_id")
+                 cost_ids += @er_products_x.pluck("product_supply_order_items.product_supply_order_id")
+                 cost_ids += @ub_products_x.pluck("product_supply_order_items.product_supply_order_id")
+
 
               %>
-              <% income_products = ProductIncomeProduct.by_date(@by_start, @by_end)
-                 income_items = ProductIncomeItem.by_income_date(@by_start, @by_end)
+              <%
+                income_items = ProductIncomeItem.in_ub(@by_start, @by_end)
+                shipping_ub_ids = ProductSupplyFeature.by_date(@by_start, @by_end).in_ub.shipping_ub
+                cost_sample_n = ShippingUbSample.by_calc_nil("true").cost(shipping_ub_ids).pluck("shipping_ub_samples.per_cost * product_income_items.quantity").sum
+                cost_sample_c = ShippingUbSample.by_calc_nil("false").cost(shipping_ub_ids).pluck("shipping_ub_samples.per_cost * product_income_items.quantity").sum
+                # income_products = ProductSupplyFeature.by_date(@by_start, @by_end).in_ub
+                # income_items = ProductSupplyFeature.by_date(@by_start, @by_end).in_ub
 
-                 sum_supply_feature_cost_n = income_items.by_calc_nil("true").sum_supply_feature_cost
-                 sum_supply_feature_cost_c = income_items.by_calc_nil("false").sum_supply_feature_cost
-                 sum_shipping_er_cost_n = income_items.by_calc_nil("true").sum_shipping_er_cost
-                 sum_shipping_er_cost_c = income_items.by_calc_nil("false").sum_shipping_er_cost
-                 sum_shipping_ub_n = income_items.by_calc_nil("true").sum_shipping_ub_product_cost + income_items.by_calc_nil("true").sum_shipping_ub_sample_cost
-                 sum_shipping_ub_c = income_items.by_calc_nil("false").sum_shipping_ub_product_cost + income_items.by_calc_nil("false").sum_shipping_ub_sample_cost %>
+                 sum_supply_feature_cost_n = @in_ub_x.by_calc_nil("true").pluck("product_supply_features.price_lo * product_income_items.quantity").sum
+                 sum_supply_feature_cost_c = @in_ub_x.by_calc_nil("false").pluck("product_supply_features.price_lo * product_income_items.quantity").sum
+                 sum_shipping_er_cost_n = @in_ub_x.by_calc_nil("true").group("shipping_er_products.id").pluck("shipping_er_products.cost").sum
+                 sum_shipping_er_cost_c = @in_ub_x.by_calc_nil("false").group("shipping_er_products.id").pluck("shipping_er_products.cost").sum
+                 sum_shipping_ub_n = @in_ub_x.by_calc_nil("true").group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum + cost_sample_n
+                 sum_shipping_ub_c = @in_ub_x.by_calc_nil("false").group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum + cost_sample_c
+                 cost = ProductSupplyOrderItem.by_supply_id(cost_ids).pluck(:cost).sum
+                 # cost += ShippingErProduct.by_order_id(cost_ids).pluck(:cost).sum
+                 cost += ShippingUbProduct.by_order_id(cost_ids).pluck(:cost).sum
+                 cost += sum_shipping_er_cost_c + sum_shipping_er_cost_n + sum_shipping_ub_c + sum_shipping_ub_n
+                 cost += ub_sample_cost + ub_box_cost + ub_main_cost
+                 sum_price_lo = sum_not_er + sum_in_er + not_ub + sum_supply_feature_cost_n + sum_supply_feature_cost_c
+                 sum_product = cost + sum_price_lo
+              %>
 
               <tr>
                 <td rowspan="3">Эрээнд хүлээж аваагүй</td>
@@ -145,7 +168,7 @@
               </tr>
               <tr>
                 <td rowspan="4"> Улаанбаатарлуу Ачуулсан</td>
-                <td>Нийт барааны мөнгөн дүн</td>
+                <td>Барааны дүн</td>
                 <td></td>
                 <td><%= get_currency(not_ub, Const::CURRENCY[0], 2) %></td>
                 <td></td>
@@ -168,70 +191,83 @@
               <tr>
                 <td class="text-right"><strong>Нийт дүн</strong></td>
                 <td></td>
-                <td><%=link_to get_currency(ub_sample_cost + ub_main_cost + not_ub, Const::CURRENCY[0], 2), users_supply_calculations_ship_ub_path(by_start: @by_start, by_end: @by_end) %></td></td>
+                <td><%= get_currency(ub_sample_cost + ub_box_cost + ub_main_cost + not_ub, Const::CURRENCY[0], 2) %></td></td>
                 <td></td>
                 <td></td>
               </tr>
               <tr>
                 <td rowspan="4">Орлогод авсан</td>
                 <td>Худалдаж авсан барааны дүн </td>
-                <td></td>
+                <td><%= %></td>
                 <td class="text-center"><%= get_currency(sum_supply_feature_cost_n + sum_supply_feature_cost_c, Const::CURRENCY[0], 2) %></td>
                 <td class="text-center"><%= get_currency(sum_supply_feature_cost_n, Const::CURRENCY[0], 2) %></td>
                 <td class="text-center"><%= get_currency(sum_supply_feature_cost_c, Const::CURRENCY[0], 2) %></td>
               </tr>
               <tr>
                 <td>Эрээнд хүлээн авсан ачааны зардал</td>
-                <td></td>
+                <td><%= %></td>
                 <td class="text-center"><%= get_currency(sum_shipping_er_cost_c + sum_shipping_er_cost_n, Const::CURRENCY[0], 2) %></td>
                 <td class="text-center"><%= get_currency(sum_shipping_er_cost_n, Const::CURRENCY[0], 2) %></td>
                 <td class="text-center"><%= get_currency(sum_shipping_er_cost_c, Const::CURRENCY[0], 2) %></td>
               </tr>
               <tr>
                 <td>УБ-луу ачуулсан тээврийн зардал</td>
-                <td></td>
+                <td><%= %></td>
                 <td class="text-center"><%= get_currency(sum_shipping_ub_c + sum_shipping_ub_n, Const::CURRENCY[0], 2) %></td>
                 <td class="text-center"><%= get_currency(sum_shipping_ub_n, Const::CURRENCY[0], 2) %></td>
                 <td class="text-center"><%= get_currency(sum_shipping_ub_c, Const::CURRENCY[0], 2) %></td>
               </tr>
               <tr>
                 <td class="text-right"><strong>Нийт дүн</strong></td>
-                <td></td>
+                <td><%= %></td>
                 <td class="text-center"><%= get_currency(sum_shipping_ub_c + sum_shipping_ub_n + sum_shipping_er_cost_c + sum_shipping_er_cost_n + sum_supply_feature_cost_n + sum_supply_feature_cost_c, Const::CURRENCY[0], 2) %></td>
                 <td class="text-center"><%= get_currency(sum_shipping_ub_n + sum_shipping_er_cost_n + sum_supply_feature_cost_n, Const::CURRENCY[0], 2) %></td>
                 <td class="text-center"><%= get_currency(sum_shipping_ub_c + sum_shipping_er_cost_c + sum_supply_feature_cost_c, Const::CURRENCY[0], 2) %></td>
               </tr>
               <tr>
                 <td></td>
-                <td class="text-right"><strong>Нийт зарцуулалт</strong></td>
+                <td class="text-right"><strong>Нийт барааны дүн</strong></td>
+                <td><%= %></td>
+                <td><strong><%= get_currency(sum_price_lo, Const::CURRENCY[0], 2) %></strong></td>
                 <td></td>
-                <td><strong><%= get_currency(sum_supply_feature + er_product_cost + ub_product_cost + sum_not_er_cost, Const::CURRENCY[0], 2) %></strong></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td class="text-right"><strong>Нийт зардал</strong></td>
+                <td></td>
+                <td><strong><%= get_currency(cost, Const::CURRENCY[0], 2) %></strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td class="text-right"><strong>Нийт зарцуулалт</strong></td>
+                <td><%= %></td>
+                <td><strong><%= get_currency(sum_product, Const::CURRENCY[0], 2) %></strong></td>
                 <td></td>
               </tr>
               <tr>
                 <td></td>
                 <td class="text-right">Тодруулах/ Түгжигдсэн</td>
                 <td></td>
-                <td colspan="3"><%= income_items.by_clarify(true).count %></td>
+                <td colspan="3"><%= @in_ub_x.by_clarify(true).count %></td>
               </tr>
               <tr>
                 <td></td>
                 <td class="text-right">Барааны тоо</td>
                 <td></td>
                 <td></td>
-                <td><%= link_to income_products.by_calc_nil("true").count, users_supply_calculations_income_products_path(by_start: @by_start, by_end: @by_end, by_nil: true), target: '_blank' %></td>
-                <td><%= link_to income_products.by_calc_nil("false").count, users_supply_calculations_income_products_path(by_start: @by_start, by_end: @by_end, by_nil: false), target: '_blank' %></td>
+                <td><%= link_to @in_ub_x.by_calc_nil("true").count, users_supply_calculations_income_products_path(by_start: @by_start, by_end: @by_end, by_nil: true), target: '_blank' %></td>
+                <td><%= link_to @in_ub_x.by_calc_nil("false").count, users_supply_calculations_income_products_path(by_start: @by_start, by_end: @by_end, by_nil: false), target: '_blank' %></td>
               </tr>
               <tr>
                 <td></td>
                 <td class="text-right">Далайгийн үлдэгдэл</td>
                 <td></td>
                 <% sum = bank_transaction.sum(:summary) + prev_logistic - prev_transaction
-                   sum_product = sum_supply_feature + er_product_cost + ub_product_cost + sum_not_er_cost
                 %>
                 <td><%= get_currency( sum_product - sum, Const::CURRENCY[0], 2) %></td>
-                <td><%= link_to income_products.by_calc_nil("true").count, users_supply_calculations_income_products_path(by_start: @by_start, by_end: @by_end, by_nil: true), target: '_blank' %></td>
-                <td><%= link_to income_products.by_calc_nil("false").count, users_supply_calculations_income_products_path(by_start: @by_start, by_end: @by_end, by_nil: false), target: '_blank' %></td>
+                <td></td>
+                <td></td>
               </tr>
               </tbody>
             </table>
