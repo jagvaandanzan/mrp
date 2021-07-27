@@ -32,6 +32,14 @@ class ProductSupplyOrderItem < ApplicationRecord
     items
   }
 
+  scope :by_order_item, ->(order_item_id) {
+    where('product_supply_order_items.id IN (?)', order_item_id)
+  }
+
+  scope :by_supply_id, ->(ids) {
+    where('product_supply_order_items.product_supply_order_id IN (?)', ids)
+      .where('COALESCE(product_supply_order_items.cost, 0)')
+  }
 
   scope :order_pin, -> {
     order(pin: :desc)
@@ -140,7 +148,7 @@ class ProductSupplyOrderItem < ApplicationRecord
         cost_text += "; " if index > 0
         cost_text += "#{er.product.full_name}"
       }
-      [shipping_er.date.strftime('%F'), shipping_er.cost, er_product.quantity, er_product.cargo, cost_text]
+      [shipping_er.date.strftime('%F'), er_product.cost, er_product.quantity, er_product.cargo, cost_text]
     else
       ["", "", "", "", ""]
     end

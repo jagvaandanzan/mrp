@@ -22,6 +22,11 @@ class ProductIncomeProduct < ApplicationRecord
     validates :cargo, presence: true
   end
 
+  scope :in_ub, ->(start, finish){
+    joins(:supply_features)
+      .where('? <= product_supply_features.updated_at AND product_supply_features.updated_at <= ?', start.to_time, finish.to_time + 1.days)
+  }
+
   scope :date_desc, -> {
     order(created_at: :desc)
   }
