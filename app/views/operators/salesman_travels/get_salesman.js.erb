@@ -1,5 +1,7 @@
 <% if hide_modal %>
-<% if @salesman_travel.allocation =='zone' %>
+alert(<%= @salesman_travel.allocation %>);
+alert(<%= @salesman_travel.allocation =="zone" %>);
+<% if @salesman_travel.allocation =="zone" %>
 $('tr#salesman-<%= @salesman_travel.salesman_id %>').remove();
 <% @salesman_travel.sale_ids.split(",").map(&:to_i).each { |sale_id|%>
 $('tr.sale-<%= sale_id %>').remove();
