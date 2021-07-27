@@ -28,6 +28,7 @@
         <div class="col-md-4" style="border-top: 1px solid lightgrey;padding-top: 10px">
           <%= f.hidden_field :sale_ids %>
           <%= f.hidden_field :zone_ids %>
+          <%= f.hidden_field :allocation %>
           Хувиарлах захиалгын тоо: <%= @salesman_travel.sale_ids.split(",").map(&:to_i).length %>
         </div>
         <div class="col-md-8" style="border-top: 1px solid lightgrey;padding-top: 10px">
