@@ -27,7 +27,7 @@ class Operators::SalesmanTravelsController < Operators::BaseController
     @salesman_travel.operator_id = current_operator.id
 
     last_travel = SalesmanTravel.all.last
-    @salesman_travel.number = last_travel.id + 1
+    @salesman_travel.number = last_travel.present? ? last_travel.id + 1 : 1
     @salesman_travel.sale_ids = params[:sale_ids]
     @salesman_travel.allocation = params[:allocation]
     if params[:zone_ids].present?
