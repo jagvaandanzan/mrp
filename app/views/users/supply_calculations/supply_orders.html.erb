@@ -191,7 +191,7 @@
               <tr>
                 <td class="text-right"><strong>Нийт дүн</strong></td>
                 <td></td>
-                <td><%= get_currency(ub_sample_cost + ub_box_cost + ub_main_cost + not_ub, Const::CURRENCY[0], 2) %></td></td>
+                <td><%=link_to get_currency(ub_sample_cost + ub_box_cost + ub_main_cost + not_ub, Const::CURRENCY[0], 2), users_supply_calculations_ship_ub_path(by_start: @by_start, by_end: @by_end) %></td></td>
                 <td></td>
                 <td></td>
               </tr>
