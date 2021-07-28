@@ -46,6 +46,7 @@ sheet.add_row [
 'Хүлээн авсан',
 '',
 '',
+'',
 'Улаанбаатарлуу ачуулсан',
 '',
 '',
@@ -54,8 +55,8 @@ sheet.add_row [
 ],:style=>title
 
 sheet.merge_cells sheet.rows.last.cells[(0..5)]
-sheet.merge_cells sheet.rows.last.cells[(6..8)]
-sheet.merge_cells sheet.rows.last.cells[(9..11)]
+sheet.merge_cells sheet.rows.last.cells[(6..9)]
+sheet.merge_cells sheet.rows.last.cells[(10..12)]
 
 
 # Create the header row
@@ -68,6 +69,7 @@ t('activerecord.attributes.product_supply_feature.feature_item_id'),
 t('activerecord.attributes.product_supply_order_item.purchase_quantity'),
 t('activerecord.attributes.shipping_er_feature.quantity'),
 t('activerecord.attributes.shipping_er_product.cargo'),
+t('activerecord.attributes.shipping_er_product.cost'),
 t('activerecord.attributes.shipping_er.date'),
 t('activerecord.attributes.shipping_ub_product.quantity'),
 t('activerecord.attributes.shipping_ub_product.cargo'),
@@ -88,7 +90,8 @@ t('activerecord.attributes.product_supply_feature.price'),
 t('activerecord.attributes.product_supply_feature.sum_price'),
 ProductSupplyFeature.by_order_item(pur_ids).sum("product_supply_features.quantity_lo"),
 ShippingErFeature.by_order_item(pur_ids).sum("shipping_er_features.quantity"),
-ShippingErProduct.by_ship_id(@by_start, @by_end, order_ids).sum("shipping_er_products.cargo"),
+ShippingErProduct.by_order_id(@ub_products_x.pluck("product_supply_order_items.product_supply_order_id")).pluck(:cargo).sum,
+ShippingErProduct.by_order_id(@ub_products_x.pluck("product_supply_order_items.product_supply_order_id")).pluck(:cost).sum,
 '',
 ShippingUbFeature.by_order_item(pur_ids).sum("shipping_ub_features.quantity"),
 ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cargo").sum,
@@ -129,14 +132,15 @@ code = 0
                    supply_feature.feature_item.name,
                    supply_feature.quantity_lo,
                    supply_feature.shipping_er_features.quantity(supply_feature.id, order_items.id).present? ? supply_feature.shipping_er_features.quantity(supply_feature.id, order_items.id) : 0,
-                   i.code == code ? '' : ShippingErProduct.by_order_id_item(@by_start, @by_end,supply_order.id).pluck(:cargo).sum,
+                   i.code == code ? '' : ShippingErProduct.by_order_id(supply_order.id).pluck(:cargo).sum,
+                   i.code == code ? '' : ShippingErProduct.by_order_id(supply_order.id).pluck(:cost).sum,
                    date,
                    supply_feature.shipping_ub_features.quantity(supply_feature.id),
                    i.code == code ? '' : cargoUB,
                    i.code == code ? '' : costsUB,
                    supply_feature.sum_price_lo,
                    dateUB
-                   ],style:[default,default,default,default,default,default,default,count > 1 ? i.code == var ? none : below : below,default,default,count > 1 ? i.code == var ? none : below : below,count > 1 ? i.code == var ? none : below : below,default,default,default]
+                   ],style:[default,default,default,default,default,default,default,count > 1 ? i.code == var ? none : below : below,count > 1 ? i.code == var ? none : below : below,default,default,count > 1 ? i.code == var ? none : below : below,count > 1 ? i.code == var ? none : below : below,default,default,default]
                     item = order_items.supply_features
                     code = i.code
                     }
@@ -144,6 +148,6 @@ code = 0
            end
          end
          sheet.add_row [
-             '','','','','','','','','','','',''
+             '','','','','','','','','','','','','',''
              ],:style=>above
 end

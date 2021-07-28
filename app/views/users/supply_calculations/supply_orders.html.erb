@@ -119,7 +119,9 @@
                  cost += sum_shipping_er_cost_c + sum_shipping_er_cost_n + sum_shipping_ub_c + sum_shipping_ub_n
                  cost += ub_sample_cost + ub_box_cost + ub_main_cost
                  sum_price_lo = sum_not_er + sum_in_er + not_ub + sum_supply_feature_cost_n + sum_supply_feature_cost_c
-                 sum_product = cost + sum_price_lo
+                 cost_missing = ShippingErProduct.by_order_id(@ub_products_x.pluck("product_supply_order_items.product_supply_order_id")).pluck(:cost).sum
+                 cost_lo = cost_missing + sum_shipping_er_cost_n + sum_shipping_er_cost_c + ub_sample_cost + ub_box_cost + ub_main_cost + sum_not_er_cost + sum_shipping_ub_c + sum_shipping_ub_n
+                 sum_product = cost_lo + sum_price_lo
               %>
 
               <tr>
@@ -167,10 +169,17 @@
                 <td></td>
               </tr>
               <tr>
-                <td rowspan="4"> Улаанбаатарлуу Ачуулсан</td>
+                <td rowspan="5"> Улаанбаатарлуу Ачуулсан</td>
                 <td>Барааны дүн</td>
                 <td></td>
                 <td><%= get_currency(not_ub, Const::CURRENCY[0], 2) %></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Эрээн хүлээн авсан тээврийн зардал</td>
+                <td></td>
+                <td><%= get_currency(cost_missing, Const::CURRENCY[0], 2) %></td>
                 <td></td>
                 <td></td>
               </tr>
@@ -191,7 +200,7 @@
               <tr>
                 <td class="text-right"><strong>Нийт дүн</strong></td>
                 <td></td>
-                <td><%=link_to get_currency(ub_sample_cost + ub_box_cost + ub_main_cost + not_ub, Const::CURRENCY[0], 2), users_supply_calculations_ship_ub_path(by_start: @by_start, by_end: @by_end) %></td>
+                <td><%=link_to get_currency(ub_sample_cost + ub_box_cost + ub_main_cost + not_ub + cost_missing, Const::CURRENCY[0], 2), users_supply_calculations_ship_ub_path(by_start: @by_start, by_end: @by_end) %></td>
                 <td></td>
                 <td></td>
               </tr>
@@ -235,7 +244,7 @@
                 <td></td>
                 <td class="text-right"><strong>Нийт зардал</strong></td>
                 <td></td>
-                <td><strong><%= get_currency(cost, Const::CURRENCY[0], 2) %></strong></td>
+                <td><strong><%= get_currency(cost_lo, Const::CURRENCY[0], 2) %></strong></td>
                 <td></td>
               </tr>
               <tr>
