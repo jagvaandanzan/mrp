@@ -18,7 +18,7 @@ class Logistics::ShippingErsController < Logistics::BaseController
   end
 
   def search_supply_feature
-    product_supply_features = ProductSupplyFeature.find_to_er(params[:order_type] == 'sample' ? 1 : 0, nil, params[:by_code], params[:by_product_name])
+    product_supply_features = ProductSupplyFeature.find_to_er(params[:order_type] == 'sample' ? 1 : 0, nil, params[:by_code], params[:by_product_name], params[:product_ids])
     respond_to do |format|
       format.js {render 'logistics/shipping_ers/search_supply_feature_js', locals: {product_supply_features: product_supply_features, page: params[:page]}}
     end
@@ -72,7 +72,7 @@ class Logistics::ShippingErsController < Logistics::BaseController
     @product = Product.find(params[:product_id])
     @shipping_er_product = ShippingErProduct.new(product: @product)
 
-    ProductSupplyFeature.find_to_er(nil, params[:product_id], "", "").each {|ps|
+    ProductSupplyFeature.find_to_er(nil, params[:product_id], "", "", params[:product_ids]).each {|ps|
       if ps[:remainder].present? && ps[:remainder].to_i > 0
         @shipping_er_product.shipping_er_features << ShippingErFeature.new(supply_feature: ps,
                                                                            remainder: ps[:remainder],
