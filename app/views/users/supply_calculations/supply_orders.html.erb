@@ -191,7 +191,7 @@
               <tr>
                 <td class="text-right"><strong>Нийт дүн</strong></td>
                 <td></td>
-                <td><%=link_to get_currency(ub_sample_cost + ub_box_cost + ub_main_cost + not_ub, Const::CURRENCY[0], 2), users_supply_calculations_ship_ub_path(by_start: @by_start, by_end: @by_end) %></td></td>
+                <td><%=link_to get_currency(ub_sample_cost + ub_box_cost + ub_main_cost + not_ub, Const::CURRENCY[0], 2), users_supply_calculations_ship_ub_path(by_start: @by_start, by_end: @by_end) %></td>
                 <td></td>
                 <td></td>
               </tr>
@@ -212,14 +212,14 @@
               </tr>
               <tr>
                 <td>УБ-луу ачуулсан тээврийн зардал</td>
-                <td><%= %></td>
+                <td></td>
                 <td class="text-center"><%= get_currency(sum_shipping_ub_c + sum_shipping_ub_n, Const::CURRENCY[0], 2) %></td>
                 <td class="text-center"><%= get_currency(sum_shipping_ub_n, Const::CURRENCY[0], 2) %></td>
                 <td class="text-center"><%= get_currency(sum_shipping_ub_c, Const::CURRENCY[0], 2) %></td>
               </tr>
               <tr>
                 <td class="text-right"><strong>Нийт дүн</strong></td>
-                <td><%= %></td>
+                <td></td>
                 <td class="text-center"><%= get_currency(sum_shipping_ub_c + sum_shipping_ub_n + sum_shipping_er_cost_c + sum_shipping_er_cost_n + sum_supply_feature_cost_n + sum_supply_feature_cost_c, Const::CURRENCY[0], 2) %></td>
                 <td class="text-center"><%= get_currency(sum_shipping_ub_n + sum_shipping_er_cost_n + sum_supply_feature_cost_n, Const::CURRENCY[0], 2) %></td>
                 <td class="text-center"><%= get_currency(sum_shipping_ub_c + sum_shipping_er_cost_c + sum_supply_feature_cost_c, Const::CURRENCY[0], 2) %></td>
@@ -227,7 +227,7 @@
               <tr>
                 <td></td>
                 <td class="text-right"><strong>Нийт барааны дүн</strong></td>
-                <td><%= %></td>
+                <td></td>
                 <td><strong><%= get_currency(sum_price_lo, Const::CURRENCY[0], 2) %></strong></td>
                 <td></td>
               </tr>
