@@ -37,9 +37,6 @@
               <tr>
                 <th colspan="7"></th>
                 <%
-                  items = ProductIncomeItem
-                    .by_income_date(@by_start, @by_end)
-                    .by_calc_nil(@by_nil)
                   shipping_ub_ids = ProductSupplyFeature.by_date(@by_start, @by_end).in_ub.shipping_ub
                   sum_shipping_er_cost = @in_ub_x.group("shipping_er_products.id").pluck("shipping_er_products.cost").sum
                   sum_shipping_ub_product_cost = @in_ub_x.group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum + ShippingUbSample.cost(shipping_ub_ids).pluck("shipping_ub_samples.per_cost * product_income_items.quantity").sum
