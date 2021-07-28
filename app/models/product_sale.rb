@@ -192,7 +192,6 @@ class ProductSale < ApplicationRecord
   }
   scope :travel_nil, ->(id) {
     items = joins(:status)
-    items = items.where('product_sale_statuses.alias = ?', status) if status.present?
     items = if id.nil?
               items.where("salesman_travel_id IS ? OR product_sale_statuses.alias = ?", nil, 'auto_redistribution')
             else
