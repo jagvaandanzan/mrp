@@ -128,6 +128,10 @@ class SalesmanTravelRoute < ApplicationRecord
     product_sale.status_name
   end
 
+  def status_note
+    product_sale.status_note
+  end
+
   def delivery_hour
     product_sale.product_sale
   end
