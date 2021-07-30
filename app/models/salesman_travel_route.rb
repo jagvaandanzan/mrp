@@ -128,6 +128,10 @@ class SalesmanTravelRoute < ApplicationRecord
     product_sale.status_name
   end
 
+  def delivery_hour
+    product_sale.product_sale
+  end
+
   def calculate_payable
     s = 0
     has_items = product_sale.product_sale_items.present?

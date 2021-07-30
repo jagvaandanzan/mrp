@@ -11,7 +11,7 @@ module API
       end
 
       class SalesmanTravelRoutes < Grape::Entity
-        expose :id, :queue, :distance, :duration, :wage, :load_at, :delivery_at, :delivered_at,
+        expose :id, :queue, :distance, :duration, :wage, :delivery_hour, :load_at, :delivery_at, :delivered_at,
                :delivery_time, :payable, :loc_name, :phone, :product_count, :return_count, :status, :latitude, :longitude
       end
 
