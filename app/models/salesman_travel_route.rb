@@ -133,7 +133,7 @@ class SalesmanTravelRoute < ApplicationRecord
   end
 
   def delivery_hour
-    product_sale.product_sale
+    product_sale.delivery_hour
   end
 
   def calculate_payable

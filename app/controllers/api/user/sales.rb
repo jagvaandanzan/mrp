@@ -128,6 +128,26 @@ module API
             end
           end
         end
+
+        resource :product do
+          resource :scan do
+            desc "POST sales/product/scan"
+            params do
+              requires :barcode, type: String
+            end
+            post do
+              feature_item = ProductFeatureItem.find_by_barcode(params[:barcode])
+              if feature_item.present?
+                product_locations = ProductLocation.get_quantity(feature_item.id)
+
+                present :feature_item, feature_item, with: API::USER::Entities::ProductFeatureItem
+                present :product_locations, product_locations, with: API::USER::Entities::ProductLocation
+              else
+                error!("Couldn't find data", 422)
+              end
+            end
+          end
+        end
       end
     end
   end

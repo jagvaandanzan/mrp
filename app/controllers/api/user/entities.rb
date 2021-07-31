@@ -65,6 +65,10 @@ module API
         expose :id, :location_name, :quantity, :transferred
       end
 
+      class ProductLocation < Grape::Entity
+        expose :name, :quantity
+      end
+
     end
   end
 end
