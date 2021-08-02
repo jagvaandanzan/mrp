@@ -349,7 +349,7 @@ class Product < ApplicationRecord
     b = product_feature_items.sum_balance.presence || 0
     if balance != b
       self.update_column(:balance, b)
-      puts "product: #{product.id}"
+      puts "product: #{self.id}"
     end
   end
 
