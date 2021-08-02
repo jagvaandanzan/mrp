@@ -345,6 +345,14 @@ class Product < ApplicationRecord
     end
   end
 
+  def calc_balance
+    b = product_feature_items.sum_balance.presence || 0
+    if balance != b
+      self.update_column(:balance, b)
+      puts "product: #{product.id}"
+    end
+  end
+
   private
 
   def valid_custom
