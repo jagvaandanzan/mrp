@@ -20,15 +20,16 @@
       <div class="col-md-2 search">
         <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.by_product')} %>
       </div>
-      <div class="col-md-2 search">
+      <div class="col-md-1 search">
         <%= f.select :order_type, ProductSupplyOrder.order_types.keys.map {|k| [ProductSupplyOrder.order_types_i18n[k], k]},
                      {:prompt => t('activerecord.attributes.product_supply_order.order_type'), selected: @order_type}, {class: 'form-control'} %>
       </div>
       <div class="col-md-2 search none">
         <%= f.select :is_equal, options_for_select([['Тэнцүү', true], ['Зөрүүтэй', false]], @is_equal), {:prompt => 'Захиалгын авалт'}, {class: 'form-control'} %>
       </div>
-      <div class="col-md-4 search">
-        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
+      <div class="col-md-5 search">
+        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left m-l-10' %>
+        <%=link_to 'Export to Excel', to_excel_users_product_supply_orders_path(by_start: @by_start, by_end: @by_end, by_code: @by_code, by_product_name: @by_product_name, order_type: @order_type, is_equal: @is_equal, format: 'xlsx') ,:class => "btn btn-primary m-l-10" %>
         <% if can? :create, ProductSupplyOrder %>
           <%= link_to t('titles.product_sample'), new_users_product_supply_order_path(order_type: 1), class: 'btn btn-warning pull-right m-l-10' %>
           <%= link_to t('activerecord.models.product_supply_order'), new_users_product_supply_order_path(order_type: 0), class: 'btn btn-warning pull-right' %>
@@ -68,7 +69,7 @@
                 <th class="va-mid text-center bg-3"><%= t('titles.cost') %></th>
                 <th class="va-mid text-center bg-3"><%= t('activerecord.attributes.product_supply_order_item.shipping_products') %></th>
                 <th class="va-mid text-center bg-3"><%= t('titles.cargo') %></th>
-                <th class="va-mid text-center">УБ-д ирсэн</th>
+                <th class="va-mid text-center"><%=t('activerecord.attributes.product_income.income_date') %></th>
               </tr>
               <% @product_supply_orders.each do |i| %>
                 <% order_items = i.product_supply_order_items
