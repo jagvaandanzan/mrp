@@ -148,6 +148,31 @@ module API
             end
           end
         end
+
+        resource :transfer do
+          resource :by_salesman do
+            desc "POST sales/transfer/by_salesman"
+            params do
+              requires :date, type: DateTime
+            end
+            post do
+              warehouse_locs = ProductWarehouseLoc.date_by_load_at(params[:date])
+              present :warehouse_locs, warehouse_locs, with: API::USER::Entities::ProductWarehouseBySalesman
+            end
+          end
+
+          resource :history do
+            desc "POST sales/transfer/history"
+            params do
+              requires :salesman_id, type: Integer
+              requires :date, type: DateTime
+            end
+            post do
+              warehouse_locs = ProductWarehouseLoc.salesman_with_date(params[:salesman_id], params[:date])
+              present :warehouse_locs, warehouse_locs, with: API::USER::Entities::ProductWarehouseUserSign
+            end
+          end
+        end
       end
     end
   end
