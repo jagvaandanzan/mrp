@@ -78,7 +78,7 @@ module API
       end
 
       class SalesmanReturnUserSign < Grape::Entity
-        expose :barcode, :name, :code, :feature, :image, :quantity, :created_at, :user_sign
+        expose :barcode, :name, :code, :desk, :feature, :image, :quantity, :created_at, :user_sign
       end
 
     end

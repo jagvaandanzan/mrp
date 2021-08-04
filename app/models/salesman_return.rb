@@ -86,4 +86,8 @@ class SalesmanReturn < ApplicationRecord
     user.name
   end
 
+  def desk
+    "X1Y1Z2"
+  end
+
 end
