@@ -557,7 +557,7 @@ mn:
       product_income:
         number: Код
         logistic_id: Хангамжийн ажилтан
-        income_date: Огноо
+        income_date: УБ-д ирсэн огноо
         product_income_items: Бараанууд
         cargo_price: Ачааны төлбөр
         sum_price: Нийт дүн (₮)
