@@ -37,6 +37,10 @@ class SalesmanReturn < ApplicationRecord
         .where('? <= salesman_returns.created_at AND salesman_returns.created_at < ?', date, date + 1.day)
         .group(:salesman_id)
   }
+  scope :salesman_with_date, ->(salesman_id, date) {
+    where("salesman_id = ?", salesman_id)
+        .where('? <= created_at AND created_at < ?', date, date + 1.day)
+  }
 
   def product_image
     feature_item.img
@@ -56,6 +60,30 @@ class SalesmanReturn < ApplicationRecord
 
   def product_barcode
     feature_item.barcode
+  end
+
+  def barcode
+    feature_item.barcode
+  end
+
+  def name
+    product.name
+  end
+
+  def feature
+    feature_item.name
+  end
+
+  def code
+    product.code
+  end
+
+  def image
+    feature_item.img
+  end
+
+  def user_sign
+    user.name
   end
 
 end

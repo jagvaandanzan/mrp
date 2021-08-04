@@ -69,7 +69,7 @@ module API
         expose :name, :quantity
       end
 
-      class ProductWarehouseBySalesman < Grape::Entity
+      class TransferHistoryBySalesman < Grape::Entity
         expose :salesman_id, :salesman_name, :quantity
       end
 
@@ -77,8 +77,8 @@ module API
         expose :barcode, :name, :code, :desk, :feature, :image, :quantity, :load_at, :user_sign
       end
 
-      class SalesmanReturnBySalesman < Grape::Entity
-        expose :salesman_id, :salesman_name, :quantity
+      class SalesmanReturnUserSign < Grape::Entity
+        expose :barcode, :name, :code, :feature, :image, :quantity, :created_at, :user_sign
       end
 
     end
