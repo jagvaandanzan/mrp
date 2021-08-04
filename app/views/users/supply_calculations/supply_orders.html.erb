@@ -120,7 +120,7 @@
                  cost += ub_sample_cost + ub_box_cost + ub_main_cost
                  sum_price_lo = sum_not_er + sum_in_er + not_ub + sum_supply_feature_cost_n + sum_supply_feature_cost_c
                  cost_missing = ShippingErProduct.by_order_id(@ub_products_x.pluck("product_supply_order_items.product_supply_order_id")).pluck(:cost).sum
-                 cost_lo = cost_missing + sum_shipping_er_cost_n + sum_shipping_er_cost_c + ub_sample_cost + ub_box_cost + ub_main_cost + sum_not_er_cost + sum_shipping_ub_c + sum_shipping_ub_n
+                 cost_lo = cost_missing + sum_shipping_er_cost_n + sum_shipping_er_cost_c + ub_sample_cost + ub_box_cost + ub_main_cost + sum_not_er_cost + sum_shipping_ub_c + sum_shipping_ub_n + er_product_cost
                  sum_product = cost_lo + sum_price_lo
               %>
 
