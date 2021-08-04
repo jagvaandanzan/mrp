@@ -195,7 +195,7 @@ class ProductSale < ApplicationRecord
     items = if id.nil?
               items.where("salesman_travel_id IS ? OR product_sale_statuses.alias = ?", nil, 'auto_redistribution')
             else
-              items.where("salesman_travel_id IS ? OR id = ? OR product_sale_statuses.alias = ?", nil, id, 'auto_redistribution')
+              items.where("salesman_travel_id IS ? OR product_sales.id = ? OR product_sale_statuses.alias = ?", nil, id, 'auto_redistribution')
             end
     items.order(:delivery_start)
   }
