@@ -51,7 +51,7 @@ class Operators::SalesmanTravelsController < Operators::BaseController
         product_sale = ProductSale.find(sale_id)
         product_sale.update_column(:salesman_travel_id, @salesman_travel.id)
         travel_route = SalesmanTravelRoute.new
-        travel_route.queue = i + 1
+        travel_route.queue = i
         travel_route.distance = 0
         travel_route.duration = 0
         travel_route.salesman_travel = @salesman_travel
