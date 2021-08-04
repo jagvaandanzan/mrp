@@ -31,6 +31,12 @@ class SalesmanReturn < ApplicationRecord
   scope :by_user, ->(user_id) {
     where(user_id: user_id)
   }
+  scope :date_by_quantity, ->(date) {
+    select("salesman_id, salesmen.name as salesman_name, SUM(quantity) as quantity")
+        .joins(:salesman)
+        .where('? <= salesman_returns.created_at AND salesman_returns.created_at < ?', date, date + 1.day)
+        .group(:salesman_id)
+  }
 
   def product_image
     feature_item.img

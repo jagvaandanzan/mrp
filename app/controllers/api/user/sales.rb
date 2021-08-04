@@ -157,11 +157,34 @@ module API
             end
             post do
               warehouse_locs = ProductWarehouseLoc.date_by_load_at(params[:date])
-              present :warehouse_locs, warehouse_locs, with: API::USER::Entities::ProductWarehouseBySalesman
+              present :salesmen, warehouse_locs, with: API::USER::Entities::ProductWarehouseBySalesman
             end
           end
 
-          resource :history do
+          resource :salesman_product do
+            desc "POST sales/transfer/salesman_product"
+            params do
+              requires :salesman_id, type: Integer
+              requires :date, type: DateTime
+            end
+            post do
+              warehouse_locs = ProductWarehouseLoc.salesman_with_date(params[:salesman_id], params[:date])
+              present :products, warehouse_locs, with: API::USER::Entities::ProductWarehouseUserSign
+            end
+          end
+
+          resource :return do
+            desc "POST sales/transfer/return"
+            params do
+              requires :date, type: DateTime
+            end
+            post do
+              salesman_returns = SalesmanReturn.date_by_quantity(params[:date])
+              present :salesmen, salesman_returns, with: API::USER::Entities::SalesmanReturnBySalesman
+            end
+          end
+
+          resource :return_product do
             desc "POST sales/transfer/history"
             params do
               requires :salesman_id, type: Integer
@@ -172,6 +195,7 @@ module API
               present :warehouse_locs, warehouse_locs, with: API::USER::Entities::ProductWarehouseUserSign
             end
           end
+
         end
       end
     end

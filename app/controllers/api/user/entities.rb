@@ -72,8 +72,13 @@ module API
       class ProductWarehouseBySalesman < Grape::Entity
         expose :salesman_id, :salesman_name, :quantity
       end
+
       class ProductWarehouseUserSign < Grape::Entity
         expose :barcode, :name, :code, :desk, :feature, :image, :quantity, :load_at, :user_sign
+      end
+
+      class SalesmanReturnBySalesman < Grape::Entity
+        expose :salesman_id, :salesman_name, :quantity
       end
 
     end
