@@ -82,7 +82,7 @@ class SalesmanTravelRoute < ApplicationRecord
   }
 
   def loc_name
-    location.name
+    location.full_name
   end
 
   def payable
@@ -134,6 +134,19 @@ class SalesmanTravelRoute < ApplicationRecord
 
   def delivery_hour
     product_sale.delivery_hour
+  end
+
+  def location_note
+    n = ""
+    building_code = product_sale.building_code
+    if building_code.present?
+      n += "Орцны код: #{building_code}"
+    end
+    if product_sale.loc_note.present?
+      n += ". " if n.length > 0
+      n += product_sale.loc_note
+    end
+    n
   end
 
   def calculate_payable

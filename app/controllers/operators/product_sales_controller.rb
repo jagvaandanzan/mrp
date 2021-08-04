@@ -236,7 +236,6 @@ class Operators::ProductSalesController < Operators::BaseController
     location.station_id = params[:station_id]
     location.name = params[:name]
     location.name_la = params[:name_la]
-    location.distance = params[:distance]
     location.latitude = params[:latitude]
     location.longitude = params[:longitude]
 
@@ -369,7 +368,7 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def location_params
     params.require(:location)
-        .permit(:loc_district_id, :loc_khoroo_id, :micro_region, :town, :street, :apartment, :entrance, :name, :name_la, :station_id, :distance, :is_new, :latitude, :longitude)
+        .permit(:loc_district_id, :loc_khoroo_id, :micro_region, :town, :street, :apartment, :entrance, :name, :name_la, :station_id, :is_new, :latitude, :longitude)
         .merge(:operator => current_operator)
   end
 
