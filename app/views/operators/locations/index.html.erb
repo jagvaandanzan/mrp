@@ -31,7 +31,6 @@
               <tr>
                 <th class="text-center"><%= t('activerecord.attributes.location.name') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.location.name_la') %></th>
-                <th class="text-center"><%= t('activerecord.attributes.location.distance') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.location.country') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.location.latitude') %></th>
                 <th class="text-center"><%= t('activerecord.attributes.location.longitude') %></th>
@@ -41,7 +40,6 @@
                 <tr>
                   <td class="va-mid"><%= link_to l.name, operators_location_path(l) %></td>
                   <td class="va-mid"><%= link_to l.name_la, operators_location_path(l) %></td>
-                  <td class="text-center va-mid"><%= l.distance_i18n %></td>
                   <td class="text-center va-mid">
                     <% if l.country.present? && l.country %>
                       <i class="fa fa-check text-success" style='font-size: 16px'></i>

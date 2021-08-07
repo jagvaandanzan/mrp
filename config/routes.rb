@@ -195,7 +195,6 @@ Rails.application.routes.draw do
         post 'check_register'
         post 'tax'
         get 'report'
-        post 'excel'
       end
     end
 
@@ -270,6 +269,7 @@ Rails.application.routes.draw do
         post 'get_location'
       end
     end
+    resources :location_zones
     namespace :distributing do
       get 'index'
       post 'set_travel'
@@ -281,6 +281,14 @@ Rails.application.routes.draw do
       post 'distributing'
       post 'salesman_track'
     end
+
+    resources :salesman_travels do
+      collection do
+        get 'zone'
+        get 'map'
+      end
+    end
+
     match "*any", to: "base#routing_error", via: :all
   end
 

@@ -1,5 +1,5 @@
 <% shipping_ub_products.each {|shipping_ub_product| %>
-  <tr class="nested-fields">
+  <tr class="nested-fields shipping_ub_product" shipping_ub_product_id=<%= shipping_ub_product.id %>>
     <%= product = shipping_ub_product.product %>
     <input type="hidden" value="<%= product.id %>" name="product_income[product_income_products_attributes][<%= row %>][product_id]" id="product_income_product_income_products_attributes_<%= row %>_product_id">
     <input type="hidden" value="<%= shipping_ub_product.id %>" name="product_income[product_income_products_attributes][<%= row %>][shipping_ub_product_id]" id="product_income_product_income_products_attributes_<%= row %>_shipping_ub_product_id">

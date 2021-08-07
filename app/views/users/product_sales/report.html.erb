@@ -3,8 +3,8 @@
   <%= stylesheet_link_tag "list" %>
 <% end %>
 <div class="content-wrapper">
-  <div class=" m-t-10 m-b-10">
-    <%= form_with url: excel_users_product_sales_path, method: "post", class: "", id: 'search-form', local: true do |f| %>
+  <div class="col-md-12 m-t-10 m-b-10">
+    <%= form_with url: report_users_product_sales_path, method: "get", class: "", id: 'search-form', local: true do |f| %>
       <div class="col-md-12">
         <div class="col-md-4">
           <div><%= t('titles.date') %></div>
@@ -36,7 +36,7 @@
         <div class="col-md-4 ">
           <div>Жагсаалтын төрөл</div>
           <div class="search m-t-5">
-            <%= select_tag :list_type, options_for_select([["Захиалгаар", 0], ["Бараагаар", 1]], @List_type), class: 'form-control', id: "list-type-select" %>
+            <%= select_tag :list_type, options_for_select([["Захиалгаар", 1], ["Бараагаар", 0]], @list_type), class: 'form-control', id: "list-type-select" %>
           </div>
         </div>
         <div class="col-md-4 none" id="product-code-div">
@@ -59,13 +59,13 @@
         <div class="col-md-4">
           <div><%= "Захиалгын эх үүсвэр" %></div>
           <div class="search m-t-5">
-            <%= check_box_tag :order_0, 0, @order_0.present? %>
+            <%= f.check_box :order_0, {checked: @order_0.present? && @order_0 == '0'}, 0, nil %>
             <span class="m-r-10">Бүгд</span>
-            <%= check_box_tag :order_2, 1, @order_1.present? %>
+            <%= f.check_box :order_1, {checked: @order_1.present? && @order_1 == '1'}, 1, nil %>
             <span class="m-r-10">Вэб</span>
-            <%= check_box_tag :order_2, 2, @order_2.present? %>
+            <%= f.check_box :order_2, {checked: @order_2.present? && @order_2 == '2'}, 2, nil %>
             <span class="m-r-10">Коммэнт</span>
-            <%= check_box_tag :order_3, 3, @order_3.present? %>
+            <%= f.check_box :order_3, {checked: @order_3.present? && @order_3 == '3'}, 3, nil %>
             <span>Оператор</span>
           </div>
         </div>
@@ -76,7 +76,7 @@
           <div class="col-md-2">
             <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
               <%= label_tag do %>
-                <%= f.check_box(:status_ids, {:multiple => true}, oper.id.to_s, nil) %>
+                <%= f.check_box(:status_ids, {:multiple => true, checked: @status_ids.present? && @status_ids.include?(oper.id)}, oper.id.to_s, nil) %>
                 <span class="<%= oper.next.present? && oper.next.length > 2 ? 'text-bold' : '' %>"><%= oper.name %></span>
               <% end %>
             </div>
@@ -89,7 +89,7 @@
           <div class="col-md-2">
             <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
               <%= label_tag do %>
-                <%= f.check_box(:status_ids, {:multiple => true}, sale.id.to_s, nil) %>
+                <%= f.check_box(:status_ids, {:multiple => true, checked: @status_ids.present? && @status_ids.include?(sale.id)}, sale.id.to_s, nil) %>
                 <span class="<%= sale.next.present? && sale.next.length > 2 ? 'text-bold' : '' %>"><%= sale.name %></span>
               <% end %>
             </div>
@@ -102,22 +102,156 @@
           <div class="col-md-2">
             <div class="checkbox" style="position: relative; display: block; overflow: hidden; height: 20px;">
               <%= label_tag do %>
-                <%= f.check_box(:status_ids, {:multiple => true}, other.id.to_s, nil) %>
+                <%= f.check_box(:status_ids, {:multiple => true, checked: @status_ids.present? && @status_ids.include?(other.id)}, other.id.to_s, nil) %>
                 <span class="<%= other.next.present? && other.next.length > 2 ? 'text-bold' : '' %>"><%= other.name %></span>
               <% end %>
             </div>
           </div>
         <% } %>
       </div>
-      <div class="search m-r-20">
-        <button type="button" class="btn-sm blck-btn right" id="download-excel">
+      <div class="col-md-12 m-t-10">
+        <button type="button" class="btn btn-warning pull-right m-l-10" id="download-excel">
           <i class="fa fa-cloud-download"></i>
           <i class="fa fa-file-excel-o"></i>
         </button>
+        <%= f.submit "#{t('controls.button.searching')} (#{@sales.count})", :class => 'btn btn-primary pull-right' %>
       </div>
     <% end %>
   </div>
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box" id="div_list">
+          <div class="box-body table-responsive no-padding table-search">
+            <%= render 'layouts/flash_message' %>
+            <table class="table table-hover table-bordered">
+              <tr>
+                <th>Захиалга бүртгэсэн огноо</th>
+                <th>Бүртгэсэн оператор</th>
+                <th>Утасны дугаар</th>
+                <th>Хаяг</th>
+                <% if @list_type == 0 %>
+                  <th>Барааны нэр</th>
+                  <th>Барааны код</th>
+                  <th>Баркод</th>
+                  <th>Өнгө хэмжээ</th>
+                <% end %>
+                <th>Тоо</th>
+                <th>Барааны үнэ</th>
+                <% if @list_type == 0 %>
+                  <th>Хямдралын хэмжээ</th>
+                <% end %>
+                <th>Ашигласан бонус</th>
+                <th>Төлсөн нийт дүн</th>
+                <th>НӨАТ авах эсэх</th>
+                <th>Статус 1</th>
+                <th>Стаус 2</th>
+                <th>Статус тайлбар</th>
+                <th>Баталсан огноо</th>
+                <th>Баталсан оператор</th>
+                <th>Эргэн холбогдсон хугацаа</th>
+                <th>Хүргэж өгөх огноо</th>
+                <th>Хүргэж өгөх цаг</th>
+                <th>Хүргэсэн хугацаа</th>
+                <th>Хүргэлтийн ажилтан</th>
+                <th>Хэтэрсэн хугацаа (minute)</th>
+              </tr>
+              <% if @list_type == 0 %>
+                <% @product_sales.each do |sale| %>
+                  <% salesman_travel = sale.salesman_travel
+                     len = sale.product_sale_items.length
+                     sale.product_sale_items.each_with_index do |item, index|
+                       feature_item = item.feature_item           %>
+                    <tr>
+                      <% if index == 0 %>
+                        <td rowspan="<%= len %>" class="va-mid">
+                          <div class="no-wrap" class="va-mid"><%= sale.created_at.strftime('%F') %></div>
+                          <div><%= sale.created_at.strftime('%R') %></div>
+                        </td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= sale.created_operator_id.present? ? sale.created_operator.name : '' %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= sale.phone %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= sale.location.address %></td>
+                      <% end %>
+                      <td><%= item.product.n_name %></td>
+                      <td><%= item.product.code %></td>
+                      <td><%= feature_item.barcode %></td>
+                      <td><%= feature_item.name %></td>
+                      <td><%= item.quantity %></td>
+                      <td><%= get_currency_mn item.price %></td>
+                      <td><%= item.discount_price.present? ? get_currency_mn(item.discount_price) : '' %></td>
+                      <% if index == 0 %>
+                        <td rowspan="<%= len %>" class="va-mid"><%= sale.bonus.present? && sale.bonus > 0 ? get_currency_mn(sale.bonus) : '' %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= get_currency_mn sale.sum_price %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= sale.tax.present? ? sale.tax ? 'Тийм' : 'Үгүй' : '' %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= sale.status.name %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= sale.status.previous.present? ? sale.status.previous_status.name : '' %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= sale.status_note %></td>
+                        <% if sale.approved_date.present? %>
+                          <td rowspan="<%= len %>" class="va-mid">
+                            <div class="no-wrap" class="va-mid"><%= sale.approved_date.strftime('%F') %></div>
+                            <div><%= sale.approved_date.strftime('%R') %></div>
+                          </td>
+                        <% else %>
+                          <td rowspan="<%= len %>"></td>
+                        <% end %>
+                        <td rowspan="<%= len %>" class="va-mid"><%= sale.approved_operator_id.present? ? sale.approved_operator.name : '' %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= sale.feedback_period.present? ? sale.feedback_time : '' %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= sale.delivery_start.strftime('%F') %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= sale.delivery_start.strftime('%H') %>
+                          -<%= sale.delivery_end.strftime('%H') %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= salesman_travel.present? && salesman_travel.delivered_at.present? ? salesman_travel.delivered_at.strftime('%F %R') : '' %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= salesman_travel.present? ? salesman_travel.salesman.name : '' %></td>
+                        <td rowspan="<%= len %>" class="va-mid"><%= (salesman_travel.present? && salesman_travel.delivered_at.present? && salesman_travel.delivery_at.present?) ? ApplicationController.helpers.get_minutes(salesman_travel.delivered_at, salesman_travel.delivery_at).to_i : '' %></td>
+                      <% end %>
+                    </tr>
+                  <% end
+                     end %>
+              <% else %>
+                <% @product_sales.each do |sale| %>
+                  <% salesman_travel = sale.salesman_travel %>
+                  <tr>
+                    <td class="va-mid">
+                      <div class="no-wrap" class="va-mid"><%= sale.created_at.strftime('%F') %></div>
+                      <div><%= sale.created_at.strftime('%R') %></div>
+                    </td>
+                    <td class="va-mid"><%= sale.created_operator_id.present? ? sale.created_operator.name : '' %></td>
+                    <td class="va-mid"><%= sale.phone %></td>
+                    <td class="va-mid"><%= sale.location.address %></td>
+                    <td><%= sale.product_sale_items.sum(:quantity) %></td>
+                    <td><%= get_currency_mn sale.product_sale_items.sum(:price) %></td>
+                    <td class="va-mid"><%= sale.bonus.present? && sale.bonus > 0 ? get_currency_mn(sale.bonus) : '' %></td>
+                    <td class="va-mid"><%= get_currency_mn sale.sum_price %></td>
+                    <td class="va-mid"><%= sale.tax.present? ? sale.tax ? 'Тийм' : 'Үгүй' : '' %></td>
+                    <td class="va-mid"><%= sale.status.name %></td>
+                    <td class="va-mid"><%= sale.status.previous.present? ? sale.status.previous_status.name : '' %></td>
+                    <td class="va-mid"><%= sale.status_note %></td>
+                    <% if sale.approved_date.present? %>
+                      <td class="va-mid">
+                        <div class="no-wrap" class="va-mid"><%= sale.approved_date.strftime('%F') %></div>
+                        <div><%= sale.approved_date.strftime('%R') %></div>
+                      </td>
+                    <% else %>
+                      <td></td>
+                    <% end %>
+                    <td class="va-mid"><%= sale.approved_operator_id.present? ? sale.approved_operator.name : '' %></td>
+                    <td class="va-mid"><%= sale.feedback_period.present? ? sale.feedback_time : '' %></td>
+                    <td class="va-mid"><%= sale.delivery_start.strftime('%F') %></td>
+                    <td class="va-mid"><%= sale.delivery_start.strftime('%H') %>
+                      -<%= sale.delivery_end.strftime('%H') %></td>
+                    <td class="va-mid"><%= salesman_travel.present? && salesman_travel.delivered_at.present? ? salesman_travel.delivered_at.strftime('%F %R') : '' %></td>
+                    <td class="va-mid"><%= salesman_travel.present? ? salesman_travel.salesman.name : '' %></td>
+                    <td class="va-mid"><%= (salesman_travel.present? && salesman_travel.delivered_at.present? && salesman_travel.delivery_at.present?) ? ApplicationController.helpers.get_minutes(salesman_travel.delivered_at, salesman_travel.delivery_at).to_i : '' %></td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </table>
+          </div>
+        </div>
 
+        <%= paginate @product_sales %>
+      </div>
+    </div>
+  </section>
 </div>
 <%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'start', finish_id: 'finish' %>
 <script type="text/javascript" charset="utf-8">

@@ -128,6 +128,75 @@ module API
             end
           end
         end
+
+        resource :product do
+          resource :scan do
+            desc "POST sales/product/scan"
+            params do
+              requires :barcode, type: String
+            end
+            post do
+              feature_item = ProductFeatureItem.find_by_barcode(params[:barcode])
+              if feature_item.present?
+                product_locations = ProductLocation.get_quantity(feature_item.id)
+
+                present :feature_item, feature_item, with: API::USER::Entities::ProductFeatureItem
+                present :product_locations, product_locations, with: API::USER::Entities::ProductLocation
+              else
+                error!("Couldn't find data", 422)
+              end
+            end
+          end
+        end
+
+        resource :transfer do
+          resource :by_salesman do
+            desc "POST sales/transfer/by_salesman"
+            params do
+              requires :date, type: DateTime
+            end
+            post do
+              warehouse_locs = ProductWarehouseLoc.date_by_load_at(params[:date])
+              present :salesmen, warehouse_locs, with: API::USER::Entities::TransferHistoryBySalesman
+            end
+          end
+
+          resource :salesman_product do
+            desc "POST sales/transfer/salesman_product"
+            params do
+              requires :salesman_id, type: Integer
+              requires :date, type: DateTime
+            end
+            post do
+              warehouse_locs = ProductWarehouseLoc.salesman_with_date(params[:salesman_id], params[:date])
+              present :products, warehouse_locs, with: API::USER::Entities::ProductWarehouseUserSign
+            end
+          end
+
+          resource :return do
+            desc "POST sales/transfer/return"
+            params do
+              requires :date, type: DateTime
+            end
+            post do
+              salesman_returns = SalesmanReturn.date_by_quantity(params[:date])
+              present :salesmen, salesman_returns, with: API::USER::Entities::TransferHistoryBySalesman
+            end
+          end
+
+          resource :return_product do
+            desc "POST sales/transfer/return_product"
+            params do
+              requires :salesman_id, type: Integer
+              requires :date, type: DateTime
+            end
+            post do
+              salesman_returns = SalesmanReturn.salesman_with_date(params[:salesman_id], params[:date])
+              present :products, salesman_returns, with: API::USER::Entities::SalesmanReturnUserSign
+            end
+          end
+
+        end
       end
     end
   end

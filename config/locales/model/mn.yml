@@ -109,6 +109,14 @@ mn:
         cash: Бэлнээр
         account: Дансаар
         mixed: Данс+Бэлнээр
+      source:
+        sr_comment: Коммент
+        sr_operator: Оператор
+        sr_web: Веб
+    product_sale_call:
+      source:
+        sr_comment: Коммент
+        sr_operator: Оператор
     user_permission_rel:
       role:
         is_read: Харах
@@ -182,6 +190,7 @@ mn:
       operator: Оператор
       saleman: Түгээгч
       location: Байршил
+      location_zone: Бүс
       loc_district: Дүүрэг/аймаг
       loc_khoroo: Хороо/сум
       product_category: Ангилал
@@ -218,7 +227,7 @@ mn:
       bank_account: Харилцахын данс
       bank_dealing_account: Харьцах данс
       sale_tax: ebarimt
-      salesman_travel: Түгээлт
+      salesman_travel: Хуваарилалт
       bonu: Бонус
       shipping_er: Үйлдвэр-Эрээн тээвэрлэлт
       shipping_ub: Эрээн-УБ тээвэрлэлт
@@ -284,6 +293,9 @@ mn:
       loc_khoroo:
         loc_district: Дүүрэг/аймаг
         loc_district_id: Дүүрэг/аймаг
+        name: Нэр
+        queue: Дараалал
+      location_zone:
         name: Нэр
         queue: Дараалал
       product_category:
@@ -591,7 +603,7 @@ mn:
         location_id: Байршил
         country: Орон нутаг
         building_code: Орцны код
-        loc_note: Давхар, тоот
+        loc_note: Хаяг нэмэлт
         delivery_date: Хүргэсэн огноо
         payment_delivery: Хүргэлтийн төлбөр
         money: Төлбөрийн хэлбэр
@@ -775,6 +787,13 @@ mn:
         bonus_phones: Утас
       bonus_phone:
         phone: Утас
+      salesman_travel:
+        created_at: Хувиарласан огноо
+        number: Дугаар
+        operator_id: Хувиарлалтын ажилтан
+        description: Тайлбар
+        salesman_id: Хүргэлтийн ажилтан
+        salesman_travel_routes: Хувиарлах захиалгын тоо
     errors:
       messages:
         blank: " хоосон байна!"

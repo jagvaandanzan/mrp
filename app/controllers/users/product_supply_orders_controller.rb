@@ -157,11 +157,18 @@ class Users::ProductSupplyOrdersController < Users::BaseController
   def to_product
     product = @product_supply_order.products.first
     if product.present? && product.draft
-      product.update_column(:draft, false)
-      product.sync_web('post')
-      ProductPackage.create(product: product)
+      quantity = @product_supply_order.supply_features.sum(:quantity)
+      income_product_quantity = ProductIncomeProduct.by_product(product.id).sum(:quantity)
+      if quantity == income_product_quantity
+        product.update_column(:draft, false)
+        product.sync_web('post')
+        ProductPackage.create(product: product)
 
-      redirect_to edit_users_product_path(product, tab_index: 0)
+        redirect_to edit_users_product_path(product, tab_index: 0)
+      else
+        flash[:alert] = "Захиалга орлогод авч дуусаагүй байна!"
+        redirect_to action: :show, id: @product_supply_order.id
+      end
     else
       redirect_to action: 'index'
     end

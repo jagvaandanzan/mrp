@@ -20,7 +20,7 @@ module API
       end
 
       class ProductSaleItem < Grape::Entity
-        expose :id, :quantity, :to_see, :price, :sum_price, :bought_at, :bought_quantity, :product_name, :product_image, :product_feature, :back_quantity
+        expose :id, :product_id, :quantity, :to_see, :price, :sum_price, :bought_at, :bought_quantity, :product_name, :product_image, :product_feature, :back_quantity
       end
 
       class ProductSaleReturn < Grape::Entity
@@ -40,7 +40,7 @@ module API
       end
 
       class ProductSale < Grape::Entity
-        expose :id, :phone, :status_name, :money, :paid, :sum_price, :loc_note, :building_code
+        expose :id, :phone, :delivery_hour, :status_name, :status_note, :money, :paid, :sum_price, :loc_note, :building_code
         expose :product_sale_items, using: API::SALESMAN::Entities::ProductSaleItemBarCode
         expose :product_sale_returns, using: API::SALESMAN::Entities::ProductSaleReturn
       end

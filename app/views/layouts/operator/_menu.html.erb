@@ -12,10 +12,10 @@
           <i class="fa fa-shopping-cart"></i><span><%= t('titles.product_sales') %></span>
         <% end %>
       <% end %>
-      <% if can? :manage, :distributing %>
-        <%= content_tag :li, class: controller_name == 'distributing' ? 'active' : '' do %>
-          <%= link_to operators_distributing_index_path do %>
-            <i class="fa fa-car"></i><span><%= t('titles.distributing') %></span>
+      <% if can? :manage, SalesmanTravel %>
+        <%= content_tag :li, class: controller_name == 'salesman_travels' ? 'active' : '' do %>
+          <%= link_to zone_operators_salesman_travels_path do %>
+            <i class="fa fa-car"></i><span><%= t('activerecord.models.salesman_travel') %></span>
           <% end %>
         <% end %>
       <% end %>
@@ -84,6 +84,13 @@
         <%= content_tag :li, class: (controller_name == 'loc_districts' || controller_name == 'loc_khoroos' || controller_name == 'locations') ? 'active' : '' do %>
           <%= link_to operators_loc_districts_path do %>
             <i class="fa fa-map-marker"></i><span><%= t('activerecord.models.location') %></span>
+          <% end %>
+        <% end %>
+      <% end %>
+      <% if can? :read, LocationZone %>
+        <%= content_tag :li, class: controller_name == 'location_zones' ? 'active' : '' do %>
+          <%= link_to operators_location_zones_path do %>
+            <i class="fa fa-square-o"></i><span><%= t('activerecord.models.location_zone') %></span>
           <% end %>
         <% end %>
       <% end %>

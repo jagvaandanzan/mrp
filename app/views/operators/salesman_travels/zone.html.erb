@@ -1,0 +1,186 @@
+<% provide :head_tags do %>
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_KEY'] %>&libraries=geometry"></script>
+<% end %>
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<style>
+  .zone {
+    padding: 0
+  }
+
+  .zone td {
+    font-size: 12px;
+    border-bottom: 1px solid #f4f4f4;
+    padding: 2px 4px;
+  }
+
+  .zone tr:hover {
+    background-color: lightgrey;
+  }
+
+  .zone input {
+    margin-left: 4px;
+  }
+
+  .zone .text {
+    padding-left: 4px;
+    line-height: 14px;
+  }
+</style>
+<script>
+    let zone_paths = [], zone_ids = [];
+</script>
+<div class="content-wrapper">
+  <div class="col-md-12 m-t-10 m-b-10">
+    <div class="col-md-3 search"></div>
+    <div class="col-md-3 search"></div>
+    <div class="col-md-3 search"></div>
+    <div class="col-md-3 search">
+      <%= button_tag 'Хувиарлах', type: 'button', class: 'btn-sm btn-warning pull-right m-l-10', id: 'to_travel' %>
+      <%= link_to map_operators_salesman_travels_path do %>
+        <%= button_tag 'Газрын зураг', type: 'button', class: 'btn-sm btn-info pull-right m-l-10' %>
+      <% end %>
+      <%= link_to operators_salesman_travels_path do %>
+        <%= button_tag 'Жагсаалт', type: 'button', class: 'btn-sm btn-primary pull-right' %>
+      <% end %>
+    </div>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row" style="padding-left: 15px">
+      <% @zones.each_with_index {|zone, index| %>
+        <div class="col-md-3" style="padding-left: 0">
+          <div class="box box-primary">
+            <div class="box-header with-border" style="padding: 6px 10px">
+              <h3 class="box-title" style="font-size: 16px"><%= zone.name %></h3>
+            </div>
+            <div class="box-body zone">
+              <table id="zone-<%= zone.id %>" zone="<%= zone.id %>"></table>
+            </div>
+          </div>
+        </div>
+        <script>
+            zone_paths[<%= index %>] = [{lat: <%= zone.lat_l_t %>, lng: <%= zone.lng_l_t %>},
+                {lat: <%= zone.lat_l_b %>, lng: <%= zone.lng_l_b %>},
+                {lat: <%= zone.lat_r_b %>, lng: <%= zone.lng_r_b %>},
+                {lat: <%= zone.lat_r_t %>, lng: <%= zone.lng_r_t %>}];
+            zone_ids[<%= index %>] = <%= zone.id %>;
+        </script>
+      <% } %>
+      <div class="col-md-3" style="padding-left: 0">
+        <div class="box box-warning">
+          <div class="box-header with-border" style="padding: 6px 10px">
+            <h3 class="box-title" style="font-size: 16px">Бусад</h3>
+          </div>
+          <div class="box-body zone">
+            <table id="zone-0" zone="0"></table>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3" style="padding-left: 0">
+        <div class="box box-info">
+          <div class="box-header with-border" style="padding: 6px 10px">
+            <h3 class="box-title" style="font-size: 16px">Хүсэлт илгээсэн ажилтан</h3>
+          </div>
+          <div class="box-body zone">
+            <table id="salesman_requests" class="table-bordered table">
+              <tr>
+                <td>Хүсэлт илгээсэн огноо</td>
+                <td>Ажилтны нэр</td>
+              </tr>
+              <% @salesman_requests.each {|req| %>
+                <tr id="salesman-<%= req.salesman_id %>">
+                  <td><%= req.created_at.strftime('%F %R') %></td>
+                  <td><%= req.salesman.name %></td>
+                </tr>
+              <% } %>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<%= render 'shared/form_modal', title: 'Захиалга хувиарлалт', modal_class: 'modal-lg' %>
+<script>
+    $('body').addClass('sidebar-collapse');
+
+    function append_zone(lat, lng, sale_id, phone, location, time, allocation_type) {
+        let zone_id = 0;
+        for (let i = 0; i < zone_ids.length; i++) {
+            if (inside_polygon(lat, lng, zone_paths[i])) {
+                zone_id = zone_ids[i];
+                break;
+            }
+        }
+        $('table#zone-' + zone_id).hide()
+            .append("<tr class='sale-" + sale_id + "'><td rowspan='2'><input type='checkbox' id='" + sale_id + "'></td>" +
+                "<td rowspan='2' class='text'>" + location + "</td>" +
+                "<td class='no-border'><small class='label label-" + allocation_type + "'><i class='fa fa-clock-o'></i> " + time + "</small></td>" +
+                "</tr><tr class='sale-" + sale_id + "'><td>" + phone + "</td></tr>")
+            .show('normal');
+    }
+
+    function inside_polygon(lat, lng, path) {
+        return google.maps.geometry.poly.containsLocation(
+            new google.maps.LatLng(lat, lng),
+            new google.maps.Polygon({paths: path})
+        );
+    }
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
+
+    function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+    }
+
+    $(document).ready(function () {
+        App.order = App.cable.subscriptions.create("SalesmanTravelChannel", {
+            connected: function () {
+            },
+            disconnected: function () {
+            },
+            received: function (data) {
+                if (data['obj_type'] === "sale") {
+                    append_zone(data['latitude'], data['longitude'], data['sale_id'], data['phone'], data['name'], data['delivery_hour'], data['allocation_type'])
+                } else {
+                    $('table#salesman_requests').hide()
+                        .append("<tr id='salesman-" + data['salesman_id'] + "'>" +
+                            "<td>" + data['created_at'] + "</td>" +
+                            "<td>" + data['salesman_name'] + "</td></tr>")
+                        .show('normal');
+                }
+            }
+        });
+        <% @product_sales.each { |sale|
+        location = sale.location %>
+        append_zone(<%= location.latitude %>, <%=location.longitude %>, <%= sale.id %>, <%= sale.phone %>, "<%= location.full_name %>", "<%= sale.delivery_hour %>", "<%= sale.allocation_type %>");
+        <% } %>
+
+        $('#to_travel').on('click', function () {
+            let sale_ids = [], z_ids = [];
+            $(".zone input").each(function () {
+                if ($(this).prop('checked')) {
+                    sale_ids.push($(this).attr('id'));
+                    z_ids.push($(this).parent().parent().parent().attr('zone'));
+                }
+            });
+            if (sale_ids.length > 0) {
+                $('#form_modal').modal('show');
+                $('#form_modal_body').html("<div class='text-center'><img src='/images/loading.gif'></div>");
+                Rails.ajax({
+                    url: "<%= new_operators_salesman_travel_path %>",
+                    type: "GET",
+                    data: "sale_ids=" + sale_ids + "&zone_ids=" + z_ids.filter(onlyUnique) + "&allocation=zone"
+                });
+            } else {
+                alert("Захиалга сонгоно уу!");
+            }
+        });
+    });
+</script>
