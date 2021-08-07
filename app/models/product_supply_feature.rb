@@ -122,14 +122,22 @@ class ProductSupplyFeature < ApplicationRecord
     items
   }
 
+  scope :receipt, ->(code) {
+    items = joins(:product_income)
+    items = items.joins(:product_income_items)
+    items = items.joins(:product_income_products)
+    items = items.where("product_income_items.calculated IS NULL")
+    items = items.where('product_income_product.id LIKE :value', value: "%#{code}%") if code.present?
+    items
+  }
+
   scope :shipping_ub, ->{
     joins(:shipping_ub)
       .pluck("shipping_ubs.id")
   }
 
   scope :by_calc_nil, ->(is_nil) {
-    joins(:order_item)
-      .where("product_income_items.calculated IS#{is_nil == "true" ? '' : ' NOT'} ?", nil)
+      where("product_income_items.calculated IS#{is_nil == "true" ? '' : ' NOT'} ?", nil)
   }
 
   scope :by_clarify, ->(clarify) {

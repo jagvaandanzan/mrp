@@ -106,13 +106,12 @@
                 cost_sample_c = ShippingUbSample.by_calc_nil("false").cost(shipping_ub_ids).pluck("shipping_ub_samples.per_cost * product_income_items.quantity").sum
                 # income_products = ProductSupplyFeature.by_date(@by_start, @by_end).in_ub
                 # income_items = ProductSupplyFeature.by_date(@by_start, @by_end).in_ub
-
-                 sum_supply_feature_cost_n = @in_ub_x.by_calc_nil("true").pluck("product_supply_features.price_lo * product_income_items.quantity").sum
-                 sum_supply_feature_cost_c = @in_ub_x.by_calc_nil("false").pluck("product_supply_features.price_lo * product_income_items.quantity").sum
-                 sum_shipping_er_cost_n = @in_ub_x.by_calc_nil("true").group("shipping_er_products.id").pluck("shipping_er_products.cost").sum
-                 sum_shipping_er_cost_c = @in_ub_x.by_calc_nil("false").group("shipping_er_products.id").pluck("shipping_er_products.cost").sum
-                 sum_shipping_ub_n = @in_ub_x.by_calc_nil("true").group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum + cost_sample_n
-                 sum_shipping_ub_c = @in_ub_x.by_calc_nil("false").group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum + cost_sample_c
+                 sum_supply_feature_cost_n = ProductIncomeProduct.by_supply_order(@income_products_n.pluck("product_income_products.product_supply_order_id")).pluck("product_income_products.quantity * product_income_products.unit_price").sum(&:to_f)
+                 sum_supply_feature_cost_c = ProductIncomeProduct.by_supply_order(@income_products_c.pluck("product_income_products.product_supply_order_id")).pluck("product_income_products.quantity * product_income_products.unit_price").sum(&:to_f)
+                 sum_shipping_er_cost_n = @in_ub_x.by_calc_nil("true").group("shipping_er_products.id").pluck("shipping_er_products.cost").sum + ProductIncomeProduct.by_supply_order(@income_products_n.pluck("product_income_products.product_supply_order_id")).supply_order.pluck(:cost).sum(&:to_f)
+                 sum_shipping_er_cost_c = @in_ub_x.by_calc_nil("false").group("shipping_er_products.id").pluck("shipping_er_products.cost").sum + ProductIncomeProduct.by_supply_order(@income_products_c.pluck("product_income_products.product_supply_order_id")).supply_order.pluck(:cost).sum(&:to_f)
+                 sum_shipping_ub_n = @in_ub_x.by_calc_nil("true").group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum + ProductIncomeProduct.by_supply_order(@income_products_n.pluck("product_income_products.product_supply_order_id")).supply_order.pluck("product_incomes.cargo_price").sum(&:to_f)
+                 sum_shipping_ub_c = @in_ub_x.by_calc_nil("false").group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum + ProductIncomeProduct.by_supply_order(@income_products_c.pluck("product_income_products.product_supply_order_id")).supply_order.pluck("product_incomes.cargo_price").sum(&:to_f)
                  cost = ProductSupplyOrderItem.by_supply_id(cost_ids).pluck(:cost).sum
                  # cost += ShippingErProduct.by_order_id(cost_ids).pluck(:cost).sum
                  cost += ShippingUbProduct.by_order_id(cost_ids).pluck(:cost).sum
