@@ -4,6 +4,7 @@ class ProductIncome < ApplicationRecord
   has_many :product_income_items, dependent: :destroy
   has_many :product_income_products, dependent: :destroy
   has_many :shipping_ub_samples, through: :product_income_products
+  has_many :supply_feature, through: :product_income_items
 
   accepts_nested_attributes_for :product_income_items, allow_destroy: true
   accepts_nested_attributes_for :product_income_products, allow_destroy: true
@@ -18,6 +19,14 @@ class ProductIncome < ApplicationRecord
     order(income_date: :desc)
   }
 
+  scope :search_receipt, ->(code, start, finish) {
+    items = income_date_desc
+    items = items.joins(:supply_feature)
+    items = items.where('id LIKE :value', value: "%#{code}%") if code.present?
+    items = items.where('? <= product_supply_features.created_at AND product_supply_features.created_at <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items
+  }
+
   scope :search, ->(code, start, finish) {
     items = income_date_desc
     items = items.where('id LIKE :value', value: "%#{code}%") if code.present?
@@ -27,6 +36,10 @@ class ProductIncome < ApplicationRecord
 
   def sum_quantity
     product_income_products.sum(:quantity)
+  end
+
+  def sum_cargo
+    product_income_products.sum(:cargo)
   end
 
   def cargo_per

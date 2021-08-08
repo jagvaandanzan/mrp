@@ -12,6 +12,10 @@ class ShippingUbSample < ApplicationRecord
     where(shipping_ub_id: ids)
   }
 
+  scope :by_shipping_ids, ->(ids){
+    where("id IN (?)", ids)
+  }
+
   scope :cost, ->(ids){
     joins(:product_income_items)
       .where("shipping_ub_id IN (?)", ids)
