@@ -16,11 +16,11 @@ module API
             return_signs = SalesmanReturnSign.by_salesman(salesman.id)
                                .by_user(nil)
             if return_signs.present?
-              [422, I18n.t('errors.messages.return_request_not_confirmed')]
+              error!(I18n.t('errors.messages.return_request_not_confirmed'), 422)
             else
               sale_items = ProductSaleItem.sale_available(salesman.id)
               if sale_items.present?
-                [422, I18n.t('errors.messages.you_have_a_balance')]
+                error!(I18n.t('errors.messages.you_have_a_balance'), 422)
               else
                 yesterday = Time.current.yesterday.beginning_of_day
                 income_ordered = salesman.income_ordered(yesterday)
