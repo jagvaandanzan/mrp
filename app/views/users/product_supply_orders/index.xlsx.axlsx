@@ -157,7 +157,45 @@ code = 0
        end
     end
 end
-sheet.add_row [
-             '','','','','','','','','','','','','','','','','','','','','','',''
-             ],:style=>above
+
+supply_order_ids = @product_supply_orders_x.pluck(:id)
+order_item_ids = ProductSupplyOrderItem.by_supply_id(supply_order_ids).pluck(:id)
+quantity = ProductSupplyFeature.by_order_item(order_item_ids).sum(:quantity)
+quantity_lo = ProductIncomeItem.by_feature_ids(ProductSupplyFeature.by_order_item(order_item_ids).pluck(:id)).sum(:quantity)
+sum_price = ProductSupplyFeature.by_order_item(order_item_ids).sum(:sum_price)
+sum_price_lo = ProductSupplyFeature.by_order_item(order_item_ids).sum(:sum_price_lo)
+quantity_log = ProductSupplyFeature.by_order_item(order_item_ids).sum(:quantity_lo)
+cost_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:cost)
+quantity_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:quantity)
+cargo_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:cargo)
+cost_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:cost)
+quantity_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:quantity)
+cargo_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:cargo)
+sum_cost = cost_er + cost_ub
+
+sheet.add_row [ "Нийт: " + @product_supply_orders_x.count.to_s,
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                quantity.to_s + "/" + quantity_lo.to_s,
+                sum_price,
+                '',
+                '',
+                quantity_log,
+                sum_price_lo,
+                '',
+                '',
+                cost_er,
+                quantity_er,
+                cargo_er,
+                '',
+                cost_ub,
+                quantity_ub,
+                cargo_ub,
+                sum_cost,
+                ''
+                ],:style=>default
 end

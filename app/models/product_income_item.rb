@@ -78,6 +78,11 @@ class ProductIncomeItem < ApplicationRecord
     where(product_id: product_id)
         .where("supply_feature_id IN (?)", feature_ids)
   }
+
+  scope :by_feature_ids, ->(feature_ids) {
+      where("supply_feature_id IN (?)", feature_ids)
+  }
+
   scope :by_product_feature_id, ->(product_id, feature_id) {
     where(product_id: product_id)
       .where("supply_feature_id = ?", feature_id)
