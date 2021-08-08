@@ -22,6 +22,10 @@ default = sheet.styles.add_style(
 none = sheet.styles.add_style(
 :alignment=>{:horizontal => :center, :vertical => :center})
 
+sides = sheet.styles.add_style(
+{ :border => { :style => :thin, :color=> "000000", :edges => [:left, :right] },
+:alignment=>{:horizontal => :center, :vertical => :center}})
+
 below = sheet.styles.add_style(
 { :border => { :style => :thin, :color=> "000000", :edges => [:top, :left, :right] },
 :alignment=>{:horizontal => :center, :vertical => :center}})
@@ -34,6 +38,38 @@ warning = sheet.styles.add_style(
 :border=>Axlsx::STYLE_THIN_BORDER,
 :alignment=>{:horizontal => :left, :vertical => :center})
 
+sheet.add_row [
+'Барааны мэдээлэл',
+'',
+'',
+'',
+'',
+'',
+'',
+'',
+'',
+'',
+'Худалдан авсан',
+'',
+'',
+'',
+'Эрээнд ирсэн',
+'',
+'',
+'',
+'УБ-луу ачуулсан',
+'',
+'',
+'',
+'Орлого',
+'',
+],:style=>title
+
+sheet.merge_cells sheet.rows.last.cells[(0..9)]
+sheet.merge_cells sheet.rows.last.cells[(10..13)]
+sheet.merge_cells sheet.rows.last.cells[(14..17)]
+sheet.merge_cells sheet.rows.last.cells[(18..21)]
+sheet.merge_cells sheet.rows.last.cells[(22..24)]
 
 # Create the header row
 sheet.add_row [
@@ -59,6 +95,7 @@ t('activerecord.attributes.product_supply_order_item.shipping_ub_date'),
 t('titles.cost'),
 t('activerecord.attributes.product_supply_order_item.shipping_products'),
 t('titles.cargo'),
+'Нийт зардал',
 t('activerecord.attributes.product_income.income_date'),
 ],:style=>title
 
@@ -110,9 +147,10 @@ code = 0
                 i.code == code ? '' : costsUB,
                 supply_feature.shipping_ub_features.quantity(supply_feature.id),
                 i.code == code ? '' : cargoUB,
+                i.code == code ? '' : costs + costsUB,
                 product_income_product.present? ? product_income_product.first.product_income.income_date.strftime('%F') : ''
                 ],
-                    style:[default,default,default,default,default,default,default,default,default,default,default,default,default,default,default,count > 1 ? i.code == var ? none : below : below,default,count > 1 ? i.code == var ? none : below : below,default,count > 1 ? i.code == var ? none : below : below,default,count > 1 ? i.code == var ? none : below : below,default]
+                    style:[default,default,default,default,default,default,default,default,default,default,default,default,default,default,default,count > 1 ? i.code == var ? none : below : below,default,count > 1 ? i.code == var ? none : below : below,default,count > 1 ? i.code == var ? none : below : below,default,count > 1 ? i.code == var ? none : below : below,count > 1 ? i.code == var ? sides : below : below,default]
                 item = order_item.supply_features
                 code = i.code
           end

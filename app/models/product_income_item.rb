@@ -50,6 +50,16 @@ class ProductIncomeItem < ApplicationRecord
     items
   }
 
+  scope :receipt, ->(code, start, finish) {
+    items = joins(:product_income)
+    items = items.joins(:supply_feature)
+    items = items.joins(:product_income_product)
+    items = items.where(calculated: nil)
+    items = items.where('product_income_product.id LIKE :value', value: "%#{code}%") if code.present?
+    items = items.where('? <= product_supply_features.updated_at AND product_supply_features.updated_at <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items
+  }
+
   scope :income_date_desc, -> {
     order(created_at: :desc)
   }
@@ -116,12 +126,21 @@ class ProductIncomeItem < ApplicationRecord
         .pluck("product_supply_features.price_lo * product_income_items.quantity")
         .sum(&:to_f)
   }
+
+  scope :supply_feature_cost, ->() {
+      pluck("product_supply_features.price_lo * product_income_items.quantity")
+      .sum(&:to_f)
+  }
   scope :by_clarify, ->(clarify) {
     where("product_income_items.clarify = ?", clarify)
   }
 
   scope :by_income_product_id, -> (income_product_id){
     where("product_income_items.product_income_product_id in (?)", income_product_id)
+  }
+
+  scope :quantity, ->(){
+    sum(:quantity)
   }
 
   def get_balance

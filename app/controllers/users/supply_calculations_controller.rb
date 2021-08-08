@@ -1,4 +1,19 @@
 class Users::SupplyCalculationsController < Users::BaseController
+  def income_products
+    @by_start = params[:by_start]
+    @by_end = params[:by_end]
+    @by_nil = params[:by_nil]
+    @income_products = ProductIncomeProduct.in_ub(@by_start, @by_end)
+                                           .by_calc_nil(@by_nil)
+                                           .group("product_income_products.id")
+                                           .date_desc
+                                           .order(product_supply_order_id: :asc)
+                                           .page(params[:page])
+    @in_ub_x = ProductSupplyFeature
+                 .by_date(@by_start, @by_end)
+                 .in_ub
+                 .by_calc_nil(@by_nil)
+  end
 
   def supply_orders
     month_1 = Time.current.beginning_of_month
@@ -8,6 +23,21 @@ class Users::SupplyCalculationsController < Users::BaseController
     @ub_products_x = ProductSupplyFeature.by_date(@by_start, @by_end).ship_ub
     @er_products_x = ProductSupplyFeature.by_date(@by_start, @by_end).received_er
     @in_ub_x = ProductSupplyFeature.by_date(@by_start, @by_end).in_ub
+    @income_products_n = ProductIncomeProduct.in_ub(@by_start, @by_end)
+                                           .by_calc_nil("true")
+                                           .group("product_income_products.id")
+                                           .date_desc
+                                           .page(params[:page])
+    @income_products_c = ProductIncomeProduct.in_ub(@by_start, @by_end)
+                                             .by_calc_nil("false")
+                                             .group("product_income_products.id")
+                                             .date_desc
+                                             .page(params[:page])
+    @income_products = ProductIncomeProduct.in_ub(@by_start, @by_end)
+                                           .by_calc_nil(@by_nil)
+                                           .group("product_income_products.id")
+                                           .date_desc
+                                           .page(params[:page])
   end
 
   def purchased_er
@@ -89,20 +119,6 @@ class Users::SupplyCalculationsController < Users::BaseController
     end
   end
 
-  def income_products
-    @by_start = params[:by_start]
-    @by_end = params[:by_end]
-    @by_nil = params[:by_nil]
-    @income_products = ProductIncomeProduct.in_ub(@by_start, @by_end)
-                           .by_calc_nil(@by_nil)
-                           .group("product_income_products.id")
-                           .date_desc
-                           .page(params[:page])
-    @in_ub_x = ProductSupplyFeature
-                 .by_date(@by_start, @by_end)
-                 .in_ub
-                 .by_calc_nil(@by_nil)
-  end
 
   def for_invoice
     month_1 = Time.current.beginning_of_month
@@ -111,6 +127,9 @@ class Users::SupplyCalculationsController < Users::BaseController
     @by_code = params[:by_code]
     @product_incomes = ProductIncome.search(@by_code, @by_start, @by_end)
                                    .page(params[:page])
+    @product = ProductSupplyFeature.by_date(@by_start, @by_end)
+                                   .receipt(@by_code)
+                                .page(params[:page])
   end
 
   def set_all_calculated
