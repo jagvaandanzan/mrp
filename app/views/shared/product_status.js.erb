@@ -1,5 +1,5 @@
 <% if @list.present? %>
-$('#<%= @select_id %>').val(<%= @id %>);
+$('#<%= @select_id %>').val("");
 $('#div_status_sub').removeClass('none')
     .find('select').html("<%= escape_javascript options_for_select @list.all.collect{|l| [l.name, l.id]}.insert(0, [t('controls.select.all'),""])  %>").selectpicker("refresh");
 <% else %>

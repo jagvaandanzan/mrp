@@ -1,6 +1,6 @@
 <% product_supply_features.each_with_index {|supply_feature, index|
   feature_item = supply_feature.feature_item %>
-  <tr class="nested-fields<%= index == 0 ? ' product' : '' %>" product_id=<%= supply_feature.product_id %>>
+  <tr class="nested-fields">
     <% if index == 0
          supply_order = supply_feature.order_item.product_supply_order
          product = supply_feature.product %>

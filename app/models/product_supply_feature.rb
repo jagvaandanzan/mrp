@@ -35,7 +35,7 @@ class ProductSupplyFeature < ApplicationRecord
     before_update :set_sum_price_lo
   end
 
-  scope :find_to_er, ->(order_type, product_id = nil, by_code, by_product_name, product_ids) {
+  scope :find_to_er, ->(order_type, product_id = nil, by_code, by_product_name) {
     items = left_joins(:shipping_er_features)
                 .left_joins(:order_item)
     items = items.left_joins(:product_supply_order) unless order_type.nil?
@@ -44,7 +44,6 @@ class ProductSupplyFeature < ApplicationRecord
                 .having("SUM(shipping_er_features.quantity) IS NULL OR SUM(shipping_er_features.quantity) < product_supply_features.quantity_lo") # хэд хэд тасалж авсан тохиолдлыг шалгаж байна
                 .select("product_supply_features.*, #{order_type.nil? ? '' : 'product_supply_orders.code as order_code, '}product_supply_features.quantity_lo - IFNULL(SUM(shipping_er_features.quantity), 0) as remainder")
     items = items.where(product_id: product_id) unless product_id.nil?
-    items = items.where("product_supply_features.product_id NOT IN (?)", product_ids.split(',').map(&:to_i)) if product_ids.present?
     items = items.where("product_supply_orders.order_type = ?", order_type) unless order_type.nil?
     items = items.where('product_supply_orders.code LIKE :value', value: "%#{by_code}%") if by_code.present?
     items = items.left_joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{by_product_name}%") if by_product_name.present?
@@ -52,7 +51,7 @@ class ProductSupplyFeature < ApplicationRecord
     items
   }
 
-  scope :find_to_income, ->(order_type, product_id = nil, by_code, by_product_name, product_ids) {
+  scope :find_to_income, ->(order_type, product_id = nil, by_code, by_product_name) {
     items = left_joins(:product_income_items)
                 .left_joins(:order_item)
     items = items.left_joins(:product_supply_order) unless order_type.nil?
@@ -61,7 +60,6 @@ class ProductSupplyFeature < ApplicationRecord
                 .having("SUM(product_income_items.quantity) IS NULL OR SUM(product_income_items.quantity) < product_supply_features.quantity_lo") # хэд хэд тасалж авсан тохиолдлыг шалгаж байна
                 .select("product_supply_features.*, #{order_type.nil? ? '' : 'product_supply_orders.code as order_code, '}product_supply_features.quantity_lo - IFNULL(SUM(product_income_items.quantity), 0) as remainder")
     items = items.where(product_id: product_id) unless product_id.nil?
-    items = items.where("product_supply_features.product_id NOT IN (?)", product_ids.split(',').map(&:to_i)) if product_ids.present?
     items = items.where("product_supply_orders.order_type = ?", order_type) unless order_type.nil?
     items = items.where('product_supply_orders.code LIKE :value', value: "%#{by_code}%") if by_code.present?
     items = items.left_joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{by_product_name}%") if by_product_name.present?
@@ -70,47 +68,47 @@ class ProductSupplyFeature < ApplicationRecord
   }
 
 
-  scope :purchased_er, -> {
+  scope :purchased_er, ->{
     items = joins(:product_supply_order)
-                .where("product_supply_orders.status = 2")
+                 .where("product_supply_orders.status = 2")
     items = items.left_joins(:shipping_er_features)
-                .where("shipping_er_features.supply_feature_id IS NULL")
+              .where("shipping_er_features.supply_feature_id IS NULL")
     items = items.left_joins(:product_income_items)
-                .where("product_income_items.supply_feature_id IS NULL")
+              .where("product_income_items.supply_feature_id IS NULL")
     items = items.joins(:order_item)
-                .where("product_supply_features.quantity_lo IS NOT NULL AND product_supply_features.price_lo IS NOT NULL AND product_supply_features.sum_price_lo IS NOT NULL AND product_supply_features.note_lo IS NOT NULL")
+                 .where("product_supply_features.quantity_lo IS NOT NULL AND product_supply_features.price_lo IS NOT NULL AND product_supply_features.sum_price_lo IS NOT NULL AND product_supply_features.note_lo IS NOT NULL")
     items
   }
 
-  scope :received_er, -> {
+  scope :received_er, ->{
     items = joins(:shipping_er_features)
     items = items.left_joins(:shipping_ub_features)
-                .where("shipping_ub_features.supply_feature_id IS NULL")
+                 .where("shipping_ub_features.supply_feature_id IS NULL")
     items = items.joins(:shipping_er_product)
     items = items.left_joins(:product_income_items)
-                .where("product_income_items.supply_feature_id IS NULL")
+                 .where("product_income_items.supply_feature_id IS NULL")
     items = items.joins(:order_item)
-                .where("product_supply_features.quantity_lo IS NOT NULL AND product_supply_features.price_lo IS NOT NULL AND product_supply_features.sum_price_lo IS NOT NULL AND product_supply_features.note_lo IS NOT NULL")
+              .where("product_supply_features.quantity_lo IS NOT NULL AND product_supply_features.price_lo IS NOT NULL AND product_supply_features.sum_price_lo IS NOT NULL AND product_supply_features.note_lo IS NOT NULL")
     items = items.joins(:product_supply_order)
-                .where("product_supply_orders.status = 2")
+              .where("product_supply_orders.status = 2")
     items
   }
 
-  scope :ship_ub, -> {
+  scope :ship_ub, ->{
     items = joins(:shipping_er_features)
     items = items.joins(:shipping_er_product)
     items = items.joins(:shipping_ub_features)
     items = items.joins(:shipping_ub_product)
     items = items.left_joins(:product_income_items)
-                .where("product_income_items.supply_feature_id IS NULL")
+                 .where("product_income_items.supply_feature_id IS NULL")
     items = items.joins(:order_item)
-                .where("product_supply_features.quantity_lo IS NOT NULL AND product_supply_features.price_lo IS NOT NULL AND product_supply_features.sum_price_lo IS NOT NULL AND product_supply_features.note_lo IS NOT NULL")
+              .where("product_supply_features.quantity_lo IS NOT NULL AND product_supply_features.price_lo IS NOT NULL AND product_supply_features.sum_price_lo IS NOT NULL AND product_supply_features.note_lo IS NOT NULL")
     items = items.joins(:product_supply_order)
-                .where("product_supply_orders.status = 2")
+              .where("product_supply_orders.status = 2")
     items
   }
 
-  scope :in_ub, -> {
+  scope :in_ub, ->{
     items = joins(:product_income_items)
     items = items.joins(:product_income_products)
     items = items.joins(:shipping_er_features)
@@ -118,9 +116,9 @@ class ProductSupplyFeature < ApplicationRecord
     items = items.joins(:shipping_ub_features)
     items = items.joins(:shipping_ub_product)
     items = items.joins(:order_item)
-                .where("product_supply_features.quantity_lo IS NOT NULL AND product_supply_features.price_lo IS NOT NULL AND product_supply_features.sum_price_lo IS NOT NULL AND product_supply_features.note_lo IS NOT NULL")
+                 .where("product_supply_features.quantity_lo IS NOT NULL AND product_supply_features.price_lo IS NOT NULL AND product_supply_features.sum_price_lo IS NOT NULL AND product_supply_features.note_lo IS NOT NULL")
     items = items.joins(:product_supply_order)
-                .where("product_supply_orders.status = 2")
+                 .where("product_supply_orders.status = 2")
     items
   }
 
@@ -135,7 +133,7 @@ class ProductSupplyFeature < ApplicationRecord
 
   scope :shipping_ub, ->{
     joins(:shipping_ub)
-        .pluck("shipping_ubs.id")
+      .pluck("shipping_ubs.id")
   }
 
   scope :by_calc_nil, ->(is_nil) {
@@ -144,25 +142,25 @@ class ProductSupplyFeature < ApplicationRecord
 
   scope :by_clarify, ->(clarify) {
     joins(:order_item)
-        .where("product_income_items.clarify = ?", clarify)
+      .where("product_income_items.clarify = ?", clarify)
   }
 
-  scope :not_in_er_cost, -> {
+  scope :not_in_er_cost, ->{
     cost = left_joins(:shipping_er_features)
-               .where("shipping_er_features.supply_feature_id IS NULL")
+      .where("shipping_er_features.supply_feature_id IS NULL")
     cost = cost.left_joins(:product_income_items)
-               .where("product_income_items.supply_feature_id IS NULL")
+                 .where("product_income_items.supply_feature_id IS NULL")
     cost = cost.joins(:order_item)
                .group("product_supply_features.order_item_id")
-               .pluck("product_supply_order_items.cost")
-               .sum(&:to_f)
+                .pluck("product_supply_order_items.cost")
+                .sum(&:to_f)
     cost
   }
 
 
   scope :by_income_date, ->(start, finish) {
     joins(:product_income_items)
-        .where('? <= product_supply_features.updated_at AND product_supply_features.updated_at <= ?', start.to_time, finish.to_time + 1.days)
+      .where('? <= product_supply_features.updated_at AND product_supply_features.updated_at <= ?', start.to_time, finish.to_time + 1.days)
   }
 
   scope :by_feature_item_id, ->(feature_item_id) {
@@ -179,7 +177,7 @@ class ProductSupplyFeature < ApplicationRecord
 
   scope :by_feature, ->(feature_ids) {
     joins(:order_item)
-        .where("product_supply_features.id IN (?)", feature_ids)
+      .where("product_supply_features.id IN (?)", feature_ids)
   }
 
   scope :by_product_id, ->(product_id) {
@@ -205,11 +203,11 @@ class ProductSupplyFeature < ApplicationRecord
 
   scope :sum_cost_lo, ->() {
     pluck(:cost)
-        .sum(&:to_f)
+      .sum(&:to_f)
   }
 
-  scope :quantity, ->(id) {
-    where(order_item_id: id).pluck(:quantity_lo).sum
+  scope :quantity, ->(id){
+    where(order_item_id:  id).pluck(:quantity_lo).sum
   }
 
   def price

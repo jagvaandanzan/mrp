@@ -52,7 +52,6 @@ class Operators::ProductSalesController < Operators::BaseController
           @product_sale.product_sale_items << sale_item
         end
         @product_sale.phone = sale_call.phone
-        @product_sale.source = sale_call.source
         total_price += total_price < Const::FREE_SHIPPING ? Const::SHIPPING_FEE : 0
 
         # @product_sale.location = Location.offset(rand(Location.count)).first
@@ -183,8 +182,6 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def show
-    SalesmanTravelJob.perform_later("sale", @product_sale)
-
     if @product_sale.status.alias == "oper_from_web"
       redirect_to action: :edit
     else
@@ -236,6 +233,7 @@ class Operators::ProductSalesController < Operators::BaseController
     location.station_id = params[:station_id]
     location.name = params[:name]
     location.name_la = params[:name_la]
+    location.distance = params[:distance]
     location.latitude = params[:latitude]
     location.longitude = params[:longitude]
 
@@ -359,7 +357,7 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def product_sale_params
     params.require(:product_sale)
-        .permit(:sale_call_id, :parent_id, :source, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :country, :building_code, :loc_note,
+        .permit(:sale_call_id, :parent_id, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :country, :building_code, :loc_note,
                 :sum_price, :money, :paid, :bonus, :tax,
                 :status_id, :status_m, :status_sub, :status_note,
                 product_sale_returns_attributes: [:id, :product_sale_item_id, :quantity, :remainder, :_destroy],
@@ -368,7 +366,7 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def location_params
     params.require(:location)
-        .permit(:loc_district_id, :loc_khoroo_id, :micro_region, :town, :street, :apartment, :entrance, :name, :name_la, :station_id, :is_new, :latitude, :longitude)
+        .permit(:loc_district_id, :loc_khoroo_id, :micro_region, :town, :street, :apartment, :entrance, :name, :name_la, :station_id, :distance, :is_new, :latitude, :longitude)
         .merge(:operator => current_operator)
   end
 

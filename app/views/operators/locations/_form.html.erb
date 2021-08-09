@@ -50,18 +50,14 @@
             </div>
           </div>
           <div class="form-group">
-            <%= f.label :name, class: 'col-sm-3 control-label' do %>
-              <%= t('activerecord.attributes.location.name') %><span class="asterisk"> *</span>
-            <% end %>
+            <%= f.label :name, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@location, :name) %>">
               <%= field_errors(@location, :name) %>
               <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.location.name') %>
             </div>
           </div>
           <div class="form-group">
-            <%= f.label :name_la, class: 'col-sm-3 control-label' do %>
-              <%= t('activerecord.attributes.location.name_la') %><span class="asterisk"> *</span>
-            <% end %>
+            <%= f.label :name_la, class: 'col-sm-3 control-label' %>
             <div class="col-sm-9 <%= get_error_class(@location, :name_la) %>">
               <%= field_errors(@location, :name_la) %>
               <%= f.text_field :name_la, class: 'form-control', placeholder: t('activerecord.attributes.location.name_la') %>
@@ -72,6 +68,13 @@
             <div class="col-sm-6 <%= get_error_class(@location, :station_id) %>">
               <%= field_errors(@location, :station_id) %>
               <%= f.collection_select :station_id, Location.by_country, :id, :full_name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+            </div>
+          </div>
+          <div class="form-group" id="div_distance">
+            <%= f.label :distance, class: 'col-sm-3 control-label' %>
+            <div class="col-sm-6 <%= get_error_class(@location, :distance) %>">
+              <%= field_errors(@location, :distance) %>
+              <%= f.select :distance, Location.distances_i18n.keys.reject {|k| k == 'st_leave'}.map {|k| [Location.distances_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
             </div>
           </div>
           <%= f.hidden_field :latitude, id: 'latitude' %>
@@ -149,6 +152,9 @@
         $('select#location_station_id').on('change', function () {
             if ($(this).val().length > 0) {
                 set_map_marker($(this).val());
+                $('div#div_distance').addClass('none');
+            } else {
+                $('div#div_distance').removeClass('none');
             }
         });
     });

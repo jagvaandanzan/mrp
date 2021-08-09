@@ -11,7 +11,7 @@ class ProductLocation < ApplicationRecord
   }
 
   scope :get_quantity, ->(feature_item_id) {
-    select("product_locations.*, SUM(product_location_balances.quantity) as quantity")
+    select("product_locations.id, SUM(product_location_balances.quantity) as quantity")
         .joins(:product_location_balances)
         .where("product_location_balances.product_feature_item_id = ?", feature_item_id)
         .where("quantity > ?", 0)

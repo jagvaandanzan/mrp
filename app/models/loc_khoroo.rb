@@ -36,7 +36,7 @@ class LocKhoroo < ApplicationRecord
       params = nil
       url += "/" + id.to_s
     else
-      params = self.to_json(methods: [:method_type], only: [:id, :loc_district_id, :name, :queue, :latitude, :longitude])
+      params = self.to_json(methods: [:method_type], only: [:id, :loc_district_id, :name, :queue])
     end
 
     ApplicationController.helpers.api_request(url, method, params)

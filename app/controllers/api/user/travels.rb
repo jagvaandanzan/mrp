@@ -36,7 +36,7 @@ module API
                 if item[:quantity] > 0
                   feature_item = ProductFeatureItem.find(item.feature_item_id)
                   if feature_item.product_warehouse_locs.by_travel(travel_id).count == 0
-                    create_warehouse_loc(item[:quantity].to_i, params[:id], feature_item.product_id, feature_item.id)
+                    create_warehouse_loc(item, params[:id], feature_item.product_id, feature_item.id)
                   end
                 end
               }
@@ -138,7 +138,7 @@ module API
                                                   sum_price: feature.price * params[:quantity])
 
                   if sale_item.save
-                    create_warehouse_loc(sale_item.quantity, params[:id], feature.product_id, feature.id, true)
+                    create_warehouse_loc(sale_item, params[:id], feature.product_id, feature.id, true)
                     present :added, sale_item.created_at
                   else
                     error!(sale_item.errors.full_messages, 422)
@@ -241,16 +241,16 @@ module API
   end
 end
 
-def create_warehouse_loc(item_quantity, salesman_travel_id, product_id, feature_item_id, add_stock = false)
+def create_warehouse_loc(item, salesman_travel_id, product_id, feature_item_id, add_stock = false)
   product_locations = ProductLocation.get_quantity(feature_item_id)
   quantity = 0
   is_added = false
   product_locations.each {|loc|
-    if quantity < item_quantity
-      q = if loc.quantity >= (item_quantity - quantity)
-            item_quantity - quantity
+    if quantity < item.quantity
+      q = if loc.quantity >= (item.quantity - quantity)
+            item.quantity - quantity
           else
-            loc['quantity'].to_i
+            loc.quantity
           end
       quantity += q
       ProductWarehouseLoc.create(salesman_travel_id: salesman_travel_id,

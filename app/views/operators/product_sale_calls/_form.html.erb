@@ -13,7 +13,6 @@
                     method: :patch, local: true, :html => {class: 'form-horizontal', id: 'form_call'} do |f| %>
         <%= form_body do %>
           <%= f.hidden_field :id %>
-          <%= f.hidden_field :source, value: 'sr_operator' %>
           <%= f.hidden_field :is_web %>
           <div class="form-group">
             <%= f.label :phone, class: 'col-sm-3 control-label' %>

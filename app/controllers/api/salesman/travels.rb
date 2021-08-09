@@ -259,8 +259,6 @@ module API
               params do
                 requires :status, type: String
                 optional :description, type: String
-                optional :day, type: DateTime
-                optional :hour, type: Integer
               end
               patch do
                 message = ""
@@ -301,12 +299,6 @@ module API
                       product_sale.salesman = salesman
                       product_sale.status = status
                       product_sale.status_note = params[:description]
-                      if params[:status] == "sals_change_date" && params[:day].present? && params[:hour].present?
-                        product_sale.delivery_start = params[:day].change({hour: params[:hour] - 1})
-                        product_sale.delivery_end = params[:day].change({hour: params[:hour] + 1})
-                        product_sale.status_note = "#{product_sale.status_note}, цагаа #{product_sale.delivery_time} гэж өөрчилсөн"
-                      end
-
                       product_sale.save(validate: false)
                       message = I18n.t('alert.info_updated')
                     end

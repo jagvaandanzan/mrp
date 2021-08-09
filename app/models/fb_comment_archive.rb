@@ -185,8 +185,7 @@ class FbCommentArchive < ApplicationRecord
         ProductSaleCall.create(code: fb_post_real.product_code,
                                status_id: 1,
                                message: message,
-                               phone: phone.to_i,
-                               source: "sr_comment")
+                               phone: phone.to_i)
       end
 
     end

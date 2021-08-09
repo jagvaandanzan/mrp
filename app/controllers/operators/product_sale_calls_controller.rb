@@ -87,7 +87,7 @@ class Operators::ProductSaleCallsController < Operators::BaseController
                                .by_phone(params[:phone])
                                .by_operator_id(current_operator.id)
                     status = ProductSaleStatus.find_by_alias("call_no_finish")
-                    sale.present? ? sale.first : ProductSaleCall.new(status: status, source: 1)
+                    sale.present? ? sale.first : ProductSaleCall.new(status: status)
                   end
       sale_call.is_web = true
       sale_call.operator = current_operator
@@ -125,7 +125,7 @@ class Operators::ProductSaleCallsController < Operators::BaseController
 
   def sale_call_params
     params.require(:product_sale_call)
-        .permit(:id, :source, :is_web, :phone, :status_id, :status_m, :status_sub, :sum_price, :message,
+        .permit(:id, :is_web, :phone, :status_id, :status_m, :status_sub, :sum_price, :message,
                 product_call_items_attributes: [:id, :product_id, :feature_item_id, :quantity, :price, :sum_price, :remainder, :_destroy])
         .merge(operator: current_operator)
   end

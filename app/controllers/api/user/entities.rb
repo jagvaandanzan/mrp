@@ -36,7 +36,7 @@ module API
       end
 
       class Notification < Grape::Entity
-        expose :created_at, :title, :body_u, :avatar_s, :salesman_travel_id, :product_sale_item_id
+        expose :created_at, :title, :body_u, :avatar_u, :salesman_travel_id, :product_sale_item_id
       end
 
       class SalesmanReturnSign < Grape::Entity
@@ -63,22 +63,6 @@ module API
 
       class LocationTransferList < Grape::Entity
         expose :id, :location_name, :quantity, :transferred
-      end
-
-      class ProductLocation < Grape::Entity
-        expose :name, :quantity
-      end
-
-      class TransferHistoryBySalesman < Grape::Entity
-        expose :salesman_id, :salesman_name, :quantity
-      end
-
-      class ProductWarehouseUserSign < Grape::Entity
-        expose :barcode, :name, :code, :desk, :feature, :image, :quantity, :load_at, :user_sign
-      end
-
-      class SalesmanReturnUserSign < Grape::Entity
-        expose :barcode, :name, :code, :desk, :feature, :image, :quantity, :created_at, :user_sign
       end
 
     end

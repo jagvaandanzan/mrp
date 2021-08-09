@@ -143,14 +143,6 @@ class ProductSaleItem < ApplicationRecord
     end
   end
 
-  def discount_price
-    if discount.present?
-      discount
-    else
-      (p_discount.present? && price.present?) ? ApplicationController.helpers.get_percentage(price, p_discount) : ''
-    end
-  end
-
   private
 
   def set_product_balance
@@ -171,11 +163,7 @@ class ProductSaleItem < ApplicationRecord
   end
 
   def set_remainder
-    self.remainder = if feature_item.balance.present?
-                       feature_item.balance + (quantity_was.presence || 0) if product_id.present? && feature_item_id.present?
-                     else
-                       0
-                     end
+    self.remainder = feature_item.balance + (quantity_was.presence || 0) if product_id.present? && feature_item_id.present?
   end
 
 end

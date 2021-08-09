@@ -82,11 +82,7 @@ class SalesmanTravelRoute < ApplicationRecord
   }
 
   def loc_name
-    if location.station.present?
-      location.station.full_name
-    else
-      location.full_name
-    end
+    location.name
   end
 
   def payable

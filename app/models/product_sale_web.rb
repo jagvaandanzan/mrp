@@ -17,17 +17,16 @@ class ProductSaleWeb
       d = cart['delivery_date'].split("-").map(&:to_i)
       start_time = cart['start_time'].split(":").map(&:to_i)
       end_time = cart['end_time'].split(":").map(&:to_i)
-      description = cart['description']
+
       product_sale = ProductSale.new(phone: cart['phone'],
                                      hour_start: start_time[0],
                                      hour_end: end_time[0],
-                                     loc_note: "#{description}#{description.present? ? '.' : ''}#{cart['coms']}",
+                                     loc_note: cart['description'],
                                      delivery_start: Time.zone.local(d[0], d[1], d[2], start_time[0]),
                                      delivery_end: Time.zone.local(d[0], d[1], d[2], end_time[0]),
                                      sum_price: cart['payment'],
                                      bonus: cart['bonus'],
                                      money: 1,
-                                     source: "sr_web",
                                      paid: cart['payment'],
                                      cart_id: cart['id'])
 

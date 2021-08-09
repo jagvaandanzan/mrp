@@ -26,15 +26,16 @@ class ShippingUbProduct < ApplicationRecord
     where(supply_order_id: supply_order_id)
   }
 
-  scope :find_to_incomes, ->(is_box = false, id = nil, by_product_name, ids) {
+  scope :find_to_incomes, ->(is_box = false, id = nil, by_product_name) {
     items = left_joins(:product_income_products)
                 .left_joins(:shipping_ub_box)
                 .group("shipping_ub_products.id")
                 .having("SUM(product_income_products.quantity) IS NULL OR SUM(product_income_products.quantity) < shipping_ub_products.quantity")
                 .select("shipping_ub_products.*, shipping_ub_products.quantity - IFNULL(SUM(product_income_products.quantity), 0) as remainder")
     items = items.left_joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value OR products.c_name LIKE :value', value: "%#{by_product_name}%") if by_product_name.present?
-    items = items.where("#{is_box ? 'shipping_ub_boxes' : 'shipping_ub_products'}.id = ?", id) unless id.nil?
-    items = items.where("shipping_ub_products.id NOT IN (?)", ids.split(',').map(&:to_i)) if ids.present?
+    unless id.nil?
+      items = items.where("#{is_box ? 'shipping_ub_boxes' : 'shipping_ub_products'}.id = ?", id) unless id.nil?
+    end
     items.order("shipping_ub_boxes.id")
   }
 

@@ -74,7 +74,7 @@
                        is_sample_box=true
                        else
                        is_sample_box=false
-                       end    %>
+                       end  %>
 
                     <%= f.fields_for :product_income_products, product_income_product do |m| %>
                       <%= render 'product_income_product_fields', :f => m, is_sample_box: is_sample_box %>
@@ -213,28 +213,20 @@
     }
 
     function search_ub_product() {
-        let shipping_ub_product_ids = [];
-        $('#tb_product_income_products tr.shipping_ub_product').each(function () {
-            shipping_ub_product_ids.push($(this).attr('shipping_ub_product_id'));
-        });
         $('#ub_products').html("<tr><td colspan='10' class='text-center m-t-20 w-100'><img src='/images/loading.gif'></td></tr>");
         Rails.ajax({
             url: "<%= search_products_users_product_incomes_path %>",
             type: "POST",
-            data: "by_product_name=" + $('#by_product_name').val() + "&ids=" + shipping_ub_product_ids
+            data: "by_product_name=" + $('#by_product_name').val()
         });
     }
 
     function search_sample_product() {
-        let product_ids = [];
-        $('#tb_product_income_products tr.product').each(function () {
-            product_ids.push($(this).attr('product_id'));
-        });
         $('#supply_features').html("<tr><td colspan='7' class='text-center m-t-20 w-100'><img src='/images/loading.gif'></td></tr>");
         Rails.ajax({
             url: "<%= search_supply_feature_users_product_incomes_path %>",
             type: "POST",
-            data: "by_code=" + $('#by_sample_code').val() + "&product_ids=" + product_ids + "&by_product_name=" + $('#sample_product_name').val()
+            data: "by_code=" + $('#by_sample_code').val() + "&by_product_name=" + $('#sample_product_name').val()
         });
     }
 

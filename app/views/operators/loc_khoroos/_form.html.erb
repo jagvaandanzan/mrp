@@ -1,7 +1,3 @@
-<% provide :head_tags do %>
-  <script type="text/javascript"
-          src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_KEY'] %>&libraries=places"></script>
-<% end %>
 <div class="content-wrapper">
   <%= render 'layouts/breadcrumbs', data: [
       [operators_loc_districts_path, t('activerecord.models.loc_district')],
@@ -28,13 +24,6 @@
               <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.loc_khoroo.name') %>
             </div>
           </div>
-          <div class="form-group">
-            <div class="col-sm-12">
-              <%= f.hidden_field :latitude, id: 'latitude' %>
-              <%= f.hidden_field :longitude, id: 'longitude' %>
-              <div id="map"></div>
-            </div>
-          </div>
           <div class="action-buttons">
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
           </div>
@@ -43,49 +32,3 @@
     </div>
   </section>
 </div>
-<script>
-    var map = null, marker;
-
-    function initMap() {
-        let lat = document.getElementById('latitude').value;
-        let lng = document.getElementById('longitude').value;
-
-        let myCoords = new google.maps.LatLng(lat, lng);
-        let mapOptions = {
-            center: myCoords,
-            zoom: 17,
-            mapTypeId: 'hybrid',
-            output: 'embed'
-        };
-        map = new google.maps.Map(document.getElementById('map'), mapOptions);
-        marker = new google.maps.Marker({
-            position: myCoords,
-            animation: google.maps.Animation.DROP,
-            map: map,
-            draggable: true
-        });
-
-        google.maps.event.addListener(map, "click", (event) => {
-            map.panTo(event.latLng);
-            marker.setPosition(event.latLng);
-        });
-
-        // when marker is dragged update input values
-        marker.addListener('drag', function () {
-            latlng = marker.getPosition();
-            newlat = (Math.round(latlng.lat() * 1000000)) / 1000000;
-            newlng = (Math.round(latlng.lng() * 1000000)) / 1000000;
-            document.getElementById('latitude').value = newlat;
-            document.getElementById('longitude').value = newlng;
-        });
-        // When drag ends, center (pan) the map on the marker position
-        marker.addListener('dragend', function () {
-            map.panTo(marker.getPosition());
-        });
-    }
-
-    $(function () {
-        initMap();
-    });
-
-</script>

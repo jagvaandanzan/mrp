@@ -171,9 +171,6 @@ class ProductFeatureItem < ApplicationRecord
     where(id: id)
         .limit(1)
   }
-  scope :sum_balance, ->() {
-    sum(:balance)
-  }
 
   def balance_sum
     ProductBalance.balance_sum(product_id, id)

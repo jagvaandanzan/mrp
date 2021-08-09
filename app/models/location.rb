@@ -17,6 +17,10 @@ class Location < ApplicationRecord
   validates :loc_district_id, :loc_khoroo_id, presence: true
   validates :name, :name_la, presence: true
 
+  with_options :unless => Proc.new {|m| m.station_id.present?} do
+    validates :distance, presence: true
+  end
+
   # with_options :if => Proc.new {|m| m.loc_district.country} do
   #   validates :station_id, presence: true
   # end
@@ -64,11 +68,7 @@ class Location < ApplicationRecord
   }
 
   def full_name
-    if name.present?
-      "#{loc_district.name}, #{loc_khoroo.name}, #{name}"
-    else
-      address
-    end
+    "#{loc_district.name}, #{loc_khoroo.name}, #{name}"
   end
 
   def address

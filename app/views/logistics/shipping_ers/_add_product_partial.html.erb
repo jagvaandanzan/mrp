@@ -4,7 +4,7 @@
      order_item = feature.supply_feature.order_item.presence
      feature_item = feature.supply_feature.feature_item %>
 
-  <tr class="nested-fields feature-<%= product.id %> row-<%= rows %><%= index == 0 ? ' product' : '' %>" product_id="<%= product.id %>">
+  <tr class="nested-fields feature-<%= product.id %> row-<%= rows %>">
     <input type="hidden" value="<%= product.id %>"
            name="shipping_er[shipping_er_products_attributes][<%= rows %>][shipping_er_features_attributes][<%= index %>][product_id]"
            id="shipping_er_shipping_er_products_attributes_<%= rows %>_shipping_er_features_attributes_<%= index %>_product_id">

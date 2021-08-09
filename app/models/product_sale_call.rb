@@ -10,8 +10,6 @@ class ProductSaleCall < ApplicationRecord
   has_many :product_sale_status_logs
 
   accepts_nested_attributes_for :product_call_items, allow_destroy: true
-  enum source: {sr_comment: 0, sr_operator: 1}
-
   before_save :create_log
 
   attr_accessor :is_web, :status_m, :status_sub, :temp_operator, :temp_salesman

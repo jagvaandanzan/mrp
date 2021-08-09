@@ -33,14 +33,14 @@ class Users::ProductIncomesController < Users::BaseController
   end
 
   def search_products
-    shipping_ub_products = ShippingUbProduct.find_to_incomes(nil, nil, params[:by_product_name], params[:ids])
+    shipping_ub_products = ShippingUbProduct.find_to_incomes(nil, nil, params[:by_product_name])
     respond_to do |format|
       format.js {render 'users/product_incomes/search_ub_product_js', locals: {shipping_ub_products: shipping_ub_products, page: params[:page]}}
     end
   end
 
   def search_supply_feature
-    product_supply_features = ProductSupplyFeature.find_to_income(1, nil, params[:by_code], params[:by_product_name], params[:product_ids])
+    product_supply_features = ProductSupplyFeature.find_to_income(1, nil, params[:by_code], params[:by_product_name])
     respond_to do |format|
       format.js {render 'users/product_incomes/search_supply_feature_js', locals: {product_supply_features: product_supply_features, page: params[:page]}}
     end
@@ -65,7 +65,7 @@ class Users::ProductIncomesController < Users::BaseController
   end
 
   def insert_shipping_ub
-    @shipping_ub_products = ShippingUbProduct.find_to_incomes(params[:is_box] == "true", params[:id].to_i, nil, params[:ids])
+    @shipping_ub_products = ShippingUbProduct.find_to_incomes(params[:is_box] == "true", params[:id].to_i, nil)
     @rows = params[:rows].to_i
     respond_to do |format|
       format.js {render 'users/product_incomes/add_product'}
@@ -74,7 +74,7 @@ class Users::ProductIncomesController < Users::BaseController
 
   def insert_sample_product
     @product_id = params[:id]
-    @product_supply_features = ProductSupplyFeature.find_to_income(1, params[:id], params[:by_code], params[:by_product_name],  params[:product_ids])
+    @product_supply_features = ProductSupplyFeature.find_to_income(1, params[:id], params[:by_code], params[:by_product_name])
     @rows = params[:rows].to_i
     @sample_box_id = params[:sample_box_id]
     respond_to do |format|

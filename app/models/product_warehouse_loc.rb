@@ -3,9 +3,6 @@ class ProductWarehouseLoc < ApplicationRecord
   belongs_to :product
   belongs_to :location, :class_name => "ProductLocation"
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
-  has_one :salesman, through: :salesman_travel
-  has_one :salesman_travel_sign, through: :salesman_travel
-  has_one :user, through: :salesman_travel_sign
   has_one :product_location_balance, :class_name => "ProductLocationBalance", :foreign_key => "warehouse_loc_id", dependent: :destroy
 
   before_create :set_location_balance
@@ -37,20 +34,6 @@ class ProductWarehouseLoc < ApplicationRecord
     where(salesman_travel_id: travel_id)
   }
 
-  scope :date_by_load_at, ->(date) {
-    select("salesman_travels.salesman_id, salesmen.name as salesman_name, SUM(quantity) as quantity")
-        .joins(:salesman)
-        .where("product_warehouse_locs.load_at IS NOT ?", nil)
-        .where('? <= product_warehouse_locs.load_at AND product_warehouse_locs.load_at < ?', date, date + 1.day)
-        .group("salesman_travels.salesman_id")
-  }
-  scope :salesman_with_date, ->(salesman_id, date) {
-    select("product_warehouse_locs.*, users.name as user_sign")
-    .joins(:user)
-        .where("salesman_travels.salesman_id = ?", salesman_id)
-        .where("product_warehouse_locs.load_at IS NOT ?", nil)
-        .where('? <= product_warehouse_locs.load_at AND product_warehouse_locs.load_at < ?', date, date + 1.day)
-  }
 
   def feature
     feature_item.name

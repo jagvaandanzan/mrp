@@ -123,15 +123,11 @@
     }
 
     function search_er_product() {
-        let shipping_er_product_ids = [];
-        $('.tb_shipping_ub_products tr').each(function () {
-            shipping_er_product_ids.push($(this).attr('shipping_er_product_id'));
-        });
         $('#er_products').html("<div class='text-center m-t-20 w-100'><img src='/images/loading.gif'></div>");
         Rails.ajax({
             url: "<%= search_er_products_logistics_shipping_ubs_path %>",
             type: "POST",
-            data: "order_type=<%= params[:order_type] %>&ids=" + shipping_er_product_ids + "&by_code=" + $('#by_code').val() + "&by_product_name=" + $('#by_product_name').val()
+            data: "order_type=<%= params[:order_type] %>&by_code=" + $('#by_code').val() + "&by_product_name=" + $('#by_product_name').val()
         });
     }
 
