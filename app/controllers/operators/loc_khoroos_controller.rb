@@ -10,6 +10,8 @@ class Operators::LocKhoroosController < Operators::BaseController
 
   def new
     @loc_khoroo = LocKhoroo.new
+    @loc_khoroo.latitude = 47.918772
+    @loc_khoroo.longitude = 106.917609
     @loc_khoroo.loc_district = LocDistrict.find_by!(id: params[:id])
     @loc_khoroo.queue = LocKhoroo.by_district_id(params[:id]).size + 1
   end
@@ -50,6 +52,6 @@ class Operators::LocKhoroosController < Operators::BaseController
   end
 
   def loc_khoroo_params
-    params.require(:loc_khoroo).permit(:loc_district_id, :queue, :name)
+    params.require(:loc_khoroo).permit(:loc_district_id, :queue, :name, :latitude, :longitude)
   end
 end

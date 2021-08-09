@@ -3,14 +3,18 @@
     <div class="row">
       <div class="col-md-12">
         <div class="col-md-6 field_div">
-          <%= f.label :loc_district_id, class: 'control-label' %>
+          <%= f.label :loc_district_id, class: 'control-label' do %>
+            <%= t('activerecord.attributes.location.loc_district_id') %><span class="asterisk"> *</span>
+            <% end %>
           <div>
             <%= field_errors(location, :loc_district_id) %>
             <%= f.collection_select :loc_district_id, LocDistrict.order_country, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
           </div>
         </div>
         <div class="col-md-6 field_div">
-          <%= f.label :loc_khoroo_id, class: 'control-label' %>
+          <%= f.label :loc_khoroo_id, class: 'control-label' do %>
+            <%= t('activerecord.attributes.location.loc_khoroo_id') %><span class="asterisk"> *</span>
+          <% end %>
           <div id="khoroo_id">
             <%= field_errors(location, :loc_khoroo_id) %>
             <% if location.loc_district_id.present? %>
@@ -63,18 +67,11 @@
             <%= f.text_field :entrance, class: 'form-control n_press', placeholder: t('activerecord.attributes.location.entrance') %>
           </div>
         </div>
-        <div class="col-md-6 field_div">
+        <div class="col-md-9 field_div">
           <%= f.label :station_id, class: 'control-label' %>
           <div>
             <%= field_errors(location, :station_id) %>
             <%= f.collection_select :station_id, Location.by_country, :id, :full_name, {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
-          </div>
-        </div>
-        <div class="col-md-3 field_div" id="div_distance">
-          <%= f.label :distance, class: 'control-label' %>
-          <div id="khoroo_id">
-            <%= field_errors(location, :distance) %>
-            <%= f.select :distance, options_for_select(Location.distances_i18n.keys.reject {|k| k == 'st_leave'}.map {|k| [Location.distances_i18n[k], k]}, location.distance), {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
           </div>
         </div>
       </div>
@@ -82,14 +79,18 @@
     <div class="row">
       <div class="col-md-12">
         <div class="col-md-6 field_div">
-          <%= f.label :name, class: 'control-label' %>
+          <%= f.label :name, class: 'control-label' do %>
+            <%= t('activerecord.attributes.location.name') %><span class="asterisk"> *</span>
+          <% end %>
           <div>
             <%= field_errors(location, :name) %>
             <%= f.text_field :name, class: 'form-control', placeholder: t('activerecord.attributes.location.name') %>
           </div>
         </div>
         <div class="col-md-6 field_div">
-          <%= f.label :name_la, class: 'control-label' %>
+          <%= f.label :name_la, class: 'control-label' do %>
+            <%= t('activerecord.attributes.location.name_la') %><span class="asterisk"> *</span>
+          <% end %>
           <div>
             <%= field_errors(location, :name_la) %>
             <%= f.text_field :name_la, class: 'form-control', placeholder: t('activerecord.attributes.location.name_la') %>
@@ -130,9 +131,6 @@
     $('select#location_station_id').on('change', function () {
         if ($(this).val().length > 0) {
             set_map_marker($(this).val());
-            $('div#div_distance').addClass('none');
-        } else {
-            $('div#div_distance').removeClass('none');
         }
     });
 </script>

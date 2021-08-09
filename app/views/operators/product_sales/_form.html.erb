@@ -36,6 +36,7 @@
                     method: @product_sale.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= f.hidden_field :sale_call_id %>
         <%= f.hidden_field :parent_id %>
+        <%= f.hidden_field :source %>
         <%= form_body do %>
           <div class="col-md-12 p-0">
             <div class="row">

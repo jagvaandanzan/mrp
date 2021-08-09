@@ -1,3 +1,2 @@
-ProductFeatureItem.by_bal.each do |item|
-puts "item: #{item.id}"
-end
+products = Product.all
+products.each(&:calc_balance)
