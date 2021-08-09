@@ -18,7 +18,7 @@ class Logistics::ShippingUbsController < Logistics::BaseController
   end
 
   def search_er_products
-    shipping_er_products = ShippingErProduct.find_to_ub(nil, params[:by_product_name])
+    shipping_er_products = ShippingErProduct.find_to_ub(nil, params[:by_product_name], params[:ids])
     respond_to do |format|
       format.js {render 'logistics/shipping_ubs/search_er_product_js', locals: {shipping_er_products: shipping_er_products, page: params[:page]}}
     end
@@ -39,7 +39,7 @@ class Logistics::ShippingUbsController < Logistics::BaseController
   end
 
   def add_product
-    @shipping_er_product = ShippingErProduct.find_to_ub(params[:id], "").first
+    @shipping_er_product = ShippingErProduct.find_to_ub(params[:id], "", params[:ids]).first
     @rows = params[:rows].to_i
     @box_r = params[:box_r].to_i
     respond_to do |format|

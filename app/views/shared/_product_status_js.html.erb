@@ -2,11 +2,13 @@
     function call_next_status(select) {
         let val = $(select).val();
         if (valid_id(val)) {
-            Rails.ajax({
-                url: "<%= next_status_operators_product_sales_path %>",
-                type: "POST",
-                data: "id=" + val + "&select_id=<%= select_id %>"
-            });
+            if (parseInt(val) > 0) {
+                Rails.ajax({
+                    url: "<%= next_status_operators_product_sales_path %>",
+                    type: "POST",
+                    data: "id=" + val + "&select_id=<%= select_id %>"
+                });
+            }
         } else {
             $('#div_status_sub').addClass('none');
             $('#status_sub').val("");
@@ -19,7 +21,7 @@
         if (valid_id(val)) {
             $('#<%= select_id %>').val(val);
         } else {
-            $('#<%= select_id %>').val("");
+            $('#<%= select_id %>').val($('#status').val());
         }
     }
 </script>

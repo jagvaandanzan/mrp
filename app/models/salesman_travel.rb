@@ -1,16 +1,23 @@
 class SalesmanTravel < ApplicationRecord
   belongs_to :salesman
+  belongs_to :operator, optional: true
   belongs_to :user, optional: true
 
-  has_many :salesman_travel_routes, -> {with_deleted.order(:queue)}
+  has_many :salesman_travel_routes, -> {with_deleted.order(:queue)}, dependent: :destroy
   has_many :product_sales
   has_many :product_sale_items, through: :product_sales
   has_many :product_sale_returns, through: :product_sales
   has_one :salesman_travel_sign, dependent: :destroy
   has_many :product_warehouse_locs, -> {order(:queue)}, dependent: :destroy
 
+  accepts_nested_attributes_for :salesman_travel_routes, allow_destroy: true
+
+  attr_accessor :number, :sale_ids, :zone_ids, :allocation
+
+  validates :salesman_id, presence: true
+
   scope :open_delivery, ->(salesman_id) {
-    where(salesman_id: salesman_id) 
+    where(salesman_id: salesman_id)
         .where("delivered_at IS ?", nil)
         .order(:created_at)
   }
@@ -46,10 +53,23 @@ class SalesmanTravel < ApplicationRecord
   scope :by_salesman, ->(salesman_id) {
     where(salesman_id: salesman_id)
   }
-
   scope :by_date, ->(date) {
     where('created_at >= ?', date)
         .where('created_at < ?', date + 1.days) if date.present?
+  }
+  scope :last_delivered, ->() {
+    where.not("delivered_at IS ?", nil)
+        .order(:delivered_at)
+  }
+  scope :order_date, -> {
+    order(created_at: :desc)
+  }
+
+  scope :search, ->(date) {
+    items = order_date
+    items = items.where('created_at >= ?', date) if date.present?
+    items = items.where('created_at < ?', date + 1.day) if date.present?
+    items
   }
 
   def id_number

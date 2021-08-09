@@ -136,11 +136,15 @@
     }
 
     function search_supply_feature() {
+        let product_ids = [];
+        $('#tb_shipping_er_products tbody tr.product').each(function () {
+            product_ids.push($(this).attr('product_id'));
+        });
         $('#search_supply_feature').html("<div class='text-center m-t-20 w-100'><img src='/images/loading.gif'></div>");
         Rails.ajax({
             url: "<%= search_supply_feature_logistics_shipping_ers_path %>",
             type: "POST",
-            data: "order_type=<%= params[:order_type] %>&by_code=" + $('#by_code').val() + "&by_product_name=" + $('#by_product_name').val()
+            data: "order_type=<%= params[:order_type] %>&product_ids=" + product_ids + "&by_code=" + $('#by_code').val() + "&by_product_name=" + $('#by_product_name').val()
         });
     }
 

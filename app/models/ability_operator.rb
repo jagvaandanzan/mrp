@@ -19,6 +19,8 @@ class AbilityOperator
         can role, SmsMessage
       when "allocation"
         can role, :distributing
+        can role, SalesmanTravel
+        can role, LocationZone
       when "map_location"
         can role, LocDistrict
         can role, LocKhoroo

@@ -78,7 +78,7 @@ class Operators::LocationsController < Operators::BaseController
 
   def location_params
     params.require(:location)
-        .permit(:loc_district_id, :loc_khoroo_id, :micro_region, :town, :street, :apartment, :entrance, :name, :name_la, :station_id, :distance, :latitude, :longitude)
+        .permit(:loc_district_id, :loc_khoroo_id, :micro_region, :town, :street, :apartment, :entrance, :name, :name_la, :station_id, :latitude, :longitude)
         .merge(:operator => current_operator)
   end
 end
