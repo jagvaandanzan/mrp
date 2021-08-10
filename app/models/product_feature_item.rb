@@ -1,18 +1,19 @@
 class ProductFeatureItem < ApplicationRecord
+  acts_as_paranoid
   belongs_to :product
   belongs_to :option1, -> {with_deleted}, :class_name => "ProductFeatureOption"
   belongs_to :option2, -> {with_deleted}, :class_name => "ProductFeatureOption"
   belongs_to :same_item, :class_name => "ProductFeatureItem", optional: true
   belongs_to :customer_warehouse, optional: true
 
-  has_many :product_sale_items, :class_name => "ProductSaleItem", :foreign_key => "feature_item_id", dependent: :destroy
-  has_many :product_supply_features, :class_name => "ProductSupplyFeature", :foreign_key => "feature_item_id", dependent: :destroy
+  has_many :product_sale_items, :class_name => "ProductSaleItem", :foreign_key => "feature_item_id"
+  has_many :product_supply_features, :class_name => "ProductSupplyFeature", :foreign_key => "feature_item_id"
   has_many :product_sales, through: :product_sale_items
   has_many :salesman_travel, through: :product_sales
-  has_many :product_warehouse_locs, :class_name => "ProductWarehouseLoc", :foreign_key => "feature_item_id", dependent: :destroy
-  has_many :product_balances, :class_name => "ProductBalance", :foreign_key => "feature_item_id", dependent: :destroy
-  has_many :product_income_balances, :class_name => "ProductIncomeBalance", :foreign_key => "feature_item_id", dependent: :destroy
-  has_many :product_location_balances, dependent: :destroy
+  has_many :product_warehouse_locs, :class_name => "ProductWarehouseLoc", :foreign_key => "feature_item_id"
+  has_many :product_balances, :class_name => "ProductBalance", :foreign_key => "feature_item_id"
+  has_many :product_income_balances, :class_name => "ProductIncomeBalance", :foreign_key => "feature_item_id"
+  has_many :product_location_balances
 
   accepts_nested_attributes_for :product_location_balances, allow_destroy: true
 

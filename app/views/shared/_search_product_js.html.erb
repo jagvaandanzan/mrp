@@ -1,0 +1,38 @@
+<script type="text/javascript" charset="utf-8">
+    function func_change_product(select) {
+        let product_id = $(select).val();
+        let parentTr = select_parent(select);
+        parentTr.find("select.feature_item").html("").selectpicker("refresh");
+        reset_input_vals(parentTr);
+        if (valid_id(product_id)) {
+            Rails.ajax({
+                url: "<%= get_product_features_path %>",
+                type: "PATCH",
+                data: "product_id=" + product_id,
+                success: function (data) {
+                    var features = data.features;
+                    if (features !== undefined && features.length > 0) {
+                        var divSelect = "<option value=''>Сонгох</option>";
+                        var first_feature_id = 0;
+                        for (var i = 0; i < features.length; i++) {
+                            if (i === 0) {
+                                first_feature_id = features[i]["id"];
+                            }
+                            divSelect += '<option value="' + features[i]["id"] + '" data-subtext="' + features[i]["balance"] + '" product="' + features[i]["product"] + '" >' + features[i]["name"] + '</option>';
+                        }
+                        let select = parentTr.find("select.feature_item");
+                        select.html(divSelect);
+                        if (features.length === 1) {
+                            select.val(first_feature_id);
+                            func_change_feature(select);
+                        }
+                        select.selectpicker("refresh");
+                    }
+                    parentTr.find('.image').html("<a href='<%= ENV['WEB_DOMAIN'] %>products/" + product_id + "' target='_blank'> <img src='" + data.tumb + "', class='thumb'></a>");
+                    parentTr.find("input.item_price").attr('price', data.price).val(getDecimalPay(data.price));
+                    calc_total_price();
+                }
+            });
+        }
+    }
+</script>

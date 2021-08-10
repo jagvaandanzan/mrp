@@ -233,6 +233,8 @@ mn:
       shipping_ub: Эрээн-УБ тээвэрлэлт
       shipping_ub_box: Хайрцаг
       salesman: Түгээгч
+      warehouse: Агуулах
+      store_transfer: Шилжүүлгэ
     attributes:
       admin_user:
         email: Имэйл
@@ -794,6 +796,18 @@ mn:
         description: Тайлбар
         salesman_id: Хүргэлтийн ажилтан
         salesman_travel_routes: Хувиарлах захиалгын тоо
+      store_transfer:
+        code: Код
+        date: Огноо
+        store_from_id: Шилжүүлэх
+        store_to_id: Хүлээн авагч данс
+        value: Гүйлгээний утга
+        user_id: Бүртгэсэн
+      store_transfer_item:
+        product_id: Барааны нэр, код
+        feature_item_id: Шинж чанар
+        quantity: Тоо хэмжээ
+        description: Тайлбар
     errors:
       messages:
         blank: " хоосон байна!"

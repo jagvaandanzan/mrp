@@ -1,16 +1,47 @@
-<aside class="main-sidebar sidebar_fixed">
+<aside class="main-sidebar">
   <section class="sidebar">
     <ul class="sidebar-menu" data-widget="tree">
-      <% if can? :read, ProductIncome %>
-        <%= content_tag :li, class: (controller_name == 'product_incomes' || controller_name == 'product_income_items') ? 'active' : '' do %>
-          <%= link_to users_product_incomes_path do %>
-            <i class="fa fa-cart-arrow-down"></i><span><%= t('activerecord.models.product_income') %></span>
-            <% not_matchs = ProductIncomeItem.not_match.count
-               if not_matchs > 0 %>
+      <% open_warehouse = controller_name == 'product_feature_items' || controller_name == 'customer_imports' ||
+          controller_name == 'product_incomes' || controller_name == 'product_income_items' || controller_name == 'store_transfers' %>
+      <%= content_tag :li, class: open_warehouse ? 'treeview active' : 'treeview' do %>
+        <%= link_to "#" do %>
+          <i class="fa fa-home"></i><span><%= t('activerecord.models.warehouse') %></span>
+          <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        <% end %>
+        <%= content_tag :ul, class: 'treeview-menu' do %>
+          <%= content_tag :li, class: controller_name == 'product_feature_items' || controller_name == 'customer_imports' ? 'active' : '' do %>
+            <%= link_to balance_users_product_feature_items_path do %>
+              <i class="fa fa-balance-scale"></i><span><%= t('titles.balance') %></span>
+            <% end %>
+          <% end %>
+          <% if can? :read, ProductIncome %>
+            <%= content_tag :li, class: (controller_name == 'product_incomes' || controller_name == 'product_income_items') ? 'active' : '' do %>
+              <%= link_to users_product_incomes_path do %>
+                <i class="fa fa-cart-arrow-down"></i><span><%= t('activerecord.models.product_income') %></span>
+                <% not_matchs = ProductIncomeItem.not_match.count
+                   if not_matchs > 0 %>
             <span class="pull-right-container">
               <small class="label pull-right bg-yellow"><%= ProductIncomeItem.not_match.count %></small>
             </span>
+                <% end %>
+              <% end %>
             <% end %>
+          <% end %>
+          <% if can? :read, Product %>
+            <%= content_tag :li, class: controller_name == 'store_transfers' ? 'active' : '' do %>
+              <%= link_to users_store_transfers_path do %>
+                <i class="fa fa-exchange"></i><span><%= t('activerecord.models.store_transfer') %></span>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <% if can? :read, Product %>
+        <%= content_tag :li, class: controller_name == 'products' ? 'active' : '' do %>
+          <%= link_to users_products_path do %>
+            <i class="fa fa-cube"></i><span><%= t('titles.products') %></span>
           <% end %>
         <% end %>
       <% end %>
@@ -21,17 +52,39 @@
           <% end %>
         <% end %>
       <% end %>
-      <% if can? :read, :supply_calculation %>
-        <%= content_tag :li, class: controller_name == 'supply_calculations' ? 'active' : '' do %>
-          <%= link_to users_supply_calculations_supply_orders_path do %>
-            <i class="fa fa-calculator"></i><span><%= t('titles.supply_calculations') %></span>
+      <% if can? :read, BankTransaction %>
+        <%= content_tag :li, class: controller_name == 'bank_transactions' ? 'active' : '' do %>
+          <%= link_to users_bank_transactions_path do %>
+            <i class="fa fa-dollar"></i><span><%= t('titles.bank_transactions') %></span>
+          <% end %>
+        <% end %>
+      <% end %>
+      <% if can? :read, SaleTax %>
+        <%= content_tag :li, class: ((controller_name == 'product_sales' && action_name == 'report') || controller_name == 'product_reports') ? 'treeview active' : 'treeview' do %>
+          <%= link_to "#" do %>
+            <i class="fa fa-shopping-cart"></i><span><%= t('titles.product_sales') %></span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          <% end %>
+          <%= content_tag :ul, class: 'treeview-menu' do %>
+            <%= content_tag :li, class: action_name == 'report' ? 'active' : '' do %>
+              <%= link_to report_users_product_sales_path do %>
+                <i class="fa fa-file-excel-o"></i><span><%= t('titles.report') %></span>
+              <% end %>
+            <% end %>
+            <%= content_tag :li, class: controller_name == 'product_reports' ? 'active' : '' do %>
+              <%= link_to users_product_reports_track_path do %>
+                <i class="fa fa-file-archive-o"></i><span><%= t('titles.history') %></span>
+              <% end %>
+            <% end %>
           <% end %>
         <% end %>
       <% end %>
       <% if can? :read, :delivery_report %>
         <%= content_tag :li, class: controller_name == 'delivery_reports' ? 'treeview active' : 'treeview' do %>
           <%= link_to "#" do %>
-            <i class="fa fa-send"></i><span><%= t('titles.delivery_reports') %></span>
+            <i class="fa fa-send"></i><span><%= t('titles.delivery') %></span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -50,57 +103,28 @@
           <% end %>
         <% end %>
       <% end %>
-      <% if can? :read, SaleTax %>
-        <%= content_tag :li, class: controller_name == 'product_sales' ? 'treeview active' : 'treeview' do %>
-          <%= link_to "#" do %>
-            <i class="fa fa-shopping-cart"></i><span><%= t('titles.product_sales') %></span>
-            <span class="pull-right-container">
+      <%= content_tag :li, class: ((controller_name == 'product_sales' && action_name == 'index') || controller_name == 'sale_taxes' || controller_name == 'supply_calculations') ? 'treeview active' : 'treeview' do %>
+        <%= link_to "#" do %>
+          <i class="fa fa-dollar"></i><span><%= t('titles.finance') %></span>
+          <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
-          <% end %>
-          <%= content_tag :ul, class: 'treeview-menu' do %>
-            <%= content_tag :li, class: action_name == 'index' ? 'active' : '' do %>
-              <%= link_to users_product_sales_path do %>
-                <i class="fa fa-list"></i><span><%= t('titles.list') %></span>
-              <% end %>
-            <% end %>
-            <%= content_tag :li, class: action_name == 'report' ? 'active' : '' do %>
-              <%= link_to report_users_product_sales_path do %>
-                <i class="fa fa-file-excel-o"></i><span><%= t('titles.report') %></span>
-              <% end %>
-            <% end %>
-          <% end %>
         <% end %>
-        <%= content_tag :li, class: controller_name == 'sale_taxes' ? 'active' : '' do %>
-          <%= link_to users_sale_taxes_path do %>
-            <i class="fa fa-hand-o-left"></i><span><%= t('activerecord.models.sale_tax') %></span>
-          <% end %>
-        <% end %>
-      <% end %>
-      <% if can? :read, Product %>
-        <%= content_tag :li, class: (controller_name == 'products' || controller_name == 'product_feature_rels' || controller_name == 'product_feature_items' ||
-            controller_name == 'customer_imports' ||
-            controller_name == 'product_reports') ? 'treeview active' : 'treeview' do %>
-          <%= link_to "#" do %>
-            <i class="fa fa-cube"></i><span><%= t('titles.products') %></span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          <% end %>
-          <%= content_tag :ul, class: 'treeview-menu' do %>
-            <%= content_tag :li, class: controller_name == 'products' ? 'active' : '' do %>
-              <%= link_to users_products_path do %>
-                <i class="fa fa-list"></i><span><%= t('titles.list') %></span>
-              <% end %>
+        <%= content_tag :ul, class: 'treeview-menu' do %>
+          <%= content_tag :li, class: controller_name == 'product_sales' ? 'active' : '' do %>
+            <%= link_to users_product_sales_path do %>
+              <i class="fa fa-send"></i><span>Ибаримт илгээх</span>
             <% end %>
-            <%= content_tag :li, class: controller_name == 'product_feature_items' || controller_name == 'customer_imports' ? 'active' : '' do %>
-              <%= link_to balance_users_product_feature_items_path do %>
-                <i class="fa fa-balance-scale"></i><span><%= t('titles.balance') %></span>
-              <% end %>
+          <% end %>
+          <%= content_tag :li, class: controller_name == 'sale_taxes' ? 'active' : '' do %>
+            <%= link_to users_sale_taxes_path do %>
+              <i class="fa fa-hand-o-left"></i><span><%= t('activerecord.models.sale_tax') %></span>
             <% end %>
-            <%= content_tag :li, class: controller_name == 'product_reports' ? 'active' : '' do %>
-              <%= link_to users_product_reports_track_path do %>
-                <i class="fa fa-file-archive-o"></i><span><%= t('titles.sale_track') %></span>
+          <% end %>
+          <% if can? :read, :supply_calculation %>
+            <%= content_tag :li, class: controller_name == 'supply_calculations' ? 'active' : '' do %>
+              <%= link_to users_supply_calculations_supply_orders_path do %>
+                <i class="fa fa-calculator"></i><span><%= t('titles.supply_calculations') %></span>
               <% end %>
             <% end %>
           <% end %>
@@ -140,6 +164,13 @@
                 <% end %>
               <% end %>
             <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <% if can? :read, SmsMessage %>
+        <%= content_tag :li, class: controller_name == 'sms_messages' ? 'active' : '' do %>
+          <%= link_to users_sms_messages_path do %>
+            <i class="fa fa-send"></i><span><%= t('titles.sms_messages') %></span>
           <% end %>
         <% end %>
       <% end %>
@@ -220,20 +251,6 @@
                 <% end %>
               <% end %>
             <% end %>
-          <% end %>
-        <% end %>
-      <% end %>
-      <% if can? :read, BankTransaction %>
-        <%= content_tag :li, class: controller_name == 'bank_transactions' ? 'active' : '' do %>
-          <%= link_to users_bank_transactions_path do %>
-            <i class="fa fa-dollar"></i><span><%= t('titles.bank_transactions') %></span>
-          <% end %>
-        <% end %>
-      <% end %>
-      <% if can? :read, SmsMessage %>
-        <%= content_tag :li, class: controller_name == 'sms_messages' ? 'active' : '' do %>
-          <%= link_to users_sms_messages_path do %>
-            <i class="fa fa-send"></i><span><%= t('titles.sms_messages') %></span>
           <% end %>
         <% end %>
       <% end %>

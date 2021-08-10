@@ -40,4 +40,22 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def get_product_features
+    features = []
+    price = 0
+    img_url = "/images/orignal/missing.png"
+
+    if params[:product_id].present?
+      product = Product.find(params[:product_id])
+      img_url = product.picture.url(:tumb) if product.picture.present?
+      price = product.price if product.price.present?
+      product.product_feature_items.each do |item|
+        features.push({id: item.id, name: item.name, balance: item.balance, product: product.id})
+      end
+    end
+
+    render json: {price: price, features: features, tumb: img_url}
+  end
+
+
 end

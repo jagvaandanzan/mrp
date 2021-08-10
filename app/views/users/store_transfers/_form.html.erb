@@ -1,0 +1,220 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "form" %>
+<% end %>
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1><%= t('activerecord.models.store_transfer') + t(@store_transfer.persisted? ? 'titles.edit' : 'titles.add') %></h1>
+  </section>
+
+  <section class="content">
+    <div class="box box-info">
+      <%= form_with model: @store_transfer, url: @store_transfer.persisted? ? users_store_transfer_path : users_store_transfers_path,
+                    method: @store_transfer.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <div class="col-md-12 p-0">
+            <div class="row">
+              <div class="col-md-2 field_div">
+                <%= f.label :code, class: 'control-label' %>
+                <div>
+                  <%= f.text_field :code, value: @store_transfer.persisted? ? @store_transfer.id : @store_transfer.code, class: 'form-control', readonly: true, placeholder: t('activerecord.attributes.store_transfer.code') %>
+                </div>
+              </div>
+              <div class="col-md-2 field_div">
+                <%= f.label :date, class: 'control-label' %>
+                <div class="input-append date input-group date <%= get_error_class(@store_transfer, :date) %>" data-provide="datepicker">
+                  <%= field_errors(@store_transfer, :date) %>
+                  <%= f.text_field :date, value: @store_transfer.date.strftime('%F'), class: 'field form-control', placeholder: t('activerecord.attributes.store_transfer.date') %>
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2 field_div">
+                <%= f.label :store_from_id, class: 'control-label' %>
+                <div class="<%= get_error_class(@store_transfer, :store_from_id) %>">
+                  <%= field_errors(@store_transfer, :store_from_id) %>
+                  <%= f.collection_select(:store_from_id, Storeroom.order_code, :id, :full_name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'}) %>
+                </div>
+              </div>
+              <div class="col-md-2 field_div">
+                <%= f.label :store_to_id, class: 'control-label' %>
+                <div class="<%= get_error_class(@store_transfer, :store_to_id) %>">
+                  <%= field_errors(@store_transfer, :store_to_id) %>
+                  <%= f.collection_select(:store_to_id, Storeroom.order_code, :id, :full_name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'}) %>
+                </div>
+              </div>
+              <div class="col-md-4 field_div">
+                <%= f.label :value, class: 'control-label' %>
+                <div class="<%= get_error_class(@store_transfer, :value) %>">
+                  <%= field_errors(@store_transfer, :value) %>
+                  <%= f.text_field :value, class: 'form-control', placeholder: t('activerecord.attributes.store_transfer.value') %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 field_div">
+            <label class="control-label" for="store_transfer_store_transfer_items"></label>
+            <div class="cocoon-nested-form">
+              <div class="<%= get_error_class(@store_transfer, :store_transfer_items) %>">
+                <%= field_errors(@store_transfer, :store_transfer_items) %>
+                <table class="table table-bordered" id="tb_store_transfer_items">
+                  <tr>
+                    <th class="va-mid" class="va-mid"><%= t('activerecord.attributes.product_feature_item.image') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.store_transfer_item.product_id') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.store_transfer_item.feature_item_id') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.remainder') %></th>
+                    <th class="va-mid">Тавиур</th>
+                    <th class="va-mid" style="width: 100px; font-size: 11px"><%= t('activerecord.attributes.store_transfer_item.quantity') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.store_transfer_item.description') %></th>
+                    <th width="50px"></th>
+                  </tr>
+                  <%= f.fields_for :store_transfer_items do |m| %>
+                    <%= render 'store_transfer_item_fields', :f => m %>
+                  <% end %>
+                </table>
+                <table class="table table-bordered">
+                  <tr>
+                    <td style="width: 40%"></td>
+                    <td style="width: 20%">Нийт тоо: <span id="total_quantity"></span></td>
+                    <td>Нийт дүн: <span id="total_price"></span></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="links item_append">
+                <%= link_to_add_association f, :store_transfer_items, data: {association_insertion_node: '#tb_store_transfer_items', association_insertion_method: :append} do %>
+                  <%= nested_add_btn('btn_store_transfer_item') %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>
+<%= render 'shared/suggestion_search' %>
+<script>
+    function func_change_product(select) {
+        let product_id = $(select).val();
+        let parentTr = select_parent(select);
+        parentTr.find("select.feature_item").html("").selectpicker("refresh");
+        reset_input_vals(parentTr);
+        if (valid_id(product_id)) {
+            Rails.ajax({
+                url: "<%= get_product_features_users_store_transfers_path %>",
+                type: "PATCH",
+                data: "product_id=" + product_id + "&store_from_id=" + $('#store_transfer_store_from_id').val(),
+                success: function (data) {
+                    var features = data.features;
+                    if (features !== undefined && features.length > 0) {
+                        var divSelect = "<option value=''>Сонгох</option>";
+                        var first_feature_id = 0;
+                        for (var i = 0; i < features.length; i++) {
+                            if (i === 0) {
+                                first_feature_id = features[i]["id"];
+                            }
+                            divSelect += '<option value="' + features[i]["id"] + '" data-subtext="' + features[i]["balance"] + '" product="' + features[i]["product"] + '" >' + features[i]["name"] + '</option>';
+                        }
+                        let select = parentTr.find("select.feature_item");
+                        select.html(divSelect);
+                        if (features.length === 1) {
+                            select.val(first_feature_id);
+                            func_change_feature(select);
+                        }
+                        select.selectpicker("refresh");
+                    }
+                    parentTr.find('.image').html("<a href='<%= ENV['WEB_DOMAIN'] %>products/" + product_id + "' target='_blank'> <img src='" + data.tumb + "', class='thumb'></a>");
+                    parentTr.find("input.item_price").attr('price', data.price).val(getDecimalPay(data.price));
+                    calc_total_price();
+                }
+            });
+        }
+    }
+
+    function reset_input_vals(tr) {
+        tr.find("input.item_sum").val("");
+        tr.find("input.item_price").val("");
+    }
+
+    function func_change_feature(select) {
+        let product_id = $(select).find('option:selected').attr("product");
+        let parentTr = select_parent(select);
+        reset_input_vals(parentTr);
+
+        let feature_id = $(select).val();
+        if (valid_id(feature_id) && valid_id(product_id)) {
+            Rails.ajax({
+                url: "<%= get_product_balance_users_store_transfers_path %>",
+                type: "POST",
+                data: "product_id=" + product_id + "&feature_item_id=" + feature_id + "&store_from_id=" + $('#store_transfer_store_from_id').val(),
+                success: function (data) {
+                    let p = parentTr.find("input.item_price");
+                    p.val(data.price);
+                    p.attr('price', data.price);
+                    parentTr.find("input.item_price_show").val(getDecimalPay(data.price));
+                    parentTr.find('.remainder').val(data.balance);
+                    parentTr.find('.image a').html("<img src='" + data.tumb + "', class='tumb'>");
+                    calc_total_price();
+                }
+            });
+        }
+    }
+
+    function calc_total_price() {
+        let total_price = 0, total_quantity = 0;
+        $('#tb_store_transfer_items tr.nested-fields').each(function () {
+            let tr = $(this);
+            if (tr.is(':visible')) {
+                let td_qau = tr.find('.item_quantity');
+                let quantity = td_qau.val();
+                if (quantity !== undefined && quantity.length > 0) {
+                    total_quantity += parseInt(quantity);
+                    let price = tr.find('.item_price').attr('price');
+                    price = Math.floor(price);
+                    tr.find("input.item_price_show").val(getDecimalPay(price));
+
+                    let sum_price = price * parseInt(quantity);
+                    tr.find('.item_sum').val(sum_price);
+                    tr.find('.item_sum_show').val(getDecimalPay(sum_price));
+                    if (quantity > 0) {
+                        total_price += sum_price;
+                    }
+                }
+            }
+        });
+        $('#total_quantity').html(total_quantity);
+        $('#total_price').html(getDecimalPay(total_price));
+    }
+
+    $(window).on('load', function () {
+        $('tr.nested-fields .selectpicker').selectpicker('refresh');
+
+        $('#tb_store_transfer_items .nested-fields select').each(function () {
+            select_input_press($(this), "<%= search_product_path %>", false);
+        });
+
+        $('#btn_store_transfer_item').on('click', function () {
+            setTimeout(set_store_transfer_item, 500);
+        });
+
+        $('#store_transfer_store_from_id').on('change', function () {
+            $('#tb_store_transfer_items .nested-fields').each(function () {
+                $(this).remove();
+            });
+        });
+    });
+
+    function set_store_transfer_item() {
+        let last_tr = "#tb_store_transfer_items .nested-fields:last";
+        $(last_tr).find('.selectpicker').selectpicker('refresh');
+        select_input_press($(last_tr + ' select:first'), "<%= search_product_path %>", false);
+    }
+
+</script>

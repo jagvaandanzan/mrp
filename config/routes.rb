@@ -18,6 +18,7 @@ Rails.application.routes.draw do
 
   post 'search_product', to: 'application#search_product'
   post 'search_fb_answer', to: 'application#search_fb_answer'
+  patch 'get_product_features', to: 'application#get_product_features'
 
   devise_for :admin_users, path: :admin, controllers: {
       sessions: 'admin_users/sessions',
@@ -184,6 +185,12 @@ Rails.application.routes.draw do
       end
     end
     resources :bank_transactions
+    resources :store_transfers do
+      collection do
+        patch 'get_product_features'
+        post 'get_product_balance'
+      end
+    end
     resources :sms_messages, only: [:index, :create, :new]
     namespace :delivery_reports do
       get 'index'
@@ -224,7 +231,6 @@ Rails.application.routes.draw do
 
     resources :product_sales, only: [:index, :create, :new, :show, :edit, :update, :destroy] do
       collection do
-        patch 'get_product_features'
         post 'search_locations'
         post 'edit_location'
         post 'update_location'

@@ -9,7 +9,11 @@ class ProductLocation < ApplicationRecord
         .where(y: y)
         .where(z: z)
   }
-
+  scope :order_xyz, ->() {
+    order(:x)
+        .order(:y)
+        .order(:z)
+  }
   scope :get_quantity, ->(feature_item_id) {
     select("product_locations.*, SUM(product_location_balances.quantity) as quantity")
         .joins(:product_location_balances)

@@ -99,13 +99,15 @@ mn:
     cargo: Ачааны тоо
     box: Хайрцаг
     bank_settings: Санхүү тохиргоо
-    delivery_reports: Хүргэлтийн тайлан
+    delivery: Хүргэлт
+    finance: Санхүү
     delivered_goods: Хүргэсэн бараа
     salary_calculation: Цалин тооцох
     distributing: Түгээлт
     received: Хүлээж авсан
     balance: Үлдэгдэл
     sale_track: Борлуулалтын түүх
+    history: Түүх
     ready_for_shipment: Тээвэрлэхэд бэлэн бараа
     consignment: Ачуулсан
     ordered: Захиалсан

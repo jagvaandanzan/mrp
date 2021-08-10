@@ -1,0 +1,77 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "show" %>
+<% end %>
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('activerecord.models.store_transfer') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <%= link_to t('controls.button.edit'), edit_users_store_transfer_path(@store_transfer), class: 'btn btn-info' %>
+    <%= link_to t('controls.button.delete'), users_store_transfer_path(@store_transfer), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <%= link_to t('titles.back_to_list'), users_store_transfers_path(page: cookies[:store_transfer_page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body">
+
+        <div class="col-md-2 field_div">
+          <b><%= t('activerecord.attributes.store_transfer.code') %>:</b> <%= @store_transfer.id %>
+        </div>
+        <div class="col-md-2 field_div">
+          <b><%= t('activerecord.attributes.store_transfer.date') %>
+            :</b> <%= @store_transfer.date.strftime('%F') %>
+        </div>
+        <div class="col-md-3 field_div">
+          <b>Шилжүүлсэн:</b> <%= @store_transfer.store_from.full_name %>
+        </div>
+        <div class="col-md-3 field_div">
+          <b>Хүлээн авагч:</b> <%= @store_transfer.store_to.full_name %>
+        </div>
+        <div class="col-md-2 field_div">
+          <b><%= t('activerecord.attributes.store_transfer.value') %>
+            :</b> <%= @store_transfer.value %>
+        </div>
+        <div class="col-md-12 group_div m-t-10">
+          <div class="col-md-12 field_div">
+            <b>Бараанууд</b>
+          </div>
+          <div style="clear: both"></div>
+          <div class="col-md-12 field_div">
+            <table style="background: white;" class="table table-bordered">
+              <thead>
+              <tr>
+                <th style="width: 100px"><%= t('activerecord.attributes.product_feature_item.image') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.store_transfer_item.product_id') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.store_transfer_item.feature_item_id') %></th>
+                <th class="va-mid">Тавиур</th>
+                <th class="va-mid" style="width: 100px; font-size: 11px"><%= t('activerecord.attributes.store_transfer_item.quantity') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.store_transfer_item.description') %></th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @store_transfer.store_transfer_items.each do |i| %>
+                <tr>
+                  <td class="va-mid">
+                    <%= product_img_web_link(i) %>
+                  </td>
+                  <td class="va-mid"><%= i.product.name_with_code %></td>
+                  <td class="va-mid"><%= i.feature_item.name %></td>
+                  <td class="va-mid"><%= i.product_location.present? ? i.product_location.name : '' %></td>
+                  <td class="va-mid"><%= i.quantity %></td>
+                  <td class="va-mid"><%= get_currency_mn(i.price) %></td>
+                  <td class="va-mid"><%= get_currency_mn(i.sum_price) %></td>
+                  <td class="va-mid"><%= i.description %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -357,7 +357,7 @@
         reset_input_vals(parentTr);
         if (valid_id(product_id)) {
             Rails.ajax({
-                url: "<%= get_product_features_operators_product_sales_path %>",
+                url: "<%= get_product_features_path %>",
                 type: "PATCH",
                 data: "product_id=" + product_id,
                 success: function (data) {

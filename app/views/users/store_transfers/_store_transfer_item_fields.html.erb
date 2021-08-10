@@ -1,0 +1,47 @@
+<tr class="nested-fields">
+  <th class="image va-mid">
+    <%= product_img_web_link(f.object) %>
+  </th>
+  <td class="va-mid">
+    <%= field_errors f.object, :product_id %>
+    <%= f.collection_select :product_id, Product.search_by_id(f.object.product_id), :id, :full_name,
+                            {:prompt => t('controls.select.none')},
+                            {class: 'form-control selectpicker select_product', onchange: 'func_change_product(this)', "data-live-search": true} %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :feature_item_id %>
+    <%= f.select :feature_item_id, ProductFeatureItem.search(f.object.product_id.presence || nil).collect {|p| [p.name, p.id, {:'data-subtext' => p.balance, product: p.product_id}]},
+                 {:prompt => t('controls.select.none')},
+                 {class: 'form-control selectpicker feature_item', onchange: 'func_change_feature(this)', "data-live-search": true} %>
+  </td>
+  <td class="va-mid">
+    <%= f.text_field :remainder, class: 'form-control field remainder', value: f.object.remainder, readonly: true, placeholder: t('activerecord.attributes.product_sale_item.remainder') %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :product_location_id %>
+    <%= f.collection_select :product_location_id, ProductLocation.order_xyz, :id, :name,
+                            {:prompt => t('controls.select.none')},
+                            {class: 'form-control selectpicker select_product', "data-live-search": true} %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :quantity %>
+    <%= f.number_field :quantity, class: 'form-control field item_quantity', oninput: "calc_total_price()", placeholder: t('activerecord.attributes.store_transfer_item.quantity') %>
+  </td>
+  <td class="va-mid">
+    <%= f.hidden_field :price, class: 'item_price', price: f.object.price %>
+    <%= text_field_tag :price, f.object.price.present? ? get_currency_mn(f.object.price) : nil, {class: 'form-control field item_price_show', readonly: true, placeholder: t('activerecord.attributes.product_sale_item.price')} %>
+  </td>
+  <td class="va-mid">
+    <%= f.hidden_field :sum_price, class: 'item_sum' %>
+    <%= text_field_tag :sum_price, f.object.sum_price.present? ? get_currency_mn(f.object.sum_price) : nil, {class: 'form-control field item_sum_show', readonly: true, placeholder: t('activerecord.attributes.product_sale_item.sum_price')} %>
+  </td>
+  <td class="va-mid">
+    <%= field_errors f.object, :description %>
+    <%= f.text_field :description, class: 'form-control field', placeholder: t('activerecord.attributes.store_transfer_item.description') %>
+  </td>
+  <td class="va-mid remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>

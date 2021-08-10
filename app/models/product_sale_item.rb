@@ -156,16 +156,12 @@ class ProductSaleItem < ApplicationRecord
   def set_product_balance
     if quantity > 0
       if product_balance.present?
-        self.product_balance.update(
-            product: product,
-            feature_item: feature_item,
-            operator: product_sale.created_operator,
-            quantity: -quantity)
+        self.product_balance.update_column(:quantity, -quantity)
       else
-        self.product_balance = ProductBalance.create(product: product,
-                                                     feature_item: feature_item,
-                                                     operator: product_sale.created_operator,
-                                                     quantity: -quantity)
+        self.product_balance = ProductBalance.new(product: product,
+                                                  feature_item: feature_item,
+                                                  operator: product_sale.created_operator,
+                                                  quantity: -quantity)
       end
     end
   end
