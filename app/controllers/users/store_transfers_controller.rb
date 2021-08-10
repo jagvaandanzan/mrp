@@ -7,9 +7,10 @@ class Users::StoreTransfersController < Users::BaseController
     @product_name = params[:product_name]
     @store_to = params[:store_to]
     @store_from = params[:store_from]
+    @user_id = params[:user_id]
     @value = params[:value]
 
-    @store_transfers = StoreTransfer.search(@start, @finish, @product_name, @store_to, @store_from, @value).page(params[:page])
+    @store_transfers = StoreTransfer.search(@start, @finish, @product_name, @store_to, @store_from, @user_id, @value).page(params[:page])
     cookies[:store_transfer_page_number] = params[:page]
   end
 

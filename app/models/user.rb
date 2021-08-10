@@ -34,6 +34,9 @@ class User < ApplicationRecord
   scope :created_at_desc, -> {
     order(created_at: :desc)
   }
+  scope :order_name, -> {
+    order(:name)
+  }
 
   scope :by_position_id, ->(position_id) {
     where(user_position_id: position_id)

@@ -17,14 +17,17 @@
       <div class="col-md-2 search">
         <%= text_field_tag :product_name, @product_name, {class: 'form-control', placeholder: t('filters.by_product')} %>
       </div>
-
-      <div class="col-md-3 search">
+      <div class="col-md-2 search">
         <%= f.collection_select :store_from, Storeroom.order_code, :id, :full_name,
                                 {:selected => @store_from, :include_blank => 'Шилжүүлсэн'}, {class: 'form-control selectpicker'} %>
       </div>
-      <div class="col-md-3 search">
+      <div class="col-md-2 search">
         <%= f.collection_select :store_to, Storeroom.order_code, :id, :full_name,
                                 {:selected => @store_to, :include_blank => 'Хүлээн авагч'}, {class: 'form-control selectpicker'} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= f.collection_select :user_id, User.order_name, :id, :name,
+                                {:selected => @user_id, :include_blank => 'Бүртгэсэн'}, {class: 'form-control selectpicker'} %>
       </div>
       <div class="col-md-1 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
