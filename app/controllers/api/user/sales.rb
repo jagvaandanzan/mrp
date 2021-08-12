@@ -71,7 +71,7 @@ module API
                       ProductLocationBalance.create(x: 1, y: 1, z: 2,
                                                     product_feature_item: ret.feature_item,
                                                     salesman_return: ret,
-                                                    quantity: quantity)
+                                                    quantity: ret.quantity)
                     }
                     return_sign.send_notification_to_salesman
                     present :sign_at, return_sign.updated_at
