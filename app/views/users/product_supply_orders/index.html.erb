@@ -4,7 +4,7 @@
 <% end %>
 <div class="content-wrapper">
 
-  <div class="col-md-12 m-t-10 m-b-10">
+  <div class="col-md-12 m-t-10 m-b-5 navbar navbar-default navbar-fixed-top my-own-style">
     <%= form_with url: users_product_supply_orders_path, method: "get", class: "", local: true do |f| %>
       <div class="col-md-2 search">
         <div id="search-date" class="form-control search">
@@ -28,23 +28,24 @@
         <%= f.select :is_equal, options_for_select([['Тэнцүү', true], ['Зөрүүтэй', false]], @is_equal), {:prompt => 'Захиалгын авалт'}, {class: 'form-control'} %>
       </div>
       <div class="col-md-5 search">
-        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left m-l-10' %>
-        <%=link_to 'Export to Excel', to_excel_users_product_supply_orders_path(by_start: @by_start, by_end: @by_end, by_code: @by_code, by_product_name: @by_product_name, order_type: @order_type, is_equal: @is_equal, format: 'xlsx') ,:class => "btn btn-primary m-l-10" %>
+        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left m-l-5' %>
+        <%=link_to 'Export to Excel', to_excel_users_product_supply_orders_path(by_start: @by_start, by_end: @by_end, by_code: @by_code, by_product_name: @by_product_name, order_type: @order_type, is_equal: @is_equal, format: 'xlsx') ,:class => "btn btn-primary m-l-5" %>
         <% if can? :create, ProductSupplyOrder %>
-          <%= link_to t('titles.product_sample'), new_users_product_supply_order_path(order_type: 1), class: 'btn btn-warning pull-right m-l-10' %>
-          <%= link_to t('activerecord.models.product_supply_order'), new_users_product_supply_order_path(order_type: 0), class: 'btn btn-warning pull-right' %>
+          <%= link_to t('titles.product_sample'), new_users_product_supply_order_path(order_type: 1), class: 'btn btn-warning m-l-5' %>
+          <%= link_to t('activerecord.models.product_supply_order'), new_users_product_supply_order_path(order_type: 0), class: 'btn btn-warning' %>
         <% end %>
       </div>
     <% end %>
   </div>
 
-  <section class="content container-fluid">
+  <section class="content container-fluid m-t-30">
     <div class="row">
       <div class="col-xs-12">
         <div class="box" id="div_list">
-          <div class="box-body table-responsive no-padding">
+          <div class="box-body table-responsive no-padding" id="fixed_div">
             <%= render 'layouts/flash_message' %>
-            <table id='supply_table' class="table table-hover table-bordered" style="width: 3000px">
+            <table id='supply_table' class="table table-hover table-bordered">
+              <thead>
               <tr>
                 <th class="va-mid text-center" colspan="11">Барааны мэдээлэл</th>
                 <th class="va-mid text-center" colspan="4">Худалдан авсан</th>
@@ -55,9 +56,9 @@
               <tr>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.code') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.order_type') %></th>
-                <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.status') %></th>
+                <th class="va-mid text-center" style="min-width: 150px"><%= t('activerecord.attributes.product_supply_order.status') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.product_code') %></th>
-                <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_name') %></th>
+                <th class="va-mid" style="min-width: 300px"><%= t('activerecord.attributes.product_supply_order.product_name') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_feature') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.exchange') %></th>
@@ -79,6 +80,8 @@
                 <th class="va-mid text-center">Нийт зардал</th>
                 <th class="va-mid text-center"><%=t('activerecord.attributes.product_income.income_date') %></th>
               </tr>
+              </thead>
+              <tbody>
               <% @product_supply_orders.each do |i| %>
                 <% order_items = i.product_supply_order_items
                    order_items_count = order_items.count > 0 ? order_items.count : 1 %>
@@ -119,8 +122,8 @@
                         <% end
                            total_price += "#{i.get_currency supply_feature.price}" %>
                         <% count+=1
-                        name += supply_feature.feature_item.name
-                        name += ', '%>
+                           name += supply_feature.feature_item.name
+                           name += ', '%>
                       <% }
                          end %>
                     <%= count %>
@@ -221,11 +224,46 @@
                     </tr>
                   <% end } %>
               <% end %>
+              <tr>
+                <%
+                  supply_order_ids = @product_supply_orders_x.pluck(:id)
+                  order_item_ids = ProductSupplyOrderItem.by_supply_id(supply_order_ids).pluck(:id)
+                  quantity = ProductSupplyFeature.by_order_item(order_item_ids).sum(:quantity)
+                  quantity_lo = ProductIncomeItem.by_feature_ids(ProductSupplyFeature.by_order_item(order_item_ids).pluck(:id)).sum(:quantity)
+                  sum_price = ProductSupplyFeature.by_order_item(order_item_ids).sum(:sum_price)
+                  sum_price_lo = ProductSupplyFeature.by_order_item(order_item_ids).sum(:sum_price_lo)
+                  quantity_log = ProductSupplyFeature.by_order_item(order_item_ids).sum(:quantity_lo)
+                  cost_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:cost)
+                  quantity_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:quantity)
+                  cargo_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:cargo)
+                  cost_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:cost)
+                  quantity_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:quantity)
+                  cargo_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:cargo)
+                %>
+                <td colspan="8"><strong>Нийт: <%=@product_supply_orders_x.count %></strong></td>
+                <td class="va-mid text-center"><%="#{quantity}/#{quantity_lo}"  %></td>
+                <td class="text-center"> <%= sum_price %></td>
+                <td class="text-center"></td>
+                <td class="text-center"></td>
+                <td class="text-center"><%=quantity_log %></td>
+                <td class="text-center"><%=sum_price_lo %></td>
+                <td class="text-center"></td>
+                <td class="text-center"></td>
+                <td class="text-center"><%=cost_er %></td>
+                <td class="text-center"><%=quantity_er %></td>
+                <td class="text-center"><%=cargo_er %></td>
+                <td class="text-center"></td>
+                <td class="text-center"><%=cost_ub %></td>
+                <td class="text-center"><%=quantity_ub %></td>
+                <td class="text-center"><%=cargo_ub %></td>
+                <td class="text-center"><%= cost_er + cost_ub %></td>
+              </tr>
+              </tbody>
             </table>
           </div>
         </div>
 
-        <%= paginate @product_supply_orders %>
+        <%#= paginate @product_supply_orders %>
       </div>
     </div>
   </section>
@@ -233,18 +271,43 @@
 <%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>
 <style>
 
-  .bg-1 {
-    font-weight: bold;
-    color: blue;
-  }
+    .my-own-style {
+        margin-left: 50px;
+        margin-left: 50px;
+        top: 7%;
+    }
+    table{
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
 
-  .bg-2 {
-    font-weight: bold;
-    color: orangered;
-  }
+    th {
+        position: sticky;
+        top: 0px;
+        background: white;
+        border: #F7F7F7;
+    }
 
-  .bg-3 {
-    font-weight: bold;
-    color: darkgreen;
-  }
+    #fixed_div {
+        border: 1px solid #ddd;
+        width: 100%;
+        height: 100vh;
+        overflow-y: scroll;
+    }
+
+    .bg-1 {
+        font-weight: bold;
+        color: blue;
+    }
+
+    .bg-2 {
+        font-weight: bold;
+        color: orangered;
+    }
+
+    .bg-3 {
+        font-weight: bold;
+        color: darkgreen;
+    }
 </style>
