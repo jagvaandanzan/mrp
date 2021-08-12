@@ -6,6 +6,7 @@ class ProductBalance < ApplicationRecord
   belongs_to :sale_direct, :class_name => "ProductSaleDirect", optional: true
   belongs_to :salesman_return, optional: true
   belongs_to :transfer_item, :class_name => "StoreTransferItem", optional: true
+  belongs_to :direct_sale_item, optional: true
   belongs_to :user, optional: true
   belongs_to :operator, optional: true
 

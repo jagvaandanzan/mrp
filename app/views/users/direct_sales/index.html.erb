@@ -1,0 +1,84 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<div class="content-wrapper">
+
+  <div class="col-md-12 m-t-10 m-b-10">
+    <%= form_with url: users_direct_sales_path, method: "get", class: "", local: true do |f| %>
+      <div class="col-md-2 search">
+        <div id="search-date" class="form-control search">
+          <i class="fa fa-calendar fa-lg p-r-0"></i>
+          <span><%= t("filters.by_date") %>...</span>
+          <%= f.hidden_field :start, value: @start %>
+          <%= f.hidden_field :finish, value: @finish %>
+        </div>
+      </div>
+      <div class="col-md-2 search">
+        <%= number_field_tag :id, @id, {class: 'form-control', placeholder: 'Баримтын #'} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= text_field_tag :product_name, @product_name, {class: 'form-control', placeholder: t('filters.by_product')} %>
+      </div>
+      <div class="col-md-2 search">
+        <%= f.collection_select :sale_type, DirectSaleType.order_code, :id, :full_name,
+                                {:selected => @sale_type, :include_blank => 'Борлуулалтын төрөл'}, {class: 'form-control selectpicker'} %>
+      </div>
+      <div class="col-md-1 search">
+        <%= number_field_tag :phone, @phone, {class: 'form-control', placeholder: t('filters.phone')} %>
+      </div>
+      <div class="col-md-1 search">
+        <%= check_box_tag :tax, @tax ? 1 : 0, @tax %>&nbsp;НӨАТ
+      </div>
+      <div class="col-md-1 search">
+        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
+      </div>
+      <div class="col-md-1 search text-right">
+        <%= link_to t('controls.button.create'), new_users_direct_sale_path, class: 'btn btn-warning' %>
+      </div>
+    <% end %>
+  </div>
+
+  <section class="content container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box" id="div_list">
+          <div class="box-body table-responsive no-padding table-search">
+            <%= render 'layouts/flash_message' %>
+            <table class="table table-hover table-bordered">
+              <tr>
+                <th><%= t('activerecord.attributes.direct_sale.code') %></th>
+                <th><%= t('activerecord.attributes.direct_sale.date') %></th>
+                <th>Борлуулалтын төрөл</th>
+                <th>Бараа</th>
+                <th>Худалдан авагч</th>
+                <th>Нийт дүн</th>
+                <th>Хөнгөлөлт</th>
+                <th>НӨАТ</th>
+                <th><%= t('activerecord.attributes.direct_sale.value') %></th>
+                <th>Бүртгэсэн</th>
+              </tr>
+              <% @direct_sales.each do |direct_sale| %>
+                <tr>
+                  <td class="va-mid text-center"><%= link_to direct_sale.id, users_direct_sale_path(direct_sale) %></td>
+                  <td class="va-mid"><%= direct_sale.date.strftime('%F') %></td>
+                  <td class="va-mid"><%= direct_sale.sale_type.full_name %></td>
+                  <td class="va-mid"><%= direct_sale.product_count %></td>
+                  <td class="va-mid"><%= direct_sale.buyer %></td>
+                  <td class="va-mid"><%= get_currency_mn(direct_sale.product_price) %></td>
+                  <td class="va-mid"><%= direct_sale.discount.present? ? "#{direct_sale.discount}%" : "" %></td>
+                  <td class="va-mid"><%= yes_no direct_sale.tax %></td>
+                  <td class="va-mid"><%= direct_sale.value %></td>
+                  <td class="va-mid"><%= direct_sale.owner.name %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+
+        <%= paginate @direct_sales %>
+      </div>
+    </div>
+  </section>
+</div>
+<%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'start', finish_id: 'finish' %>

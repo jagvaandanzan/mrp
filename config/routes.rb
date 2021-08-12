@@ -191,6 +191,11 @@ Rails.application.routes.draw do
         post 'get_product_balance'
       end
     end
+    resources :direct_sales do
+      collection do
+        post 'get_product_balance'
+      end
+    end
     resources :sms_messages, only: [:index, :create, :new]
     namespace :delivery_reports do
       get 'index'

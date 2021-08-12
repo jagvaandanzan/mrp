@@ -1,0 +1,263 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "form" %>
+<% end %>
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1><%= t('activerecord.models.direct_sale') + t(@direct_sale.persisted? ? 'titles.edit' : 'titles.add') %></h1>
+  </section>
+
+  <section class="content">
+    <div class="box box-info">
+      <%= form_with model: @direct_sale, url: @direct_sale.persisted? ? users_direct_sale_path : users_direct_sales_path,
+                    method: @direct_sale.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
+        <%= form_body do %>
+          <div class="col-md-12 p-0">
+            <div class="row">
+              <div class="col-md-2 field_div">
+                <%= f.label :code, class: 'control-label' %>
+                <div>
+                  <%= f.text_field :code, value: @direct_sale.persisted? ? @direct_sale.id : @direct_sale.code, class: 'form-control', readonly: true, placeholder: t('activerecord.attributes.direct_sale.code') %>
+                </div>
+              </div>
+              <div class="col-md-2 field_div">
+                <%= f.label :date, class: 'control-label' %>
+                <div class="input-append date input-group date <%= get_error_class(@direct_sale, :date) %>" data-provide="datepicker">
+                  <%= field_errors(@direct_sale, :date) %>
+                  <%= f.text_field :date, value: @direct_sale.date.strftime('%F'), class: 'field form-control', placeholder: t('activerecord.attributes.direct_sale.date') %>
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2 field_div">
+                <%= f.label :tax, class: 'control-label' %>
+                <div><%= f.check_box :tax %></div>
+              </div>
+              <div class="col-md-3 field_div">
+                <%= f.label :sale_type_id, class: 'control-label' %>
+                <div class="<%= get_error_class(@direct_sale, :sale_type_id) %>">
+                  <%= field_errors(@direct_sale, :sale_type_id) %>
+                  <%= f.collection_select(:sale_type_id, DirectSaleType.order_code, :id, :full_name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'}) %>
+                </div>
+              </div>
+              <div class="col-md-3 field_div sale_type none" id="div_purchaser_id">
+                <%= f.label :purchaser_id, class: 'control-label' %>
+                <div class="<%= get_error_class(@direct_sale, :purchaser_id) %>">
+                  <%= field_errors(@direct_sale, :purchaser_id) %>
+                  <%= f.collection_select(:purchaser_id, Purchaser.order_code, :id, :full_name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'}) %>
+                </div>
+              </div>
+              <div class="col-md-3 field_div sale_type none" id="div_user_id">
+                <%= f.label :user_id, class: 'control-label' %>
+                <div class="<%= get_error_class(@direct_sale, :user_id) %>">
+                  <%= field_errors(@direct_sale, :user_id) %>
+                  <%= f.collection_select(:user_id, User.order_name, :id, :name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true}) %>
+                </div>
+              </div>
+              <div class="col-md-3 field_div sale_type none" id="div_phone">
+                <%= f.label :phone, class: 'control-label' %>
+                <div class="<%= get_error_class(@direct_sale, :phone) %>">
+                  <%= field_errors(@direct_sale, :phone) %>
+                  <%= f.number_field :phone, step: 1, class: 'form-control', placeholder: t('activerecord.attributes.direct_sale.phone') %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2 field_div">
+              <%= f.label :price_type, class: 'control-label' %>
+              <div class="<%= get_error_class(@direct_sale, :price_type) %>">
+                <%= field_errors(@direct_sale, :price_type) %>
+                <%= f.select :price_type, DirectSale.price_types_i18n.keys.map {|k| [DirectSale.price_types_i18n[k], k]}, {}, {class: 'form-control selectpicker'} %>
+              </div>
+            </div>
+            <div class="col-md-2 field_div">
+              <%= f.label :discount, class: 'control-label' %>
+              <div class="<%= get_error_class(@direct_sale, :discount) %>">
+                <%= field_errors(@direct_sale, :discount) %>
+                <%= f.number_field :discount, step: 1, class: 'form-control', placeholder: t('activerecord.attributes.direct_sale.discount') %>
+              </div>
+            </div>
+            <div class="col-md-2 field_div">
+              <%= f.label :cost, class: 'control-label' %>
+              <div class="<%= get_error_class(@direct_sale, :cost) %>">
+                <%= field_errors(@direct_sale, :cost) %>
+                <%= f.number_field :cost, step: 1, class: 'form-control', placeholder: t('activerecord.attributes.direct_sale.cost') %>
+              </div>
+            </div>
+            <div class="col-md-3 field_div">
+              <%= f.label :cost_note, class: 'control-label' %>
+              <div class="<%= get_error_class(@direct_sale, :cost_note) %>">
+                <%= field_errors(@direct_sale, :cost_note) %>
+                <%= f.text_field :cost_note, class: 'form-control', placeholder: t('activerecord.attributes.direct_sale.cost_note') %>
+              </div>
+            </div>
+            <div class="col-md-3 field_div">
+              <%= f.label :value, class: 'control-label' %>
+              <div class="<%= get_error_class(@direct_sale, :value) %>">
+                <%= field_errors(@direct_sale, :value) %>
+                <%= f.text_field :value, class: 'form-control', placeholder: t('activerecord.attributes.direct_sale.value') %>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 field_div">
+            <label class="control-label" for="direct_sale_direct_sale_items"></label>
+            <div class="cocoon-nested-form">
+              <div class="<%= get_error_class(@direct_sale, :direct_sale_items) %>">
+                <%= field_errors(@direct_sale, :direct_sale_items) %>
+                <table class="table table-bordered" id="tb_direct_sale_items">
+                  <tr>
+                    <th class="va-mid" class="va-mid"><%= t('activerecord.attributes.product_feature_item.image') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.direct_sale_item.product_id') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.direct_sale_item.feature_item_id') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.remainder') %></th>
+                    <th class="va-mid">Тавиур</th>
+                    <th class="va-mid" style="width: 100px; font-size: 11px"><%= t('activerecord.attributes.direct_sale_item.quantity') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
+                    <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.discount') %></th>
+                    <th class="va-mid">Төлөх дүн</th>
+                    <th width="50px"></th>
+                  </tr>
+                  <%= f.fields_for :direct_sale_items do |m| %>
+                    <%= render 'direct_sale_item_fields', :f => m %>
+                  <% end %>
+                </table>
+                <table class="table table-bordered">
+                  <tr>
+                    <td style="width: 40%"></td>
+                    <td style="width: 20%">Нийт тоо: <span id="total_quantity"></span></td>
+                    <td>Нийт дүн: <span id="total_price"></span></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="links item_append">
+                <%= link_to_add_association f, :direct_sale_items, data: {association_insertion_node: '#tb_direct_sale_items', association_insertion_method: :append} do %>
+                  <%= nested_add_btn('btn_direct_sale_item') %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>
+<%= render 'shared/suggestion_search' %>
+<%= render 'shared/search_product_js' %>
+<script>
+    function reset_input_vals(tr) {
+        tr.find("input.item_sum").val("");
+        tr.find("input.item_price").val("");
+    }
+
+    function func_change_feature(select) {
+        let product_id = $(select).find('option:selected').attr("product");
+        let parentTr = select_parent(select);
+        reset_input_vals(parentTr);
+
+        let feature_id = $(select).val();
+        if (valid_id(feature_id) && valid_id(product_id)) {
+            Rails.ajax({
+                url: "<%= get_product_balance_users_direct_sales_path %>",
+                type: "POST",
+                data: "product_id=" + product_id + "&feature_item_id=" + feature_id + "&store_from_id=" + $('#direct_sale_store_from_id').val(),
+                success: function (data) {
+                    let p = parentTr.find("input.item_price");
+                    p.val(data.price);
+                    p.attr('price', data.price);
+                    parentTr.find("input.item_price_show").val(getDecimalPay(data.price));
+                    parentTr.find('.remainder').val(data.balance);
+                    parentTr.find('.image a').html("<img src='" + data.tumb + "', class='tumb'>");
+                    parentTr.find('.desk').val(data.desk);
+                    calc_total_price();
+                }
+            });
+        }
+    }
+
+    function calc_total_price() {
+        let total_price = 0, total_quantity = 0;
+        $('#tb_direct_sale_items tr.nested-fields').each(function () {
+            let tr = $(this);
+            if (tr.is(':visible')) {
+                let td_qau = tr.find('.item_quantity');
+                let quantity = td_qau.val();
+                if (quantity !== undefined && quantity.length > 0) {
+                    total_quantity += parseInt(quantity);
+                    let price = tr.find('.item_price').attr('price');
+                    price = Math.floor(price);
+                    tr.find("input.item_price_show").val(getDecimalPay(price));
+
+                    let sum_price = price * parseInt(quantity);
+                    tr.find('.item_sum').val(sum_price);
+                    tr.find('.item_sum_show').val(getDecimalPay(sum_price));
+                    let pay_price = sum_price;
+                    const discount = tr.find('.item_discount').val();
+                    if (discount.length > 0) {
+                        pay_price = sum_price - ((parseInt(discount) * sum_price) / 100);
+                    }
+                    tr.find('.pay_price').val(getDecimalPay(pay_price));
+                    tr.find('.item_pay').val(pay_price);
+                    if (quantity > 0) {
+                        total_price += pay_price;
+                    }
+                }
+            }
+        });
+        $('#total_quantity').html(total_quantity);
+        $('#total_price').html(getDecimalPay(total_price));
+    }
+
+    $(window).on('load', function () {
+        $('.selectpicker').selectpicker('refresh');
+
+        $('#tb_direct_sale_items .nested-fields select').each(function () {
+            select_input_press($(this), "<%= search_product_path %>", false);
+        });
+
+        $('#btn_direct_sale_item').on('click', function () {
+            setTimeout(set_direct_sale_item, 500);
+        });
+        $('select#direct_sale_sale_type_id').on('change', function () {
+            if ($(this).val().length > 0) {
+                const t = parseInt($(this).val());
+                $('.sale_type').each(function () {
+                    $(this).val("").addClass('none');
+                });
+                if (t === 1) {
+                    $('#div_purchaser_id').removeClass('none');
+                } else if (t === 2) {
+                    $('#div_phone').removeClass('none');
+                } else if (t === 3) {
+                    $('#div_user_id').removeClass('none');
+                }
+            }
+        });
+        $('#direct_sale_discount').on('change', function () {
+            const discount = $(this).val();
+            if (discount.length > 0) {
+                $('#tb_direct_sale_items tr.nested-fields').each(function () {
+                    let tr = $(this);
+                    if (tr.is(':visible')) {
+                        tr.find('.item_discount').val(discount);
+                    }
+                });
+                calc_total_price();
+            }
+        });
+    });
+
+    function set_direct_sale_item() {
+        let last_tr = "#tb_direct_sale_items .nested-fields:last";
+        $(last_tr).find('.selectpicker').selectpicker('refresh');
+        $(last_tr).find('.item_discount').val($('#direct_sale_discount').val());
+        select_input_press($(last_tr + ' select:first'), "<%= search_product_path %>", false);
+    }
+
+</script>

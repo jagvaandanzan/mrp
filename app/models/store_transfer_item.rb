@@ -27,11 +27,7 @@ class StoreTransferItem < ApplicationRecord
       if store_transfer.store_from_id == 1 || store_transfer.store_to_id == 1
         q = store_transfer.store_from_id == 1 ? -quantity : quantity
         if product_balance.present?
-          self.product_balance.update(
-              product: product,
-              feature_item: feature_item,
-              user: store_transfer.user,
-              quantity: q)
+          self.product_balance.update_column(:quantity, q)
         else
           self.product_balance = ProductBalance.new(product: product,
                                                     feature_item: feature_item,

@@ -159,12 +159,10 @@ mn:
         user_remove: Хэрэглэгч устгасан
         to_archive: Хариулаагүй
         auto_phone: MRP бүртгэсэн
-    location:
-      distance:
-        distance_a: A
-        distance_b: B
-        distance_c: C
-        distance_d: D
+    direct_sale:
+      price_type:
+        particle: Ширхэгийн
+        wholesale: Бөөнөөр
     bank_transaction:
       exchange:
         cny: Юань
@@ -235,6 +233,7 @@ mn:
       salesman: Түгээгч
       warehouse: Агуулах
       store_transfer: Шилжүүлгэ
+      direct_sale: Борлуулалт
     attributes:
       admin_user:
         email: Имэйл
@@ -808,6 +807,23 @@ mn:
         feature_item_id: Шинж чанар
         quantity: Тоо хэмжээ
         description: Тайлбар
+      direct_sale:
+        code: Баримтын #
+        date: Огноо
+        sale_type_id: Харилцах данс
+        purchaser_id: Худалдан авагч
+        user_id: Ажилтан
+        phone: Утас
+        price_type: Зарах үнэ
+        discount: Хөнгөлөлт
+        cost: Зардал
+        cost_note: Зардалын тайлбар
+        value: Гүйлгээний утга
+        tax: НӨАТ
+      direct_sale_item:
+        product_id: Барааны нэр, код
+        feature_item_id: Шинж чанар
+        quantity: Тоо хэмжээ
     errors:
       messages:
         blank: " хоосон байна!"

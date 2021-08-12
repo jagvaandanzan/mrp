@@ -1,5 +1,5 @@
 class Users::StoreTransfersController < Users::BaseController
-  before_action :set_store_transfer, only: [:edit, :update, :show, :update_status, :destroy]
+  before_action :set_store_transfer, only: [:edit, :update, :show, :destroy]
 
   def index
     @start = params[:start]
@@ -35,8 +35,14 @@ class Users::StoreTransfersController < Users::BaseController
   end
 
   def edit
-    @store_transfer.store_transfer_items.each do |item|
-      item.remainder = item.feature_item.balance + item.quantity
+    if @store_transfer.store_from_id == 1
+      @store_transfer.store_transfer_items.each do |item|
+        item.remainder = item.feature_item.balance + item.quantity
+      end
+    else
+      @store_transfer.store_transfer_items.each do |item|
+        item.remainder = StoreTransferBalance.balance_sum(item.product_id, item.feature_item_id, @store_transfer.store_from_id) + item.quantity
+      end
     end
   end
 
@@ -52,9 +58,6 @@ class Users::StoreTransfersController < Users::BaseController
 
   def update
     @store_transfer.attributes = store_transfer_params
-    check_approved(@store_transfer)
-    @store_transfer.operator = current_operator
-
     if @store_transfer.save
       flash[:success] = t('alert.info_updated')
       redirect_to action: :index
@@ -91,7 +94,8 @@ class Users::StoreTransfersController < Users::BaseController
     render json: {balance: store_from_id == 1 ? feature_item.balance : StoreTransferBalance.balance_sum(params[:product_id], feature_item_id, store_from_id),
                   price: feature_item.price.presence || 0,
                   img: feature_item.img.present? ? feature_item.img.url : '/assets/no-image.png',
-                  tumb: feature_item.img.present? ? feature_item.img.url(:tumb) : '/assets/no-image.png', }
+                  tumb: feature_item.img.present? ? feature_item.img.url(:tumb) : '/assets/no-image.png',
+                  desk: feature_item.desk}
   end
 
   private

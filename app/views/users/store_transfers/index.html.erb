@@ -58,7 +58,7 @@
               <% @store_transfers.each do |transfer| %>
                 <tr>
                   <td class="va-mid text-center"><%= link_to transfer.id, users_store_transfer_path(transfer) %></td>
-                  <td class="va-mid"><%= transfer.date.strftime('%F %R') %></td>
+                  <td class="va-mid"><%= transfer.date.strftime('%F') %></td>
                   <td class="va-mid"><%= transfer.store_from.full_name %></td>
                   <td class="va-mid"><%= transfer.store_to.full_name %></td>
                   <td class="va-mid"><%= transfer.product_count %></td>

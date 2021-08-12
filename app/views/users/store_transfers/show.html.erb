@@ -67,6 +67,12 @@
                   <td class="va-mid"><%= i.description %></td>
                 </tr>
               <% end %>
+              <tr>
+                <td colspan="4" class="text-right">Нийт</td>
+                <td><%= @store_transfer.product_count %></td>
+                <td></td>
+                <td colspan="2"><%= get_currency_mn @store_transfer.product_price %></td>
+              </tr>
               </tbody>
             </table>
           </div>

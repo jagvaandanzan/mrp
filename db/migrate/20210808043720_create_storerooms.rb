@@ -1,8 +1,8 @@
 class CreateStorerooms < ActiveRecord::Migration[5.2]
   def change
     create_table :storerooms do |t|
-      t.string :name
       t.integer :code
+      t.string :name
 
       t.datetime :deleted_at
       t.timestamps

@@ -1,0 +1,109 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "show" %>
+<% end %>
+<div class="content-wrapper">
+  <%= render 'layouts/flash_message' %>
+  <section class="content-header align-left padding-15">
+    <h1> <%= t('activerecord.models.direct_sale') %> </h1>
+  </section>
+
+  <div class="action-buttons">
+    <%= link_to t('controls.button.edit'), edit_users_direct_sale_path(@direct_sale), class: 'btn btn-info' %>
+    <%= link_to t('controls.button.delete'), users_direct_sale_path(@direct_sale), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
+    <%= link_to t('titles.back_to_list'), users_direct_sales_path(page: cookies[:direct_sale_page_number]), {class: "btn blck-btn"} %>
+  </div>
+  <%= show_body do %>
+    <div class="box">
+      <div class="box-body">
+        <div class="row">
+          <div class="col-md-2 field_div">
+            <b><%= t('activerecord.attributes.direct_sale.code') %>:</b> <%= @direct_sale.id %>
+          </div>
+          <div class="col-md-2 field_div">
+            <b><%= t('activerecord.attributes.direct_sale.date') %>
+              :</b> <%= @direct_sale.date.strftime('%F') %>
+          </div>
+          <div class="col-md-2 field_div">
+            <b><%= t('activerecord.attributes.direct_sale.tax') %>
+              :</b> <%= yes_no @direct_sale.tax %>
+          </div>
+          <div class="col-md-3 field_div">
+            <b><%= t('activerecord.attributes.direct_sale.sale_type_id') %>
+              :</b> <%= @direct_sale.sale_type.full_name %>
+          </div>
+          <div class="col-md-3 field_div">
+            <b>Худалдан авагч:</b> <%= @direct_sale.buyer %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2 field_div">
+            <b><%= t('activerecord.attributes.direct_sale.price_type') %>
+              :</b> <%= @direct_sale.price_type_i18n %>
+          </div>
+          <div class="col-md-2 field_div">
+            <b><%= t('activerecord.attributes.direct_sale.discount') %>
+              :</b> <%= @direct_sale.discount %>%
+          </div>
+          <div class="col-md-2 field_div">
+            <b><%= t('activerecord.attributes.direct_sale.cost') %>
+              :</b> <%= get_currency_mn @direct_sale.cost %>%
+          </div>
+          <div class="col-md-3 field_div">
+            <b><%= t('activerecord.attributes.direct_sale.cost_note') %>
+              :</b> <%= @direct_sale.cost_note %>%
+          </div>
+          <div class="col-md-3 field_div">
+            <b><%= t('activerecord.attributes.direct_sale.value') %>
+              :</b> <%= @direct_sale.value %>%
+          </div>
+        </div>
+        <div class="col-md-12 group_div m-t-10">
+          <div class="col-md-12 field_div">
+            <b>Бараанууд</b>
+          </div>
+          <div style="clear: both"></div>
+          <div class="col-md-12 field_div">
+            <table style="background: white;" class="table table-bordered">
+              <thead>
+              <tr>
+                <th style="width: 100px"><%= t('activerecord.attributes.product_feature_item.image') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.direct_sale_item.product_id') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.direct_sale_item.feature_item_id') %></th>
+                <th class="va-mid">Тавиур</th>
+                <th class="va-mid" style="width: 100px; font-size: 11px"><%= t('activerecord.attributes.direct_sale_item.quantity') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.price') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
+                <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.discount') %></th>
+                <th class="va-mid">Төлөх дүн</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @direct_sale.direct_sale_items.each do |i| %>
+                <tr>
+                  <td class="va-mid">
+                    <%= product_img_web_link(i) %>
+                  </td>
+                  <td class="va-mid"><%= i.product.name_with_code %></td>
+                  <td class="va-mid"><%= i.feature_item.name %></td>
+                  <td class="va-mid"><%= i.feature_item.desk %></td>
+                  <td class="va-mid"><%= i.quantity %></td>
+                  <td class="va-mid"><%= get_currency_mn(i.price) %></td>
+                  <td class="va-mid"><%= get_currency_mn(i.sum_price) %></td>
+                  <td class="va-mid"><%= i.discount %></td>
+                  <td class="va-mid"><%= get_currency_mn(i.pay_price) %></td>
+                </tr>
+              <% end %>
+              <tr>
+                <td colspan="4" class="text-right">Нийт</td>
+                <td><%= @direct_sale.product_count %></td>
+                <td colspan="3"></td>
+                <td><%= get_currency_mn @direct_sale.product_price %></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
