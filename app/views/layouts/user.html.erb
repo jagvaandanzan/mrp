@@ -13,13 +13,12 @@
   <%= javascript_include_tag 'application' %>
 
 </head>
-<%sidebar = "" %>
-<% if request.path == "/user/product_supply_orders" %>
-  <% sidebar = "sidebar-collapse" %>
-<%else%>
-  <% sidebar = "" %>
-<%end %>
-<body class="hold-transition skin-blue sidebar-mini <%=sidebar %>">
+<% sidebar = if request.path == "/user/product_supply_orders"
+               "sidebar-collapse"
+             else
+               ""
+             end %>
+<body class="hold-transition skin-blue sidebar-mini <%= sidebar %>">
 
 <%= render 'layouts/user/header' %>
 <%= render 'layouts/user/menu' %>
