@@ -3,8 +3,8 @@ class Users::ProductSupplyOrdersController < Users::BaseController
   before_action :set_product_supply_order, only: [:edit, :show, :update, :destroy, :to_product]
 
   def index
-    @by_start = params[:by_start]
-    @by_end = params[:by_end]
+    @by_start = params[:by_start] || Time.now.beginning_of_month.prev_month(1).strftime("%F")
+    @by_end = params[:by_end] || Time.now.end_of_month.prev_month(1).strftime("%F")
     @by_code = params[:by_code]
     @by_product_name = params[:by_product_name]
     @order_type = params[:order_type]

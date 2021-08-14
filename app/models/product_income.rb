@@ -27,6 +27,10 @@ class ProductIncome < ApplicationRecord
     items
   }
 
+  scope :by_id, ->(ids){
+    where("id IN (?)", ids)
+  }
+
   scope :search, ->(code, start, finish) {
     items = income_date_desc
     items = items.where('id LIKE :value', value: "%#{code}%") if code.present?
