@@ -21,7 +21,7 @@
         </div>
         <div class="col-md-2 field_div">
           <b><%= t('activerecord.attributes.store_transfer.date') %>
-            :</b> <%= @store_transfer.date.strftime('%F') %>
+            :</b> <%= @store_transfer.date.strftime('%F %R') %>
         </div>
         <div class="col-md-3 field_div">
           <b>Шилжүүлсэн:</b> <%= @store_transfer.store_from.full_name %>
@@ -60,7 +60,7 @@
                   </td>
                   <td class="va-mid"><%= i.product.name_with_code %></td>
                   <td class="va-mid"><%= i.feature_item.name %></td>
-                  <td class="va-mid"><%= i.product_location.present? ? i.product_location.name : '' %></td>
+                  <td class="va-mid"><%= i.product_location.name %></td>
                   <td class="va-mid"><%= i.quantity %></td>
                   <td class="va-mid"><%= get_currency_mn(i.price) %></td>
                   <td class="va-mid"><%= get_currency_mn(i.sum_price) %></td>

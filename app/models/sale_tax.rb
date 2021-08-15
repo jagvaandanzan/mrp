@@ -1,5 +1,6 @@
 class SaleTax < ApplicationRecord
-  belongs_to :product_sale
+  belongs_to :product_sale, optional: true
+  belongs_to :direct_sale, optional: true
 
   before_validation :check_register
   after_validation :send_tax
@@ -40,7 +41,7 @@ class SaleTax < ApplicationRecord
   private
 
   def set_price
-    self.price = product_sale.bought_price
+    self.price = product_sale.present? ? product_sale.bought_price : direct_sale.product_price
   end
 
   def check_register

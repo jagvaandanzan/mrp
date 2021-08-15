@@ -2,19 +2,21 @@ class StoreTransferItem < ApplicationRecord
   belongs_to :store_transfer
   belongs_to :product
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
-  belongs_to :product_location, optional: true
+  belongs_to :product_location
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "transfer_item_id", dependent: :destroy
+  has_one :product_location_balance, dependent: :destroy
   has_many :store_transfer_balances, :class_name => "StoreTransferBalance", :foreign_key => "transfer_item_id", dependent: :destroy
 
   before_validation :set_remainder
-  validates :quantity, presence: true
+  validates :quantity, :feature_item_id, :product_location_id, presence: true
   validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
+  validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:loc_remainder)
   validates :quantity, numericality: {greater_than: 0}
 
   before_save :set_default
   before_save :set_product_balance
 
-  attr_accessor :remainder
+  attr_accessor :remainder, :loc_remainder
 
   private
 
@@ -42,6 +44,16 @@ class StoreTransferItem < ApplicationRecord
                                                                    storeroom: store_transfer.store_from_id == 1 ? store_transfer.store_to : store_transfer.store_from,
                                                                    user: store_transfer.user,
                                                                    quantity: q * (-1))
+        end
+        #Төв агуулахаас авсан бол тавиураас нь хасна
+        if store_transfer.store_from_id == 1
+          if product_location_balance.present?
+            self.product_location_balance.update_column(:quantity, q)
+          else
+            self.product_location_balance = ProductLocationBalance.new(product_location: product_location,
+                                                                       product_feature_item: feature_item,
+                                                                       quantity: q)
+          end
         end
       else
         # Төв агуулах оролцоогүй бол
@@ -77,5 +89,12 @@ class StoreTransferItem < ApplicationRecord
                      else
                        0
                      end
+    self.loc_remainder = if store_transfer.store_from_id == 1
+                           ProductLocationBalance.by_location_id(product_location_id)
+                               .by_feature_item_id(feature_item_id)
+                               .sum_quantity + (quantity_was.presence || 0)
+                         else
+                           remainder
+                         end
   end
 end

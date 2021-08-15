@@ -1,5 +1,6 @@
 class Storeroom < ApplicationRecord
   acts_as_paranoid
+  belongs_to :product_location
 
   validates :name, :code, presence: true
 

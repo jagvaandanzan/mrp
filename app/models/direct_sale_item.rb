@@ -2,18 +2,21 @@ class DirectSaleItem < ApplicationRecord
   belongs_to :direct_sale
   belongs_to :product
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
+  belongs_to :product_location
   has_one :product_balance
+  has_one :product_location_balance
   has_one :bonus_balance, dependent: :destroy
 
   before_validation :set_remainder
-  validates :quantity, presence: true
+  validates :quantity, :feature_item_id, :product_location_id, presence: true
   validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
+  validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:loc_remainder)
   validates :quantity, numericality: {greater_than: 0}
 
   before_save :set_default
   before_save :set_product_balance
 
-  attr_accessor :remainder, :desk
+  attr_accessor :remainder, :loc_remainder
 
   def add_bonus
     bonu = Bonu.by_phone(direct_sale.phone)
@@ -53,6 +56,14 @@ class DirectSaleItem < ApplicationRecord
                                                   user: direct_sale.owner,
                                                   quantity: -quantity)
       end
+
+      if product_location_balance.present?
+        self.product_location_balance.update_column(:quantity, q)
+      else
+        self.product_location_balance = ProductLocationBalance.new(product_location: product_location,
+                                                                   product_feature_item: feature_item,
+                                                                   quantity: -quantity)
+      end
     end
   end
 
@@ -62,5 +73,8 @@ class DirectSaleItem < ApplicationRecord
                      else
                        0
                      end
+    self.loc_remainder = ProductLocationBalance.by_location_id(product_location_id)
+                             .by_feature_item_id(feature_item_id)
+                             .sum_quantity + (quantity_was.presence || 0)
   end
 end

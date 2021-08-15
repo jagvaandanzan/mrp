@@ -22,7 +22,7 @@
       </div>
       <div class="col-md-2 search">
         <%= f.collection_select :sale_type, DirectSaleType.order_code, :id, :full_name,
-                                {:selected => @sale_type, :include_blank => 'Борлуулалтын төрөл'}, {class: 'form-control selectpicker'} %>
+                                {:selected => @sale_type, :include_blank => 'Борлуулалтын төрөл'}, {class: 'form-control selectpicker', "data-live-search": true} %>
       </div>
       <div class="col-md-1 search">
         <%= number_field_tag :phone, @phone, {class: 'form-control', placeholder: t('filters.phone')} %>
@@ -61,7 +61,7 @@
               <% @direct_sales.each do |direct_sale| %>
                 <tr>
                   <td class="va-mid text-center"><%= link_to direct_sale.id, users_direct_sale_path(direct_sale) %></td>
-                  <td class="va-mid"><%= direct_sale.date.strftime('%F') %></td>
+                  <td class="va-mid"><%= direct_sale.date.strftime('%F %R') %></td>
                   <td class="va-mid"><%= direct_sale.sale_type.full_name %></td>
                   <td class="va-mid"><%= direct_sale.product_count %></td>
                   <td class="va-mid"><%= direct_sale.buyer %></td>

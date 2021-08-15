@@ -19,15 +19,15 @@
       </div>
       <div class="col-md-2 search">
         <%= f.collection_select :store_from, Storeroom.order_code, :id, :full_name,
-                                {:selected => @store_from, :include_blank => 'Шилжүүлсэн'}, {class: 'form-control selectpicker'} %>
+                                {:selected => @store_from, :include_blank => 'Шилжүүлсэн'}, {class: 'form-control selectpicker', "data-live-search": true} %>
       </div>
       <div class="col-md-2 search">
         <%= f.collection_select :store_to, Storeroom.order_code, :id, :full_name,
-                                {:selected => @store_to, :include_blank => 'Хүлээн авагч'}, {class: 'form-control selectpicker'} %>
+                                {:selected => @store_to, :include_blank => 'Хүлээн авагч'}, {class: 'form-control selectpicker', "data-live-search": true} %>
       </div>
       <div class="col-md-2 search">
         <%= f.collection_select :user_id, User.order_name, :id, :name,
-                                {:selected => @user_id, :include_blank => 'Бүртгэсэн'}, {class: 'form-control selectpicker'} %>
+                                {:selected => @user_id, :include_blank => 'Бүртгэсэн'}, {class: 'form-control selectpicker', "data-live-search": true} %>
       </div>
       <div class="col-md-1 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
@@ -58,7 +58,7 @@
               <% @store_transfers.each do |transfer| %>
                 <tr>
                   <td class="va-mid text-center"><%= link_to transfer.id, users_store_transfer_path(transfer) %></td>
-                  <td class="va-mid"><%= transfer.date.strftime('%F') %></td>
+                  <td class="va-mid"><%= transfer.date.strftime('%F %R') %></td>
                   <td class="va-mid"><%= transfer.store_from.full_name %></td>
                   <td class="va-mid"><%= transfer.store_to.full_name %></td>
                   <td class="va-mid"><%= transfer.product_count %></td>

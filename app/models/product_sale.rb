@@ -81,15 +81,8 @@ class ProductSale < ApplicationRecord
   }
 
   scope :send_tax, ->(send) {
-    if send.present?
-      items = left_joins(:sale_tax)
-      if send == "true"
-        items = items.where("sale_taxes.id IS NOT ?", nil)
-      else
-        items = items.where("sale_taxes.id IS ?", nil)
-      end
-      items
-    end
+    left_joins(:sale_tax)
+        .where("sale_taxes.id IS#{send == "true" ? ' NOT' : ''} ?", nil) if send.present?
   }
 
   scope :search, ->(code_name, start, finish, phone, status) {

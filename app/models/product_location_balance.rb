@@ -7,6 +7,8 @@ class ProductLocationBalance < ApplicationRecord
   belongs_to :travel, :class_name => "SalesmanTravel", optional: true
   belongs_to :salesman_return, optional: true
   belongs_to :warehouse_loc, :class_name => "ProductWarehouseLoc", optional: true
+  belongs_to :store_transfer_item, optional: true
+  belongs_to :direct_sale_item, optional: true
 
   before_validation :check_location
 

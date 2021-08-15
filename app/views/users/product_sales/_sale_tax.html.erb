@@ -1,6 +1,7 @@
 <%= form_with model: @sale_tax, url: @sale_tax.persisted? ? users_sale_tax_path : users_sale_taxes_path, method: @sale_tax.persisted? ? :patch : :post, remote: true, :html => {class: 'form-horizontal', id: 'send_tax_form'} do |f| %>
   <%= form_body do %>
     <%= f.hidden_field :product_sale_id %>
+    <%= f.hidden_field :direct_sale_id %>
     <div class="form-group">
       <%= f.label :tax_type, class: 'col-sm-3 control-label' %>
       <div class="col-sm-9 radio-group <%= get_error_class(@sale_tax, :tax_type) %>">

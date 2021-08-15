@@ -91,11 +91,24 @@ class Users::StoreTransfersController < Users::BaseController
     feature_item_id = params[:feature_item_id]
     feature_item = ProductFeatureItem.find(feature_item_id)
     store_from_id = params[:store_from_id].to_i
-    render json: {balance: store_from_id == 1 ? feature_item.balance : StoreTransferBalance.balance_sum(params[:product_id], feature_item_id, store_from_id),
+
+    balance = store_from_id == 1 ? feature_item.balance : StoreTransferBalance.balance_sum(params[:product_id], feature_item_id, store_from_id)
+
+    desk = []
+    if store_from_id == 1
+      ProductLocation.get_quantity(feature_item_id).each do |loc|
+        desk << {id: loc.id, name: loc.name, balance: loc.quantity}
+      end
+    else
+      storeroom = Storeroom.find(store_from_id)
+      desk = [{id: storeroom.product_location_id, name: storeroom.product_location.name, balance: balance}]
+    end
+
+    render json: {balance: balance,
                   price: feature_item.price.presence || 0,
                   img: feature_item.img.present? ? feature_item.img.url : '/assets/no-image.png',
                   tumb: feature_item.img.present? ? feature_item.img.url(:tumb) : '/assets/no-image.png',
-                  desk: feature_item.desk}
+                  desk: desk}
   end
 
   private

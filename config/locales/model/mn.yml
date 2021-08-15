@@ -232,7 +232,7 @@ mn:
       shipping_ub_box: Хайрцаг
       salesman: Түгээгч
       warehouse: Агуулах
-      store_transfer: Шилжүүлгэ
+      store_transfer: Шилжүүлэг
       direct_sale: Борлуулалт
     attributes:
       admin_user:
@@ -807,6 +807,7 @@ mn:
         feature_item_id: Шинж чанар
         quantity: Тоо хэмжээ
         description: Тайлбар
+        product_location_id: Тавиур
       direct_sale:
         code: Баримтын #
         date: Огноо
@@ -824,6 +825,7 @@ mn:
         product_id: Барааны нэр, код
         feature_item_id: Шинж чанар
         quantity: Тоо хэмжээ
+        product_location_id: Тавиур
     errors:
       messages:
         blank: " хоосон байна!"

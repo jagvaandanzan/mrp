@@ -67,11 +67,16 @@ class Users::DirectSalesController < Users::BaseController
     feature_item_id = params[:feature_item_id]
     feature_item = ProductFeatureItem.find(feature_item_id)
 
+    desk = []
+    ProductLocation.get_quantity(feature_item_id).each do |loc|
+      desk << {id: loc.id, name: loc.name, balance: loc.quantity}
+    end
+
     render json: {balance: feature_item.balance,
                   price: feature_item.price.presence || 0,
                   img: feature_item.img.present? ? feature_item.img.url : '/assets/no-image.png',
                   tumb: feature_item.img.present? ? feature_item.img.url(:tumb) : '/assets/no-image.png',
-                  desk: feature_item.desk}
+                  desk: desk}
   end
 
   private
@@ -83,7 +88,7 @@ class Users::DirectSalesController < Users::BaseController
   def direct_sale_params
     params.require(:direct_sale)
         .permit(:date, :sale_type_id, :user_id, :purchaser_id, :phone, :price_type, :discount, :cost, :cost_note, :value, :tax,
-                direct_sale_items_attributes: [:id, :product_id, :feature_item_id, :remainder, :quantity, :price, :sum_price, :discount, :pay_price, :_destroy])
+                direct_sale_items_attributes: [:id, :product_id, :feature_item_id, :remainder, :product_location_id, :quantity, :price, :sum_price, :discount, :pay_price, :_destroy])
         .merge(owner: current_user)
   end
 

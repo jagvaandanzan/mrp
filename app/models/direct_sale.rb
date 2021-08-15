@@ -3,6 +3,7 @@ class DirectSale < ApplicationRecord
   belongs_to :owner, :class_name => "User"
   belongs_to :user, optional: true
   belongs_to :purchaser, optional: true
+  has_one :sale_tax
 
   has_many :direct_sale_items, dependent: :destroy
   accepts_nested_attributes_for :direct_sale_items, allow_destroy: true
@@ -41,6 +42,14 @@ class DirectSale < ApplicationRecord
     items = items.where('phone = ?', phone) if phone.present?
     items = items.where('tax = ?', tax) if tax.present?
     items
+  }
+  scope :by_tax, -> {
+    where(tax: true)
+  }
+
+  scope :send_tax, ->(send) {
+    left_joins(:sale_tax)
+        .where("sale_taxes.id IS#{send == "true" ? ' NOT' : ''} ?", nil) if send.present?
   }
 
   def product_count

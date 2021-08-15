@@ -18,7 +18,10 @@
     <%= f.text_field :remainder, class: 'form-control field remainder', value: f.object.remainder, readonly: true, placeholder: t('activerecord.attributes.product_sale_item.remainder') %>
   </td>
   <td class="va-mid">
-    <%= f.text_field :desk, class: 'form-control field desk', value: f.object.desk, readonly: true, placeholder: 'Тавиур' %>
+    <%= field_errors f.object, :product_location_id %>
+    <%= f.select :product_location_id, ProductLocation.get_quantity(f.object.feature_item_id.presence || nil).collect {|p| [p.name, p.id, {:'data-subtext' => p.quantity}]},
+                 {:prompt => t('controls.select.none')},
+                 {class: 'form-control selectpicker product_location', "data-live-search": true} %>
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :quantity %>

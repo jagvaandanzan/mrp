@@ -19,9 +19,9 @@
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :product_location_id %>
-    <%= f.collection_select :product_location_id, ProductLocation.order_xyz, :id, :name,
-                            {:prompt => t('controls.select.none')},
-                            {class: 'form-control selectpicker select_product', "data-live-search": true} %>
+    <%= f.select :product_location_id, ProductLocation.get_quantity(f.object.feature_item_id.presence || nil).collect {|p| [p.name, p.id, {:'data-subtext' => p.quantity}]},
+                 {:prompt => t('controls.select.none')},
+                 {class: 'form-control selectpicker product_location', "data-live-search": true} %>
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :quantity %>

@@ -13,8 +13,13 @@ class Users::SaleTaxesController < Users::BaseController
 
   def new
     @sale_tax = SaleTax.new
-    @sale_tax.product_sale_id = params[:product_sale_id]
+    if params[:sale_type] == "operator"
+      @sale_tax.product_sale_id = params[:sale_id]
+    else
+      @sale_tax.direct_sale_id = params[:sale_id]
+    end
     @sale_tax.price = params[:price]
+    @sale_tax.phone = params[:phone]
     respond_to do |format|
       format.js {render 'users/product_sales/ajax_sale_tax', locals: {hide_modal: false}}
     end
@@ -57,6 +62,6 @@ class Users::SaleTaxesController < Users::BaseController
   end
 
   def sale_tax_params
-    params.require(:sale_tax).permit(:product_sale_id, :tax_type, :phone, :email, :register, :price)
+    params.require(:sale_tax).permit(:product_sale_id, :direct_sale_id, :tax_type, :phone, :email, :register, :price)
   end
 end

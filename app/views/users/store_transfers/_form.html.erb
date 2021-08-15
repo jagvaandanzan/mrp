@@ -22,26 +22,23 @@
               </div>
               <div class="col-md-2 field_div">
                 <%= f.label :date, class: 'control-label' %>
-                <div class="input-append date input-group date <%= get_error_class(@store_transfer, :date) %>" data-provide="datepicker">
+                <div class="<%= get_error_class(@store_transfer, :date) %>">
                   <%= field_errors(@store_transfer, :date) %>
-                  <%= f.text_field :date, value: @store_transfer.date.strftime('%F'), class: 'field form-control', placeholder: t('activerecord.attributes.store_transfer.date') %>
-                  <div class="input-group-addon">
-                    <i class="fa fa-calendar"></i>
-                  </div>
+                  <%= f.text_field :date, value: @store_transfer.date.strftime('%F %R'), class: 'field form-control', placeholder: t('activerecord.attributes.store_transfer.date'), readonly: true %>
                 </div>
               </div>
               <div class="col-md-2 field_div">
                 <%= f.label :store_from_id, class: 'control-label' %>
                 <div class="<%= get_error_class(@store_transfer, :store_from_id) %>">
                   <%= field_errors(@store_transfer, :store_from_id) %>
-                  <%= f.collection_select(:store_from_id, Storeroom.order_code, :id, :full_name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'}) %>
+                  <%= f.collection_select(:store_from_id, Storeroom.order_code, :id, :full_name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true}) %>
                 </div>
               </div>
               <div class="col-md-2 field_div">
                 <%= f.label :store_to_id, class: 'control-label' %>
                 <div class="<%= get_error_class(@store_transfer, :store_to_id) %>">
                   <%= field_errors(@store_transfer, :store_to_id) %>
-                  <%= f.collection_select(:store_to_id, Storeroom.order_code, :id, :full_name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'}) %>
+                  <%= f.collection_select(:store_to_id, Storeroom.order_code, :id, :full_name, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true}) %>
                 </div>
               </div>
               <div class="col-md-4 field_div">
@@ -112,10 +109,10 @@
                 type: "PATCH",
                 data: "product_id=" + product_id + "&store_from_id=" + $('#store_transfer_store_from_id').val(),
                 success: function (data) {
-                    var features = data.features;
+                    let features = data.features;
                     if (features !== undefined && features.length > 0) {
-                        var divSelect = "<option value=''>Сонгох</option>";
-                        var first_feature_id = 0;
+                        let divSelect = "<option value=''>Сонгох</option>";
+                        let first_feature_id = 0;
                         for (var i = 0; i < features.length; i++) {
                             if (i === 0) {
                                 first_feature_id = features[i]["id"];
@@ -161,6 +158,20 @@
                     parentTr.find("input.item_price_show").val(getDecimalPay(data.price));
                     parentTr.find('.remainder').val(data.balance);
                     parentTr.find('.image a').html("<img src='" + data.tumb + "', class='tumb'>");
+                    let divSelect = "<option value=''>Сонгох</option>";
+                    let first_id = 0;
+                    for (let d = 0; d < data.desk.length; d++) {
+                        divSelect += '<option value="' + data.desk[d]["id"] + '" data-subtext="' + data.desk[d]["balance"] + '" >' + data.desk[d]["name"] + '</option>';
+                        if (d === 0) {
+                            first_id = data.desk[d]["id"];
+                        }
+                    }
+                    const select = parentTr.find("select.product_location");
+                    select.html(divSelect);
+                    if (data.desk.length === 1) {
+                        select.val(first_id);
+                    }
+                    select.selectpicker("refresh");
                     calc_total_price();
                 }
             });
