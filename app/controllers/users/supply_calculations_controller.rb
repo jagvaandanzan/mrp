@@ -130,6 +130,7 @@ class Users::SupplyCalculationsController < Users::BaseController
     @product = ProductSupplyFeature.by_date(@by_start, @by_end)
                                    .receipt(@by_code)
                                 .page(params[:page])
+    @prod = ProductIncomeItem.receipt(@by_code, @by_start, @by_end).order("product_incomes.income_date DESC")
   end
 
   def set_all_calculated

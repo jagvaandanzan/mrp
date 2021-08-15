@@ -33,6 +33,7 @@
               <tr>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income.number') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income.income_date') %></th>
+                <th class="va-mid">Барааны төрөл</th>
                 <th class="va-mid">Нийт барааны тоо</th>
                 <th class="va-mid">Барааны нийт дүн</th>
                 <th class="va-mid">Хүлээн авсан ачааны тоо</th>
@@ -43,7 +44,38 @@
               </tr>
               </thead>
               <tbody>
-              <% s_quantity = 0
+              <%
+                sum_quantity = 0
+                sum_feature_cost = 0
+                sum_cargo = 0
+                sum_er_cost = 0
+                sum_shipping_ub = 0
+                sum_cargo_ub = 0
+                sum_s = 0
+                @prod.uniq(&:product_income_id).each {|i|
+                  income = i.product_income
+                  supply_features = i.supply_feature
+                  sample_quantity = i.by_sample_type.pluck("product_income_items.quantity").sum
+                  main_quantity = i.by_main_type.pluck("product_income_items.quantity").sum
+                  sample_feature_cost = i.by_sample_type.pluck("product_supply_features.sum_price_lo").sum
+                  main_feature_cost = i.by_main_type.pluck("product_supply_features.sum_price_lo").sum
+                  # sample_cargo = i.by_sample_type.distinct.pluck("shipping_er_products.quantity").sum
+                  main_cargo = i.by_main_type.distinct.pluck("shipping_er_products.quantity").sum
+                  # sample_er_cost = i.by_sample_type.distinct.pluck("shipping_er_products.cost").sum
+                  main_er_cost = i.by_main_type.distinct.pluck("shipping_er_products.cost").sum
+                  # sample_shipping_ub = i.by_sample_type.distinct.pluck("shipping_ub_products.cost").sum
+                  sample_shipping_ub = i.by_sample_type.distinct.pluck("shipping_ub_samples.cost").sum
+                  main_shipping_ub = i.by_main_type.distinct.pluck("shipping_ub_products.cost").sum
+                  sum_quantity += sample_quantity + main_quantity
+                  sum_feature_cost += sample_feature_cost + main_feature_cost
+                  sum_cargo += main_cargo
+                  sum_er_cost += main_er_cost
+                  sum_shipping_ub += sample_shipping_ub + main_shipping_ub
+                  sum_cargo_ub += i.ub_cargo
+                  sum = main_feature_cost + main_er_cost + main_shipping_ub + sample_shipping_ub + sample_feature_cost
+                  sum_s += sum
+              %>
+              <%# s_quantity = 0
                  s_feature_cost = 0
                  s_cargo = 0
                  s_er_cost = 0
@@ -69,35 +101,77 @@
                    s_cargo_ub += cargo_ub
                    s_s += s
                 %>
-                <% if quantity > 0 %>
-                  <tr>
-                    <td class="va-mid"><%= show_id(income.id) %></td>
-                    <td class="va-mid nowrap"><%= income.income_date.strftime('%F') %></td>
-                    <td class="va-mid"><%= quantity > 0 ? quantity : '' %></td>
-                    <td class="va-mid"><%= sum_supply_feature_cost > 0 ? get_currency(sum_supply_feature_cost, Const::CURRENCY[0], 2) : '' %></td>
-                    <td class="va-mid"><%= cargo > 0 ? cargo : '' %></td>
-                    <td class="va-mid"><%= sum_shipping_er_cost > 0 ? get_currency(sum_shipping_er_cost, Const::CURRENCY[0], 2) : '' %></td>
-                    <td class="va-mid"><%= sum_shipping_ub > 0 ? get_currency(sum_shipping_ub, Const::CURRENCY[0], 2) : '' %></td>
-                    <td class="va-mid"><%= get_currency_mn(cargo_ub) %></td>
-                    <td class="va-mid"><%= s > 0 ? get_currency(s, Const::CURRENCY[0], 2) : '' %></td>
+                <%# if quantity > 0 %>
+<!--                  <tr>-->
+<!--                    <td class="va-mid" rowspan="3"><%#= show_id(income.id) %></td>-->
+<!--                    <td class="va-mid nowrap" rowspan="3"><%#= income.income_date.strftime('%F') %></td>-->
+<!--                    <td class="va-mid">Үндсэн</td>-->
+<!--                    <td class="va-mid"><%#= quantity > 0 ? quantity : '' %></td>-->
+<!--                    <td class="va-mid"><%#= sum_supply_feature_cost > 0 ? get_currency(sum_supply_feature_cost, Const::CURRENCY[0], 2) : '' %></td>-->
+<!--                    <td class="va-mid"><%#= cargo > 0 ? cargo : '' %></td>-->
+<!--                    <td class="va-mid"><%#= sum_shipping_er_cost > 0 ? get_currency(sum_shipping_er_cost, Const::CURRENCY[0], 2) : '' %></td>-->
+<!--                    <td class="va-mid"><%#= sum_shipping_ub > 0 ? get_currency(sum_shipping_ub, Const::CURRENCY[0], 2) : '' %></td>-->
+<!--                    <td class="va-mid" rowspan="3"><%#= get_currency_mn(cargo_ub) %></td>-->
+<!--                    <td class="va-mid" rowspan="3"><%#= s > 0 ? get_currency(s, Const::CURRENCY[0], 2) : '' %></td>-->
+                  <!--                  </tr>-->
+              <tr>
+                    <td class="va-mid" rowspan="3"><%= show_id(income.id) %></td>
+                    <td class="va-mid nowrap" rowspan="3"><%=income.income_date.strftime('%F')  %></td>
+                    <td class="va-mid">Үндсэн</td>
+                    <td class="va-mid"><%=main_quantity > 0 ? main_quantity : '' %></td>
+                    <td class="va-mid"><%=main_feature_cost > 0 ? get_currency(main_feature_cost, Const::CURRENCY[0], 2) : '' %></td>
+                    <td class="va-mid"><%=main_cargo > 0 ? main_cargo : ''  %></td>
+                    <td class="va-mid"><%=main_er_cost > 0 ? get_currency(main_er_cost, Const::CURRENCY[0], 2) : ''  %></td>
+                    <td class="va-mid"><%=main_shipping_ub > 0 ? get_currency(main_shipping_ub, Const::CURRENCY[0], 2) : ''  %></td>
+                    <td class="va-mid" rowspan="3"><%=get_currency_mn(i.ub_cargo)  %></td>
+                    <td class="va-mid" rowspan="3"><%= sum > 0 ? get_currency(sum, Const::CURRENCY[0], 2) : ''  %></td>
                   </tr>
-                <% end
+                  <tr>
+                    <td class="va-mid ">Дээж</td>
+                    <td class="va-mid"><%=sample_quantity > 0 ? sample_quantity : '' %></td>
+                    <td class="va-mid"><%=sample_feature_cost > 0 ? get_currency(sample_feature_cost, Const::CURRENCY[0], 2) : '' %></td>
+                    <td class="va-mid"></td>
+                    <td class="va-mid"></td>
+                    <td class="va-mid"><%=sample_shipping_ub > 0 ? get_currency(sample_shipping_ub, Const::CURRENCY[0], 2) : ''  %></td>
+                  </tr>
+                  <tr class="bold">
+                    <th class="va-mid ">Нийт</th>
+                    <td class="va-mid"><%=main_quantity + sample_quantity %></td>
+                    <td class="va-mid"><%=get_currency(main_feature_cost + sample_feature_cost, Const::CURRENCY[0], 2) %></td>
+                    <td class="va-mid"><%=main_cargo %></td>
+                    <td class="va-mid"><%=get_currency(main_er_cost, Const::CURRENCY[0], 2) %></td>
+                    <td class="va-mid"><%=get_currency(main_shipping_ub + sample_shipping_ub, Const::CURRENCY[0], 2) %></td>
+                  </tr>
+                <%
                    } %>
-              <tr class="bold">
-                <td colspan="2" class="text-right">Нийт</td>
-                <td class="va-mid"><%= s_quantity > 0 ? s_quantity : '' %></td>
-                <td class="va-mid"><%= s_feature_cost > 0 ? get_currency(s_feature_cost, Const::CURRENCY[0], 2) : '' %></td>
-                <td class="va-mid"><%= s_cargo > 0 ? s_cargo : '' %></td>
-                <td class="va-mid"><%= s_er_cost > 0 ? get_currency(s_er_cost, Const::CURRENCY[0], 2) : '' %></td>
-                <td class="va-mid"><%= s_shipping_ub > 0 ? get_currency(s_shipping_ub, Const::CURRENCY[0], 2) : '' %></td>
-                <td class="va-mid"><%= get_currency_mn(s_cargo_ub) %></td>
-                <td class="va-mid"><%= s_s > 0 ? get_currency(s_s, Const::CURRENCY[0], 2) : '' %></td>
-              </tr>
+<!--              <tr class="bold">-->
+<!--                <td colspan="2" class="text-right">Нийт</td>-->
+<!--                <td class="va-mid"><%#= s_quantity > 0 ? s_quantity : '' %></td>-->
+<!--                <td class="va-mid"><%#= s_feature_cost > 0 ? get_currency(s_feature_cost, Const::CURRENCY[0], 2) : '' %></td>-->
+<!--                <td class="va-mid"><%#= s_cargo > 0 ? s_cargo : '' %></td>-->
+<!--                <td class="va-mid"><%#= s_er_cost > 0 ? get_currency(s_er_cost, Const::CURRENCY[0], 2) : '' %></td>-->
+<!--                <td class="va-mid"><%#= s_shipping_ub > 0 ? get_currency(s_shipping_ub, Const::CURRENCY[0], 2) : '' %></td>-->
+<!--                <td class="va-mid"><%#= get_currency_mn(s_cargo_ub) %></td>-->
+<!--                <td class="va-mid"><%#= s_s > 0 ? get_currency(s_s, Const::CURRENCY[0], 2) : '' %></td>-->
+<!--              </tr>-->
+
+                <tr class="bold">
+                  <td colspan="2" class="text-right">Нийт</td>
+                  <td></td>
+                  <td class="va-mid"><%= sum_quantity > 0 ? sum_quantity : '' %></td>
+                  <td class="va-mid"><%= sum_feature_cost > 0 ? get_currency(sum_feature_cost, Const::CURRENCY[0], 2) : '' %></td>
+                  <td class="va-mid"><%= sum_cargo > 0 ? sum_cargo : '' %></td>
+                  <td class="va-mid"><%= sum_er_cost > 0 ? get_currency(sum_er_cost, Const::CURRENCY[0], 2) : '' %></td>
+                  <td class="va-mid"><%= sum_shipping_ub > 0 ? get_currency(sum_shipping_ub, Const::CURRENCY[0], 2) : '' %></td>
+                  <td class="va-mid"><%= get_currency_mn(sum_cargo_ub) %></td>
+                  <td class="va-mid"><%= sum_s > 0 ? get_currency(sum_s, Const::CURRENCY[0], 2) : '' %></td>
+                </tr>
               </tbody>
             </table>
           </div>
         </div>
-        <%= paginate @product_incomes %>
+        <%#= paginate @prod %>
+
       </div>
     </div>
   </section>
