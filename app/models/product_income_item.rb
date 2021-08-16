@@ -7,6 +7,7 @@ class ProductIncomeItem < ApplicationRecord
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
   has_many :income_locations, :class_name => "ProductIncomeLocation", :foreign_key => "income_item_id", dependent: :destroy
   has_many :product_income_logs, class_name: "ProductIncomeLog", foreign_key: "product_income_item_id", dependent: :destroy
+  has_one :product_supply_order, through: :product_income_product
   has_one :shipping_ub_product, through: :product_income_product
   has_one :shipping_er_product, through: :shipping_ub_product
   has_one :shipping_ub_sample, through: :product_income_product
@@ -54,10 +55,15 @@ class ProductIncomeItem < ApplicationRecord
     items = joins(:product_income)
     items = items.joins(:supply_feature)
     items = items.joins(:product_income_product)
+    items = items.joins(:product_supply_order)
     items = items.where(calculated: nil)
-    items = items.where('product_income_product.id LIKE :value', value: "%#{code}%") if code.present?
+    items = items.where('product_income_items.product_income_id LIKE :value', value: "%#{code}%") if code.present?
     items = items.where('? <= product_supply_features.updated_at AND product_supply_features.updated_at <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
     items
+  }
+
+  scope :order_type, ->(type){
+    where("product_supply_orders.order_type = ? ", type)
   }
 
   scope :income_date_desc, -> {
@@ -91,7 +97,11 @@ class ProductIncomeItem < ApplicationRecord
     where(shipping_ub_feature_id: shipping_ub_feature_id)
   }
   scope :by_ids, ->(ids) {
-    where("id IN (?)", ids)
+    where("product_income_items.id IN (?)", ids)
+  }
+
+  scope :by_income_ids, ->(ids) {
+    where("product_income_items.product_income_id IN (?)", ids)
   }
   scope :not_match, ->() {
     where(is_match: false)
@@ -147,6 +157,27 @@ class ProductIncomeItem < ApplicationRecord
   scope :quantity, ->(){
     sum(:quantity)
   }
+
+  def by_main_type
+    ProductIncomeItem.by_income_ids(self.product_income_id)
+                    .order_type(0)
+                    .joins(:product_supply_order)
+                     .joins(:supply_feature)
+                    .joins(:shipping_ub_product)
+                    .joins(:shipping_er_product)
+  end
+
+  def by_sample_type
+    ProductIncomeItem.by_income_ids(self.product_income_id)
+                     .order_type(1)
+                     .joins(:product_supply_order)
+                     .joins(:supply_feature)
+                     .joins(:shipping_ub_sample)
+  end
+  def ub_cargo
+    ProductIncome.by_id(self.product_income_id)
+                 .sum(:cargo_price)
+  end
 
   def get_balance
     ProductIncomeBalance.balance(product_id)

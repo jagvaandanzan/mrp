@@ -8,6 +8,7 @@ class ProductSupplyOrder < ApplicationRecord
   has_many :products, through: :product_supply_order_items
   has_many :supply_features, through: :product_supply_order_items
   has_many :product_income_products, dependent: :destroy
+  has_many :product_income_items, through: :product_income_products
 
   accepts_nested_attributes_for :product_supply_order_items, allow_destroy: true
   accepts_nested_attributes_for :product_sample_images, allow_destroy: true
@@ -26,6 +27,10 @@ class ProductSupplyOrder < ApplicationRecord
     validates :link, presence: true
     before_save :set_product
   end
+
+  scope :order_type, ->(type){
+    where("order_type = #{type == "sample" ? 1 : 0}")
+  }
 
   scope :created_at_desc, -> {
     order(created_at: :desc)
