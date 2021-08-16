@@ -14,6 +14,7 @@ class ProductFeatureItem < ApplicationRecord
   has_many :product_balances, :class_name => "ProductBalance", :foreign_key => "feature_item_id"
   has_many :product_income_balances, :class_name => "ProductIncomeBalance", :foreign_key => "feature_item_id"
   has_many :product_location_balances
+  has_many :store_transfer_balances, :class_name => "StoreTransferBalance", :foreign_key => "feature_item_id"
 
   accepts_nested_attributes_for :product_location_balances, allow_destroy: true
 
@@ -175,6 +176,12 @@ class ProductFeatureItem < ApplicationRecord
   scope :sum_balance, ->() {
     sum(:balance)
   }
+  scope :by_storeroom, ->(storeroom_id) {
+    joins(:store_transfer_balances)
+        .where("store_transfer_balances.storeroom_id = ?", storeroom_id)
+        .having("SUM(store_transfer_balances.quantity) > ?", 0)
+        .group("product_feature_items.id")
+  }
 
   def balance_sum
     ProductBalance.balance_sum(product_id, id)
@@ -276,6 +283,12 @@ class ProductFeatureItem < ApplicationRecord
     else
       ""
     end
+  end
+
+  def store_room_balance(store_room_id)
+    store_transfer_balances
+        .by_storeroom_id(store_room_id)
+        .sum(:quantity)
   end
 
   private

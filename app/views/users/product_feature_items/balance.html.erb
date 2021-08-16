@@ -22,15 +22,15 @@
     var category_max_index = 0;
 </script>
 <div class="content-wrapper index">
-  <div class="col-md-12 m-t-10 m-b-10">
-    <%= form_with url: balance_users_product_feature_items_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+  <%= form_with url: balance_users_product_feature_items_path, method: "get", class: 'form-horizontal', local: true do |f| %>
+    <div class="col-md-12 m-t-10 m-b-5">
       <div class="col-md-1 search">
         <%= text_field_tag :code, @code, {class: 'form-control search', placeholder: t('activerecord.attributes.product.code')} %>
       </div>
-      <div class="col-md-1 search">
+      <div class="col-md-2 search">
         <%= text_field_tag :name, @name, {class: 'form-control search', placeholder: t('activerecord.attributes.product.name')} %>
       </div>
-      <div class="col-md-2 search">
+      <div class="col-md-3 search">
         <%= f.select :customer_id, Customer.order_by_name.collect {|c| [c.name, c.id]}.insert(0, [t('activerecord.attributes.product.is_own'), 0]),
                      {:prompt => t('activerecord.attributes.product.customer_id'), :selected => @customer_id}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
       </div>
@@ -39,7 +39,14 @@
         <%= select_tag :barcode, options_for_select([["Баркод", ""], ["Баркодтой", true], ["Баркодгүй", false]], @barcode), class: 'form-control-1' %>
         <%= select_tag :desk, options_for_select([["Тавиур", ""], ["Тавиуртай", true], ["Тавиургүй", false]], @desk), class: 'form-control-1' %>
       </div>
-      <div class="col-md-2 search" id="product_category">
+      <div class="col-md-3 search">
+        <%= f.collection_select :storeroom_id, Storeroom.order_code, :id, :full_name,
+                                {:selected => @storeroom_id}, {class: 'form-control selectpicker', "data-live-search": true} %>
+
+      </div>
+    </div>
+    <div class="col-md-12 m-b-10">
+      <div class="col-md-3 search" id="product_category">
         <%= hidden_field_tag :category_id, @category_id %>
         <%= f.collection_select :main_category_id, ProductCategory.top_level, :id, :name,
                                 {:prompt => t('activerecord.attributes.product.category_id'), selected: @headers.present? ? @headers.first.id : ""},
@@ -70,18 +77,17 @@
           </div>
         <% end %>
       </div>
-      <div class="col-md-1 search">
-        <%= submit_tag "#{t('controls.button.searching')} (#{@product_count})", :class => 'btn-sm blck-btn pull-left' %>
-      </div>
-      <% if can? :create, Product %>
-        <div class="col-md-2 search">
+      <div class="col-md-3 search m-t-5">
+        <% if can? :create, Product %>
           <%= link_to 'Харилцагч', new_users_customer_import_path, class: 'btn-sm btn-warning' %>
           <%= link_to 'Үлдэгдэл нэмэх', set_balance_users_product_feature_items_path, class: 'btn-sm btn-warning', id: 'set_balance' %>
-        </div>
-      <% end %>
-    <% end %>
-  </div>
-
+        <% end %>
+      </div>
+      <div class="col-md-6 search text-right">
+        <%= submit_tag "#{t('controls.button.searching')} (#{@product_count})", :class => 'btn-sm blck-btn pull-right' %>
+      </div>
+    </div>
+  <% end %>
   <section class="content container-fluid">
     <div class="row">
       <div class="col-xs-12">
@@ -104,7 +110,7 @@
                   <td class="va-mid"><%= p.name %></td>
                   <td class="va-mid"><%= p.p_type_i18n %></td>
                   <td class="va-mid"><%= get_currency_mn(p.price) %></td>
-                  <td class="va-mid"><%= p.balance %></td>
+                  <td class="va-mid"><%= @storeroom_id == 1 ? p.balance : p.store_room_balance(@storeroom_id) %></td>
                   <td class="va-mid"><%= get_name_recursive(p.category) %></td>
                   <td class="va-mid"><%= p.customer.present? ? p.customer.name : '' %></td>
                 </tr>
@@ -155,7 +161,7 @@
             Rails.ajax({
                 url: "<%= get_feature_items_users_product_feature_items_path %>",
                 type: "POST",
-                data: "product_id=" + tr_select_id
+                data: "product_id=" + tr_select_id + "&storeroom_id=<%= @storeroom_id %>"
             });
         });
 

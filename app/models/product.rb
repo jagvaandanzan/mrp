@@ -21,6 +21,7 @@ class Product < ApplicationRecord
   has_many :product_discounts
   has_many :product_balances
   has_many :product_location_balances, through: :product_feature_items
+  has_many :store_transfer_balances
   has_one :product_package
 
   has_many :supply_order_items, :class_name => "ProductSupplyOrderItem", :foreign_key => "product_id"
@@ -142,23 +143,25 @@ class Product < ApplicationRecord
     end
   }
 
-  scope :by_balance, ->(balance, barcode, desk) {
-    items = order_by_name
-    items = items.left_joins(:product_balances)
-                .having("#{balance == "true" ? 'SUM(product_balances.quantity) > ?' : 'SUM(product_balances.quantity) IS NULL OR SUM(product_balances.quantity) = ?'} ", 0)
-                .group('products.id') if balance.present?
-    if barcode.present?
-      items = items.left_joins(:product_feature_items)
-      if barcode == "true"
-        items = items.where("product_feature_items.barcode IS NOT ? AND product_feature_items.barcode !=''", nil)
-      else
-        items = items.where("product_feature_items.barcode IS ? OR product_feature_items.barcode =''", nil)
-      end
-    end
-    items = items.left_joins(:product_location_balances)
-                .having("#{desk == "true" ? 'SUM(product_location_balances.quantity) > ?' : 'SUM(product_location_balances.quantity) IS NULL OR SUM(product_location_balances.quantity) = ?'} ", 0)
-                .group('products.id') if desk.present?
-    items
+  scope :by_balance, ->(balance) {
+    left_joins(:product_balances)
+        .having("#{balance == "true" ? 'SUM(product_balances.quantity) > ?' : 'SUM(product_balances.quantity) IS NULL OR SUM(product_balances.quantity) = ?'} ", 0)
+        .group('products.id') if balance.present?
+  }
+  scope :by_barcode, ->(barcode) {
+    left_joins(:product_feature_items)
+        .where("product_feature_items.barcode IS#{barcode == "true" ? ' NOT' : ''} ? AND product_feature_items.barcode !=''", nil) if barcode.present?
+  }
+  scope :by_desk, ->(desk) {
+    left_joins(:product_location_balances)
+        .having("#{desk == "true" ? 'SUM(product_location_balances.quantity) > ?' : 'SUM(product_location_balances.quantity) IS NULL OR SUM(product_location_balances.quantity) = ?'} ", 0)
+        .group('products.id') if desk.present?
+  }
+  scope :by_store_room, ->(storeroom_id) {
+    left_joins(:store_transfer_balances)
+        .where("store_transfer_balances.storeroom_id = ?", storeroom_id)
+        .having("SUM(store_transfer_balances.quantity) > ?", 0)
+        .group('products.id')
   }
 
   scope :search_by_id, ->(id) {
@@ -351,6 +354,12 @@ class Product < ApplicationRecord
       self.update_column(:balance, b)
       puts "product: #{self.id}"
     end
+  end
+
+  def store_room_balance(store_room_id)
+    store_transfer_balances
+        .by_storeroom_id(store_room_id)
+        .sum(:quantity)
   end
 
   private

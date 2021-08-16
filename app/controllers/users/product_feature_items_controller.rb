@@ -62,19 +62,27 @@ class Users::ProductFeatureItemsController < Users::BaseController
     @desk = params[:desk]
     @customer_id = params[:customer_id]
     @category_id = params[:category_id]
+    @storeroom_id = params[:storeroom_id]
     if @category_id.present?
       @product_category = ProductCategory.find(@category_id)
       @headers = ApplicationController.helpers.get_category_parents(@product_category)
       @headers = @headers.reverse
     end
-
     products = Product
+                   .order_by_name
                    .by_not_draft
                    .s_by_code(@code)
                    .s_by_name(@name)
                    .by_customer(@customer_id)
                    .by_category(@category_id)
-                   .by_balance(@balance, @barcode, @desk)
+                   .by_barcode(@barcode)
+                   .by_desk(@desk)
+    if @storeroom_id == 1
+      products = products.by_balance(@balance)
+    else
+      @balance = "true"
+      products = products.by_store_room(@storeroom_id)
+    end
 
     @product_count = products.length
     @total_pages = (@product_count / 20).to_i
@@ -84,8 +92,14 @@ class Users::ProductFeatureItemsController < Users::BaseController
   end
 
   def get_feature_items
-    product = Product.find(params[:product_id])
-    @product_feature_items = product.product_feature_items
+    @storeroom_id = params[:storeroom_id]
+    @product_feature_items = if @storeroom_id == 1
+                               product = Product.find(params[:product_id])
+                               product.product_feature_items
+                             else
+                               ProductFeatureItem.by_product_id(params[:product_id])
+                                   .by_storeroom(@storeroom_id)
+                             end
     respond_to do |format|
       format.js {render 'feature_items_ajax'}
     end

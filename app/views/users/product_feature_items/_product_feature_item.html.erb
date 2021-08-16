@@ -8,7 +8,7 @@
     <td class="va-mid"><%= item.p_9_p %></td>
     <td class="va-mid"><%= get_currency_mn item.p_9_ %></td>
     <td class="va-mid"><%= get_currency_mn item.cost %></td>
-    <td class="va-mid"><%= item.balance %></td>
+    <td class="va-mid"><%= @storeroom_id == 1 ? item.balance: item.store_room_balance(@storeroom_id) %></td>
     <td class="va-mid">
       <% item.product_location_balances.each {|loc_bal| %>
         <% location = loc_bal.product_location %>

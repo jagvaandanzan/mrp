@@ -18,4 +18,7 @@ class StoreTransferBalance < ApplicationRecord
         .where(storeroom_id: storeroom_id)
         .where(transfer_item_id: transfer_item_id)
   }
+  scope :by_storeroom_id, ->(storeroom_id) {
+    where(storeroom_id: storeroom_id)
+  }
 end
