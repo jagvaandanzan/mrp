@@ -8,6 +8,7 @@
   </section>
 
   <div class="action-buttons">
+    <button class="btn btn-primary" type="button" onclick="print_info()"><%= t('controls.button.print') %></button>
     <%= link_to t('controls.button.edit'), edit_users_direct_sale_path(@direct_sale), class: 'btn btn-info' %>
     <%= link_to t('controls.button.delete'), users_direct_sale_path(@direct_sale), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <%= link_to t('titles.back_to_list'), users_direct_sales_path(page: cookies[:direct_sale_page_number]), {class: "btn blck-btn"} %>
@@ -111,3 +112,15 @@
     </div>
   <% end %>
 </div>
+<div id="print_div" class="none">
+  <%= render 'print', direct_sale: @direct_sale %>
+</div>
+<script !src="">
+    function print_info() {
+        var printContents = document.getElementById('print_div').innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    }
+</script>

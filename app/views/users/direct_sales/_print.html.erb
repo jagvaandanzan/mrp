@@ -1,0 +1,217 @@
+<div style="padding-left: 12px;">
+  <div style="width:700px;">
+    <table style="width: 100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <td width="50%" class="f-13 text-left" style="padding-left: 20px">НХМаягт-БМ-3</td>
+        <td width="50%" class="text-right p-t-10 f-13">Сангийн сайдын 2017 оны 12 дугаар сарын 5 өдрийн<br>347 тоот
+          тушаалын
+          хавсралт
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-center p-t-10 title"><strong>ЗАРЛАГЫН БАРИМТ №______ </strong></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div style="margin-top: 30px"></div>
+        </td>
+      </tr>
+      <tr>
+        <td>________________________________________</td>
+        <td>________________________________________</td>
+      </tr>
+      <tr>
+        <td>(байгууллагын нэр)</td>
+        <td>(худалдан авагчийн нэр)</td>
+      </tr>
+      <tr>
+        <td>
+          <table cellspacing="0" cellpadding="0" border="0" style="width: 100%;margin-top: 10px">
+            <tr>
+              <td width="40%" class="text-right" style="padding-right: 4px">Регистрийн №</td>
+              <td>
+                <table class="border" width="100%">
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <table cellspacing="0" cellpadding="0" border="0" style="width: 100%;margin-top: 10px">
+            <tr>
+              <td width="40%" class="text-right" style="padding-right: 4px">Регистрийн №</td>
+              <td>
+                <table class="border" width="100%">
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div style="margin-top: 10px"></div>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>________________________________________</td>
+      </tr>
+      <tr>
+        <td class="text-left" style="padding-left: 20px">20..... оны ..... сарын ..... өдөр</td>
+        <td>(тээвэрлэгчийн хаяг, албан тушаал, нэр)</td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <table class="table" style="margin-top: 8px">
+            <tr class="title">
+              <td rowspan="2">№</td>
+              <td rowspan="2">Материал үнэт зүйлийн нэр, зэрэг, дугаар</td>
+              <td rowspan="2">Код</td>
+              <td rowspan="2">Хэмжих нэгж</td>
+              <td colspan="3" class="b-r">Худалдах</td>
+            </tr>
+            <tr>
+              <td>Тоо</td>
+              <td>Нэгжийн үнэ</td>
+              <td class="b-r">Нийт дүн</td>
+            </tr>
+            <% total_quantity = 0
+               total_price = 0 %>
+            <% direct_sale.direct_sale_items.each_with_index do |i, index| %>
+              <td><%= index + 1 %></td>
+              <td><%= i.product.n_name %></td>
+              <td><%= i.product.code %></td>
+              <td>ш</td>
+              <td><%= i.quantity %></td>
+              <td><%= get_currency_mn(i.real_price) %></td>
+              <td class="b-r"><%= get_currency_mn(i.pay_price) %></td>
+            <% total_quantity += i.quantity
+               total_price += i.pay_price
+               end %>
+            <tr class="title">
+              <td class="b-b"></td>
+              <td class="b-b">Дүн</td>
+              <td class="b-b"></td>
+              <td class="b-b"></td>
+              <td class="b-b"><%= total_quantity %></td>
+              <td class="b-b"></td>
+              <td class="b-r b-b"><%= get_currency_mn(total_price) %></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <table width="100%">
+            <tr>
+              <td width="20%" rowspan="3">Тэмдэг</td>
+              <td class="text-left" width="40%">Хүлээлгэн өгсөн эд хариуцагч:</td>
+              <td class="text-left" width="40%">____________________________________</td>
+            </tr>
+            <tr>
+              <td class="text-left">Хүлээн авагч:</td>
+              <td class="text-left">____________________________________</td>
+            </tr>
+            <tr>
+              <td class="text-left">Шалгасан нягтлан бодогч:</td>
+              <td class="text-left">____________________________________</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+<style>
+  @media print {
+    td {
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .dash {
+      border-bottom: 1px dashed black;
+    }
+
+    .d-dash {
+      display: inline-block
+    }
+
+    .table {
+      width: 100%;
+    }
+
+    .table td {
+      vertical-align: middle;
+      padding: 2px 6px;
+      border-top: 1px solid black !important;
+      border-left: 1px solid black;
+    }
+
+    .table .sum {
+      border-right: none;
+      border-bottom: none;
+      border-left: none;
+      padding: 0;
+    }
+
+    .b-r {
+      border-right: 1px solid black;
+    }
+
+    .b-b {
+      border-bottom: 1px solid black;
+    }
+
+
+    .title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .p-t-10 {
+      padding-top: 10px;
+    }
+
+    .text-left {
+      text-align: left;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .f-13 {
+      font-size: 13px;
+    }
+
+    .border td {
+      border: 1px solid black;
+    }
+
+  }
+</style>

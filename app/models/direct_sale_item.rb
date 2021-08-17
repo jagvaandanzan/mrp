@@ -35,12 +35,20 @@ class DirectSaleItem < ApplicationRecord
     end
   end
 
+  def real_price
+    if discount.present?
+      price - (price * discount) / 100
+    else
+      price
+    end
+  end
+
   private
 
   def set_default
     self.sum_price = quantity * price
     self.pay_price = if discount.present?
-                       (sum_price * discount) / 100
+                       sum_price - (sum_price * discount) / 100
                      else
                        sum_price
                      end

@@ -809,7 +809,7 @@ mn:
         description: Тайлбар
         product_location_id: Тавиур
       direct_sale:
-        code: Баримтын #
+        code: Баримтын №
         date: Огноо
         sale_type_id: Харилцах данс
         purchaser_id: Худалдан авагч
