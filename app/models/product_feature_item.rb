@@ -291,6 +291,15 @@ class ProductFeatureItem < ApplicationRecord
         .sum(:quantity)
   end
 
+  def desk
+    d = ""
+    ProductLocation.get_quantity(self.id).each_with_index do |loc, index|
+      d += ", " if index > 0
+      d += "#{loc.name}"
+    end
+    d
+  end
+
   private
 
   def set_default

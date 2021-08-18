@@ -77,7 +77,7 @@ class Users::ProductFeatureItemsController < Users::BaseController
                    .by_category(@category_id)
                    .by_barcode(@barcode)
                    .by_desk(@desk)
-    if @storeroom_id == 1
+    if @storeroom_id.to_i == 1
       products = products.by_balance(@balance)
     else
       @balance = "true"
@@ -93,7 +93,8 @@ class Users::ProductFeatureItemsController < Users::BaseController
 
   def get_feature_items
     @storeroom_id = params[:storeroom_id]
-    @product_feature_items = if @storeroom_id == 1
+    @storeroom = Storeroom.find(@storeroom_id)
+    @product_feature_items = if @storeroom_id.to_i == 1
                                product = Product.find(params[:product_id])
                                product.product_feature_items
                              else

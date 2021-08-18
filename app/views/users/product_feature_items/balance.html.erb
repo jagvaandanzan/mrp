@@ -41,7 +41,7 @@
       </div>
       <div class="col-md-3 search">
         <%= f.collection_select :storeroom_id, Storeroom.order_code, :id, :full_name,
-                                {:selected => @storeroom_id}, {class: 'form-control selectpicker', "data-live-search": true} %>
+                                {:selected => @storeroom_id, :include_blank => 'Бүгд'}, {class: 'form-control selectpicker', "data-live-search": true} %>
 
       </div>
     </div>
@@ -110,7 +110,7 @@
                   <td class="va-mid"><%= p.name %></td>
                   <td class="va-mid"><%= p.p_type_i18n %></td>
                   <td class="va-mid"><%= get_currency_mn(p.price) %></td>
-                  <td class="va-mid"><%= @storeroom_id == 1 ? p.balance : p.store_room_balance(@storeroom_id) %></td>
+                  <td class="va-mid"><%= @storeroom_id.to_i == 1 ? p.balance : p.store_room_balance(@storeroom_id) %></td>
                   <td class="va-mid"><%= get_name_recursive(p.category) %></td>
                   <td class="va-mid"><%= p.customer.present? ? p.customer.name : '' %></td>
                 </tr>
