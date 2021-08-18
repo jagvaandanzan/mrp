@@ -72,6 +72,22 @@
            in_quantity += q %>
         <td>Буцаалт #<%= salesman_return.salesman.name %>, <%= salesman_return.user.name %></td>
         <td><%= get_currency_mn price %></td>
+      <% elsif balance.transfer_item.present?
+           transfer_item = balance.transfer_item
+           q = transfer_item.quantity
+           price = transfer_item.price * q
+           out_price += price
+           out_quantity += q %>
+        <td>Шилжүүлгэ: <%= transfer_item.store_transfer.store_from.name %> -> <%= transfer_item.store_transfer.store_to.name %></td>
+        <td><%= get_currency_mn price %></td>
+      <%  elsif balance.direct_sale_item.present?
+            direct_sale_item = balance.direct_sale_item
+           q = direct_sale_item.quantity
+           price = direct_sale_item.real_price * q
+           out_price += price
+           out_quantity += q %>
+        <td>Шууд борлуулалт: <%= direct_sale_item.direct_sale.sale_type.name %> #<%= direct_sale_item.direct_sale.buyer %></td>
+        <td><%= get_currency_mn price %></td>
       <% elsif balance.sale_direct.present?
            sale_direct = balance.sale_direct
            q = sale_direct.quantity
