@@ -55,11 +55,11 @@
                 <% if supply_order_id != supply_order.id
                      supply_order_id = supply_order.id %>
                   <tr>
-                    <td class="va-mid" rowspan="<%= rows %>"><%= link_to supply_order.code, logistics_supply_order_path(i, order_type: params[:order_type]) %></td>
+                    <td class="va-mid" rowspan="<%= rows %>"><%= supply_order.code %></td>
                     <td class="va-mid" rowspan="<%= rows %>"><%= supply_order.ordered_date.strftime('%F') %>
                       - <%= i.status_i18n %>
                       - <%= supply_order.user.name %></td>
-                    <td class="va-mid"><%= product.code %></td>
+                    <td class="va-mid"><%= link_to product.code, logistics_supply_order_path(i, order_type: params[:order_type]) %></td>
                     <td class="va-mid"><%= product.cn_name %></td>
                     <td class="va-mid"><%= i.purchase_stat.html_safe %></td>
                     <td class="va-mid"><%= i.sum_price_lo.present? ? supply_order.get_currency(i.sum_price_lo) : '' %></td>
@@ -68,7 +68,7 @@
                   </tr>
                 <% else %>
                   <tr>
-                    <td class="va-mid"><%= product.code %></td>
+                    <td class="va-mid"><%= link_to product.code, logistics_supply_order_path(i, order_type: params[:order_type]) %></td>
                     <td class="va-mid"><%= product.cn_name %></td>
                     <td class="va-mid"><%= i.purchase_stat.html_safe %></td>
                     <td class="va-mid"><%= i.sum_price_lo.present? ? supply_order.get_currency(i.sum_price_lo) : '' %></td>
