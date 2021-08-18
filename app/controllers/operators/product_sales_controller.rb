@@ -142,8 +142,12 @@ class Operators::ProductSalesController < Operators::BaseController
     if @product_sale.child.present?
       redirect_to action: :show, id: @product_sale.id
     else
-      @product_sale.destroy!
-      flash[:success] = t('alert.deleted_successfully')
+      if @product_sale.salesman_travel.present?
+        flash[:alert] = "Хувиарлагдсан захиалга байна!"
+      else
+        @product_sale.destroy!
+        flash[:success] = t('alert.deleted_successfully')
+      end
       redirect_to action: 'index'
     end
   end
