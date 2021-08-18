@@ -110,7 +110,11 @@
                   <td class="va-mid"><%= p.name %></td>
                   <td class="va-mid"><%= p.p_type_i18n %></td>
                   <td class="va-mid"><%= get_currency_mn(p.price) %></td>
-                  <td class="va-mid"><%= @storeroom_id.to_i == 1 ? p.balance : p.store_room_balance(@storeroom_id) %></td>
+                  <td class="va-mid"><%= if @storeroom_id.present?
+                                           @storeroom_id.to_i == 1 ? p.balance : p.store_room_balance(@storeroom_id)
+                                         else
+                                           p.total_balance
+                                         end %></td>
                   <td class="va-mid"><%= get_name_recursive(p.category) %></td>
                   <td class="va-mid"><%= p.customer.present? ? p.customer.name : '' %></td>
                 </tr>
@@ -120,28 +124,7 @@
         </div>
         <div class="box" style="margin-bottom: 0">
           <div class="p-l-10">Барааны дэлгэрэнгүй /Сонгосон барааны сериалаар/</div>
-          <div class="box-body table-responsive no-padding">
-            <table class="table table-hover table-bordered">
-              <thead>
-              <tr>
-                <th rowspan="2" class="va-mid"><%= t('activerecord.models.product_feature') %></th>
-                <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
-                <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product_feature_item.price') %></th>
-                <th colspan="2"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
-                <th colspan="2"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
-                <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product_feature_item.cost') %></th>
-                <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product.balance') %></th>
-                <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product_income_item.income_locations') %></th>
-              </tr>
-              <tr>
-                <th class="text-center">%</th>
-                <th class="text-center"><%= t('currency') %></th>
-                <th class="text-center">%</th>
-                <th class="text-center"><%= t('currency') %></th>
-              </tr>
-              </thead>
-              <tbody id="feature_body"></tbody>
-            </table>
+          <div class="box-body table-responsive no-padding" id="feature_body">
           </div>
         </div>
       </div>

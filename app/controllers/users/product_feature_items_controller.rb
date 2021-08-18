@@ -77,11 +77,16 @@ class Users::ProductFeatureItemsController < Users::BaseController
                    .by_category(@category_id)
                    .by_barcode(@barcode)
                    .by_desk(@desk)
-    if @storeroom_id.to_i == 1
-      products = products.by_balance(@balance)
+    if @storeroom_id.present?
+      if @storeroom_id.to_i == 1
+        products = products.by_balance(@balance)
+      else
+        @balance = "true"
+        products = products.by_store_room(@storeroom_id)
+      end
     else
       @balance = "true"
-      products = products.by_store_room(@storeroom_id)
+      products = products.any_balance
     end
 
     @product_count = products.length
@@ -93,14 +98,18 @@ class Users::ProductFeatureItemsController < Users::BaseController
 
   def get_feature_items
     @storeroom_id = params[:storeroom_id]
-    @storeroom = Storeroom.find(@storeroom_id)
-    @product_feature_items = if @storeroom_id.to_i == 1
-                               product = Product.find(params[:product_id])
-                               product.product_feature_items
-                             else
-                               ProductFeatureItem.by_product_id(params[:product_id])
-                                   .by_storeroom(@storeroom_id)
-                             end
+    if @storeroom_id.present?
+      @storeroom = Storeroom.find(@storeroom_id)
+      @product_feature_items = if @storeroom_id.to_i == 1
+                                 product = Product.find(params[:product_id])
+                                 product.product_feature_items
+                               else
+                                 ProductFeatureItem.by_product_id(params[:product_id])
+                                     .by_storeroom(@storeroom_id)
+                               end
+    else
+      @product_feature_items = ProductFeatureItem.by_product_id(params[:product_id])
+    end
     respond_to do |format|
       format.js {render 'feature_items_ajax'}
     end

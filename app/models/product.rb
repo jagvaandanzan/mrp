@@ -164,6 +164,12 @@ class Product < ApplicationRecord
         .group('products.id')
   }
 
+  scope :any_balance, ->() {
+    left_joins(:product_balances)
+        .left_joins(:store_transfer_balances)
+        .having("SUM(product_balances.quantity) > ? OR SUM(store_transfer_balances.quantity) > ?", 0, 0)
+        .group('products.id')
+  }
   scope :search_by_id, ->(id) {
     if id.present?
       where(id: id)
@@ -360,6 +366,11 @@ class Product < ApplicationRecord
     store_transfer_balances
         .by_storeroom_id(store_room_id)
         .sum(:quantity)
+  end
+
+  def total_balance
+    balance + store_transfer_balances
+                 .sum(:quantity)
   end
 
   private

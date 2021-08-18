@@ -1,22 +1,84 @@
-<% product_feature_items.each do |item| %>
-  <% balance = @storeroom_id.to_i == 1 ? item.balance : item.store_room_balance(@storeroom_id) %>
-  <tr>
-    <td class="va-mid"><%= item.name %></td>
-    <td class="va-mid"><%= item.barcode %></td>
-    <td class="va-mid"><%= get_currency_mn item.price %></td>
-    <td class="va-mid"><%= item.p_6_8_p %></td>
-    <td class="va-mid"><%= get_currency_mn item.p_6_8 %></td>
-    <td class="va-mid"><%= item.p_9_p %></td>
-    <td class="va-mid"><%= get_currency_mn item.p_9_ %></td>
-    <td class="va-mid"><%= get_currency_mn item.cost %></td>
-    <td class="va-mid"><%= balance %></td>
-    <td class="va-mid">
-      <% if @storeroom_id.to_i == 1 %>
-        <% ProductLocation.get_quantity(item.id).each {|loc_bal| %>
-          <div><%= loc_bal.name %>:&nbsp;<%= loc_bal['quantity'] %></div>
-        <% } else %>
-        <%= @storeroom.product_location.name %>: <%= balance %>
-      <% end %>
-    </td>
-  </tr>
-<% end %>
+<table class="table table-hover table-bordered">
+  <% if @storeroom_id.present? %>
+    <thead>
+    <tr>
+      <th rowspan="2" class="va-mid"><%= t('activerecord.models.product_feature') %></th>
+      <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
+      <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product_feature_item.price') %></th>
+      <th colspan="2"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
+      <th colspan="2"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
+      <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product_feature_item.cost') %></th>
+      <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product.balance') %></th>
+      <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product_income_item.income_locations') %></th>
+    </tr>
+    <tr>
+      <th class="text-center">%</th>
+      <th class="text-center"><%= t('currency') %></th>
+      <th class="text-center">%</th>
+      <th class="text-center"><%= t('currency') %></th>
+      ,
+    </tr>
+    </thead>
+    <tbody>
+    <% product_feature_items.each do |item| %>
+      <% balance = @storeroom_id.to_i == 1 ? item.balance : item.store_room_balance(@storeroom_id) %>
+      <tr>
+        <td class="va-mid"><%= item.name %></td>
+        <td class="va-mid"><%= item.barcode %></td>
+        <td class="va-mid"><%= get_currency_mn item.price %></td>
+        <td class="va-mid"><%= item.p_6_8_p %></td>
+        <td class="va-mid"><%= get_currency_mn item.p_6_8 %></td>
+        <td class="va-mid"><%= item.p_9_p %></td>
+        <td class="va-mid"><%= get_currency_mn item.p_9_ %></td>
+        <td class="va-mid"><%= get_currency_mn item.cost %></td>
+        <td class="va-mid"><%= balance %></td>
+        <td class="va-mid">
+          <% if @storeroom_id.to_i == 1 %>
+            <% ProductLocation.get_quantity(item.id).each {|loc_bal| %>
+              <div><%= loc_bal.name %>:&nbsp;<%= loc_bal['quantity'] %></div>
+            <% } else %>
+            <%= @storeroom.product_location.name %>: <%= balance %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  <% else %>
+    <thead>
+    <tr>
+      <th class="va-mid"><%= t('activerecord.models.product_feature') %></th>
+      <th class="va-mid"><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
+      <th class="va-mid"><%= t('activerecord.attributes.product_feature_item.price') %></th>
+      <th class="va-mid"><%= t('activerecord.attributes.product_feature_item.cost') %></th>
+      <th class="va-mid">Тавиур</th>
+      <th class="va-mid">Агуулахын үлдэгдэл</th>
+      <% Storeroom.not_id(1).order_code.each {|store_room| %>
+        <th class="va-mid"><%= store_room.name %></th>
+      <% } %>
+    </tr>
+    </thead>
+    <tbody>
+    <% product_feature_items.each do |item| %>
+      <tr>
+        <td class="va-mid"><%= item.name %></td>
+        <td class="va-mid"><%= item.barcode %></td>
+        <td class="va-mid"><%= get_currency_mn item.price %></td>
+        <td class="va-mid"><%= get_currency_mn item.cost %></td>
+        <td class="va-mid">
+          <% ProductLocation.get_quantity(item.id).each {|loc_bal| %>
+            <div><%= loc_bal.name %>:&nbsp;<%= loc_bal['quantity'] %></div>
+          <% } %>
+        </td>
+        <td class="va-mid"><%= item.balance %></td>
+        <% Storeroom.not_id(1).order_code.each {|store_room|
+          balance = item.store_room_balance(store_room.id) %>
+          <td class="va-mid">
+            <% if balance > 0 %>
+              <%= store_room.product_location.name %>: <%= item.store_room_balance(store_room.id) %>
+            <% end %></td>
+        <% } %>
+      </tr>
+    <% end %>
+    </tbody>
+  <% end %>
+</table>

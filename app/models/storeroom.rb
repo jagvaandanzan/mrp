@@ -8,6 +8,10 @@ class Storeroom < ApplicationRecord
     order(:code)
   }
 
+  scope :not_id, ->(id) {
+    where.not(id: id)
+  }
+
   def full_name
     "#{code} - #{name}"
   end
