@@ -10,6 +10,7 @@ class ProductWarehouseLoc < ApplicationRecord
 
   before_create :set_location_balance
   attr_accessor :code
+  validates :quantity, numericality: {greater_than: 0}
 
   scope :by_travel, ->(travel_id, id = nil) {
     items = select("products.n_name as name,
