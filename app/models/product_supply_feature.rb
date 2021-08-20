@@ -159,6 +159,12 @@ class ProductSupplyFeature < ApplicationRecord
     cost
   }
 
+  scope :not, ->(ids) {
+    where("product_supply_features.id IN (?)", ids)
+      .left_joins(:order_item)
+      .where("product_supply_order_items.id IS NULL")
+  }
+
 
   scope :by_income_date, ->(start, finish) {
     joins(:product_income_items)
@@ -178,8 +184,8 @@ class ProductSupplyFeature < ApplicationRecord
   }
 
   scope :by_feature, ->(feature_ids) {
-    joins(:order_item)
-        .where("product_supply_features.id IN (?)", feature_ids)
+    where("product_supply_features.id IN (?)", feature_ids)
+      .joins(:order_item)
   }
 
   scope :by_product_id, ->(product_id) {
@@ -199,12 +205,13 @@ class ProductSupplyFeature < ApplicationRecord
   }
 
   scope :sum_price_lo, ->() {
-    pluck("price_lo * quantity_lo")
+    pluck(:sum_price_lo)
         .sum(&:to_f)
   }
 
   scope :sum_cost_lo, ->() {
-    pluck(:cost)
+    group("product_supply_order_items.id")
+       .pluck("product_supply_order_items.cost")
         .sum(&:to_f)
   }
 
@@ -225,7 +232,7 @@ class ProductSupplyFeature < ApplicationRecord
   end
 
   def get_currency(value)
-    ApplicationController.helpers.get_currency(value, Const::CURRENCY[get_model.exchange_before_type_cast.to_i], 2)
+    ApplicationController.helpers.get_currency(value, Const::CURRENCY[get_model.exchange_before_type_cast.to_i], 3)
   end
 
   private

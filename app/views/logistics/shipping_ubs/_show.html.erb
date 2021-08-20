@@ -85,10 +85,10 @@
                   <td class="va-mid text-center"><%= ub.cargo %></td>
                   <% if box.is_box?
                        if index == 0 %>
-                      <td class="va-mid text-center" rowspan="<%= box.shipping_ub_products.count %>"><%= get_currency(box.cost, Const::CURRENCY[0], 2) %></td>
+                      <td class="va-mid text-center" rowspan="<%= box.shipping_ub_products.count %>"><%= get_currency(box.cost, Const::CURRENCY[0], 3) %></td>
                     <% end
                        else %>
-                    <td class="va-mid text-center"><%= get_currency(ub.cost, Const::CURRENCY[0], 2) %></td>
+                    <td class="va-mid text-center"><%= get_currency(ub.cost, Const::CURRENCY[0], 3) %></td>
                   <% end %>
                 </tr>
               <% }
@@ -111,7 +111,7 @@
                 <tr>
                   <td><%= index + 1 %></td>
                   <td><%= s.number %></td>
-                  <td><%= get_currency(s.cost, Const::CURRENCY[0], 2) %></td>
+                  <td><%= get_currency(s.cost, Const::CURRENCY[0], 3) %></td>
                 </tr>
               <% } %>
               </tbody>

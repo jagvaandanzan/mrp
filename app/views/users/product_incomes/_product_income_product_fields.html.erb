@@ -1,7 +1,7 @@
 <% if is_sample_box %>
   <tr class='sample_box' id='<%= f.object.shipping_ub_sample_id %>'>
     <td colspan='11' style="font-weight: bold"><%= f.object.shipping_ub_sample.number %>
-      , <%= get_currency(f.object.shipping_ub_sample.cost, Const::CURRENCY[0], 2) %></td>
+      , <%= get_currency(f.object.shipping_ub_sample.cost, Const::CURRENCY[0], 3) %></td>
   </tr>
 <% end %>
 <tr class="nested-fields">

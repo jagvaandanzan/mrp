@@ -101,13 +101,13 @@
                     <%= order_items.present? ? order_items.purchase_date : '' %>
                   </td>
                   <td class="va-mid">
-                    <%= order_items.present? ? get_currency(order_items.cost, Const::CURRENCY[0], 2) : '' %>
+                    <%= order_items.present? ? get_currency(order_items.cost, Const::CURRENCY[0], 3) : '' %>
                   </td>
                   <td class="va-mid text-center">
-                    <%= get_currency(i.price, Const::CURRENCY[0], 2) %>
+                    <%= get_currency(i.price, Const::CURRENCY[0], 3) %>
                   </td>
                   <td>
-                    <%= get_currency(total_price, Const::CURRENCY[0], 2) %>
+                    <%= get_currency(total_price, Const::CURRENCY[0], 3) %>
                   </td>
                   <td class="va-mid text-center">
                     <%= order_items.present? ? order_items.note_lo : '' %>

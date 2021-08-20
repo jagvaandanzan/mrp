@@ -20,7 +20,7 @@ class ProductSupplyOrderItem < ApplicationRecord
   end
 
   def get_currency(value)
-    ApplicationController.helpers.get_currency(value, Const::CURRENCY[product_supply_order.exchange_before_type_cast.to_i], 2)
+    ApplicationController.helpers.get_currency(value, Const::CURRENCY[product_supply_order.exchange_before_type_cast.to_i], 3)
   end
 
   scope :search_by_order, ->(start, finish, supply_code, product_name) {
@@ -149,6 +149,28 @@ class ProductSupplyOrderItem < ApplicationRecord
         cost_text += "#{er.product.full_name}"
       }
       [shipping_er.date.strftime('%F'), er_product.cost, er_product.quantity, er_product.cargo, cost_text]
+    else
+      ["", "", "", "", ""]
+    end
+  end
+
+  def shipping_er_product
+    shipping_er_products = ShippingErProduct.by_product_id(self.product_id)
+                                            .by_supply_order_id(self.product_supply_order_id)
+    if shipping_er_products.present?
+      date = shipping_er_products.first.shipping_er.date.strftime('%F')
+      costs = 0
+      cost_text = ""
+      loaded = 0
+      cargo = 0
+      shipping_er_products.each_with_index {|er, index|
+        costs += er.cost
+        loaded += er.quantity if er.quantity.present?
+        cargo += er.cargo if er.cargo.present?
+        cost_text += "; " if index > 0
+        cost_text += "#{er.product.full_name}"
+      }
+      [date, costs, loaded, cargo, cost_text]
     else
       ["", "", "", "", ""]
     end
