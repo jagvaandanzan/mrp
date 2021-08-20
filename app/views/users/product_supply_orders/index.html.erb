@@ -131,7 +131,7 @@
                   </td>
                   <td class="va-mid text-center"><%= i.exchange_i18n %></td>
                   <td class="va-mid text-center"><%= total_quantity > 0 ? "#{total_quantity} / #{ProductIncomeItem.by_product_feature_ids(product.present? ? product.id : 0, feature_ids).sum(:quantity)}" : '' %></td>
-                  <td class="va-mid text-center"><%= sum_price %></td>
+                  <td class="va-mid text-center"><%= get_currency(sum_price, Const::CURRENCY[0], 3) %></td>
                   <td class="va-mid">
                     <% if order_item.present? %>
                       <%= i.is_basic? ? order_item.note : i.description %>
@@ -141,7 +141,7 @@
                   <td class="va-mid text-center bg-1"><%= total_quantity_lo > 0 ? total_quantity_lo : '' %></td>
                   <td class="va-mid text-center bg-1"><%= order_item.present? ? (order_item.get_currency order_item.sum_price_lo) : '' %></td>
                   <td class="va-mid text-center bg-1"><%= order_item.present? ? order_item.note_lo : '' %></td>
-                  <% date, costs, quantity, cargo, cost_text = order_item.present? ? order_item.shipping_er_feature : '' %>
+                  <% date, costs, quantity, cargo, cost_text = order_item.present? ? order_item.shipping_er_product : '' %>
                   <td class="va-mid text-center bg-2"><%= date %></td>
                   <td class="va-mid bg-2"><%= costs %>
                     <% if cost_text.present? %>
@@ -228,9 +228,9 @@
                 <%
                   supply_order_ids = @product_supply_orders_x.pluck(:id)
                   order_item_ids = ProductSupplyOrderItem.by_supply_id(supply_order_ids).pluck(:id)
-                  quantity = ProductSupplyFeature.by_order_item(order_item_ids).sum(:quantity)
+                  quantity = @product_supply_orders_x.feature.pluck("product_supply_features.quantity").sum(&:to_i)
                   quantity_lo = ProductIncomeItem.by_feature_ids(ProductSupplyFeature.by_order_item(order_item_ids).pluck(:id)).sum(:quantity)
-                  sum_price = ProductSupplyFeature.by_order_item(order_item_ids).sum(:sum_price)
+                  sum_price = @product_supply_orders_x.feature.pluck("product_supply_features.sum_price").sum(&:to_f)
                   sum_price_lo = ProductSupplyFeature.by_order_item(order_item_ids).sum(:sum_price_lo)
                   quantity_log = ProductSupplyFeature.by_order_item(order_item_ids).sum(:quantity_lo)
                   cost_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:cost)
@@ -242,21 +242,21 @@
                 %>
                 <td colspan="8"><strong>Нийт: <%=@product_supply_orders_x.count %></strong></td>
                 <td class="va-mid text-center"><%="#{quantity}/#{quantity_lo}"  %></td>
-                <td class="text-center"> <%= sum_price %></td>
+                <td class="text-center"> <%= get_currency(sum_price, Const::CURRENCY[0], 3) %></td>
                 <td class="text-center"></td>
                 <td class="text-center"></td>
                 <td class="text-center"><%=quantity_log %></td>
-                <td class="text-center"><%=sum_price_lo %></td>
+                <td class="text-center"><%=get_currency(sum_price_lo, Const::CURRENCY[0], 3) %></td>
                 <td class="text-center"></td>
                 <td class="text-center"></td>
-                <td class="text-center"><%=cost_er %></td>
+                <td class="text-center"><%=get_currency(cost_er, Const::CURRENCY[0], 3) %></td>
                 <td class="text-center"><%=quantity_er %></td>
                 <td class="text-center"><%=cargo_er %></td>
                 <td class="text-center"><%= %></td>
-                <td class="text-center"><%=cost_ub.round(2) %></td>
+                <td class="text-center"><%=get_currency(cost_ub, Const::CURRENCY[0], 3)%></td>
                 <td class="text-center"><%=quantity_ub %></td>
                 <td class="text-center"><%=cargo_ub %></td>
-                <td class="text-center"><%= cost_er.round(2) + cost_ub %></td>
+                <td class="text-center"><%=get_currency(cost_er + cost_ub, Const::CURRENCY[0], 3) %></td>
               </tr>
               </tbody>
             </table>

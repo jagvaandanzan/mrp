@@ -1,0 +1,4 @@
+<% if @shipping_half_products.present? %>
+$('#tb_product_income_products tbody').append("<%= escape_javascript render(partial: 'users/product_incomes/add_half_product_partial',
+                    :locals => {shipping_half_products: @shipping_half_products, row: @rows }) %>")
+<% end %>

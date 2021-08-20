@@ -112,7 +112,7 @@ code = 0
     total_quantity = 0
     total_quantity_lo = 0
     total_price = ""
-    date, costs, received, cargo, cost_text = order_item.shipping_er_feature
+    date, costs, received, cargo, cost_text = order_item.shipping_er_product
     dateUB, costsUB, loadedUB, cargoUB, cost_textUB = order_item.shipping_ub_product
     product_income_product = ProductIncomeProduct.by_product(product.id).by_supply_order(order_item.product_supply_order_id)
     if order_item.present?
@@ -147,7 +147,7 @@ code = 0
                 i.code == code ? '' : costsUB,
                 supply_feature.shipping_ub_features.quantity(supply_feature.id),
                 i.code == code ? '' : cargoUB,
-                i.code == code ? '' : costs + costsUB,
+                i.code == code ? '' : costs.to_f + costsUB.to_f,
                 product_income_product.present? ? product_income_product.first.product_income.income_date.strftime('%F') : ''
                 ],
                     style:[default,default,default,default,default,default,default,default,default,default,default,default,default,default,default,count > 1 ? i.code == var ? none : below : below,default,count > 1 ? i.code == var ? none : below : below,default,count > 1 ? i.code == var ? none : below : below,default,count > 1 ? i.code == var ? none : below : below,count > 1 ? i.code == var ? sides : below : below,default]
@@ -160,15 +160,15 @@ end
 
 supply_order_ids = @product_supply_orders_x.pluck(:id)
 order_item_ids = ProductSupplyOrderItem.by_supply_id(supply_order_ids).pluck(:id)
-quantity = ProductSupplyFeature.by_order_item(order_item_ids).sum(:quantity)
+quantity = @product_supply_orders_x.feature.pluck("product_supply_features.quantity").sum(&:to_i)
 quantity_lo = ProductIncomeItem.by_feature_ids(ProductSupplyFeature.by_order_item(order_item_ids).pluck(:id)).sum(:quantity)
-sum_price = ProductSupplyFeature.by_order_item(order_item_ids).sum(:sum_price)
+sum_price = @product_supply_orders_x.feature.pluck("product_supply_features.sum_price").sum(&:to_f)
 sum_price_lo = ProductSupplyFeature.by_order_item(order_item_ids).sum(:sum_price_lo)
 quantity_log = ProductSupplyFeature.by_order_item(order_item_ids).sum(:quantity_lo)
-cost_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:cost)
+cost_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:cost).round(3)
 quantity_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:quantity)
 cargo_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:cargo)
-cost_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:cost)
+cost_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:cost).round(3)
 quantity_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:quantity)
 cargo_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:cargo)
 sum_cost = cost_er + cost_ub
