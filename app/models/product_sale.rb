@@ -214,7 +214,9 @@ class ProductSale < ApplicationRecord
   end
 
   def bought_price
-    product_sale_items.sum(:bought_price)
+    product_sale_items
+        .pluck(:bought_price)
+        .sum(&:to_i)
   end
 
   def status_name
