@@ -332,7 +332,7 @@ class ProductSale < ApplicationRecord
   def check_auto_redistribution
     if status.alias == "auto_redistribution"
       product_sale_items.where("back_quantity > ?", 0).each do |item|
-        ProductBalance.new(sale_item: item,
+        ProductBalance.create(sale_item: item,
                            product_id: item.product_id,
                            feature_item_id: item.feature_item_id,
                            quantity: -item.back_quantity)
