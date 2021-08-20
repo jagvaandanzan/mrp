@@ -36,6 +36,10 @@ class ProductSupplyOrder < ApplicationRecord
     order(created_at: :desc)
   }
 
+  scope :feature, ->(){
+    joins(:supply_features)
+  }
+
   scope :by_date, ->(start, finish) {
       where('? <= product_supply_orders.created_at AND product_supply_orders.created_at <= ?', start.to_time, finish.to_time + 1.days)
   }
@@ -61,7 +65,7 @@ class ProductSupplyOrder < ApplicationRecord
   end
 
   def get_currency(value)
-    ApplicationController.helpers.get_currency(value, Const::CURRENCY[exchange_before_type_cast.to_i], 2)
+    ApplicationController.helpers.get_currency(value, Const::CURRENCY[exchange_before_type_cast.to_i], 3)
   end
 
   def code_with_info

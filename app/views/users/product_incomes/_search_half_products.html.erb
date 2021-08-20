@@ -1,0 +1,38 @@
+<% box_id = 0
+   box_id_array = shipping_ub_products.map(&:shipping_ub_box_id).to_a
+   box_ids = box_id_array.group_by(&:itself).transform_values(&:count)#tally
+   shipping_ub_products.each do |ub_product| %>
+  <% shipping_ub = ub_product.shipping_ub
+     product = ub_product.product
+     shipping_ub_box = ub_product.shipping_ub_box
+     is_box = shipping_ub_box.is_box?
+     b_id = shipping_ub_box.id
+     box_products = box_ids[b_id] %>
+  <tr class="<%= is_box ? 'box' : 'pro' %>-<%= is_box ? b_id : ub_product.id %>">
+    <td class="va-mid"><%= show_id(shipping_ub.id) %></td>
+    <td class="va-mid"><%= product.code %></td>
+    <td class="va-mid"><%= product.full_name %></td>
+    <td><%= ub_product.shipping_ub_features.by_quantity(0).count %></td>
+    <td class="va-mid">
+      <% if product.picture.present? %>
+        <%= link_to product.picture.url, :"data-lightbox" => "roadtr  ip" do %>
+          <%= t('titles.view') %>
+        <% end %>
+      <% end %>
+    </td>
+    <td class="va-mid"><%= shipping_ub.date.strftime('%F') %></td>
+    <% if box_id != b_id || !is_box %>
+      <td class="va-mid text-center" rowspan="<%= is_box ? box_products : '1' %>"><%= shipping_ub_box.number %></td>
+    <% end %>
+    <td class="va-mid text-center"><%= ub_product[:remainder] %></td>
+    <% if box_id != b_id || !is_box
+         box_id = b_id %>
+      <td class="va-mid text-center" rowspan="<%= is_box ? box_products : 1 %>"><%= ub_product.cargo %></td>
+      <td class="va-mid" rowspan="<%= is_box ? box_products : 1 %>">
+        <button class="btn btn-block btn-success btn-xs" type="button" onclick="add_half_product(<%= is_box %>, <%= is_box ? b_id : ub_product.id  %>)">
+          <i class="fa fa-plus" style="color: white"></i>
+        </button>
+      </td>
+    <% end %>
+  </tr>
+<% end %>

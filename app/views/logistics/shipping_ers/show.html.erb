@@ -27,7 +27,7 @@
           </div>
           <div class="col-md-3">
             <b><%= t('activerecord.attributes.shipping_er.cost') %>
-              :</b> <%= get_currency(@shipping_er.cost, Const::CURRENCY[0], 2) %>
+              :</b> <%= get_currency(@shipping_er.cost, Const::CURRENCY[0], 3) %>
           </div>
         </div>
         <div class="col-md-12">
@@ -85,7 +85,7 @@
                 </td>
                 <td class="va-mid"><%= er_product.quantity %></td>
                 <td class="va-mid"><%= er_product.cargo %></td>
-                <td class="va-mid"><%= get_currency(er_product.cost, Const::CURRENCY[0], 2) %></td>
+                <td class="va-mid"><%= get_currency(er_product.cost, Const::CURRENCY[0], 3) %></td>
               </tr>
             <% } %>
             </tbody>

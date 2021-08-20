@@ -58,9 +58,9 @@
                   sample_quantity = i.by_sample_type.pluck("product_income_items.quantity").sum
                   main_quantity = i.by_main_type.pluck("product_income_items.quantity").sum
                   sample_feature_cost = i.by_sample_type.pluck("product_supply_features.sum_price_lo").sum
-                  main_feature_cost = i.by_main_type.pluck("product_supply_features.sum_price_lo").sum
-                  # sample_cargo = i.by_sample_type.distinct.pluck("shipping_er_products.quantity").sum
-                  main_cargo = i.by_main_type.distinct.pluck("shipping_er_products.quantity").sum
+                  main_feature_cost = i.by_main_type.group("product_income_products.id").pluck("product_income_products.unit_price * product_income_products.quantity").sum
+                  sample_cargo = i.by_sample_type.distinct.pluck("shipping_ub_samples.number").sum
+                  main_cargo = i.by_main_type.distinct.pluck("shipping_er_products.cargo").sum
                   # sample_er_cost = i.by_sample_type.distinct.pluck("shipping_er_products.cost").sum
                   main_er_cost = i.by_main_type.distinct.pluck("shipping_er_products.cost").sum
                   # sample_shipping_ub = i.by_sample_type.distinct.pluck("shipping_ub_products.cost").sum
@@ -119,28 +119,28 @@
                     <td class="va-mid nowrap" rowspan="3"><%=income.income_date.strftime('%F')  %></td>
                     <td class="va-mid">Үндсэн</td>
                     <td class="va-mid"><%=main_quantity > 0 ? main_quantity : '' %></td>
-                    <td class="va-mid"><%=main_feature_cost > 0 ? get_currency(main_feature_cost, Const::CURRENCY[0], 2) : '' %></td>
+                    <td class="va-mid"><%=main_feature_cost > 0 ? get_currency(main_feature_cost, Const::CURRENCY[0], 3) : '' %></td>
                     <td class="va-mid"><%=main_cargo > 0 ? main_cargo : ''  %></td>
-                    <td class="va-mid"><%=main_er_cost > 0 ? get_currency(main_er_cost, Const::CURRENCY[0], 2) : ''  %></td>
-                    <td class="va-mid"><%=main_shipping_ub > 0 ? get_currency(main_shipping_ub, Const::CURRENCY[0], 2) : ''  %></td>
+                    <td class="va-mid"><%=main_er_cost > 0 ? get_currency(main_er_cost, Const::CURRENCY[0], 3) : ''  %></td>
+                    <td class="va-mid"><%=main_shipping_ub > 0 ? get_currency(main_shipping_ub, Const::CURRENCY[0], 3) : ''  %></td>
                     <td class="va-mid" rowspan="3"><%=get_currency_mn(i.ub_cargo)  %></td>
-                    <td class="va-mid" rowspan="3"><%= sum > 0 ? get_currency(sum, Const::CURRENCY[0], 2) : ''  %></td>
+                    <td class="va-mid" rowspan="3"><%= sum > 0 ? get_currency(sum, Const::CURRENCY[0], 3) : ''  %></td>
                   </tr>
                   <tr>
                     <td class="va-mid ">Дээж</td>
                     <td class="va-mid"><%=sample_quantity > 0 ? sample_quantity : '' %></td>
-                    <td class="va-mid"><%=sample_feature_cost > 0 ? get_currency(sample_feature_cost, Const::CURRENCY[0], 2) : '' %></td>
+                    <td class="va-mid"><%=sample_feature_cost > 0 ? get_currency(sample_feature_cost, Const::CURRENCY[0], 3) : '' %></td>
+                    <td class="va-mid"><%= sample_cargo > 0 ? sample_cargo : '' %></td>
                     <td class="va-mid"></td>
-                    <td class="va-mid"></td>
-                    <td class="va-mid"><%=sample_shipping_ub > 0 ? get_currency(sample_shipping_ub, Const::CURRENCY[0], 2) : ''  %></td>
+                    <td class="va-mid"><%=sample_shipping_ub > 0 ? get_currency(sample_shipping_ub, Const::CURRENCY[0], 3) : ''  %></td>
                   </tr>
                   <tr class="bold">
                     <th class="va-mid ">Нийт</th>
                     <td class="va-mid"><%=main_quantity + sample_quantity %></td>
-                    <td class="va-mid"><%=get_currency(main_feature_cost + sample_feature_cost, Const::CURRENCY[0], 2) %></td>
-                    <td class="va-mid"><%=main_cargo %></td>
-                    <td class="va-mid"><%=get_currency(main_er_cost, Const::CURRENCY[0], 2) %></td>
-                    <td class="va-mid"><%=get_currency(main_shipping_ub + sample_shipping_ub, Const::CURRENCY[0], 2) %></td>
+                    <td class="va-mid"><%=get_currency(main_feature_cost + sample_feature_cost, Const::CURRENCY[0], 3) %></td>
+                    <td class="va-mid"><%=main_cargo + sample_cargo %></td>
+                    <td class="va-mid"><%=get_currency(main_er_cost, Const::CURRENCY[0], 3) %></td>
+                    <td class="va-mid"><%=get_currency(main_shipping_ub + sample_shipping_ub, Const::CURRENCY[0], 3) %></td>
                   </tr>
                 <%
                    } %>
@@ -159,12 +159,12 @@
                   <td colspan="2" class="text-right">Нийт</td>
                   <td></td>
                   <td class="va-mid"><%= sum_quantity > 0 ? sum_quantity : '' %></td>
-                  <td class="va-mid"><%= sum_feature_cost > 0 ? get_currency(sum_feature_cost, Const::CURRENCY[0], 2) : '' %></td>
+                  <td class="va-mid"><%= sum_feature_cost > 0 ? get_currency(sum_feature_cost, Const::CURRENCY[0], 3) : '' %></td>
                   <td class="va-mid"><%= sum_cargo > 0 ? sum_cargo : '' %></td>
-                  <td class="va-mid"><%= sum_er_cost > 0 ? get_currency(sum_er_cost, Const::CURRENCY[0], 2) : '' %></td>
-                  <td class="va-mid"><%= sum_shipping_ub > 0 ? get_currency(sum_shipping_ub, Const::CURRENCY[0], 2) : '' %></td>
+                  <td class="va-mid"><%= sum_er_cost > 0 ? get_currency(sum_er_cost, Const::CURRENCY[0], 3) : '' %></td>
+                  <td class="va-mid"><%= sum_shipping_ub > 0 ? get_currency(sum_shipping_ub, Const::CURRENCY[0], 3) : '' %></td>
                   <td class="va-mid"><%= get_currency_mn(sum_cargo_ub) %></td>
-                  <td class="va-mid"><%= sum_s > 0 ? get_currency(sum_s, Const::CURRENCY[0], 2) : '' %></td>
+                  <td class="va-mid"><%= sum_s > 0 ? get_currency(sum_s, Const::CURRENCY[0], 3) : '' %></td>
                 </tr>
               </tbody>
             </table>

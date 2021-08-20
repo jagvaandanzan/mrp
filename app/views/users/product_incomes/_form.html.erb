@@ -95,6 +95,7 @@
                 <li class="active"><a href="#basic" data-toggle="tab" style="text-decoration: none">Үндсэн бараа</a>
                 </li>
                 <li><a href="#sample" data-toggle="tab" style="text-decoration: none">Дээж бараа</a></li>
+                <li><a href="#half" data-toggle="tab" style="text-decoration: none" onclick="search_half_product()">Дутуу бараа</a></li>
               </ul>
               <div class="tab-content">
                 <div class="active tab-pane" id="basic">
@@ -146,7 +147,7 @@
                             <td class="text-center"><%= index + 1 %></td>
                             <td><%= s.number %></td>
                             <td>
-                              <% sample_box_cost = get_currency(s.cost, Const::CURRENCY[0], 2) %>
+                              <% sample_box_cost = get_currency(s.cost, Const::CURRENCY[0], 3) %>
                               <%= sample_box_cost %></td>
                             <td><%= s.created_at.strftime('%F') %></td>
                             <td>
@@ -189,6 +190,38 @@
                     </div>
                   </div>
                 </div>
+                <div class="tab-pane" id="half">
+                  <div class="active tab-pane" id="basic">
+                    <div class="row m-b-10">
+                      <div class="col-md-4">
+                        <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.by_product')} %>
+                      </div>
+                      <div class="col-md-4">
+                        <button type="button" class="btn btn-primary" onclick="search_half_product()">Дутуу бараа хайх
+                        </button>
+                      </div>
+                    </div>
+                    <div class="cocoon-nested-form" id="search_half_product">
+                      <table class="table table-bordered" id="tb_shipping_half_products">
+                        <thead>
+                        <tr>
+                          <th class="va-mid">Баримтын дугаар</th>
+                          <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_code') %></th>
+                          <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_name') %></th>
+                          <th class="va-mid"><%= t('activerecord.models.product_feature') %></th>
+                          <th class="va-mid"><%= t('activerecord.attributes.product_supply_order.product_image') %></th>
+                          <th class="va-mid"><%= t('activerecord.attributes.product_supply_order_item.shipping_ub_date') %></th>
+                          <th class="va-mid"><%= t('titles.box') %></th>
+                          <th class="va-mid"><%= t('activerecord.attributes.product_income_item.loaded') %></th>
+                          <th class="va-mid"><%= t('titles.cargo') %></th>
+                          <th width="50px"></th>
+                        </tr>
+                        </thead>
+                        <tbody id="half_products"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -197,6 +230,7 @@
     </div>
   </section>
 </div>
+
 <script>
     function add_product(is_box, id) {
         let row = $('#tb_product_income_products .nested-fields').length;
@@ -206,6 +240,21 @@
             data: "is_box=" + is_box + "&id=" + id + "&rows=" + row,
             success: function () {
                 $("#tb_shipping_ub_products tr." + (is_box ? 'box' : 'pro') + "-" + id).each(function () {
+                    $(this).remove();
+                });
+            },
+        });
+    }
+
+    function add_half_product(is_box, id) {
+        let row = $('#tb_product_income_products .nested-fields').length;
+        Rails.ajax({
+            url: "<%= insert_half_ub_users_product_incomes_path %>",
+            type: "PATCH",
+            data: "is_box=" + is_box + "&id=" + id + "&rows=" + row,
+            success: function () {
+                console.log("asd");
+                $("#tb_shipping_half_products tr." + (is_box ? 'box' : 'pro') + "-" + id).each(function () {
                     $(this).remove();
                 });
             },
@@ -225,6 +274,18 @@
         });
     }
 
+    function search_half_product() {
+        let shipping_half_product_ids = [];
+        $('#tb_product_income_products tr.shipping_half_product').each(function () {
+            shipping_half_product_ids.push($(this).attr('shipping_half_product_id'));
+        });
+        $('#half_products').html("<tr><td colspan='10' class='text-center m-t-20 w-100'><img src='/images/loading.gif'></td></tr>");
+        Rails.ajax({
+            url: "<%= search_half_products_users_product_incomes_path %>",
+            type: "POST",
+            data: "by_product_name=" + $('#by_product_name').val() + "&ids=" + shipping_half_product_ids
+        });
+    }
     function search_sample_product() {
         let product_ids = [];
         $('#tb_product_income_products tr.product').each(function () {

@@ -25,6 +25,13 @@ class ShippingErProduct < ApplicationRecord
     items
   }
 
+  scope :by_product_id, ->(product_id) {
+    where(product: product_id)
+  }
+  scope :by_supply_order_id, ->(supply_order_id) {
+    where(supply_order_id: supply_order_id)
+  }
+
   scope :by_date, ->(start, finish) {
     where('? <= shipping_er_products.created_at AND shipping_er_products.created_at <= ?', start.to_time, finish.to_time + 1.days)
   }

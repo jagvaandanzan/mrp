@@ -39,6 +39,13 @@ class Users::ProductIncomesController < Users::BaseController
     end
   end
 
+  def search_half_products
+    shipping_ub_products = ShippingUbProduct.find_half(nil, nil, params[:by_product_name], params[:ids])
+    respond_to do |format|
+      format.js {render 'users/product_incomes/search_half_products_js', locals: {shipping_ub_products: shipping_ub_products, page: params[:page]}}
+    end
+  end
+
   def search_supply_feature
     product_supply_features = ProductSupplyFeature.find_to_income(1, nil, params[:by_code], params[:by_product_name], params[:product_ids])
     respond_to do |format|
@@ -69,6 +76,14 @@ class Users::ProductIncomesController < Users::BaseController
     @rows = params[:rows].to_i
     respond_to do |format|
       format.js {render 'users/product_incomes/add_product'}
+    end
+  end
+
+  def insert_half_ub
+    @shipping_half_products = ShippingUbProduct.find_half(params[:is_box] == "true", params[:id].to_i, nil, params[:ids])
+    @rows = params[:rows].to_i
+    respond_to do |format|
+      format.js {render 'users/product_incomes/add_half_product'}
     end
   end
 

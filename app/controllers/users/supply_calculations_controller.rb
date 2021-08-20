@@ -9,6 +9,10 @@ class Users::SupplyCalculationsController < Users::BaseController
                                            .date_desc
                                            .order(product_supply_order_id: :asc)
                                            .page(params[:page])
+    @income_products_x = ProductIncomeProduct.in_ub(@by_start, @by_end)
+                                           .by_calc_nil(@by_nil)
+                                           .date_desc
+                                           .order(product_supply_order_id: :asc)
     @in_ub_x = ProductSupplyFeature
                  .by_date(@by_start, @by_end)
                  .in_ub
