@@ -33,98 +33,74 @@
             <table class="table table-hover table-bordered">
               <thead>
               <tr>
+                <th class="th-center va-mid" colspan="8">Захиалгын мэдээлэл</th>
+                <th class="th-center va-mid" colspan="3">Төлбөрийн хэлбэр</th>
+              </tr>
+              <tr>
+                <th class="th-center va-mid" style="width: 30px">№</th>
+                <th class="th-center va-mid">Төрөл</th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.product_sale.phone') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.product_sale_item.product_id') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.product_sale_item.feature_item_id') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.product_sale_item.quantity') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.product_sale_item.price') %></th>
                 <th class="th-center va-mid"><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
-                <th class="th-center va-mid"><%= t('activerecord.attributes.product_sale.money') %></th>
-                <th class="th-center va-mid"><%= t('activerecord.attributes.product_sale.paid') %></th>
+                <th class="th-center va-mid">Бэлэн</th>
+                <th class="th-center va-mid">Данс</th>
+                <th class="th-center va-mid">Зөрүү</th>
               </tr>
               </thead>
               <tbody>
               <% q = 0
                  price = 0.0
-                 exchanges = []
+                 bought_sum = 0.0
                  if @product_sales.present?
                    @product_sales.each_with_index {|product_sale, i|
-                     if product_sale.parent_id.present?
-                       exchanges << product_sale
-                     else
-                       sale_items = product_sale.product_sale_items.not_nil_bought_quantity
-                       rows = sale_items.count
-                       sale_item = sale_items[0] %>
-                    <tr>
-                      <td class="va-mid" rowspan="<%= rows %>"><%= i + 1 %>. <%= product_sale.phone %></td>
-                      <td class="va-mid"><%= sale_item.product.name_with_code %></td>
-                      <td class="va-mid"><%= sale_item.feature_item.name %></td>
-                      <td class="va-mid"><%= sale_item.bought_quantity %></td>
-                      <td class="va-mid text-right"><%= get_currency_mn sale_item.price %></td>
-                      <td class="va-mid text-right"><%= get_currency_mn sale_item.bought_price %></td>
-                      <td class="va-mid" rowspan="<%= rows %>"><%= product_sale.money_i18n %></td>
-                      <td class="va-mid" rowspan="<%= rows %>"><%= get_currency_mn product_sale.paid %></td>
-                    </tr>
-                    <% sale_items.each_with_index {|item, index|
-                      q += item.bought_quantity
-                      price += item.bought_price
-                      if index > 0 %>
-                        <tr>
-                          <td class="va-mid"><%= item.product.name_with_code %></td>
-                          <td class="va-mid"><%= item.feature_item.name %></td>
-                          <td class="va-mid"><%= item.bought_quantity %></td>
-                          <td class="va-mid text-right"><%= get_currency_mn item.price %></td>
-                          <td class="va-mid text-right"><%= get_currency_mn p %></td>
-                        </tr>
-                      <% end }
-                         end } %>
+                     sale_items = product_sale.product_sale_items.not_nil_bought_quantity
+                     rows = sale_items.count
+                     sale_item = sale_items[0] %>
+                  <tr>
+                    <td class="va-mid text-center" rowspan="<%= rows %>"><%= i + 1 %></td>
+                    <td class="va-mid" rowspan="<%= rows %>"><%= product_sale.parent_id.present? ? product_sale.parent.status.name : 'Захиалга' %></td>
+                    <td class="va-mid" rowspan="<%= rows %>"><%= product_sale.phone %></td>
+                    <td class="va-mid"><%= sale_item.product.name_with_code %></td>
+                    <td class="va-mid"><%= sale_item.feature_item.name %></td>
+                    <td class="va-mid"><%= sale_item.bought_quantity %></td>
+                    <td class="va-mid text-right"><%= get_currency_mn sale_item.price %></td>
+                    <td class="va-mid text-right"><%= get_currency_mn sale_item.bought_price %></td>
+                    <td class="va-mid text-right" rowspan="<%= rows %>" id="bought-<%= i %>"></td>
+                    <td class="va-mid text-right" rowspan="<%= rows %>"><%= get_currency_mn product_sale.paid %></td>
+                    <td class="va-mid text-right" rowspan="<%= rows %>" id="diff-<%= i %>"></td>
+                  </tr>
+                  <% sale_items.each_with_index {|item, index|
+                    q += item.bought_quantity
+                    price += item.bought_price
+                    bought_sum += item.bought_price
+                    if index > 0 %>
+                      <tr>
+                        <td class="va-mid"><%= item.product.name_with_code %></td>
+                        <td class="va-mid"><%= item.feature_item.name %></td>
+                        <td class="va-mid"><%= item.bought_quantity %></td>
+                        <td class="va-mid text-right"><%= get_currency_mn item.price %></td>
+                        <td class="va-mid text-right"><%= get_currency_mn item.bought_price %></td>
+                      </tr>
+                    <% end } %>
+                  <script>
+                      <% if product_sale.parent_id.present? %>
+                      $('#bought-<%= i %>').html("<%= get_currency_mn(product_sale.parent.bought_price .present? ? bought_sum-product_sale.paid : bought_sum) %>");
+                      <% else %>
+                      $('#bought-<%= i %>').html("<%= get_currency_mn(product_sale.paid.present? ? bought_sum-product_sale.paid : bought_sum) %>");
+                      <% end %>
+                  </script>
+                <% bought_sum = 0.0 } %>
                 <tr>
-                  <td colspan="3" class="text-right"><strong><%= t('titles.total') %></strong></td>
+                  <td colspan="5" class="text-right"><strong><%= t('titles.total') %></strong></td>
                   <td><strong><%= q %></strong></td>
-                  <td colspan="2" class="text-right"><strong><%= get_currency_mn price %></strong></td>
                   <td></td>
+                  <td class="text-right"><strong><%= get_currency_mn price %></strong></td>
+                  <td colspan="3"></td>
                 </tr>
-                <% if exchanges.size > 0 %>
-                  <tr>
-                    <td colspan="8" style="background: lightgrey"><strong>Буцаалт, солилт</strong></td>
-                  </tr>
-                  <% q = 0
-                     price = 0.0
-                     exchanges.each_with_index {|product_sale, i|
-                       sale_items = product_sale.product_sale_items.not_nil_bought_quantity
-                       rows = sale_items.count
-                       sale_item = sale_items[0] %>
-                    <tr>
-                      <td class="va-mid" rowspan="<%= rows %>"><%= i + 1 %>. <%= product_sale.phone %></td>
-                      <td class="va-mid"><%= sale_item.product.name_with_code %></td>
-                      <td class="va-mid"><%= sale_item.feature_item.name %></td>
-                      <td class="va-mid"><%= sale_item.bought_quantity %></td>
-                      <td class="va-mid text-right"><%= get_currency_mn sale_item.price %></td>
-                      <td class="va-mid text-right"><%= get_currency_mn sale_item.bought_price %></td>
-                      <td class="va-mid" rowspan="<%= rows %>"><%= product_sale.money_i18n %></td>
-                      <td class="va-mid" rowspan="<%= rows %>"><%= get_currency_mn product_sale.paid %></td>
-                    </tr>
-                    <% sale_items.each_with_index {|item, index|
-                      q += item.bought_quantity
-                      price += item.bought_price
-                      if index > 0 %>
-                        <tr>
-                          <td class="va-mid"><%= item.product.name_with_code %></td>
-                          <td class="va-mid"><%= item.feature_item.name %></td>
-                          <td class="va-mid"><%= item.bought_quantity %></td>
-                          <td class="va-mid text-right"><%= get_currency_mn item.price %></td>
-                          <td class="va-mid text-right"><%= get_currency_mn p %></td>
-                        </tr>
-                      <% end }
-                         } %>
-                  <tr>
-                    <td colspan="3" class="text-right"><strong><%= t('titles.total') %></strong></td>
-                    <td><strong><%= q %></strong></td>
-                    <td colspan="2" class="text-right"><strong><%= get_currency_mn price %></strong></td>
-                    <td></td>
-                  </tr>
-                <% end
-                   end %>
+              <% end %>
               </tbody>
             </table>
           </div>

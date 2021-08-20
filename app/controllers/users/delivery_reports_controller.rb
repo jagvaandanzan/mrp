@@ -13,6 +13,7 @@ class Users::DeliveryReportsController < Users::BaseController
 
     @product_sales = ProductSale.by_travel_ids(travers.map(&:id).to_a)
                          .by_delivered
+                         .order(:phone)
   end
 
   def salary

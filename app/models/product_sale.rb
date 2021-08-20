@@ -186,9 +186,9 @@ class ProductSale < ApplicationRecord
   scope :travel_nil, ->(id) {
     items = joins(:status)
     items = if id.nil?
-              items.where("salesman_travel_id IS ? OR product_sale_statuses.alias = ?", nil, 'auto_redistribution')
+              items.where("salesman_travel_id IS ? AND product_sale_statuses.alias = ?", nil, 'oper_confirmed')
             else
-              items.where("salesman_travel_id IS ? OR product_sales.id = ? OR product_sale_statuses.alias = ?", nil, id, 'auto_redistribution')
+              items.where("(salesman_travel_id IS ? OR product_sales.id = ?) AND product_sale_statuses.alias = ?", nil, id, 'oper_confirmed')
             end
     items.order(:delivery_start)
   }

@@ -36,7 +36,7 @@ module API
       end
 
       class Notification < Grape::Entity
-        expose :created_at, :title, :body_u, :avatar_s, :salesman_travel_id, :product_sale_item_id
+        expose :created_at, :title, :body_u, :avatar_s, :salesman_travel_id, :return_sign_id
       end
 
       class SalesmanReturnSign < Grape::Entity
