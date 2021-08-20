@@ -186,9 +186,9 @@ class ProductSale < ApplicationRecord
   scope :travel_nil, ->(id) {
     items = joins(:status)
     items = if id.nil?
-              items.where("salesman_travel_id IS ? AND product_sale_statuses.alias = ?", nil, 'oper_confirmed')
+              items.where("salesman_travel_id IS ? AND (product_sale_statuses.alias = ? OR product_sale_statuses.alias = ?)", nil, 'oper_confirmed', 'auto_redistribution')
             else
-              items.where("(salesman_travel_id IS ? OR product_sales.id = ?) AND product_sale_statuses.alias = ?", nil, id, 'oper_confirmed')
+              items.where("(salesman_travel_id IS ? OR product_sales.id = ?) AND (product_sale_statuses.alias = ? OR product_sale_statuses.alias = ?)", nil, id, 'oper_confirmed', 'auto_redistribution')
             end
     items.order(:delivery_start)
   }
@@ -328,6 +328,19 @@ class ProductSale < ApplicationRecord
     "#{location.full_name} (#{delivery_hour}), #{phone}"
   end
 
+# Дахин хувиарлах төлөвт байгаа барааг хувиарлах үед бараануудыг нь буцаасан бол буцааж оруулж ирнэ
+  def check_auto_redistribution
+    if status.alias == "check_auto_redistribution"
+      product_sale_items.where("back_quantity > ?", 0).each do |item|
+        ProductBalance.new(sale_item: item,
+                           product_id: item.product_id,
+                           feature_item_id: item.feature_item_id,
+                           quantity: -item.back_quantity)
+        item.update_column(:back_quantity, nil)
+      end
+    end
+  end
+
   private
 
   def send_to_channel
@@ -409,7 +422,7 @@ class ProductSale < ApplicationRecord
 
   end
 
-  # буцаах мөнгийг тооцно
+# буцаах мөнгийг тооцно
   def check_exchange
     if is_exchange
       self.is_return = product_sale_returns.present? && !product_sale_items.present?
