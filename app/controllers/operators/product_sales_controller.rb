@@ -194,7 +194,6 @@ class Operators::ProductSalesController < Operators::BaseController
     else
       @product_sale.set_statuses(true)
     end
-    @product_sale.check_auto_redistribution
   end
 
   def edit_location
