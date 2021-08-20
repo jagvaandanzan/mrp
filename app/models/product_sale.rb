@@ -330,7 +330,7 @@ class ProductSale < ApplicationRecord
 
 # Дахин хувиарлах төлөвт байгаа барааг хувиарлах үед бараануудыг нь буцаасан бол буцааж оруулж ирнэ
   def check_auto_redistribution
-    if status.alias == "check_auto_redistribution"
+    if status.alias == "auto_redistribution"
       product_sale_items.where("back_quantity > ?", 0).each do |item|
         ProductBalance.new(sale_item: item,
                            product_id: item.product_id,
