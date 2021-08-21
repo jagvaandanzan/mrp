@@ -59,61 +59,64 @@
                  if @product_sales.present?
                    @product_sales.each_with_index {|product_sale, i|
                      sale_items = product_sale.product_sale_items.not_nil_bought_quantity
-                     rows = sale_items.count
-                     sale_item = sale_items[0]
-                     acc_sum += product_sale.paid if product_sale.paid.present? %>
-                  <tr>
-                    <td class="va-mid text-center" rowspan="<%= rows %>"><%= i + 1 %></td>
-                    <td class="va-mid" rowspan="<%= rows %>" id="sale_type-<%= i %>"><%= product_sale.parent_id.present? ? product_sale.parent.status.name : 'Захиалга' %></td>
-                    <td class="va-mid" rowspan="<%= rows %>"><%= product_sale.phone %></td>
-                    <td class="va-mid"><%= sale_item.product.name_with_code %></td>
-                    <td class="va-mid"><%= sale_item.feature_item.name %></td>
-                    <td class="va-mid"><%= sale_item.bought_quantity %></td>
-                    <td class="va-mid text-right"><%= get_currency_mn sale_item.price %></td>
-                    <td class="va-mid text-right"><%= get_currency_mn sale_item.bought_price %></td>
-                    <td class="va-mid text-right" rowspan="<%= rows %>" id="bought-<%= i %>"></td>
-                    <td class="va-mid text-right" rowspan="<%= rows %>"><%= get_currency_mn product_sale.paid %></td>
-                  </tr>
-                  <% sale_items.each_with_index {|item, index|
-                    q += item.bought_quantity
-                    price += item.bought_price
-                    bought_sum += item.bought_price
-                    if index > 0 %>
-                      <tr>
-                        <td class="va-mid"><%= item.product.name_with_code %></td>
-                        <td class="va-mid"><%= item.feature_item.name %></td>
-                        <td class="va-mid"><%= item.bought_quantity %></td>
-                        <td class="va-mid text-right"><%= get_currency_mn item.price %></td>
-                        <td class="va-mid text-right"><%= get_currency_mn item.bought_price %></td>
-                      </tr>
-                    <% end } %>
-                  <script>
-                      <% if product_sale.parent_id.present?
-                      b_price = product_sale.parent.bought_price
-                      if bought_sum == 0
-                       back_sum += b_price %>
-                      $('#sale_type-<%= i %>').text('Буцаалт');
-                      $('#bought-<%= i %>').html("<%= get_currency_mn(b_price) %>").addClass("text-red");
-                      <% else
-                      p = bought_sum - b_price - (product_sale.paid.presence || 0) %>
-                      $('#sale_type-<%= i %>').text('Солилт');
-                      <% if p < 0
-                      p *= -1
-                      back_sum += p
-                      %>
-                      $('#bought-<%= i %>').addClass("text-red");
-                      <% else
-                      cash_sum += p %>
-                      <% end %>
-                      $('#bought-<%= i %>').html("<%= get_currency_mn(p) %>");
-                      <% end %>
-                      <% else
-                      p = product_sale.paid.present? ? bought_sum - product_sale.paid : bought_sum
-                      cash_sum += p %>
-                      $('#bought-<%= i %>').html("<%= get_currency_mn(p) %>");
-                      <% end %>
-                  </script>
-                <% bought_sum = 0.0 } %>
+                     if sale_items.present?
+                       rows = sale_items.count
+                       sale_item = sale_items[0]
+                       acc_sum += product_sale.paid if product_sale.paid.present? %>
+                    <tr>
+                      <td class="va-mid text-center" rowspan="<%= rows %>"><%= i + 1 %></td>
+                      <td class="va-mid" rowspan="<%= rows %>" id="sale_type-<%= i %>"><%= product_sale.parent_id.present? ? product_sale.parent.status.name : 'Захиалга' %></td>
+                      <td class="va-mid" rowspan="<%= rows %>"><%= product_sale.phone %></td>
+                      <td class="va-mid"><%= sale_item.product.name_with_code %></td>
+                      <td class="va-mid"><%= sale_item.feature_item.name %></td>
+                      <td class="va-mid"><%= sale_item.bought_quantity %></td>
+                      <td class="va-mid text-right"><%= get_currency_mn sale_item.price %></td>
+                      <td class="va-mid text-right"><%= get_currency_mn sale_item.bought_price %></td>
+                      <td class="va-mid text-right" rowspan="<%= rows %>" id="bought-<%= i %>"></td>
+                      <td class="va-mid text-right" rowspan="<%= rows %>"><%= get_currency_mn product_sale.paid %></td>
+                    </tr>
+                    <% sale_items.each_with_index {|item, index|
+                      q += item.bought_quantity
+                      price += item.bought_price
+                      bought_sum += item.bought_price
+                      if index > 0 %>
+                        <tr>
+                          <td class="va-mid"><%= item.product.name_with_code %></td>
+                          <td class="va-mid"><%= item.feature_item.name %></td>
+                          <td class="va-mid"><%= item.bought_quantity %></td>
+                          <td class="va-mid text-right"><%= get_currency_mn item.price %></td>
+                          <td class="va-mid text-right"><%= get_currency_mn item.bought_price %></td>
+                        </tr>
+                      <% end } %>
+                    <script>
+                        <% if product_sale.parent_id.present?
+                        b_price = product_sale.parent.bought_price
+                        if bought_sum == 0
+                         back_sum += b_price %>
+                        $('#sale_type-<%= i %>').text('Буцаалт');
+                        $('#bought-<%= i %>').html("<%= get_currency_mn(b_price) %>").addClass("text-red");
+                        <% else
+                        p = bought_sum - b_price - (product_sale.paid.presence || 0) %>
+                        $('#sale_type-<%= i %>').text('Солилт');
+                        <% if p < 0
+                        p *= -1
+                        back_sum += p
+                        %>
+                        $('#bought-<%= i %>').addClass("text-red");
+                        <% else
+                        cash_sum += p %>
+                        <% end %>
+                        $('#bought-<%= i %>').html("<%= get_currency_mn(p) %>");
+                        <% end %>
+                        <% else
+                        p = product_sale.paid.present? ? bought_sum - product_sale.paid : bought_sum
+                        cash_sum += p %>
+                        $('#bought-<%= i %>').html("<%= get_currency_mn(p) %>");
+                        <% end %>
+                    </script>
+                  <% bought_sum = 0.0
+                     end
+                     } %>
                 <tr>
                   <td colspan="5" class="text-right"><strong><%= t('titles.total') %></strong></td>
                   <td><strong><%= q %></strong></td>
