@@ -7,6 +7,7 @@ class ProductSaleDirect < ApplicationRecord
   belongs_to :sale_item, :class_name => "ProductSaleItem"
 
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "sale_direct_id", dependent: :destroy
+  has_one :bonus_balance, dependent: :destroy
 
   before_save :set_defaults
   before_save :set_product_balance
@@ -16,6 +17,17 @@ class ProductSaleDirect < ApplicationRecord
   validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
 
   attr_accessor :remainder
+
+  scope :by_salesman_id, ->(salesman_id) {
+    where(salesman_id: salesman_id)
+  }
+  scope :date_between, ->(date) {
+    where('created_at >= ?', date)
+        .where('created_at < ?', date + 1.days)
+  }
+  scope :by_phone, ->(phone) {
+    where(phone: phone)
+  }
 
   def price
     ApplicationController.helpers.get_f(self[:price])
@@ -47,6 +59,33 @@ class ProductSaleDirect < ApplicationRecord
                      end
   end
 
+  def add_bonus
+    # 2 дахь худалдан авалтаас бонус бодно
+    sales = ProductSale.by_status('sals_delivered')
+                .by_phone(phone)
+                .count
+    sales += DirectSale.by_phone(phone)
+                 .count
+    sales += ProductSaleDirect.by_phone(phone)
+                 .count
+    if sales > 1
+      bonu = Bonu.by_phone(phone)
+      b_model = if bonu.present?
+                  bonu.first
+                else
+                  b = Bonu.new(balance: 0)
+                  b.bonus_phones << BonusPhone.new(phone: product_sale.phone)
+                  b.save
+                  b
+                end
+      if bonus_balance.present?
+        self.bonus_balance.update(bonu: b_model, bonus: ApplicationController.helpers.get_percentage(quantity * price, 5))
+      else
+        self.bonus_balance = BonusBalance.create(bonu: b_model, product_sale_item: self, bonus: ApplicationController.helpers.get_percentage(quantity * price, 5))
+      end
+    end
+  end
+
   def set_product_balance
     if product_balance.present?
       self.product_balance.update(
@@ -73,7 +112,8 @@ class ProductSaleDirect < ApplicationRecord
       end
     end
 
-    sale_item.update_columns(back_quantity: sale_item.back_quantity.present? ? sale_item.back_quantity + quantity : quantity)
+    # sale_item.update_columns(back_quantity: sale_item.back_quantity.present? ? sale_item.back_quantity + quantity : quantity)
+    sale_item.update_column(:quantity, sale_item.quantity + quantity)
   end
 
 end

@@ -3,6 +3,7 @@ class BonusBalance < ApplicationRecord
   belongs_to :product_sale, optional: true
   belongs_to :product_sale_item, optional: true
   belongs_to :direct_sale_item, optional: true
+  belongs_to :product_sale_direct, optional: true
 
   after_save -> {sync_web}
 

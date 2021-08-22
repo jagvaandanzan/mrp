@@ -272,6 +272,10 @@ class ProductSale < ApplicationRecord
     sales = ProductSale.by_status('sals_delivered')
                 .by_phone(phone)
                 .count
+    sales += DirectSale.by_phone(phone)
+                 .count
+    sales += ProductSaleDirect.by_phone(phone)
+                 .count
     if sales > 1
       product_sale_items.each(&:add_bonus)
     end
@@ -335,9 +339,9 @@ class ProductSale < ApplicationRecord
     if status.alias == "auto_redistribution"
       product_sale_items.where("back_quantity > ?", 0).each do |item|
         ProductBalance.create(sale_item: item,
-                           product_id: item.product_id,
-                           feature_item_id: item.feature_item_id,
-                           quantity: -item.back_quantity)
+                              product_id: item.product_id,
+                              feature_item_id: item.feature_item_id,
+                              quantity: -item.back_quantity)
         item.update_column(:back_quantity, nil)
       end
     end

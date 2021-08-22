@@ -79,6 +79,8 @@ class DirectSale < ApplicationRecord
                   .count
       sales += DirectSale.by_phone(phone)
                    .count
+      sales += ProductSaleDirect.by_phone(phone)
+                   .count
       if sales > 1
         direct_sale_items.each(&:add_bonus)
       end

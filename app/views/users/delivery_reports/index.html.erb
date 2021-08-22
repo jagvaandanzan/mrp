@@ -56,15 +56,17 @@
                  acc_sum = 0
                  cash_sum = 0
                  bought_sum = 0
+                 number = 0
                  if @product_sales.present?
                    @product_sales.each_with_index {|product_sale, i|
+                     number = i + 1
                      sale_items = product_sale.product_sale_items.not_nil_bought_quantity
                      if sale_items.present?
                        rows = sale_items.count
                        sale_item = sale_items[0]
                        acc_sum += product_sale.paid if product_sale.paid.present? %>
                     <tr>
-                      <td class="va-mid text-center" rowspan="<%= rows %>"><%= i + 1 %></td>
+                      <td class="va-mid text-center" rowspan="<%= rows %>"><%= number %></td>
                       <td class="va-mid" rowspan="<%= rows %>" id="sale_type-<%= i %>"><%= product_sale.parent_id.present? ? product_sale.parent.status.name : 'Захиалга' %></td>
                       <td class="va-mid" rowspan="<%= rows %>"><%= product_sale.phone %></td>
                       <td class="va-mid"><%= sale_item.product.name_with_code %></td>
@@ -117,6 +119,26 @@
                   <% bought_sum = 0.0
                      end
                      } %>
+                <% if @sale_directs.present?
+                     @sale_directs.each_with_index {|sale_direct, i|
+                       p = sale_direct.price * sale_direct.quantity
+                       q += sale_direct.quantity
+                       price += p
+                       cash_sum += p %>
+                    <tr>
+                      <td class="va-mid text-center"><%= number + i + 1 %></td>
+                      <td class="va-mid">Шууд борлуулалт</td>
+                      <td class="va-mid"><%= sale_direct.phone %></td>
+                      <td class="va-mid"><%= sale_direct.product.name_with_code %></td>
+                      <td class="va-mid"><%= sale_direct.feature_item.name %></td>
+                      <td class="va-mid"><%= sale_direct.quantity %></td>
+                      <td class="va-mid text-right"><%= get_currency_mn sale_direct.price %></td>
+                      <td class="va-mid text-right"><%= get_currency_mn p %></td>
+                      <td class="va-mid text-right"><%= get_currency_mn p %></td>
+                      <td class="va-mid text-right"></td>
+                    </tr>
+                  <% } %>
+                <% end %>
                 <tr>
                   <td colspan="5" class="text-right"><strong><%= t('titles.total') %></strong></td>
                   <td><strong><%= q %></strong></td>

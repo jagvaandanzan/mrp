@@ -14,6 +14,9 @@ class Users::DeliveryReportsController < Users::BaseController
     @product_sales = ProductSale.by_travel_ids(travers.map(&:id).to_a)
                          .by_delivered
                          .order(:phone)
+    @sale_directs = ProductSaleDirect.by_salesman_id(@salesman_id)
+                        .date_between(@date)
+                        .order(:phone)
   end
 
   def salary
