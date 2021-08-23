@@ -18,7 +18,7 @@
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :price %>
-    <%= f.number_field :price, class: 'form-control field price' + pid.to_s, step: 0.01, placeholder: t('activerecord.attributes.product_supply_feature.price') %>
+    <%= f.number_field :price, class: 'form-control field price' + pid.to_s, step: 0.001, placeholder: t('activerecord.attributes.product_supply_feature.price') %>
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :note %>
