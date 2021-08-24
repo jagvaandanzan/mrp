@@ -28,7 +28,7 @@ class ProductSupplyOrder < ApplicationRecord
     before_save :set_product
   end
 
-  scope :order_type, ->(type){
+  scope :order_type, ->(type) {
     where("order_type = #{type == "sample" ? 1 : 0}")
   }
 
@@ -36,19 +36,21 @@ class ProductSupplyOrder < ApplicationRecord
     order(created_at: :desc)
   }
 
-  scope :feature, ->(){
+  scope :feature, ->() {
     joins(:supply_features)
   }
 
   scope :by_date, ->(start, finish) {
-      where('? <= product_supply_orders.created_at AND product_supply_orders.created_at <= ?', start.to_time, finish.to_time + 1.days)
+    where('? <= product_supply_orders.created_at AND product_supply_orders.created_at <= ?', start.to_time, finish.to_time + 1.days)
   }
 
   scope :search, ->(start, finish, supply_code, product_name, order_type, is_equal) {
     items = order("product_supply_orders.ordered_date": :desc)
     items = items.where('product_supply_orders.code LIKE :value', value: "%#{supply_code}%") if supply_code.present?
     items = items.where('ordered_date >= :s AND ordered_date <= :f', s: "#{start}", f: "#{finish}") if start.present? && finish.present?
-    items = items.joins(:products).where('products.code LIKE :value OR products.n_name LIKE :value OR products.c_name LIKE :value', value: "%#{product_name}%") if product_name.present?
+    items = items.joins(:products)
+                .where('products.code LIKE :value OR products.n_name LIKE :value OR products.c_name LIKE :value', value: "%#{product_name}%")
+                .group("product_supply_orders.id") if product_name.present?
     items = items.where(order_type: order_type) if order_type.present?
     items = items.left_joins(:supply_features)
                 .where("product_supply_features.quantity #{is_equal == "true" ? '=' : '!='} product_supply_features.quantity_lo")

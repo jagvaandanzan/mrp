@@ -9,8 +9,8 @@ class Users::ProductSupplyOrdersController < Users::BaseController
     @by_product_name = params[:by_product_name]
     @order_type = params[:order_type]
     @is_equal = params[:is_equal]
-    @product_supply_orders = ProductSupplyOrder.search(@by_start, @by_end, @by_code, @by_product_name, @order_type, @is_equal).page(params[:page])
-    @product_supply_orders_x = ProductSupplyOrder.search(@by_start, @by_end, @by_code, @by_product_name, @order_type, @is_equal)
+    @product_supply_orders_all = ProductSupplyOrder.search(@by_start, @by_end, @by_code, @by_product_name, @order_type, @is_equal)
+    @product_supply_orders = @product_supply_orders_all.page(params[:page])
   end
 
   def new
@@ -147,7 +147,7 @@ class Users::ProductSupplyOrdersController < Users::BaseController
     @is_equal = params[:is_equal]
     @product_supply_orders_x = ProductSupplyOrder.search(@by_start, @by_end, @by_code, @by_product_name, @order_type, @is_equal)
     respond_to do |format|
-      format.xlsx{
+      format.xlsx {
         render template: 'users/product_supply_orders/index', xlsx: 'Худалдан авсан'
       }
       format.html {render 'users/product_supply_orders/index'}

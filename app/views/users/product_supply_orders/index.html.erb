@@ -82,7 +82,7 @@
               </tr>
               </thead>
               <tbody>
-              <% @product_supply_orders_x.each do |i| %>
+              <% @product_supply_orders.each do |i| %>
                 <% order_items = i.product_supply_order_items
                    order_items_count = order_items.count > 0 ? order_items.count : 1 %>
                 <tr id="supple_order_<%= i.id %>" style="height: 50px">
@@ -226,11 +226,11 @@
               <% end %>
               <tr id="footer" style="height: 10px">
                 <%
-                  supply_order_ids = @product_supply_orders_x.pluck(:id)
+                  supply_order_ids = @product_supply_orders_all.pluck(:id)
                   order_item_ids = ProductSupplyOrderItem.by_supply_id(supply_order_ids).pluck(:id)
-                  quantity = @product_supply_orders_x.feature.pluck("product_supply_features.quantity").sum(&:to_i)
+                  quantity = @product_supply_orders_all.feature.pluck("product_supply_features.quantity").sum(&:to_i)
                   quantity_lo = ProductIncomeItem.by_feature_ids(ProductSupplyFeature.by_order_item(order_item_ids).pluck(:id)).sum(:quantity)
-                  sum_price = @product_supply_orders_x.feature.pluck("product_supply_features.sum_price").sum(&:to_f)
+                  sum_price = @product_supply_orders_all.feature.pluck("product_supply_features.sum_price").sum(&:to_f)
                   sum_price_lo = ProductSupplyFeature.by_order_item(order_item_ids).sum(:sum_price_lo)
                   quantity_log = ProductSupplyFeature.by_order_item(order_item_ids).sum(:quantity_lo)
                   cost_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:cost)
@@ -240,7 +240,7 @@
                   quantity_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:quantity)
                   cargo_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:cargo)
                 %>
-                <td colspan="8"><strong>Нийт: <%=@product_supply_orders_x.count %></strong></td>
+                <td colspan="8"><strong>Нийт: <%=@product_supply_orders_all.count %></strong></td>
                 <td class="va-mid text-center"><%="#{quantity}/#{quantity_lo}"  %></td>
                 <td class="text-center"> <%= get_currency(sum_price, Const::CURRENCY[0], 3) %></td>
                 <td class="text-center"></td>
@@ -263,7 +263,7 @@
           </div>
         </div>
 
-        <%#= paginate @product_supply_orders %>
+        <%= paginate @product_supply_orders %>
       </div>
     </div>
   </section>
