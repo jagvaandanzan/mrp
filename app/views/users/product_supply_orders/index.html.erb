@@ -4,7 +4,7 @@
 <% end %>
 <div class="content-wrapper">
 
-  <div class="col-md-10 m-t-10 m-b-5 navbar navbar-default navbar-fixed-top my-own-style"  style="background-color: transparent; border: none">
+  <div class="col-md-10 m-t-10 m-b-5 navbar navbar-default navbar-fixed-top my-own-style" style="background-color: transparent; border: none">
     <%= form_with url: users_product_supply_orders_path, method: "get", class: "", local: true do |f| %>
       <div class="col-md-2 search">
         <div id="search-date" class="form-control search">
@@ -29,7 +29,7 @@
       </div>
       <div class="col-md-5 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left m-l-5' %>
-        <%=link_to 'Export to Excel', to_excel_users_product_supply_orders_path(by_start: @by_start, by_end: @by_end, by_code: @by_code, by_product_name: @by_product_name, order_type: @order_type, is_equal: @is_equal, format: 'xlsx') ,:class => "btn btn-primary m-l-5" %>
+        <%= link_to 'Export to Excel', to_excel_users_product_supply_orders_path(by_start: @by_start, by_end: @by_end, by_code: @by_code, by_product_name: @by_product_name, order_type: @order_type, is_equal: @is_equal, format: 'xlsx'), :class => "btn btn-primary m-l-5" %>
         <% if can? :create, ProductSupplyOrder %>
           <%= link_to t('titles.product_sample'), new_users_product_supply_order_path(order_type: 1), class: 'btn btn-warning m-l-5' %>
           <%= link_to t('activerecord.models.product_supply_order'), new_users_product_supply_order_path(order_type: 0), class: 'btn btn-warning' %>
@@ -78,7 +78,7 @@
                 <th class="va-mid text-center bg-3"><%= t('activerecord.attributes.product_supply_order_item.shipping_products') %></th>
                 <th class="va-mid text-center bg-3"><%= t('titles.cargo') %></th>
                 <th class="va-mid text-center">Нийт зардал</th>
-                <th class="va-mid text-center"><%=t('activerecord.attributes.product_income.income_date') %></th>
+                <th class="va-mid text-center"><%= t('activerecord.attributes.product_income.income_date') %></th>
               </tr>
               </thead>
               <tbody>
@@ -121,9 +121,9 @@
                              total_price += ", " %>
                         <% end
                            total_price += "#{i.get_currency supply_feature.price}" %>
-                        <% count+=1
+                        <% count += 1
                            name += supply_feature.feature_item.name
-                           name += ', '%>
+                           name += ', ' %>
                       <% }
                          end %>
                     <%= count %>
@@ -219,45 +219,47 @@
                       <td class="va-mid text-center bg-3"><%= loaded %></td>
                       <td class="va-mid text-center bg-3"><%= cargo %></td>
                       <% product_income_product = ProductIncomeProduct.by_product(product.id)
-                                                                      .by_supply_order(item.product_supply_order_id) %>
+                          .by_supply_order(item.product_supply_order_id) %>
                       <td class="va-mid text-center"><%= product_income_product.present? ? product_income_product.first.product_income.income_date.strftime('%F') : '' %></td>
                     </tr>
                   <% end } %>
               <% end %>
-              <tr id="footer" style="height: 10px">
-                <%
-                  supply_order_ids = @product_supply_orders_all.pluck(:id)
-                  order_item_ids = ProductSupplyOrderItem.by_supply_id(supply_order_ids).pluck(:id)
-                  quantity = @product_supply_orders_all.feature.pluck("product_supply_features.quantity").sum(&:to_i)
-                  quantity_lo = ProductIncomeItem.by_feature_ids(ProductSupplyFeature.by_order_item(order_item_ids).pluck(:id)).sum(:quantity)
-                  sum_price = @product_supply_orders_all.feature.pluck("product_supply_features.sum_price").sum(&:to_f)
-                  sum_price_lo = ProductSupplyFeature.by_order_item(order_item_ids).sum(:sum_price_lo)
-                  quantity_log = ProductSupplyFeature.by_order_item(order_item_ids).sum(:quantity_lo)
-                  cost_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:cost)
-                  quantity_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:quantity)
-                  cargo_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:cargo)
-                  cost_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:cost)
-                  quantity_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:quantity)
-                  cargo_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:cargo)
-                %>
-                <td colspan="8"><strong>Нийт: <%=@product_supply_orders_all.count %></strong></td>
-                <td class="va-mid text-center"><%="#{quantity}/#{quantity_lo}"  %></td>
-                <td class="text-center"> <%= get_currency(sum_price, Const::CURRENCY[0], 3) %></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"><%=quantity_log %></td>
-                <td class="text-center"><%=get_currency(sum_price_lo, Const::CURRENCY[0], 3) %></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"><%=get_currency(cost_er, Const::CURRENCY[0], 3) %></td>
-                <td class="text-center"><%=quantity_er %></td>
-                <td class="text-center"><%=cargo_er %></td>
-                <td class="text-center"><%= %></td>
-                <td class="text-center"><%=get_currency(cost_ub, Const::CURRENCY[0], 3)%></td>
-                <td class="text-center"><%=quantity_ub %></td>
-                <td class="text-center"><%=cargo_ub %></td>
-                <td class="text-center"><%=get_currency(cost_er + cost_ub, Const::CURRENCY[0], 3) %></td>
-              </tr>
+              <% if !@by_code.present? && !@by_product_name.present? %>
+                <tr id="footer" style="height: 10px">
+                  <%
+                    supply_order_ids = @product_supply_orders_all.pluck(:id)
+                    order_item_ids = ProductSupplyOrderItem.by_supply_id(supply_order_ids).pluck(:id)
+                    quantity = @product_supply_orders_all.feature.pluck("product_supply_features.quantity").sum(&:to_i)
+                    quantity_lo = ProductIncomeItem.by_feature_ids(ProductSupplyFeature.by_order_item(order_item_ids).pluck(:id)).sum(:quantity)
+                    sum_price = @product_supply_orders_all.feature.pluck("product_supply_features.sum_price").sum(&:to_f)
+                    sum_price_lo = ProductSupplyFeature.by_order_item(order_item_ids).sum(:sum_price_lo)
+                    quantity_log = ProductSupplyFeature.by_order_item(order_item_ids).sum(:quantity_lo)
+                    cost_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:cost)
+                    quantity_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:quantity)
+                    cargo_er = ShippingErProduct.by_order_id(supply_order_ids).sum(:cargo)
+                    cost_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:cost)
+                    quantity_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:quantity)
+                    cargo_ub = ShippingUbProduct.by_order_id(supply_order_ids).sum(:cargo)
+                  %>
+                  <td colspan="8"><strong>Нийт: <%= @product_supply_orders_all.count %></strong></td>
+                  <td class="va-mid text-center"><%= "#{quantity}/#{quantity_lo}" %></td>
+                  <td class="text-center"> <%= get_currency(sum_price, Const::CURRENCY[0], 3) %></td>
+                  <td class="text-center"></td>
+                  <td class="text-center"></td>
+                  <td class="text-center"><%= quantity_log %></td>
+                  <td class="text-center"><%= get_currency(sum_price_lo, Const::CURRENCY[0], 3) %></td>
+                  <td class="text-center"></td>
+                  <td class="text-center"></td>
+                  <td class="text-center"><%= get_currency(cost_er, Const::CURRENCY[0], 3) %></td>
+                  <td class="text-center"><%= quantity_er %></td>
+                  <td class="text-center"><%= cargo_er %></td>
+                  <td class="text-center"><%= %></td>
+                  <td class="text-center"><%= get_currency(cost_ub, Const::CURRENCY[0], 3) %></td>
+                  <td class="text-center"><%= quantity_ub %></td>
+                  <td class="text-center"><%= cargo_ub %></td>
+                  <td class="text-center"><%= get_currency(cost_er + cost_ub, Const::CURRENCY[0], 3) %></td>
+                </tr>
+              <% end %>
               </tbody>
             </table>
           </div>
@@ -271,46 +273,47 @@
 <%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>
 <style>
 
-    .my-own-style {
-        margin-left: 250px;
-        top: 7%;
-    }
-    table{
-    }
+  .my-own-style {
+    margin-left: 250px;
+    top: 7%;
+  }
 
-    th {
-        position: sticky;
-        top: 0px;
-        background: white;
-        border: #F7F7F7;
-    }
+  table {
+  }
 
-    #footer {
-        position: sticky;
-        bottom: 0px;
-        background: white;
-        border: #F7F7F7;
-    }
+  th {
+    position: sticky;
+    top: 0px;
+    background: white;
+    border: #F7F7F7;
+  }
 
-    #fixed_div {
-        border: 1px solid #ddd;
-        width: 100%;
-        height: 100vh;
-        overflow-y: scroll;
-    }
+  #footer {
+    position: sticky;
+    bottom: 0px;
+    background: white;
+    border: #F7F7F7;
+  }
 
-    .bg-1 {
-        font-weight: bold;
-        color: blue;
-    }
+  #fixed_div {
+    border: 1px solid #ddd;
+    width: 100%;
+    height: 100vh;
+    overflow-y: scroll;
+  }
 
-    .bg-2 {
-        font-weight: bold;
-        color: orangered;
-    }
+  .bg-1 {
+    font-weight: bold;
+    color: blue;
+  }
 
-    .bg-3 {
-        font-weight: bold;
-        color: darkgreen;
-    }
+  .bg-2 {
+    font-weight: bold;
+    color: orangered;
+  }
+
+  .bg-3 {
+    font-weight: bold;
+    color: darkgreen;
+  }
 </style>

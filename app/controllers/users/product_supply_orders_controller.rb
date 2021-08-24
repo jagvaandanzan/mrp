@@ -10,6 +10,7 @@ class Users::ProductSupplyOrdersController < Users::BaseController
     @order_type = params[:order_type]
     @is_equal = params[:is_equal]
     @product_supply_orders_all = ProductSupplyOrder.search(@by_start, @by_end, @by_code, @by_product_name, @order_type, @is_equal)
+
     @product_supply_orders = @product_supply_orders_all.page(params[:page])
   end
 
