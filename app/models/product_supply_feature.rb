@@ -200,6 +200,10 @@ class ProductSupplyFeature < ApplicationRecord
     where(order_item_id: order_item_id)
   }
 
+  scope :by_code, ->(code){
+    where("product_supply_orders.code = ?", code) if code.present?
+  }
+
   scope :by_date, ->(start, finish) {
     where('? <= product_supply_features.updated_at AND product_supply_features.updated_at <= ?', start.to_time, finish.to_time + 1.days)
   }

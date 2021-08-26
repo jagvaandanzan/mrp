@@ -5,11 +5,13 @@
   <% shipping_ub = ub_product.shipping_ub
      product = ub_product.product
      shipping_ub_box = ub_product.shipping_ub_box
+     supply_order = ub_product.supply_order
      is_box = shipping_ub_box.is_box?
      b_id = shipping_ub_box.id
      box_products = box_ids[b_id] %>
   <tr class="<%= is_box ? 'box' : 'pro' %>-<%= is_box ? b_id : ub_product.id %>">
     <td class="va-mid"><%= show_id(shipping_ub.id) %></td>
+    <td class="va-mid"><%= supply_order.code %></td>
     <td class="va-mid"><%= product.code %></td>
     <td class="va-mid"><%= product.full_name %></td>
     <td><%= ub_product.shipping_ub_features.by_quantity(0).count %></td>

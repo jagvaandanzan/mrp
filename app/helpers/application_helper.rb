@@ -107,6 +107,15 @@ module ApplicationHelper
     code
   end
 
+  def get_order_code(obj)
+    if obj.present?
+      code = (100000 + obj.id + 1).to_s
+    else
+      code = (100001).to_s
+    end
+    'P' + code
+  end
+
   def get_hours(s, e)
     "#{s < 10 ? '0' : ''}#{s}-#{e < 10 ? '0' : ''}#{e}"
   end
