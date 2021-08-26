@@ -49,7 +49,7 @@ class ProductSupplyOrderItem < ApplicationRecord
     where("ordered_at IS#{is_order == "true" ? ' NOT' : ''} ?", nil)
   }
 
-  scope :search, ->(start, finish, supply_code, product_name, order_type, is_order) {
+  scope :search, ->(start, finish, supply_code, product_name, order_type) {
     items = left_joins(:product_supply_order)
                 .where("product_supply_orders.status > ?", 0)
     if start.present? && finish.present?
