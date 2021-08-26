@@ -113,6 +113,7 @@
                       <thead>
                       <tr>
                         <th class="va-mid">Баримтын дугаар</th>
+                        <th class="va-mid">Захиалгын дугаар</th>
                         <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_code') %></th>
                         <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_name') %></th>
                         <th class="va-mid"><%= t('activerecord.models.product_feature') %></th>
@@ -194,7 +195,7 @@
                   <div class="active tab-pane" id="basic">
                     <div class="row m-b-10">
                       <div class="col-md-4">
-                        <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.by_product')} %>
+                        <%= text_field_tag :by_half_code, @by_half_code, {class: 'form-control search', placeholder: t('filters.by_product')} %>
                       </div>
                       <div class="col-md-4">
                         <button type="button" class="btn btn-primary" onclick="search_half_product()">Дутуу бараа хайх
@@ -206,6 +207,7 @@
                         <thead>
                         <tr>
                           <th class="va-mid">Баримтын дугаар</th>
+                          <th class="va-mid">Захиалгын дугаар</th>
                           <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_code') %></th>
                           <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_name') %></th>
                           <th class="va-mid"><%= t('activerecord.models.product_feature') %></th>
@@ -251,9 +253,8 @@
         Rails.ajax({
             url: "<%= insert_half_ub_users_product_incomes_path %>",
             type: "PATCH",
-            data: "is_box=" + is_box + "&id=" + id + "&rows=" + row,
+            data: "is_box=" + is_box + "&id=" + id + "&row=" + row,
             success: function () {
-                console.log("asd");
                 $("#tb_shipping_half_products tr." + (is_box ? 'box' : 'pro') + "-" + id).each(function () {
                     $(this).remove();
                 });
@@ -283,7 +284,7 @@
         Rails.ajax({
             url: "<%= search_half_products_users_product_incomes_path %>",
             type: "POST",
-            data: "by_product_name=" + $('#by_product_name').val() + "&ids=" + shipping_half_product_ids
+            data: "by_half_code=" + $('#by_half_code').val() + "&ids=" + shipping_half_product_ids
         });
     }
     function search_sample_product() {

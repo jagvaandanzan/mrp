@@ -1,5 +1,5 @@
 class Users::ProductIncomesController < Users::BaseController
-  load_and_authorize_resource :except => [:insert_shipping_ub, :insert_sample_product]
+  load_and_authorize_resource :except => [:insert_shipping_ub, :insert_half_ub, :insert_sample_product]
   before_action :set_product_income, only: [:edit, :update, :show, :locations, :set_location, :destroy]
 
   def index
@@ -40,7 +40,7 @@ class Users::ProductIncomesController < Users::BaseController
   end
 
   def search_half_products
-    shipping_ub_products = ShippingUbProduct.find_half(nil, nil, params[:by_product_name], params[:ids])
+    shipping_ub_products = ShippingUbProduct.find_half(nil, nil, params[:by_half_code], params[:ids])
     respond_to do |format|
       format.js {render 'users/product_incomes/search_half_products_js', locals: {shipping_ub_products: shipping_ub_products, page: params[:page]}}
     end
@@ -81,7 +81,7 @@ class Users::ProductIncomesController < Users::BaseController
 
   def insert_half_ub
     @shipping_half_products = ShippingUbProduct.find_half(params[:is_box] == "true", params[:id].to_i, nil, params[:ids])
-    @rows = params[:rows].to_i
+    @row = params[:row].to_i
     respond_to do |format|
       format.js {render 'users/product_incomes/add_half_product'}
     end
