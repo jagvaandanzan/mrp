@@ -38,12 +38,15 @@ class ProductSupplyOrderItem < ApplicationRecord
 
   scope :by_supply_id, ->(ids) {
     where('product_supply_order_items.product_supply_order_id IN (?)', ids)
-      .where('COALESCE(product_supply_order_items.cost, 0)')
+        .where('COALESCE(product_supply_order_items.cost, 0)')
   }
 
   scope :order_pin, -> {
     order(pin: :desc)
         .order(:product_supply_order_id)
+  }
+  scope :by_ordered_at, ->(is_order) {
+    where("ordered_at IS#{is_order == "true" ? ' NOT' : ''} ?", nil)
   }
 
   scope :search, ->(start, finish, supply_code, product_name, order_type, is_order) {
@@ -58,7 +61,6 @@ class ProductSupplyOrderItem < ApplicationRecord
     end
     items = items.joins(:product).where('products.code LIKE :value OR products.n_name LIKE :value OR products.c_name LIKE :value', value: "%#{product_name}%") if product_name.present?
     items = items.where("product_supply_orders.order_type = ?", order_type) if order_type.present?
-    items = items.where("ordered_at IS#{is_order == "true" ? ' NOT' : ''} ?", nil) if is_order.present?
     items.order_pin
   }
 
@@ -156,7 +158,7 @@ class ProductSupplyOrderItem < ApplicationRecord
 
   def shipping_er_product
     shipping_er_products = ShippingErProduct.by_product_id(self.product_id)
-                                            .by_supply_order_id(self.product_supply_order_id)
+                               .by_supply_order_id(self.product_supply_order_id)
     if shipping_er_products.present?
       date = shipping_er_products.first.shipping_er.date.strftime('%F')
       costs = 0
