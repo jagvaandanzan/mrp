@@ -23,6 +23,9 @@
           <%= f.hidden_field :by_end, value: @by_end %>
         </div>
       </div>
+      <div class="col-md-2 search">
+        <%= text_field_tag :by_code, @by_code, {class: 'form-control', placeholder: t('filters.by_code')} %>
+      </div>
 
       <div class="col-md-1 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left', style: 'height: 30px; font-size: smaller !important' %>
@@ -80,20 +83,19 @@
                  order_ids = @ub_products_x.pluck("product_supply_order_items.product_supply_order_id")
                  ship_ub_ids = @ub_products_x.pluck("shipping_ub_products.shipping_ub_id")
                  not_id = ProductSupplyFeature.by_feature_id(pur_ids).pluck(:order_item_id)
-                 sum_not_er = ProductSupplyFeature.by_feature_id(pur_ids).pluck(:sum_price_lo).sum
-                 #sum_not_er = ProductSupplyFeature.by_order_item(@pur_products_x.pluck(:order_item_id)).sum(:sum_price_lo)
-                 sum_not_er_cost = ProductSupplyOrderItem.by_order_item(not_id).pluck(:cost).sum
-                 sum_in_er = ProductSupplyFeature.by_feature_id(er_ids).pluck(:sum_price_lo).sum
+                 sum_not_er = ProductSupplyFeature.by_feature_id(nil).pluck(:sum_price_lo).sum(&:to_f)
+                 sum_not_er_cost = ProductSupplyOrderItem.by_order_item(not_id).pluck(:cost).sum(&:to_f)
+                 sum_in_er = ProductSupplyFeature.by_feature_id(er_ids).pluck(:sum_price_lo).sum(&:to_f)
                  #sum_in_er = ProductSupplyFeature.by_order_item(@er_products_x.pluck(:order_item_id)).sum(:sum_price_lo)
-                 er_product_cost = @er_products_x.group("shipping_er_products.id").pluck("shipping_er_products.cost").sum
-                 not_ub = ProductSupplyFeature.by_feature_id(ub_ids).pluck(:sum_price_lo).sum
+                 er_product_cost = @er_products_x.group("shipping_er_products.id").pluck("shipping_er_products.cost").sum(&:to_f)
+                 not_ub = ProductSupplyFeature.by_feature_id(ub_ids).pluck(:sum_price_lo).sum(&:to_f)
                  #not_ub = ProductSupplyFeature.by_order_item(@ub_products_x.pluck(:order_item_id)).sum(:sum_price_lo)
-                 calculate = ProductSupplyFeature.by_feature_id(in_ub_ids).pluck(:sum_price_lo).sum
-                 cal_cost_er = @in_ub_x.by_calc_nil("false").group("shipping_er_products.id").pluck("shipping_er_products.cost").sum
-                 cal_cost_ub = @in_ub_x.group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum
+                 calculate = ProductSupplyFeature.by_feature_id(in_ub_ids).pluck(:sum_price_lo).sum(&:to_f)
+                 cal_cost_er = @in_ub_x.by_calc_nil("false").group("shipping_er_products.id").pluck("shipping_er_products.cost").sum(&:to_f)
+                 cal_cost_ub = @in_ub_x.group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum(&:to_f)
                  ub_box_cost = ShippingUbBox.by_shipping_id(ship_ub_ids).sum(:cost)
                  ub_sample_cost = ShippingUbSample.by_shipping_id(ship_ub_ids).sum(:cost)
-                 ub_main_cost = ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cost").sum
+                 ub_main_cost = ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cost").sum(&:to_f)
                  cost_ids = @pur_products_x.pluck("product_supply_order_items.product_supply_order_id")
                  cost_ids += @er_products_x.pluck("product_supply_order_items.product_supply_order_id")
                  cost_ids += @ub_products_x.pluck("product_supply_order_items.product_supply_order_id")
@@ -107,22 +109,21 @@
                 cost_sample_c = ShippingUbSample.by_calc_nil("false").cost(shipping_ub_ids).pluck("shipping_ub_samples.per_cost * product_income_items.quantity").sum
                 # income_products = ProductSupplyFeature.by_date(@by_start, @by_end).in_ub
                 # income_items = ProductSupplyFeature.by_date(@by_start, @by_end).in_ub
-                 sum_supply_feature_cost_n = @income_products_n.group("product_supply_features.id").pluck("product_supply_features.sum_price_lo").sum
-                 sum_supply_feature_cost_c = @income_products_c.group("product_supply_features.id").pluck("product_supply_features.sum_price_lo").sum
-                 sum_shipping_er_cost_n = @in_ub_x.by_calc_nil("true").group("shipping_er_products.id").pluck("shipping_er_products.cost").sum + ProductIncomeProduct.by_supply_order(@income_products_n.pluck("product_income_products.product_supply_order_id")).supply_order.pluck(:cost).sum(&:to_f)
-                 sum_shipping_er_cost_c = @in_ub_x.by_calc_nil("false").group("shipping_er_products.id").pluck("shipping_er_products.cost").sum + ProductIncomeProduct.by_supply_order(@income_products_c.pluck("product_income_products.product_supply_order_id")).supply_order.pluck(:cost).sum(&:to_f)
-                 sum_shipping_ub_n = @in_ub_x.by_calc_nil("true").group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum + ProductIncomeProduct.by_supply_order(@income_products_n.pluck("product_income_products.product_supply_order_id")).supply_order.pluck("product_incomes.cargo_price").sum(&:to_f)
-                 sum_shipping_ub_c = @in_ub_x.by_calc_nil("false").group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum + ProductIncomeProduct.by_supply_order(@income_products_c.pluck("product_income_products.product_supply_order_id")).supply_order.pluck("product_incomes.cargo_price").sum(&:to_f)
-                 cost = ProductSupplyOrderItem.by_supply_id(cost_ids).pluck(:cost).sum
+                 sum_supply_feature_cost_n = @income_products_n.group("product_supply_features.id").pluck("product_supply_features.sum_price_lo").sum(&:to_f)
+                 sum_supply_feature_cost_c = @income_products_c.group("product_supply_features.id").pluck("product_supply_features.sum_price_lo").sum(&:to_f)
+                 sum_shipping_er_cost_n = @in_ub_x.by_calc_nil("true").group("shipping_er_products.id").pluck("shipping_er_products.cost").sum(&:to_f) + ProductIncomeProduct.by_supply_order(@income_products_n.pluck("product_income_products.product_supply_order_id")).supply_order.pluck(:cost).sum(&:to_f)
+                 sum_shipping_er_cost_c = @in_ub_x.by_calc_nil("false").group("shipping_er_products.id").pluck("shipping_er_products.cost").sum(&:to_f) + ProductIncomeProduct.by_supply_order(@income_products_c.pluck("product_income_products.product_supply_order_id")).supply_order.pluck(:cost).sum(&:to_f)
+                 sum_shipping_ub_n = @in_ub_x.by_calc_nil("true").group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum(&:to_f) + ProductIncomeProduct.by_supply_order(@income_products_n.pluck("product_income_products.product_supply_order_id")).supply_order.pluck("product_incomes.cargo_price").sum(&:to_f)
+                 sum_shipping_ub_c = @in_ub_x.by_calc_nil("false").group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum(&:to_f) + ProductIncomeProduct.by_supply_order(@income_products_c.pluck("product_income_products.product_supply_order_id")).supply_order.pluck("product_incomes.cargo_price").sum(&:to_f)
+                 cost = ProductSupplyOrderItem.by_supply_id(cost_ids).pluck(:cost).sum(&:to_f)
                  # cost += ShippingErProduct.by_order_id(cost_ids).pluck(:cost).sum
-                 cost += ShippingUbProduct.by_order_id(cost_ids).pluck(:cost).sum
+                 cost += ShippingUbProduct.by_order_id(cost_ids).pluck(:cost).sum(&:to_f)
                  cost += sum_shipping_er_cost_c + sum_shipping_er_cost_n + sum_shipping_ub_c + sum_shipping_ub_n
                  cost += ub_sample_cost + ub_box_cost + ub_main_cost
                  sum_price_lo = sum_not_er + sum_in_er + not_ub + sum_supply_feature_cost_n + sum_supply_feature_cost_c
-                 cost_missing = ShippingErProduct.by_order_id(@ub_products_x.pluck("product_supply_order_items.product_supply_order_id")).pluck(:cost).sum
+                 cost_missing = ShippingErProduct.by_order_id(@ub_products_x.pluck("product_supply_order_items.product_supply_order_id")).pluck(:cost).sum(&:to_f)
                  cost_lo = cost_missing + sum_shipping_er_cost_n + sum_shipping_er_cost_c + ub_sample_cost + ub_box_cost + ub_main_cost + sum_not_er_cost + sum_shipping_ub_c + sum_shipping_ub_n + er_product_cost
                  sum_product = cost_lo + sum_price_lo
-                #page dotorh bolon main page too zoroh ystoi
               %>
 
               <tr>
@@ -135,7 +136,7 @@
               </tr>
               <tr>
                 <td>Ачааны зардал</td>
-                <td><%=@pur_products_x.sum_cost_lo %></td>
+                <td></td>
                 <td><%= get_currency(sum_not_er_cost, Const::CURRENCY[0], 3) %></td>
                 <td></td>
                 <td></td>

@@ -39,6 +39,7 @@
             <table class="table table-hover table-bordered">
               <tr>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income.number') %></th>
+                <th class="va-mid">Захиалгын код</th>
                 <th class="va-mid"><%= t('activerecord.attributes.product_income.income_date') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_code') %></th>
                 <th class="va-mid"><%= t('activerecord.attributes.fb_post.product_name') %></th>
@@ -54,13 +55,15 @@
               <% @product_income_products.each do |i| %>
                 <% product = i.product
                    income = i.product_income
-                   shipping_ub_product = i.shipping_ub_product %>
+                   shipping_ub_product = i.shipping_ub_product
+                   supply_order = i.product_supply_order%>
                 <tr>
                   <td class="va-mid"><%= link_to show_id(income.id), users_product_income_path(income) %>
                     <% sum_not_match = i.sum_not_match
                        if sum_not_match > 0 %>
                       <span class="label label-warning pull-right"><%= i.sum_not_match %></span>
                     <% end %></td>
+                  <td class="va-mid"><%=supply_order.code %> </td>
                   <td class="va-mid nowrap"><%= income.income_date.strftime('%F') %></td>
                   <td class="va-mid"><%= product.code %></td>
                   <td class="va-mid"><%= product.full_name %></td>

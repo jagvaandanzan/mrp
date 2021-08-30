@@ -3,8 +3,9 @@ class Users::ProductSupplyOrdersController < Users::BaseController
   before_action :set_product_supply_order, only: [:edit, :show, :update, :destroy, :to_product]
 
   def index
-    @by_start = params[:by_start] || Time.now.beginning_of_month.prev_month(1).strftime("%F")
-    @by_end = params[:by_end] || Time.now.end_of_month.prev_month(1).strftime("%F")
+    month_1 = Time.current.strftime("%F")
+    @by_start = params[:by_start] || Date.today - 30.days
+    @by_end = params[:by_end] || Date.today
     @by_code = params[:by_code]
     @by_product_name = params[:by_product_name]
     @order_type = params[:order_type]
@@ -17,7 +18,7 @@ class Users::ProductSupplyOrdersController < Users::BaseController
   def new
     @product_supply_order = ProductSupplyOrder.new
     @product_supply_order.ordered_date = Time.current
-    @product_supply_order.code = ApplicationController.helpers.get_code(ProductSupplyOrder.last)
+    @product_supply_order.code = ApplicationController.helpers.get_order_code(ProductSupplyOrder.last)
     @product_supply_order.order_type = params[:order_type].to_i
     @product_supply_order.product_supply_order_items << ProductSupplyOrderItem.new
   end
