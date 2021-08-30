@@ -51,7 +51,9 @@
               <% @product_supply_order_items.each do |i| %>
                 <% supply_order = i.product_supply_order
                    product = i.product
-                   rows = supply_order.product_supply_order_items.by_ordered_at(@is_ordered).count %>
+                   rows = supply_order.product_supply_order_items
+                       .search(@by_start, @by_end, @by_code, @by_product_name, @order_type == "basic" ? 0 : 1)
+                       .by_ordered_at(@is_ordered).count %>
                 <% if supply_order_id != supply_order.id
                      supply_order_id = supply_order.id %>
                   <tr>

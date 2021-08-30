@@ -7,8 +7,9 @@ class Logistics::SupplyOrdersController < Logistics::BaseController
     @by_code = params[:by_code]
     @by_product_name = params[:by_product_name]
     @is_ordered = params[:is_ordered].presence || "false"
+    @order_type = params[:order_type]
     cookies[:supply_order_page_number] = params[:page]
-    @product_supply_order_items = ProductSupplyOrderItem.search(@by_start, @by_end, @by_code, @by_product_name, params[:order_type] == "basic" ? 0 : 1)
+    @product_supply_order_items = ProductSupplyOrderItem.search(@by_start, @by_end, @by_code, @by_product_name, @order_type == "basic" ? 0 : 1)
                                       .by_ordered_at(@is_ordered)
                                       .page(params[:page])
   end
