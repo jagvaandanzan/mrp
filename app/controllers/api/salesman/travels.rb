@@ -273,6 +273,7 @@ module API
                   if params[:status] == "sals_delivered" # Авсан
                     product_sale = travel_route.product_sale
                     if travel_route.main_payable.present? || product_sale.is_return
+                      travel_route.update_column(:delivery_at, Time.current) unless travel_route.delivery_at.present? #буцаалт үед nil байсан байж болно
                       travel_route.calculate_delivery
                       travel_route.calculate_wage
                       travel.calculate_delivery
