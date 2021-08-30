@@ -276,6 +276,7 @@ module API
                       travel_route.update_column(:delivery_at, Time.current) unless travel_route.delivery_at.present? #буцаалт үед nil байсан байж болно
                       travel_route.calculate_delivery
                       travel_route.calculate_wage
+                      travel.update_column(:load_at, Time.current) unless travel.load_at.present? #буцаалт үед nil байсан байж болно
                       travel.calculate_delivery
                       status = ProductSaleStatus.find_by_alias("sals_delivered")
                       product_sale.salesman = salesman
