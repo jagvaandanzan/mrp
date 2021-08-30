@@ -24,7 +24,7 @@ module API
       end
 
       class ProductSaleReturn < Grape::Entity
-        expose :id, :quantity, :price, :bought_quantity, :product_name, :product_code, :product_image, :product_feature, :product_barcode, :take_at
+        expose :id, :quantity, :price, :bought_quantity, :product_name, :product_code, :product_image, :product_feature, :product_barcode, :take_quantity, :take_at
       end
 
       class ProductSaleItemDetail < ProductSaleItem
