@@ -1,0 +1,144 @@
+<% content_for :stylesheets do -%>
+  <%= stylesheet_link_tag "search" %>
+  <%= stylesheet_link_tag "list" %>
+<% end %>
+<div class="content-wrapper index">
+
+  <div class="col-md-12 m-t-10 m-b-5">
+    <%= form_with url: users_warehouse_reports_daily_path, method: "get", local: true do |f| %>
+      <div class="col-md-3 search">
+        <div id="search-date" class="form-control search">
+          <i class="fa fa-calendar fa-lg p-r-0"></i>
+          <span><%= t("filters.by_date") %>...</span>
+          <%= f.hidden_field :by_start, value: @by_start %>
+          <%= f.hidden_field :by_end, value: @by_end %>
+        </div>
+      </div>
+      <div class="col-md-3 search none">
+        <%= text_field_tag :by_product_name, @by_product_name, {class: 'form-control search', placeholder: t('filters.by_product')} %>
+      </div>
+
+      <div class="col-md-5 search">
+        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left m-l-5' %>
+      </div>
+    <% end %>
+  </div>
+
+  <section class="content container-fluid m-t-30">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box m-t-10 " id="div_list">
+          <div class="box-body table-responsive no-padding" id="fixed_div">
+            <%= render 'layouts/flash_message' %>
+            <table class="table table-hover table-bordered">
+              <thead>
+              <tr>
+                <th class="va-mid text-center" rowspan="2">№</th>
+                <th class="va-mid text-center" rowspan="2">Захиалгын тоо</th>
+                <th class="va-mid text-center" rowspan="2">Харьцсан</th>
+                <th class="va-mid text-center" colspan="2">Нийт зарлага</th>
+                <th class="va-mid text-center" colspan="2">Борлуулалт</th>
+                <th class="va-mid text-center" colspan="2">Жолоочийн буцаалт</th>
+                <th class="va-mid text-center" rowspan="2">Захиалгын буцаалт</th>
+                <th class="va-mid text-center" rowspan="2">Зөрүү</th>
+              </tr>
+              <tr>
+                <th class="va-mid text-center">Барааны тоо</th>
+                <th class="va-mid text-center">Нийт дүн</th>
+                <th class="va-mid text-center">Тоо</th>
+                <th class="va-mid text-center">Дүн</th>
+                <th class="va-mid text-center">Нийт</th>
+                <th class="va-mid text-center">Амжилтгүй захиалга</th>
+              </tr>
+              </thead>
+              <tbody id="daily">
+              <% s_delivered = 0
+                 s_sales = 0
+                 s_all_products = 0
+                 s_all_prices = 0
+                 s_bought_quantity = 0
+                 s_bought_price = 0
+                 s_back_quantity = 0
+                 s_back_fail_quantity = 0
+                 s_backed_quantity = 0
+                 s_back_diff = 0
+              %>
+              <% @salesmen.each_with_index {|salesman, index|
+                sale_ids = ProductSale.with_salesman_travel
+                    .by_travel_date(@start_date, @end_date)
+                    .by_salesman_id(salesman.id)
+                    .with_status_logs(10)
+                    .map(&:id).to_a
+                all_items = ProductSaleItem.where("product_sale_items.product_sale_id IN (?)", sale_ids)
+                all_products = all_items.sum(:quantity)
+                all_sales = ProductSale.where("product_sales.id IN (?)", sale_ids)
+                all_prices = all_sales.sum(:sum_price)
+                delivered = all_sales.by_status('sals_delivered').count
+                bought_quantity = all_items.sum(:bought_quantity)
+                bought_price = all_items.sum(:bought_price)
+                back_quantity = all_items.sum(:back_quantity)
+                back_fail_quantity = all_items
+                    .joins(:product_sale_status_logs)
+                    .where("28 <= product_sale_status_logs.status_id AND product_sale_status_logs.status_id <= 30")
+                    .where("product_sales.status_id = ?", 35)
+                    .sum(:back_quantity)
+                backed_quantity = all_items
+                    .joins(:product_sale_returns)
+                    .where("product_sale_returns.id IS NOT ?", nil)
+                    .sum(:back_quantity)
+                return_quantity = ProductSaleReturn.where("product_sale_returns.product_sale_id IN (?)", sale_ids)
+                    .sum(:quantity)
+                back_diff = return_quantity - backed_quantity
+              %>
+                <tr>
+                  <td><%= index + 1 %></td>
+                  <td><%= delivered %> / <%= sale_ids.length %></td>
+                  <td><%= salesman.name %></td>
+                  <td><%= all_products > 0 ? (link_to all_products, users_warehouse_reports_products_path(sale_ids: sale_ids, t: 0)) : '' %></td>
+                  <td><%= all_prices > 0 ? get_currency_mn(all_prices) : '' %></td>
+                  <td><%= bought_quantity > 0 ? (link_to bought_quantity, users_warehouse_reports_products_path(sale_ids: sale_ids, t: 1)) : '' %></td>
+                  <td><%= bought_price > 0 ? get_currency_mn(bought_price) : '' %></td>
+                  <td><%= back_quantity > 0 ? (link_to back_quantity, users_warehouse_reports_products_path(sale_ids: sale_ids, t: 2)) : '' %></td>
+                  <td><%= back_fail_quantity > 0 ? (link_to back_fail_quantity, users_warehouse_reports_products_path(sale_ids: sale_ids, t: 3)) : '' %></td>
+                  <td><%= backed_quantity > 0 ? (link_to backed_quantity, users_warehouse_reports_products_path(sale_ids: sale_ids, t: 4)) : '' %></td>
+                  <td><%= back_diff %></td>
+                </tr>
+                <% s_delivered += delivered
+                   s_sales += sale_ids.length
+                   s_all_products += all_products
+                   s_all_prices += all_prices
+                   s_bought_quantity += bought_quantity
+                   s_bought_price += bought_price
+                   s_back_quantity += back_quantity
+                   s_back_fail_quantity += back_fail_quantity
+                   s_backed_quantity += backed_quantity
+                   s_back_diff += back_diff %>
+              <% } %>
+              <tr>
+                <td></td>
+                <td><%= s_delivered %> / <%= s_sales %></td>
+                <td></td>
+                <td><%= s_all_products %></td>
+                <td><%= get_currency_mn s_all_prices %></td>
+                <td><%= s_bought_quantity %></td>
+                <td><%= get_currency_mn s_bought_price %></td>
+                <td><%= s_back_quantity %></td>
+                <td><%= s_back_fail_quantity %></td>
+                <td><%= s_backed_quantity %></td>
+                <td><%= s_back_diff %></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+<%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'by_start', finish_id: 'by_end' %>
+<style>
+  #daily a {
+    color: black;
+  }
+</style>

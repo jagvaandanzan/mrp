@@ -30,6 +30,7 @@ class AbilityUser
         can role, TechnicalSpecification
         can role, SizeInstruction
         can role, Manufacturer
+        can role, :warehouse_report
       when "operator"
         can role, Operator
         can role, Salesman

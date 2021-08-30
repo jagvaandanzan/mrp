@@ -9,6 +9,8 @@ class ProductSaleItem < ApplicationRecord
   has_one :salesman_travel, through: :product_sale
   has_one :status, through: :product_sale
   has_one :salesman_travel_route, through: :product_sale
+  has_many :product_sale_status_logs, through: :product_sale
+  has_many :product_sale_returns, through: :product_sale
 
   before_save :set_product_balance
 

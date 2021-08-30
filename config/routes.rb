@@ -230,6 +230,11 @@ Rails.application.routes.draw do
       get 'calculate'
     end
 
+    namespace :warehouse_reports do
+      get 'daily'
+      get 'products'
+    end
+
     match "*any", to: "base#routing_error", via: :all
   end
 

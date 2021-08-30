@@ -179,6 +179,13 @@
           <% end %>
         <% end %>
       <% end %>
+      <% if can? :read, :warehouse_report %>
+        <%= content_tag :li, class: controller_name == 'warehouse_reports' ? 'active' : '' do %>
+          <%= link_to users_warehouse_reports_daily_path do %>
+            <i class="fa fa-keyboard-o"></i><span>Бараа олголт</span>
+          <% end %>
+        <% end %>
+      <% end %>
       <% if (can? :read, Location) || (can? :read, Product) || (can? :read, ProductLocation) || (can? :read, Operator) || (can? :read, ProductSupplier) %>
         <%= content_tag :li, class: controller_name == 'product_categories' || controller_name == 'customers' ||
             controller_name == 'product_feature_groups' || controller_name == 'product_features' || controller_name == 'product_feature_options' ||

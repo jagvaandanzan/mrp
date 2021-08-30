@@ -6,6 +6,8 @@ class Salesman < ActiveRecord::Base
   devise :database_authenticatable, :recoverable, :trackable, :validatable
   include DeviseTokenAuth::Concerns::User
   has_many :salesman_travels
+  has_many :product_sales, through: :salesman_travels
+  has_many :product_sale_status_logs, through: :product_sales
 
   after_destroy :destroy_email
   before_validation :generate_password, on: :create

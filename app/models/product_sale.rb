@@ -193,6 +193,22 @@ class ProductSale < ApplicationRecord
     items.order(:delivery_start)
   }
 
+  scope :with_status_logs, ->(status_id) {
+    items = joins(:product_sale_status_logs)
+    items = items.where("product_sale_status_logs.status_id = ?", status_id) if status_id.present?
+    items
+  }
+  scope :with_salesman_travel, ->() {
+    joins(:salesman_travel)
+  }
+  scope :by_travel_date, ->(start_date, end_date) {
+    where('salesman_travels.created_at >= ?', start_date)
+        .where('salesman_travels.created_at < ?', end_date)
+  }
+  scope :by_salesman_id, ->(salesman_id) {
+    where('salesman_travels.salesman_id = ?', salesman_id)
+  }
+
   def bonus
     ApplicationController.helpers.get_f(self[:bonus])
   end
