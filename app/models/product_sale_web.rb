@@ -79,7 +79,7 @@ class ProductSaleWeb
         end
       end
 
-      ApplicationController.helpers.send_sms(product_sale.phone, "Tanii zahialga batalgaajlaa. Zahialgiin dugaar: #{code}, Todruulah zuil bval 77779990 dugaart holbogdono uu.")
+      ApplicationController.helpers.send_sms(product_sale.phone, "Tanii #{product_sale.phone} dugaartai zahialga batalgaajlaa. Market.mn, 77779990")
       param = {
           phone: product_sale.phone,
           date: product_sale.delivery_start.strftime('%F'),

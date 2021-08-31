@@ -145,6 +145,7 @@ class SalesmanTravel < ApplicationRecord
                                                                                             self.id,
                                                                                             notification.title,
                                                                                             notification.body_u))
+    product_sales.each(&:sent_info_to_user)
   end
 
   def calculate_delivery

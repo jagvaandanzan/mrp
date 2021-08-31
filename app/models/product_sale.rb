@@ -294,6 +294,12 @@ class ProductSale < ApplicationRecord
                  .count
     if sales > 1
       product_sale_items.each(&:add_bonus)
+      bonu = Bonu.by_phone(phone)
+      if bonu.present?
+        b = bonu.first
+        ApplicationController.helpers
+            .send_sms(product_sale.phone, "Tanii bonus #{b.balance} tugrug bolloo. Ta daraagiin hudaldan avaltdaa ashiglah bolomjtoi. Market.mn, 77779990")
+      end
     end
   end
 
@@ -361,6 +367,12 @@ class ProductSale < ApplicationRecord
         item.update_column(:back_quantity, nil)
       end
     end
+  end
+
+# Хэрэглэгчрүү sms илгээх
+  def sent_info_to_user
+    ApplicationController.helpers
+        .send_sms(product_sale.phone, "Tanii zahialgiin hurgelt ehellee. #{delivery_start.hour}-#{delivery_end.hour} tsagiin hoorond hurgegdeh bolno. Ajiltan #{salesman_travel.salesman.name}, utas #{salesman_travel.salesman.phone}. Market.mn")
   end
 
   private
