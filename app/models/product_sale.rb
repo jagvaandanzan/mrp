@@ -106,8 +106,8 @@ class ProductSale < ApplicationRecord
         .order(:approved_date)
   }
 
-  scope :by_delivery_end, ->(date) {
-    where("delivery_end <= ?", date) if date.present?
+  scope :by_delivery_between, ->(date) {
+    where('? <= delivery_start AND delivery_start <= ?', date, date + 1.day)
   }
   scope :by_available_time, ->(date) {
     where("delivery_start <= ?", date) if date.present?

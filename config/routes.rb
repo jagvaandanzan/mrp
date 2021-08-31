@@ -252,6 +252,7 @@ Rails.application.routes.draw do
         patch 'update_status'
         post 'get_bonus'
         post 'next_status'
+        post 'get_radius_sales'
       end
     end
 

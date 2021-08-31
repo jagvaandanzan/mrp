@@ -135,6 +135,11 @@ class Operators::ProductSalesController < Operators::BaseController
         item.p_9_ = feature_item.p_9_.presence || 0
       end
       @product_sale.set_statuses(false)
+
+      @radius_sales = radius_sales(@product_sale.delivery_start.beginning_of_day,
+                                   @product_sale.location.latitude,
+                                   @product_sale.location.longitude,
+                                   @product_sale.id)
     end
   end
 
@@ -324,6 +329,31 @@ class Operators::ProductSalesController < Operators::BaseController
     product_sale.hour_end = time.hour + 2
 
     redirect_to auto_operators_product_sales_path
+  end
+
+  def get_radius_sales
+    @radius_sales = radius_sales(params[:delivery_start].to_date,
+                                 params[:latitude],
+                                 params[:longitude],
+                                 params[:sale_id])
+    respond_to do |format|
+      format.js {render 'operators/product_sales/radius_sales'}
+    end
+  end
+
+  def radius_sales(delivery_start, latitude, longitude, id)
+    travel_config = TravelConfig.get_last
+    radius = travel_config.sales_radius
+    radius_sales = []
+    items = ProductSale.by_delivery_between(delivery_start)
+    items = items.where.not(id: id) if id.present?
+    items.each do |sale|
+      location = sale.location
+      if Geocoder::Calculations.distance_between([latitude, longitude], [location.latitude, location.longitude], units: :km) <= radius
+        radius_sales << sale
+      end
+    end
+    radius_sales
   end
 
   private

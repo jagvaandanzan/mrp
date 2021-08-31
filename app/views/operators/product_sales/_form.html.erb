@@ -540,12 +540,19 @@
             animation: google.maps.Animation.DROP,
             map: selected_map
         });
+        push_radius_sales();
     }
 
     function selected_locatoion_refresh_marker(lat, lng) {
         let myCoords = new google.maps.LatLng(lat, lng);
         selected_marker.setPosition(myCoords);
         selected_map.setCenter(selected_marker.getPosition());
+
+        Rails.ajax({
+            url: "<%= get_radius_sales_operators_product_sales_path %>",
+            type: "POST",
+            data: "delivery_start=<%= @product_sale.delivery_start.strftime('%F') %>&latitude=" + lat + "&longitude=" + lng
+        });
     }
 
     function load_phone_bonus() {
@@ -559,6 +566,67 @@
                     $('#bonus_extra').text(data.bonus);
                 }
             });
+        }
+    }
+
+    let a_time = [], a_phone = [], a_address = [],
+        a_ids = [], a_latitude = [], a_longitude = [],
+        a_salesman_travel = [], marker_sales = [];
+
+    function push_radius_sales() {
+        a_time = [];
+        a_phone = [];
+        a_address = [];
+        a_ids = [];
+        a_latitude = [];
+        a_longitude = [];
+        a_salesman_travel = [];
+        <% if @radius_sales.present?
+        @radius_sales.each { |sale|
+        location = sale.location %>
+        a_ids.push(<%= sale.id %>);
+        a_latitude.push(<%= location.latitude %>);
+        a_longitude.push(<%= location.longitude %>);
+        a_address.push("<%= location.full_name %>");
+        a_phone.push(<%= sale.phone %>);
+        a_time.push("<%= sale.delivery_time.gsub('&nbsp;',' ') %>");
+        a_salesman_travel.push(<%= sale.salesman_travel.present? %>);
+        <% }
+        end %>
+        set_radius_sales();
+    }
+
+    function remove_markers(markers) {
+        for (let i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+    }
+
+    function set_radius_sales() {
+        remove_markers(marker_sales);
+        marker_sales = [];
+
+        for (let i = 0; i < a_ids.length; i++) {
+            let latLng = new google.maps.LatLng(a_latitude[i], a_longitude[i]);
+            let image = {
+                url: "/images/map/" + (a_salesman_travel[i] ? 'green' : 'yellow') + "-dot.png",
+                labelOrigin: new google.maps.Point(15, 10)
+            };
+            const m = new google.maps.Marker({
+                position: latLng,
+                map: selected_map,
+                icon: image
+            });
+            google.maps.event.addListener(m, 'click', function () {
+                infowindow = new google.maps.InfoWindow({
+                    content: '<p>Цаг: ' + a_time[i] + '</p>' +
+                        '<p>Утас: ' + a_phone[i] + '</p>' +
+                        '<p>Хаяг: ' + a_address[i] + '</p>',
+                    position: latLng,
+                });
+                infowindow.open(selected_map);
+            });
+            marker_sales.push(m);
         }
     }
 </script>

@@ -1,0 +1,21 @@
+a_time = [];
+a_phone = [];
+a_address = [];
+a_ids = [];
+a_latitude = [];
+a_longitude = [];
+a_salesman_travel = [];
+<% if @radius_sales.present?
+@radius_sales.each { |sale|
+location = sale.location %>
+a_ids.push(<%= sale.id %>);
+a_latitude.push(<%= location.latitude %>);
+a_longitude.push(<%= location.longitude %>);
+a_address.push("<%= location.full_name %>");
+a_phone.push(<%= sale.phone %>);
+a_time.push("<%= sale.delivery_time.gsub('&nbsp;',' ') %>");
+a_salesman_travel.push(<%= sale.salesman_travel.present? %>);
+<% }
+end %>
+
+set_radius_sales();
