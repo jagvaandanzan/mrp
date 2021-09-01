@@ -122,7 +122,7 @@
                         <% end
                            total_price += "#{i.get_currency supply_feature.price}" %>
                         <% count += 1
-                           name += supply_feature.feature_item.name
+                           name += supply_feature.feature_item.name if supply_feature.feature_item.present?
                            name += ', ' %>
                       <% }
                          end %>
