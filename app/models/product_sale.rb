@@ -235,6 +235,13 @@ class ProductSale < ApplicationRecord
         .sum(&:to_i)
   end
 
+  def return_price
+    product_sale_returns
+        .joins(:product_sale_item)
+        .pluck("product_sale_items.price * product_sale_returns.quantity")
+        .sum(&:to_i)
+  end
+
   def status_name
     if status.present?
       if parent_id.present?
