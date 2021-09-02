@@ -103,7 +103,7 @@ class Operators::ProductSaleCallsController < Operators::BaseController
 
   def get_prev_sales
     @product_sales = ProductSale.search(nil, nil, nil, params[:phone], nil).first(5)
-    @sale_calls = ProductSaleCall.search(nil, nil, params[:phone], nil, nil)
+    @sale_calls = ProductSaleCall.search(nil, nil, params[:phone], nil, nil, nil)
                       .by_not_id(params[:id])
                       .first(5)
 
