@@ -90,6 +90,17 @@ class ProductSaleCall < ApplicationRecord
     end
   end
 
+  def approved_operator
+    logs = product_sale_status_logs
+               .by_status('call_order')
+               .last
+    if logs.present?
+      logs.operator.name
+    else
+      ""
+    end
+  end
+
   private
 
   def has_24_created

@@ -55,6 +55,8 @@
                 <th><%= t('activerecord.attributes.product_sale_call.message') %></th>
                 <th><%= t('activerecord.attributes.product_sale_call.created_at') %></th>
                 <th><%= t('activerecord.attributes.product_sale_call.status_id') %></th>
+                <th>Бүртгэсэн</th>
+                <th>Баталсан</th>
               </tr>
               <% @sale_calls.each do |sale_call| %>
                 <%= render 'sale_call_row', sale_call: sale_call %>

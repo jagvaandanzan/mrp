@@ -6,4 +6,9 @@ class ProductSaleStatusLog < ApplicationRecord
   belongs_to :operator, optional: true
   belongs_to :salesman, optional: true
   belongs_to :status, :class_name => "ProductSaleStatus"
+
+  scope :by_status, ->(status) {
+    joins(:status)
+        .where('product_sale_statuses.alias = ?', status)
+  }
 end

@@ -126,7 +126,7 @@ module API
             params['item_serials'].each {|ser|
               item = ProductFeatureItem.find_by_barcode(ser['serial_barcode'])
               if item.present?
-                item.update_columns(price: ser['serial_price'].to_i, balance: ser['c2_qty'].to_i)
+                item.update_column(:price, ser['serial_price'].to_i)
                 product_id = item.product_id if product_id.nil?
                 items << {id: item.id, balance: ser['c2_qty'], price: ser['serial_price'].to_i}
               end

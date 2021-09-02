@@ -12,6 +12,8 @@
     <td class="va-mid" rowspan="<%= len %>"><%= sale_call.message %></td>
     <td class="va-mid no-wrap" rowspan="<%= len %>"><%= sale_call.created_at.strftime('%F %R') %></td>
     <td class="va-mid" rowspan="<%= len %>"><%= sale_call.status_name %></td>
+    <td class="va-mid" rowspan="<%= len %>"><%= sale_call.operator.name %></td>
+    <td class="va-mid" rowspan="<%= len %>"><%= sale_call.approved_operator %></td>
   </tr>
   <% call_items.each_with_index {|item, index|
     if index > 0 %>
@@ -33,5 +35,7 @@
     <td class="va-mid"><%= sale_call.message %></td>
     <td class="va-mid no-wrap"><%= sale_call.created_at.strftime('%F %R') %></td>
     <td class="va-mid"><%= sale_call.status_name %></td>
+    <td class="va-mid"><%= sale_call.operator.name %></td>
+    <td><%= sale_call.approved_operator %></td>
   </tr>
 <% end %>
