@@ -101,6 +101,7 @@ class Operators::SalesmanTravelsController < Operators::BaseController
       flash[:success] = t('alert.info_updated')
       redirect_to action: :index
     else
+      logger.info("ERRORS: #{@salesman_travel.errors.full_messages}")
       render 'edit'
     end
   end
