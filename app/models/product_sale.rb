@@ -188,7 +188,7 @@ class ProductSale < ApplicationRecord
     items = if id.nil?
               items.where("(salesman_travel_id IS ? AND product_sale_statuses.alias = ?) OR product_sale_statuses.alias = ?", nil, 'oper_confirmed', 'auto_redistribution')
             else
-              items.where("product_sales.id = ? OR (salesman_travel_id IS ? AND product_sale_statuses.alias = ?) OR product_sale_statuses.alias = ?)", id, nil, 'oper_confirmed', 'auto_redistribution')
+              items.where("product_sales.id = ? OR (salesman_travel_id IS ? AND product_sale_statuses.alias = ?) OR product_sale_statuses.alias = ?", id, nil, 'oper_confirmed', 'auto_redistribution')
             end
     items.order(:delivery_start)
   }
@@ -305,7 +305,7 @@ class ProductSale < ApplicationRecord
       if bonu.present?
         b = bonu.first
         ApplicationController.helpers
-            .send_sms(product_sale.phone, "Tanii bonus #{b.balance} tugrug bolloo. Ta daraagiin hudaldan avaltdaa ashiglah bolomjtoi. Market.mn, 77779990")
+            .send_sms(phone, "Tanii bonus #{b.balance} tugrug bolloo. Ta daraagiin hudaldan avaltdaa ashiglah bolomjtoi. Market.mn, 77779990")
       end
     end
   end
