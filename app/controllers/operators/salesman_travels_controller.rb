@@ -94,7 +94,7 @@ class Operators::SalesmanTravelsController < Operators::BaseController
   def update
     logger.info("UPDATE")
     @salesman_travel.attributes = travel_update_params
-    if @salesman_travel.save
+    if @salesman_travel.save(validate: false)
       @salesman_travel.salesman_travel_routes.each do |route|
         route.update_column(:location_id, route.product_sale.location_id)
       end
