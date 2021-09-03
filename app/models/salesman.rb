@@ -50,7 +50,8 @@ class Salesman < ActiveRecord::Base
   }
 
   def send_first_password_instructions
-    send_devise_notification(:first_password_instructions, password, subject: '[Market.mn] Нэвтрэх нууц үгийн мэдээлэл', to: email)
+    ApplicationController.helpers.send_sms(phone, "Market.mn, password: #{password}, pin_code: #{pin_code}")
+    # send_devise_notification(:first_password_instructions, password, subject: '[Market.mn] Нэвтрэх нууц үгийн мэдээлэл', to: email)
   end
 
   def id_number
