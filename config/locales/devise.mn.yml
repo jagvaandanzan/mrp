@@ -64,4 +64,4 @@ mn:
         other: "%{resource} хадгалахад доорх %{count} алдаа гарлаа:"
   devise_token_auth:
     sessions:
-      bad_credentials: Имэйл хаяг эсвэл нууц үг буруу байна!
+      bad_credentials: Нэвтрэх нэр эсвэл нууц үг буруу байна!

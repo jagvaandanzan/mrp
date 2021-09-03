@@ -20,6 +20,34 @@ module API
           end
         end
 
+        resource :password do
+          desc "POST salesmen/password"
+          params do
+            requires :pin_code, type: String
+            requires :password, type: String
+            requires :password_confirmation, type: String
+          end
+          post do
+            salesman = current_salesman
+            if params[:pin_code] == salesman.pin_code
+              salesman.password = params[:password]
+              salesman.password_confirmation = params[:password_confirmation]
+              salesman.change_pass = true
+              if salesman.valid?
+                if salesman.save
+                  present :salesman, salesman, with: API::SALESMAN::Entities::Salesman
+                else
+                  error!(salesman.errors.full_messages, 422)
+                end
+              else
+                error!(salesman.errors.full_messages, 422)
+              end
+            else
+              error!("Пин код буруу байна!", 422)
+            end
+          end
+        end
+
         resource :notifications do
           desc "GET salesmen/notifications"
           get do

@@ -5,60 +5,57 @@ module API
         resource :reset do
           desc "POST passwords/reset"
           params do
-            requires :email, type: String
+            requires :phone, type: Integer
           end
           post do
-            salesman = Salesman.find_by_email(params[:email])
+            salesman = Salesman.find_by_uid(params[:phone])
             if salesman.present?
-              url_token, hashed_token = Devise.token_generator.generate(Salesman, :reset_password_token)
-              # Rails.logger.debug("url_token = " + url_token.to_s)
-              salesman.reset_password_instructions(salesman.email, url_token)
-              Salesman.transaction do
-                salesman.reset_password_token = hashed_token
-                salesman.reset_password_sent_at = Time.now
-                salesman.save(validate: false)
+              c = ""
+              (1..6).each do |n|
+                c += rand(10).to_s
               end
-
-              {message: I18n.t("devise.passwords.send_instructions")}
+              ApplicationController.helpers.send_sms(salesman.phone, "Market.mn, code: #{c}")
+              salesman.update_column(:reset_code, c)
+              present :message, 'Нууц код илгээлээ'
             else
-              error!(I18n.t('devise.passwords.no_email'), 422)
+              error!('Утасны дугаар олдсонгүй!', 422)
             end
           end
         end
-        # tokilog://?reset_password_token=DJZsr-tFz1gAgW3sCQMZ
+
         resource :change do
           desc "POST passwords/change"
           params do
-            requires :reset_password_token, type: String
+            requires :phone, type: Integer
+            requires :reset_code, type: String
             requires :password, type: String
             requires :password_confirmation, type: String
           end
           post do
-
-            # Rails.logger.debug("token = " + params.to_s)
-            salesman = Salesman.with_reset_password_token(params[:reset_password_token])
+            salesman = Salesman.find_by_phone(params[:phone])
             if salesman.present?
-              salesman.password = params[:password]
-              salesman.password_confirmation = params[:password_confirmation]
-              if salesman.valid?
-                if salesman.reset_password_period_valid?
-                  Salesman.reset_password_by_token(params)
-                  {email: salesman.email, message: I18n.t('devise.passwords.updated')}
+              if salesman.reset_code == params[:reset_code]
+                url_token, hashed_token = Devise.token_generator.generate(Salesman, :reset_password_token)
+                salesman.update_columns(reset_password_token: hashed_token,
+                                    reset_password_sent_at: Time.now.utc)
+
+                salesman.password = params[:password]
+                salesman.password_confirmation = params[:password_confirmation]
+                salesman.change_pass = true
+                if salesman.valid?
+                  salesman.update_column(:reset_code, nil)
+                  Salesman.reset_password_by_token({reset_password_token: url_token,
+                                                password: params[:password],
+                                                password_confirmation: params[:password_confirmation]})
+                  present :message, I18n.t('devise.passwords.updated')
                 else
-                  error!(I18n.t("errors.messages.expired"), 422)
+                  error!(salesman.errors.full_messages, 422)
                 end
               else
-                msg = ""
-                salesman.errors.full_messages.each_with_index {|err, index|
-                  if index > 0
-                    msg += "\n "
-                  end
-                  msg += err
-                }
-                error!(msg.to_s, 422)
+                error!('Код буруу байна!', 422)
               end
             else
-              error!(I18n.t('devise.passwords.no_token'), 422)
+              error!('Утасны дугаар олдсонгүй!', 422)
             end
           end
         end
