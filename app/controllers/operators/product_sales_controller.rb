@@ -357,6 +357,13 @@ class Operators::ProductSalesController < Operators::BaseController
     message = ""
     sale_item = ProductSaleItem.find(params[:id])
     if sale_item.destroy
+      ProductSaleLog.create(operator: current_operator,
+                            o_product_id: sale_item.product_id,
+                            o_feature_item_id: sale_item.feature_item_id,
+                            o_quantity: sale_item.quantity,
+                            o_to_see: sale_item.to_see,
+                            o_p_discount: sale_item.p_discount,
+                            o_discount: sale_item.discount)
       product = sale_item.product
       product.update_column(:balance, product.balance_sum)
 
@@ -395,12 +402,26 @@ class Operators::ProductSalesController < Operators::BaseController
     else
       feature_item_id = sale_item.feature_item_id
       product_id = sale_item.product_id
+      log = ProductSaleLog.new(operator: current_operator,
+                               o_product_id: product_id,
+                               o_feature_item_id: feature_item_id,
+                               o_quantity: sale_item.quantity,
+                               o_to_see: sale_item.to_see,
+                               o_p_discount: sale_item.p_discount,
+                               o_discount: sale_item.discount)
       sale_item.product_id = params[:product_id]
       sale_item.feature_item_id = params[:feature_item_id]
       sale_item.quantity = params[:quantity]
       sale_item.to_see = params[:to_see]
       sale_item.p_discount = params[:p_discount]
       sale_item.discount = params[:discount]
+      log.product_id = sale_item.product_id
+      log.feature_item_id = sale_item.feature_item_id
+      log.quantity = sale_item.quantity
+      log.to_see = sale_item.to_see
+      log.p_discount = sale_item.p_discount
+      log.discount = sale_item.discount
+
       price = if sale_item.p_discount.present?
                 sale_item.p_discount
               elsif sale_item.discount.present?
@@ -410,7 +431,7 @@ class Operators::ProductSalesController < Operators::BaseController
               end
       sale_item.sum_price = sale_item.quantity * price
       sale_item.save
-
+      log.save
       if product_id.present? && product_id != sale_item.product_id
         product = Product.find(product_id)
         product.update_column(:balance, product.balance_sum)
