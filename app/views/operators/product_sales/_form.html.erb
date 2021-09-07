@@ -660,6 +660,7 @@
         } else if (parseInt(quantity) > parseInt(remainder)) {
             alert("Үлдэгдэлгүй байна!")
         } else if (confirm("Өөрчлөх үү!")) {
+            remove_submit_btn();
             Rails.ajax({
                 url: "<%= update_item_operators_product_sales_path %>",
                 type: "POST",
@@ -679,6 +680,7 @@
 
     function delete_sale_item(icon, id) {
         if (confirm("<%= t('are_you_sure') %>")) {
+            remove_submit_btn();
             const tr = icon.parent().parent();
             if (parseInt(id) === 0) {
                 tr.remove();
