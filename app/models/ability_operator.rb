@@ -27,6 +27,8 @@ class AbilityOperator
         can role, Location
       when "bonus"
         can role, Bonu
+      when "edit_sale"
+        can :manage, :edit_product_sale
       else
         puts "it was something else"
       end

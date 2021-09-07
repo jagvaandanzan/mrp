@@ -37,6 +37,9 @@ class ProductWarehouseLoc < ApplicationRecord
   scope :by_travel, ->(travel_id) {
     where(salesman_travel_id: travel_id)
   }
+  scope :by_feature_item_id, ->(feature_item_id) {
+    where(feature_item_id: feature_item_id)
+  }
 
   scope :date_by_load_at, ->(date) {
     select("salesman_travels.salesman_id, salesmen.name as salesman_name, SUM(quantity) as quantity")
@@ -47,7 +50,7 @@ class ProductWarehouseLoc < ApplicationRecord
   }
   scope :salesman_with_date, ->(salesman_id, date) {
     select("product_warehouse_locs.*, users.name as user_sign")
-    .joins(:user)
+        .joins(:user)
         .where("salesman_travels.salesman_id = ?", salesman_id)
         .where("product_warehouse_locs.load_at IS NOT ?", nil)
         .where('? <= product_warehouse_locs.load_at AND product_warehouse_locs.load_at < ?', date, date + 1.day)

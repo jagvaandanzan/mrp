@@ -15,7 +15,7 @@
     <% has_child = @product_sale.child.present? %>
     <% if has_child %>
       <%= link_to @product_sale.status.name + ' хийсэн бараа', operators_product_sale_path(@product_sale.child), class: 'btn btn-info' %>
-    <% else %>
+    <% elsif (can? :manage, :edit_product_sale) || !@product_sale.has_seen_stockkeeper %>
       <%= link_to t('controls.button.edit'), edit_operators_product_sale_path(@product_sale), class: 'btn btn-info' %>
       <%= link_to t('controls.button.delete'), operators_product_sale_path(@product_sale), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <% end %>

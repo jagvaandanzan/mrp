@@ -120,7 +120,7 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def edit
-    if @product_sale.child.present?
+    if @product_sale.child.present? || !((can? :manage, :edit_product_sale) || !@product_sale.has_seen_stockkeeper)
       redirect_to action: :show, id: @product_sale.id
     else
 
@@ -144,15 +144,11 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def destroy
-    if @product_sale.child.present?
+    if @product_sale.child.present? || !((can? :manage, :edit_product_sale) || !@product_sale.has_seen_stockkeeper)
       redirect_to action: :show, id: @product_sale.id
     else
-      if @product_sale.salesman_travel.present?
-        flash[:alert] = "Хувиарлагдсан захиалга байна!"
-      else
-        @product_sale.destroy!
-        flash[:success] = t('alert.deleted_successfully')
-      end
+      @product_sale.destroy!
+      flash[:success] = t('alert.deleted_successfully')
       redirect_to action: 'index'
     end
   end
@@ -354,6 +350,94 @@ class Operators::ProductSalesController < Operators::BaseController
       end
     end
     radius_sales
+  end
+
+  def delete_item
+    status = true
+    message = ""
+    sale_item = ProductSaleItem.find(params[:id])
+    if sale_item.destroy
+      product = sale_item.product
+      product.update_column(:balance, product.balance_sum)
+
+      product_sale = sale_item.product_sale
+      feature_item = sale_item.feature_item
+      feature_item.update_column(:balance, feature_item.balance_sum)
+      warehouse_locs = ProductWarehouseLoc.by_travel(product_sale.salesman_travel_id)
+                           .by_feature_item_id(feature_item.id)
+      warehouse_locs.destroy_all if warehouse_locs.present?
+
+      # Нийлбэр дүнг дахин бодох
+      product_sale.update_sum_price
+    else
+      status = false
+      message = sale_item.errors.full_messages
+    end
+    render json: {status: status, message: message}
+  end
+
+  def update_item
+    status = true
+    message = ""
+    sale_item = if params[:id].to_i > 0
+                  ProductSaleItem.find(params[:id])
+                else
+                  feature_item = ProductFeatureItem.find(params[:feature_item_id])
+                  ProductSaleItem.new(product_sale_id: params[:sale_id],
+                                      price: feature_item.price.presence || 0)
+                end
+    if sale_item.bought_at.present?
+      status = false
+      message = "Худалдан авалт хийсэн байна!"
+    elsif sale_item.back_quantity.present?
+      status = false
+      message = "Буцаалт хийсэн байна!"
+    else
+      feature_item_id = sale_item.feature_item_id
+      product_id = sale_item.product_id
+      sale_item.product_id = params[:product_id]
+      sale_item.feature_item_id = params[:feature_item_id]
+      sale_item.quantity = params[:quantity]
+      sale_item.to_see = params[:to_see]
+      sale_item.p_discount = params[:p_discount]
+      sale_item.discount = params[:discount]
+      price = if sale_item.p_discount.present?
+                sale_item.p_discount
+              elsif sale_item.discount.present?
+                sale_item.price - ApplicationController.helpers.get_percentage(sale_item.discount, sale_item.price)
+              else
+                sale_item.price
+              end
+      sale_item.sum_price = sale_item.quantity * price
+      sale_item.save
+
+      if product_id.present? && product_id != sale_item.product_id
+        product = Product.find(product_id)
+        product.update_column(:balance, product.balance_sum)
+      end
+      load_at = nil
+      salesman_at = nil
+      product_sale = sale_item.product_sale
+      salesman_travel_id = product_sale.salesman_travel_id
+      warehouse_locs = ProductWarehouseLoc.by_travel(salesman_travel_id)
+      if feature_item_id.present? && feature_item_id != sale_item.feature_item_id
+        feature_item = ProductFeatureItem.find(feature_item_id)
+        feature_item.update_column(:balance, feature_item.balance_sum)
+        warehouse_locs = warehouse_locs.by_feature_item_id(feature_item_id)
+        warehouse_locs.destroy_all if warehouse_locs.present?
+      end
+      if warehouse_locs.present?
+        warehouse_loc = warehouse_locs.last
+        load_at = warehouse_loc.load_at
+        salesman_at = warehouse_loc.salesman_at
+      end
+
+      # Нийлбэр дүнг дахин бодох
+      product_sale.update_sum_price
+
+      create_warehouse_loc(sale_item.quantity, salesman_travel_id, sale_item.product_id, sale_item.feature_item_id, false, load_at, salesman_at)
+    end
+    render json: {status: status, message: message}
   end
 
   private

@@ -381,6 +381,20 @@ class ProductSale < ApplicationRecord
     SendSmsJob.perform_later(phone, "Tanii zahialgiin hurgelt ehellee. #{delivery_start.hour}-#{delivery_end.hour} tsagiin hoorond hurgegdeh bolno. Ajiltan :mn, utas #{salesman_travel.salesman.phone}. Market.mn", salesman_travel.salesman.name)
   end
 
+# Нярав апп дээр харсан эсэх
+  def has_seen_stockkeeper
+    if salesman_travel_id.present?
+      ProductWarehouseLoc.by_travel(salesman_travel_id).count > 0
+    else
+      false
+    end
+  end
+
+  def update_sum_price
+    self.update_column(:sum_price, product_sale_items.by_to_see(false)
+                                       .sum(:sum_price))
+  end
+
   private
 
   def send_to_channel

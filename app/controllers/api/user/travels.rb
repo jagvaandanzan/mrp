@@ -241,7 +241,7 @@ module API
   end
 end
 
-def create_warehouse_loc(item_quantity, salesman_travel_id, product_id, feature_item_id, add_stock = false)
+def create_warehouse_loc(item_quantity, salesman_travel_id, product_id, feature_item_id, add_stock = false, load_at = nil, salesman_at = nil)
   product_locations = ProductLocation.get_quantity(feature_item_id)
   quantity = 0
   is_added = false
@@ -258,6 +258,8 @@ def create_warehouse_loc(item_quantity, salesman_travel_id, product_id, feature_
                                  location_id: loc.id,
                                  feature_item_id: feature_item_id,
                                  quantity: q,
+                                 load_at: load_at,
+                                 salesman_at: salesman_at,
                                  add_stock: add_stock)
       is_added = true
     else

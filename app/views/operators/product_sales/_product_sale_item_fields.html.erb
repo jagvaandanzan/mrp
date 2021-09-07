@@ -42,9 +42,17 @@
   <td class="va-mid">
     <%= f.text_field :remainder, class: 'form-control field remainder', value: f.object.remainder, readonly: true, placeholder: t('activerecord.attributes.product_sale_item.remainder') %>
   </td>
-  <td class="va-mid remove">
-    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
-      <%= nested_remove_btn %>
-    <% end %>
-  </td>
+  <% if @is_editor %>
+    <td class="va-mid is_edit" style="padding: 0!important;">
+      <i class="fa fa fa-fw fa-minus-circle" onclick="delete_sale_item($(this), <%= f.object.persisted? ? f.object.id : 0 %>)"></i>
+    </td>
+    <td class="va-mid is_edit" style="padding: 0 0 0 2px!important;">
+      <i class="fa fa-save" onclick="update_sale_item($(this), <%= f.object.persisted? ? f.object.id : 0 %>)"></i></td>
+  <% else %>
+    <td class="va-mid remove">
+      <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+        <%= nested_remove_btn %>
+      <% end %>
+    </td>
+  <% end %>
 </tr>

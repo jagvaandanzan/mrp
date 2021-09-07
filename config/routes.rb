@@ -253,6 +253,8 @@ Rails.application.routes.draw do
         post 'get_bonus'
         post 'next_status'
         post 'get_radius_sales'
+        post 'update_item'
+        post 'delete_item'
       end
     end
 

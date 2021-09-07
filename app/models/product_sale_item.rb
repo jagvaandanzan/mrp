@@ -74,6 +74,9 @@ class ProductSaleItem < ApplicationRecord
   scope :is_quantity_lower, ->(n) {
     where("product_sale_items.quantity < ?", n)
   }
+  scope :by_to_see, ->(to_see) {
+    where(to_see: to_see)
+  }
 
   scope :sum_price_by_salesman, ->(salesman_id, start_time, end_time) {
     joins(:salesman_travel)
@@ -158,7 +161,9 @@ class ProductSaleItem < ApplicationRecord
   def set_product_balance
     if quantity > 0
       if product_balance.present?
-        self.product_balance.update_column(:quantity, -quantity)
+        self.product_balance.update_attributes(product: product,
+                                               feature_item: feature_item,
+                                               quantity: -quantity)
       else
         self.product_balance = ProductBalance.new(product: product,
                                                   feature_item: feature_item,
