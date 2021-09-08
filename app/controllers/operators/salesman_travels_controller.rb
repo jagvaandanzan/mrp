@@ -88,9 +88,9 @@ class Operators::SalesmanTravelsController < Operators::BaseController
   end
 
   def edit
-    # unless (can? :manage, SalesmanTravel) && !@salesman_travel.load_at.present?
-    #   redirect_to action: :show, id: @salesman_travel.id
-    # end
+    unless (can? :manage, SalesmanTravel) && !@salesman_travel.load_at.present?
+      redirect_to action: :show, id: @salesman_travel.id
+    end
   end
 
   def update
