@@ -17,7 +17,7 @@
       <div class="col-md-2 search">
         <%= text_field_tag :product_name, @product_name, {class: 'form-control', placeholder: t('filters.by_product')} %>
       </div>
-      <div class="col-md-2 search">
+      <div class="col-md-1 search">
         <%= text_field_tag :phone, @phone, {class: 'form-control', placeholder: t('filters.by_phone')} %>
       </div>
       <div class="col-md-2 search" id="select_product_status">
@@ -29,10 +29,14 @@
                                   {:selected => @status_sub, :include_blank => t('activerecord.attributes.product_sale_call.status_sub_id')}, {class: 'm-t-5 form-control selectpicker', onchange: 'call_set_status(this)'} %>
         </div>
       </div>
-      <div class="col-md-2 search">
-        <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
+      <div class="col-md-1 search">
+        <%= f.collection_select :reg_oper_id, Operator.order_name, :id, :name, {:selected => @reg_oper_id, :include_blank => 'Бүртгэсэн'}, {class: 'form-control selectpicker', "data-live-search": true} %>
+      </div>
+      <div class="col-md-1 search">
+        <%= f.collection_select :cnf_oper_id, Operator.order_name, :id, :name, {:selected => @cnf_oper_id, :include_blank => 'Бүртгэсэн'}, {class: 'form-control selectpicker', "data-live-search": true} %>
       </div>
       <div class="col-md-2 search text-right">
+        <%= submit_tag t('controls.button.searching'), :class => 'btn-sm blck-btn pull-left' %>
         <%= link_to t('controls.button.create'), new_operators_product_sale_call_path, class: 'btn btn-warning' %>
       </div>
     <% end %>

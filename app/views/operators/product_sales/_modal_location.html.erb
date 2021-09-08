@@ -71,6 +71,15 @@
             map: map,
             draggable: true
         });
+        google.maps.event.addListener(map, "click", (event) => {
+            const latlng = event.latLng;
+            const newlat = (Math.round(latlng.lat() * 1000000)) / 1000000;
+            const newlng = (Math.round(latlng.lng() * 1000000)) / 1000000;
+            latitude = newlat;
+            longitude = newlng;
+            map.panTo(latlng);
+            marker.setPosition(latlng);
+        });
 
         // when marker is dragged update input values
         marker.addListener('drag', function () {

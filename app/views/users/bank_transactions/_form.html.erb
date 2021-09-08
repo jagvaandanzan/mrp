@@ -22,7 +22,7 @@
                 <%= f.label :salesman_id, class: 'control-label' %>
                 <div class="<%= get_error_class(@bank_transaction, :salesman_id) %>">
                   <%= field_errors(@bank_transaction, :salesman_id) %>
-                  <%= f.collection_select :salesman_id, Salesman.all, :id, :full_name, {:prompt => t('activerecord.attributes.bank_transaction.salesman_id')}, {class: 'form-control selectpicker', "data-live-search": true} %>
+                  <%= f.collection_select :salesman_id, Salesman.order_name, :id, :full_name, {:prompt => t('activerecord.attributes.bank_transaction.salesman_id')}, {class: 'form-control selectpicker', "data-live-search": true} %>
                 </div>
               </div>
               <div class="col-md-4 field_div">

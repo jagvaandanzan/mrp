@@ -21,7 +21,7 @@
                          {:prompt => t('activerecord.attributes.product.customer_id'), :selected => @customer_id}, {class: 'form-control selectpicker', "data-live-search": "true"} %>
           </div>
           <div class="col-md-2 search">
-            <%= f.collection_select :salesman_id, Salesman.all, :id, :full_name, {:include_blank => t('activerecord.attributes.bank_transaction.salesman_id'), selected: @salesman_id},
+            <%= f.collection_select :salesman_id, Salesman.order_name, :id, :full_name, {:include_blank => t('activerecord.attributes.bank_transaction.salesman_id'), selected: @salesman_id},
                                     {class: 'form-control selectpicker', "data-live-search": true} %>
           </div>
           <div class="col-md-2 search va-mid">

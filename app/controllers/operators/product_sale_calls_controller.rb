@@ -10,6 +10,8 @@ class Operators::ProductSaleCallsController < Operators::BaseController
     @status_id = params[:status_id]
     @status = params[:status]
     @status_sub = params[:status_sub]
+    @reg_oper_id = params[:reg_oper_id]
+    @cnf_oper_id = params[:cnf_oper_id]
     cookies[:product_sale_call_page_number] = params[:page]
 
     status_ids = nil
@@ -21,10 +23,11 @@ class Operators::ProductSaleCallsController < Operators::BaseController
     end
 
     @sale_calls = if @status_id.present?
-                    ProductSaleCall.search(@start, @finish, @phone, @product_name, @status_id, status_ids).page(params[:page])
+                    ProductSaleCall.search(@start, @finish, @phone, @product_name, @status_id, status_ids, @reg_oper_id, @cnf_oper_id).page(params[:page])
                   else
                     ProductSaleCall.by_not_status('call_order')
-                        .search(@start, @finish, @phone, @product_name, @status_id, status_ids).page(params[:page])
+                        .by_not_status('call_destroy')
+                        .search(@start, @finish, @phone, @product_name, @status_id, status_ids, @reg_oper_id, @cnf_oper_id).page(params[:page])
                   end
   end
 
@@ -102,10 +105,10 @@ class Operators::ProductSaleCallsController < Operators::BaseController
   end
 
   def get_prev_sales
-    @product_sales = ProductSale.search(nil, nil, nil, params[:phone], nil).first(5)
-    @sale_calls = ProductSaleCall.search(nil, nil, params[:phone], nil, nil, nil)
+    @product_sales = ProductSale.search(nil, nil, nil, params[:phone], nil, nil).first(10)
+    @sale_calls = ProductSaleCall.search(nil, nil, params[:phone], nil, nil, nil, nil, nil)
                       .by_not_id(params[:id])
-                      .first(5)
+                      .first(10)
 
     respond_to do |format|
       format.js {render 'previous_sales'}
@@ -113,7 +116,7 @@ class Operators::ProductSaleCallsController < Operators::BaseController
   end
 
   def check_sale_order
-    product_sale = ProductSale.search(nil, nil, nil, params[:phone], "oper_confirmed").first(1)
+    product_sale = ProductSale.search(nil, nil, nil, params[:phone], "oper_confirmed", nil).first(1)
     render json: {is_ordered: product_sale.present?}
   end
 

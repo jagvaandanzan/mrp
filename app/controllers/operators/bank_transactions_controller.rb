@@ -12,7 +12,7 @@ class Operators::BankTransactionsController < Operators::BaseController
               Time.now.beginning_of_day
             end
     phones = if current_operator.present?
-               Salesman.all.map(&:phone).to_a
+               Salesman.order_name.map(&:phone).to_a
              end
 
     @bank_transactions = BankTransaction.is_income

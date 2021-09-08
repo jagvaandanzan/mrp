@@ -16,7 +16,7 @@
   </td>
   <td class="va-mid text-center">
     <%= field_errors f.object, :to_see %>
-    <%= f.check_box :to_see %>
+    <%= f.check_box :to_see, oninput: "calc_total_price()" %>
   </td>
   <td class="va-mid">
     <%= field_errors f.object, :quantity %>

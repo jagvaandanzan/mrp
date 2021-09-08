@@ -5,7 +5,7 @@ module API
         resource :salesmen do
           desc "GET sales/salesmen"
           get do
-            salesmen = Salesman.all
+            salesmen = Salesman.order_name
             present :salesmen, salesmen, with: API::USER::Entities::Salesman
           end
 

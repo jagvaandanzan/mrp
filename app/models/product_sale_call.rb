@@ -31,6 +31,10 @@ class ProductSaleCall < ApplicationRecord
     validates :code, presence: true, length: {is: 6}
   end
 
+  with_options :if => Proc.new {|m| m.status_id == 43} do
+    validates :message, presence: true
+  end
+
   scope :by_not_id, ->(id) {
     where.not(id: id) if id.present?
   }
@@ -53,7 +57,7 @@ class ProductSaleCall < ApplicationRecord
         .where('product_sale_statuses.alias = ?', status)
   }
 
-  scope :search, ->(start, finish, phone, code_name, status, status_ids) {
+  scope :search, ->(start, finish, phone, code_name, status, status_ids, reg_oper_id, cnf_oper_id) {
     items = order("product_sale_calls.created_at": :desc)
     items = items.where('phone LIKE :value', value: "%#{phone}%") if phone.present?
     items = items.where(status_id: status) if status.present?
@@ -61,6 +65,11 @@ class ProductSaleCall < ApplicationRecord
     # items = items.joins("LEFT OUTER JOIN `product_sales` ON `product_sales`.`deleted_at` IS NULL AND `product_sales`.`sale_call_id` = `product_sale_calls`.`id`").where("product_sales.id IS ?", nil) if status.present?
     items = items.joins(:products).where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{code_name}%") if code_name.present?
     items = items.where('? <= product_sale_calls.created_at AND product_sale_calls.created_at <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items = items.where("product_sale_calls.operator_id = ?", reg_oper_id) if reg_oper_id.present?
+    items = items.left_joins(:product_sale_status_logs)
+                .where("product_sale_status_logs.status_id = ?", 4)
+                .where("product_sale_status_logs.operator_id = ?", cnf_oper_id)
+                .group("product_sale_calls.id") if cnf_oper_id.present?
     items
   }
 

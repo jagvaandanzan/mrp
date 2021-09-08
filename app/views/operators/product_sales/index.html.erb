@@ -30,6 +30,9 @@
                                   {:selected => @status_sub, :include_blank => t('activerecord.attributes.product_sale_call.status_sub_id')}, {class: 'm-t-5 form-control selectpicker', onchange: 'call_set_status(this)'} %>
         </div>
       </div>
+      <div class="col-md-2 search">
+        <%= f.collection_select :salesman_id, Salesman.order_name, :id, :full_name, {:selected => @salesman_id, :include_blank => 'Жолооч'}, {class: 'form-control selectpicker', "data-live-search": true} %>
+      </div>
 
       <div class="col-md-2 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn blck-btn pull-left' %>
@@ -72,7 +75,7 @@
                   <td class="va-mid"><%= p.approved_date.present? ? p.approved_date.strftime('%F %R') : "" %></td>
                   <td class="va-mid"><%= p.approved_operator.present? ? p.approved_operator.name : "" %></td>
                   <td class="va-mid"><%= p.status_name %></td>
-                  <td class="va-mid"><%= p.salesman_delivered %></td>
+                  <td class="va-mid"><%= p.salesman%></td>
                   <td style="display: none">
                     <div class="btn-group">
                       <%= link_to edit_operators_product_sale_path(p), class: 'no-underline' do %>

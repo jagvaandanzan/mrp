@@ -449,7 +449,7 @@
         });
         $('#tb_product_sale_items tr.nested-fields').each(function () {
             let tr = $(this);
-            if (tr.is(':visible')) {
+            if (tr.is(':visible') && !tr.find("input[type=checkbox]").prop('checked')) {
                 let td_qau = tr.find('.item_quantity');
                 let quantity = td_qau.val();
                 if (quantity !== undefined && quantity.length > 0) {

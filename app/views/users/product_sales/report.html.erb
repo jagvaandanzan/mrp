@@ -20,7 +20,7 @@
         <div class="col-md-4 ">
           <div><%= t('activerecord.models.customer') %></div>
           <div class="search">
-            <%= f.collection_select :salesman_id, Salesman.all, :id, :full_name, {:include_blank => t('controls.select.all'), selected: @salesman_id},
+            <%= f.collection_select :salesman_id, Salesman.order_name, :id, :full_name, {:include_blank => t('controls.select.all'), selected: @salesman_id},
                                     {class: 'form-control selectpicker', "data-live-search": true} %>
           </div>
         </div>

@@ -33,7 +33,7 @@
       <div class="row">
         <div class="col-md-12 m-b-10">
           <div class="col-md-3 search">
-            <%= f.collection_select :salesman, Salesman.all, :id, :full_name, {:include_blank => t('activerecord.attributes.bank_transaction.salesman_id'), selected: @salesman},
+            <%= f.collection_select :salesman, Salesman.order_name, :id, :full_name, {:include_blank => t('activerecord.attributes.bank_transaction.salesman_id'), selected: @salesman},
                                     {class: 'form-control selectpicker', "data-live-search": true} %>
           </div>
           <div class="col-md-2 search">

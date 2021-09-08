@@ -85,16 +85,17 @@ class ProductSale < ApplicationRecord
         .where("sale_taxes.id IS#{send == "true" ? ' NOT' : ''} ?", nil) if send.present?
   }
 
-  scope :search, ->(code_name, start, finish, phone, status) {
+  scope :search, ->(code_name, start, finish, phone, status, salesman_id) {
     items = joins(:status)
     items = items.where('product_sales.phone LIKE :value', value: "%#{phone}%") if phone.present?
     items = items.joins(product_sale_items: :product)
                 .where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{code_name}%").group("id") if code_name.present?
     items = items.where('product_sale_statuses.alias = ?', status) if status.present?
     items = items.where('? <= delivery_start AND delivery_start <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
+    items = items.joins(:salesman_travel)
+                .where('salesman_travels.salesman_id = ?', salesman_id) if salesman_id.present?
     items = items.order("product_sale_statuses.queue")
                 .created_at_desc
-
     items
   }
 
@@ -332,8 +333,8 @@ class ProductSale < ApplicationRecord
     end
   end
 
-  def salesman_delivered
-    if status.alias == "sals_delivered"
+  def salesman
+    if salesman_travel.present?
       salesman_travel.salesman.name
     else
       ""
