@@ -77,6 +77,9 @@ class ProductSaleItem < ApplicationRecord
   scope :by_to_see, ->(to_see) {
     where(to_see: to_see)
   }
+  scope :by_feature_item_id, ->(feature_item_id) {
+    where(feature_item_id: feature_item_id)
+  }
 
   scope :sum_price_by_salesman, ->(salesman_id, start_time, end_time) {
     joins(:salesman_travel)

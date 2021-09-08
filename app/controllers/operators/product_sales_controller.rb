@@ -372,7 +372,19 @@ class Operators::ProductSalesController < Operators::BaseController
       feature_item.update_column(:balance, feature_item.balance_sum)
       warehouse_locs = ProductWarehouseLoc.by_travel(product_sale.salesman_travel_id)
                            .by_feature_item_id(feature_item.id)
-      warehouse_locs.destroy_all if warehouse_locs.present?
+      q = sale_item.quantity
+      if warehouse_locs.present?
+        warehouse_locs.each do |loc|
+          if q > 0
+            if loc.quantity <= q
+              q -= loc.quantity
+              loc.destroy
+            end
+          else
+            break
+          end
+        end
+      end
 
       # Нийлбэр дүнг дахин бодох
       product_sale.update_sum_price
@@ -440,6 +452,7 @@ class Operators::ProductSalesController < Operators::BaseController
       salesman_at = nil
       product_sale = sale_item.product_sale
       salesman_travel_id = product_sale.salesman_travel_id
+      salesman_travel = SalesmanTravel.find(salesman_travel_id)
       warehouse_locs = ProductWarehouseLoc.by_travel(salesman_travel_id)
       if feature_item_id.present? && feature_item_id != sale_item.feature_item_id
         feature_item = ProductFeatureItem.find(feature_item_id)
@@ -456,7 +469,11 @@ class Operators::ProductSalesController < Operators::BaseController
       # Нийлбэр дүнг дахин бодох
       product_sale.update_sum_price
 
-      create_warehouse_loc(sale_item.quantity, salesman_travel_id, sale_item.product_id, sale_item.feature_item_id, false, load_at, salesman_at)
+      create_warehouse_loc(salesman_travel.product_sale_items.by_feature_item_id(sale_item.feature_item_id).sum(:quantity),
+                           salesman_travel_id,
+                           sale_item.product_id,
+                           sale_item.feature_item_id,
+                           false, load_at, salesman_at)
     end
     render json: {status: status, message: message}
   end

@@ -1,5 +1,9 @@
 <tr class="nested-fields">
   <td class="va-mid">
+    <%= field_errors f.object, :queue %>
+    <%= f.number_field :queue, class: 'form-control field', placeholder: t('activerecord.attributes.loc_khoroo.queue') %>
+  </td>
+  <td class="va-mid">
     <%= field_errors f.object, :product_sale_id %>
     <%= f.collection_select :product_sale_id, ProductSale.travel_nil(f.object.persisted? ? f.object.id : nil), :id, :with_location, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker', "data-live-search": true} %>
   </td>

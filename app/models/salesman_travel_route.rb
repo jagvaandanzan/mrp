@@ -7,6 +7,9 @@ class SalesmanTravelRoute < ApplicationRecord
 
   has_one :status, through: :product_sale
 
+  validates_uniqueness_of :product_sale_id, scope: [:salesman_travel_id]
+  validates :queue, presence: true
+
   scope :order_queue, ->() {
     order(:queue)
   }

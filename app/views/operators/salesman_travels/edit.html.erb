@@ -37,9 +37,18 @@
               <div class="<%= get_error_class(@salesman_travel, :salesman_travel_routes) %>">
                 <%= field_errors(@salesman_travel, :salesman_travel_routes) %>
                 <table class="table table-bordered" id="tb_salesman_travel_routes">
+                  <thead>
+                  <tr>
+                    <th>Дараалал</th>
+                    <th>Хаяг</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
                   <%= f.fields_for :salesman_travel_routes do |m| %>
                     <%= render 'salesman_travel_route_fields', :f => m %>
                   <% end %>
+                  </tbody>
                 </table>
               </div>
               <div class="links item_append">

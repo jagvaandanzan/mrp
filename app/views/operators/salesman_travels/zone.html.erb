@@ -108,7 +108,7 @@
 <script>
     $('body').addClass('sidebar-collapse');
 
-    function append_zone(lat, lng, sale_id, phone, location, time, allocation_type) {
+    function append_zone(lat, lng, sale_id, phone, location, time, allocation_type, is_country) {
         let zone_id = 0;
         for (let i = 0; i < zone_ids.length; i++) {
             if (inside_polygon(lat, lng, zone_paths[i])) {
@@ -119,7 +119,7 @@
         $('table#zone-' + zone_id).hide()
             .append("<tr class='sale-" + sale_id + "'><td rowspan='2'><input type='checkbox' id='" + sale_id + "'></td>" +
                 "<td rowspan='2' class='text'>" + location + "</td>" +
-                "<td class='no-border'><small class='label label-" + allocation_type + "'><i class='fa fa-clock-o'></i> " + time + "</small></td>" +
+                "<td class='no-border'><small class='label label-" + allocation_type + "'><i class='fa fa-" + (is_country ? 'bus' : 'clock-o') + "'></i> " + time + "</small></td>" +
                 "</tr><tr class='sale-" + sale_id + "'><td>" + phone + "</td></tr>")
             .show('normal');
     }
@@ -147,7 +147,7 @@
             },
             received: function (data) {
                 if (data['obj_type'] === "sale") {
-                    append_zone(data['latitude'], data['longitude'], data['sale_id'], data['phone'], data['name'], data['delivery_hour'], data['allocation_type'])
+                    append_zone(data['latitude'], data['longitude'], data['sale_id'], data['phone'], data['name'], data['delivery_hour'], data['allocation_type'], data['is_country'])
                 } else {
                     $('table#salesman_requests').hide()
                         .append("<tr id='salesman-" + data['salesman_id'] + "'>" +
@@ -159,7 +159,7 @@
         });
         <% @product_sales.each { |sale|
         location = sale.location %>
-        append_zone(<%= location.latitude %>, <%=location.longitude %>, <%= sale.id %>, <%= sale.phone %>, "<%= location.full_name %>", "<%= sale.delivery_hour %>", "<%= sale.allocation_type %>");
+        append_zone(<%= location.latitude %>, <%=location.longitude %>, <%= sale.id %>, <%= sale.phone %>, "<%= location.full_name %>", "<%= sale.delivery_hour %>", "<%= sale.allocation_type %>", <%= sale.is_country %>);
         <% } %>
 
         $('#to_travel').on('click', function () {

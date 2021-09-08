@@ -66,7 +66,6 @@ class Operators::SalesmanTravelsController < Operators::BaseController
                               .by_salesman_id(@salesman_travel.salesman_id)
       if salesman_requests.present?
         salesman_request = salesman_requests.first
-        logger.info("salesman_request_id=#{salesman_request.id}")
         salesman_request.update_column(:salesman_travel_id, @salesman_travel.id)
       end
 
@@ -92,9 +91,8 @@ class Operators::SalesmanTravelsController < Operators::BaseController
   end
 
   def update
-    logger.info("UPDATE")
     @salesman_travel.attributes = travel_update_params
-    if @salesman_travel.save(validate: false)
+    if @salesman_travel.save
       @salesman_travel.salesman_travel_routes.each do |route|
         route.update_column(:location_id, route.product_sale.location_id)
       end
@@ -125,6 +123,6 @@ class Operators::SalesmanTravelsController < Operators::BaseController
 
   def travel_update_params
     params.require(:salesman_travel).permit(:salesman_id, :description,
-                                            salesman_travel_routes_attributes: [:id, :product_sale_id, :_destroy])
+                                            salesman_travel_routes_attributes: [:id, :queue, :product_sale_id, :_destroy])
   end
 end

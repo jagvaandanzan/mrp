@@ -795,6 +795,9 @@ mn:
         description: Тайлбар
         salesman_id: Хүргэлтийн ажилтан
         salesman_travel_routes: Хувиарлах захиалгын тоо
+      salesman_travel_route:
+        queue: Дараалал
+        product_sale_id: Хаяг
       store_transfer:
         code: Код
         date: Огноо

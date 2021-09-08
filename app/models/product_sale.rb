@@ -222,7 +222,7 @@ class ProductSale < ApplicationRecord
   end
 
   def delivery_hour
-    "#{delivery_start.hour}-#{delivery_end.hour.to_s}"
+    "#{delivery_start.strftime('%m/%d')} #{delivery_start.hour}-#{delivery_end.hour.to_s}"
   end
 
   def count_product
@@ -350,8 +350,10 @@ class ProductSale < ApplicationRecord
   end
 
   def allocation_type
-    if delivery_end.hour < Time.current.hour
+    if delivery_end.beginning_of_hour < Time.current.beginning_of_hour
       "danger"
+    elsif status.alias == "oper_replacement" || status.alias == "oper_return"
+      "warning"
     elsif status.alias == "auto_redistribution"
       "primary"
     else
@@ -361,6 +363,11 @@ class ProductSale < ApplicationRecord
 
   def with_location
     "#{location.full_name} (#{delivery_hour}), #{phone}"
+  end
+
+  def is_country
+    true
+    location.station.present?
   end
 
 # Дахин хувиарлах төлөвт байгаа барааг хувиарлах үед бараануудыг нь буцаасан бол буцааж оруулж ирнэ
