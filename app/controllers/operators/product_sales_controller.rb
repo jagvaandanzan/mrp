@@ -377,9 +377,11 @@ class Operators::ProductSalesController < Operators::BaseController
         warehouse_locs.each do |loc|
           if q > 0
             if loc.quantity <= q
-              q -= loc.quantity
               loc.destroy
+            else
+              loc.update_column(:quantity, loc.quantity - q)
             end
+            q -= loc.quantity
           else
             break
           end

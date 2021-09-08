@@ -3,7 +3,7 @@ class SalesmanTravel < ApplicationRecord
   belongs_to :operator, optional: true
   belongs_to :user, optional: true
 
-  has_many :salesman_travel_routes, -> {with_deleted.order(:queue)}, dependent: :destroy
+  has_many :salesman_travel_routes, -> {order(:queue)}, dependent: :destroy#with_deleted.
   has_many :product_sales
   has_many :product_sale_items, through: :product_sales
   has_many :product_sale_returns, through: :product_sales

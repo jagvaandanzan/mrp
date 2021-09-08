@@ -5,7 +5,7 @@
   </section>
 
   <div class="action-buttons">
-    <% if can? :manage, SalesmanTravel %>
+    <% if (can? :manage, SalesmanTravel) && !@salesman_travel.load_at.present? %>
       <%= link_to t('controls.button.edit'), edit_operators_salesman_travel_path(@salesman_travel), class: 'btn btn-info' %>
       <%= link_to t('controls.button.delete'), operators_salesman_travel_path(@salesman_travel), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <% end %>
@@ -39,12 +39,14 @@
           <div class="col-data">
             <table class="table-bordered table table-hover">
               <tr>
+                <th><%= t('activerecord.attributes.salesman_travel_route.queue') %></th>
                 <th>Байршил</th>
                 <th>Цаг</th>
                 <th>Утас</th>
               </tr>
               <% @salesman_travel.salesman_travel_routes.each {|route| %>
                 <tr>
+                  <td><%= route.queue %></td>
                   <td><%= route.location.full_name %></td>
                   <td><%= route.product_sale.delivery_hour %></td>
                   <td><%= route.product_sale.phone %></td>

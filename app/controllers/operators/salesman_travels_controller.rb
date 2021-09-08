@@ -88,14 +88,17 @@ class Operators::SalesmanTravelsController < Operators::BaseController
   end
 
   def edit
+    # unless (can? :manage, SalesmanTravel) && !@salesman_travel.load_at.present?
+    #   redirect_to action: :show, id: @salesman_travel.id
+    # end
   end
 
   def update
     @salesman_travel.attributes = travel_update_params
+    @salesman_travel.salesman_travel_routes.each do |route|
+      route.location_id = route.product_sale.location_id
+    end
     if @salesman_travel.save
-      @salesman_travel.salesman_travel_routes.each do |route|
-        route.update_column(:location_id, route.product_sale.location_id)
-      end
       flash[:success] = t('alert.info_updated')
       redirect_to action: :index
     else
@@ -104,11 +107,17 @@ class Operators::SalesmanTravelsController < Operators::BaseController
     end
   end
 
-
   def destroy
-    @salesman_travel.destroy!
-    flash[:success] = t('alert.deleted_successfully')
-    redirect_to action: :index
+    if (can? :manage, SalesmanTravel) && !@salesman_travel.load_at.present?
+      @salesman_travel.salesman_travel_routes.each do |route|
+        route.is_update = true
+      end
+      @salesman_travel.destroy!
+      flash[:success] = t('alert.deleted_successfully')
+      redirect_to action: :index
+    else
+      redirect_to action: :show, id: @salesman_travel.id
+    end
   end
 
   private
@@ -123,6 +132,6 @@ class Operators::SalesmanTravelsController < Operators::BaseController
 
   def travel_update_params
     params.require(:salesman_travel).permit(:salesman_id, :description,
-                                            salesman_travel_routes_attributes: [:id, :queue, :product_sale_id, :_destroy])
+                                            salesman_travel_routes_attributes: [:id, :queue, :product_sale_id, :is_update, :_destroy])
   end
 end
