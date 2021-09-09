@@ -35,7 +35,7 @@
       </div>
 
       <div class="col-md-2 search">
-        <%= submit_tag t('controls.button.searching') + " (" + @product_sales.total_count.to_s + ")", :class => 'btn-sm blck-btn pull-left' %>
+        <%= submit_tag t('controls.button.searching'), :class => 'btn-sm blck-btn pull-left' %>
       </div>
       <div class="col-md-2 search text-right"></div>
     <% end %>
@@ -88,6 +88,9 @@
                   </td>
                 </tr>
               <% end %>
+              <tr>
+                <td colspan="10">Нийт: <%= @product_sales.total_count %></td>
+              </tr>
             </table>
           </div>
         </div>
