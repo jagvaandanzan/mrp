@@ -35,6 +35,9 @@
       <div class="col-md-1 search">
         <%= f.collection_select :cnf_oper_id, Operator.order_name, :id, :name, {:selected => @cnf_oper_id, :include_blank => 'Баталсан'}, {class: 'form-control selectpicker', "data-live-search": true} %>
       </div>
+      <div class="col-md-1 search">
+        <%= text_field_tag :show_history, '', {class: 'form-control', placeholder: t('titles.show_history')} %>
+      </div>
       <div class="col-md-2 search text-right">
         <%= submit_tag t('controls.button.searching'), :class => 'btn-sm blck-btn pull-left' %>
         <%= link_to t('controls.button.create'), new_operators_product_sale_call_path, class: 'btn btn-warning' %>
@@ -74,6 +77,7 @@
     </div>
   </section>
 </div>
+<%= render 'previous_sales' %>
 <%= render 'shared/product_status_js', select_id: 'status_id' %>
 <%= render 'shared/date-range', search_field_id: 'search-date', start_id: 'start', finish_id: 'finish' %>
 <script>
@@ -81,6 +85,17 @@
         <% unless @status_sub.present? && !@status_sub.blank?  %>
         call_next_status($('#status'));
         <% end %>
+
+        $('#show_history').keyup(function () {
+            let phone = $(this).val();
+            if (!isNaN(parseInt(phone)) && phone.length === 8) {
+                Rails.ajax({
+                    url: "<%= get_prev_sales_operators_product_sale_calls_path %>",
+                    type: "POST",
+                    data: "phone=" + phone
+                });
+            }
+        });
     });
 
 </script>
