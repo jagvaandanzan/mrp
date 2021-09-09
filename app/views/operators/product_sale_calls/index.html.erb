@@ -39,7 +39,7 @@
         <%= text_field_tag :show_history, '', {class: 'form-control', placeholder: t('titles.show_history')} %>
       </div>
       <div class="col-md-2 search text-right">
-        <%= submit_tag t('controls.button.searching'), :class => 'btn-sm blck-btn pull-left' %>
+        <%= submit_tag t('controls.button.searching') + " (" + @sale_calls.total_count.to_s + ")", :class => 'btn-sm blck-btn pull-left' %>
         <%= link_to t('controls.button.create'), new_operators_product_sale_call_path, class: 'btn btn-warning' %>
       </div>
     <% end %>
