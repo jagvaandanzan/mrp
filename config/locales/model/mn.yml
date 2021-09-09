@@ -630,6 +630,7 @@ mn:
         to_see: Үзэх
         add_stock: Нярав нэмсэн
         quantity: Тоо хэмжээ
+        bought_quantity: Авсан тоо
         price: Үнэ
         p_discount: Хямдарсан үнэ
         discount: Хямдрал %
