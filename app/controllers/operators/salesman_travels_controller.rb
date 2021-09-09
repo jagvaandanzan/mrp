@@ -3,12 +3,12 @@ class Operators::SalesmanTravelsController < Operators::BaseController
   before_action :set_salesman_travel, only: [:show, :edit, :update, :destroy]
 
   def index
-    @date = if params[:date].present?
-              params[:date].to_time
-            else
-              Time.now.beginning_of_day
-            end
-    @salesman_travels = SalesmanTravel.search(@date).page(params[:page])
+    today = Time.current.beginning_of_day
+    @start = params[:start].presence || today.strftime("%Y/%m/%d")
+    @finish = params[:finish].presence || today.strftime("%Y/%m/%d")
+
+    @salesman_travels = SalesmanTravel.search(DateTime.parse(@start),DateTime.parse(@finish))
+                            .page(params[:page])
     cookies[:salesman_travel_page_number] = params[:page]
   end
 

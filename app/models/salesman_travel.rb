@@ -65,10 +65,9 @@ class SalesmanTravel < ApplicationRecord
     order(created_at: :desc)
   }
 
-  scope :search, ->(date) {
+  scope :search, ->(start, finish) {
     items = order_date
-    items = items.where('created_at >= ?', date) if date.present?
-    items = items.where('created_at < ?', date + 1.day) if date.present?
+    items = items.where('? <= created_at AND created_at < ?', start, finish + 1.day) if start.present? && finish.present?
     items
   }
 
