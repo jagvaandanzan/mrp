@@ -33,7 +33,7 @@
         <%= f.collection_select :reg_oper_id, Operator.order_name, :id, :name, {:selected => @reg_oper_id, :include_blank => 'Бүртгэсэн'}, {class: 'form-control selectpicker', "data-live-search": true} %>
       </div>
       <div class="col-md-1 search">
-        <%= f.collection_select :cnf_oper_id, Operator.order_name, :id, :name, {:selected => @cnf_oper_id, :include_blank => 'Бүртгэсэн'}, {class: 'form-control selectpicker', "data-live-search": true} %>
+        <%= f.collection_select :cnf_oper_id, Operator.order_name, :id, :name, {:selected => @cnf_oper_id, :include_blank => 'Баталсан'}, {class: 'form-control selectpicker', "data-live-search": true} %>
       </div>
       <div class="col-md-2 search text-right">
         <%= submit_tag t('controls.button.searching'), :class => 'btn-sm blck-btn pull-left' %>

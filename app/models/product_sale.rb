@@ -333,7 +333,7 @@ class ProductSale < ApplicationRecord
     end
   end
 
-  def salesman
+  def travel_salesman_name
     if salesman_travel.present?
       salesman_travel.salesman.name
     else

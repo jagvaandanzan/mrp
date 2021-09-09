@@ -75,7 +75,7 @@
                   <td class="va-mid"><%= p.approved_date.present? ? p.approved_date.strftime('%F %R') : "" %></td>
                   <td class="va-mid"><%= p.approved_operator.present? ? p.approved_operator.name : "" %></td>
                   <td class="va-mid"><%= p.status_name %></td>
-                  <td class="va-mid"><%= p.salesman%></td>
+                  <td class="va-mid"><%= p.travel_salesman_name%></td>
                   <td style="display: none">
                     <div class="btn-group">
                       <%= link_to edit_operators_product_sale_path(p), class: 'no-underline' do %>
