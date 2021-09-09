@@ -4,8 +4,10 @@ class ApplicationController < ActionController::Base
   def current_ability
     @current_ability ||= if current_user
                            AbilityUser.new(current_user)
+                         elsif current_operator
+                           AbilityOperator.new(current_operator)
                          else
-                           current_operator ? AbilityOperator.new(current_operator) : AbilityAdmin.new(current_admin_user)
+                           current_logistic ? AbilityLogistic.new(current_logistic) : AbilityAdmin.new(current_admin_user)
                          end
   end
 

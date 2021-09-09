@@ -6,4 +6,5 @@ class UserPermissionRel < ApplicationRecord
 
   validates :user_permission_id, :role, presence: true
 
+  validates_uniqueness_of :user_permission_id, scope: [:user_id]
 end

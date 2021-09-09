@@ -1,0 +1,21 @@
+<tr class="nested-fields">
+  <td>
+    <%= field_errors f.object, :logistic_permission_id %>
+    <%= f.collection_select :logistic_permission_id, LogisticPermission.by_queue, :id, :description,
+                            {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+  </td>
+  <td>
+    <%= field_errors f.object, :role %>
+    <%= f.select :role, LogisticPermissionRel.roles.keys.map {|k| [LogisticPermissionRel.roles_i18n[k], k]}, {:prompt => t('controls.select.none')}, {class: 'form-control selectpicker'} %>
+  </td>
+  <td class="va-mid remove">
+    <%= link_to_remove_association f, data: {confirm: t('are_you_sure')} do %>
+      <%= nested_remove_btn %>
+    <% end %>
+  </td>
+</tr>
+<script>
+    $(document).ready(function () {
+        $('.selectpicker').selectpicker('refresh');
+    })
+</script>

@@ -43,6 +43,31 @@
               <%= f.text_field :phone, class: 'form-control', placeholder: t('activerecord.attributes.logistic.phone') %>
             </div>
           </div>
+          <div class="form-group">
+            <%= f.label :logistic_permission_rels, class: 'col-sm-3 control-label' %>
+
+            <div class="col-sm-9 cocoon-nested-form">
+              <div class="<%= get_error_class(@logistic, :logistic_permission_rels) %>">
+                <%= field_errors(@logistic, :logistic_permission_rels) %>
+                <table class="table table-bordered" id="tb_logistic_permission_rels">
+                  <tr>
+                    <th width="45%"><%= t('activerecord.attributes.logistic_permission_rel.logistic_permission_id') %></th>
+                    <th width="45%"><%= t('activerecord.attributes.logistic_permission_rel.role') %></th>
+                    <th width="50px"></th>
+                  </tr>
+                  <%= f.fields_for :logistic_permission_rels do |rel| %>
+                    <%= render 'logistic_permission_rel_fields', f: rel %>
+                  <% end %>
+                </table>
+              </div>
+              <div class="links item_append">
+                <%= link_to_add_association f, :logistic_permission_rels, data: {association_insertion_node: '#tb_logistic_permission_rels', association_insertion_method: :append} do %>
+                  <%= nested_add_btn %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
 
           <div class="action-buttons">
             <%= f.submit t('controls.button.save'), class: 'btn btn-warning' %>

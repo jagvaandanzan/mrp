@@ -1,4 +1,5 @@
 class Logistics::ShippingUbsController < Logistics::BaseController
+  load_and_authorize_resource
   before_action :set_shipping_ub, only: [:show, :edit, :update, :destroy]
 
   def index

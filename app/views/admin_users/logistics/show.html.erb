@@ -35,6 +35,27 @@
           <div class="align-left"><%= t('activerecord.attributes.logistic.phone') %> :</div>
           <div class="col-data"><%= @logistic.phone.presence || :'---' %></div>
         </div>
+        <div class="m30">
+          <div class="align-left"><%= t('activerecord.attributes.logistic_permission_rel.logistic_permission_id') %> :</div>
+          <div class="col-data">
+            <table class="table table-bordered">
+              <thead>
+              <tr>
+                <th><%= t('activerecord.attributes.logistic_permission_rel.logistic_permission_id') %></th>
+                <th><%= t('activerecord.attributes.logistic_permission_rel.role') %></th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @logistic.logistic_permission_rels.each do |r| %>
+                <tr>
+                  <td class="va-mid"><%= r.logistic_permission.description %></td>
+                  <td class="va-mid"><%= r.role_i18n %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   <% end %>

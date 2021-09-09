@@ -22,7 +22,7 @@ class Operator < ApplicationRecord
   enum gender: {male: 0, female: 1}
 
   validates :surname, :name, :phone, :order_sys_name, presence: true, length: {maximum: 255}
-  validates :gender, presence: true
+  validates :gender, :operator_permission_rels, presence: true
   validates :email, uniqueness: {conditions: -> {with_deleted}}
 
   scope :search, ->(search_name, search_email, search_phone) {

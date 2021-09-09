@@ -4,6 +4,8 @@ class Logistic < ApplicationRecord
   # :confirmable, :lockable, :timeoutable,:registerable, and :omniauthable
   devise :database_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable
+  has_many :logistic_permission_rels, dependent: :destroy
+  accepts_nested_attributes_for :logistic_permission_rels, allow_destroy: true
 
   after_destroy :destroy_email
   before_validation :generate_password, on: :create
@@ -12,7 +14,7 @@ class Logistic < ApplicationRecord
   enum gender: {male: 0, female: 1}
 
   validates :surname, :name, :phone, presence: true, length: {maximum: 255}
-  validates :gender, presence: true
+  validates :gender, :logistic_permission_rels, presence: true
   validates :email, uniqueness: {conditions: -> {with_deleted}}
 
   scope :search, ->(search_name, search_email, search_phone) {

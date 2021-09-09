@@ -9,9 +9,11 @@
 
   <div class="action-buttons">
     <% if is_logistic %>
-      <%= link_to t('controls.button.edit'), edit_logistics_shipping_ub_path(@shipping_ub), class: 'btn btn-info' %>
+      <% if can? :manage, ShippingUb %>
+        <%= link_to t('controls.button.edit'), edit_logistics_shipping_ub_path(@shipping_ub), class: 'btn btn-info' %>
+      <% end %>
       <%= link_to t('titles.back_to_list'), logistics_shipping_ubs_path(page: cookies[:shipping_ub_page_number]), {class: "btn blck-btn"} %>
-    <% else %>
+    <% elsif can? :manage, ShippingUb %>
       <%= link_to t('titles.product_incomes'), new_users_product_income_path(id: @shipping_ub.id), class: 'btn btn-warning' %>
     <% end %>
   </div>

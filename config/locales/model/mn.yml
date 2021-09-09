@@ -127,9 +127,10 @@ mn:
     operator_permission_rel:
       role:
         is_read: Харах
-        is_create: Үүсгэх
-        is_update: Өөрчлөх
-        is_destroy: Устгах
+        is_manage: Засах
+    logistic_permission_rel:
+      role:
+        is_read: Харах
         is_manage: Засах
     salesman:
       gender:
@@ -272,6 +273,7 @@ mn:
         surname: Овог
         gender: Хүйс
         phone: Утас
+        logistic_permission_rels: Хандах эрхүүд
       location:
         micro_region: Хороолол
         town: Хотхон
@@ -659,6 +661,9 @@ mn:
         role: Үйлдэл
       operator_permission_rel:
         operator_permission_id: Хандах эрх
+        role: Үйлдэл
+      logistic_permission_rel:
+        logistic_permission_id: Хандах эрх
         role: Үйлдэл
       salesman:
         avatar: Зураг

@@ -61,6 +61,7 @@ class AdminUsers::LogisticsController < AdminUsers::BaseController
   end
 
   def logistic_params
-    params.require(:logistic).permit(:surname, :name, :gender, :email, :phone)
+    params.require(:logistic).permit(:surname, :name, :gender, :email, :phone,
+                                     logistic_permission_rels_attributes: [:id, :logistic_permission_id, :role, :_destroy])
   end
 end

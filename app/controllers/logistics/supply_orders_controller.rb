@@ -1,4 +1,5 @@
 class Logistics::SupplyOrdersController < Logistics::BaseController
+  authorize_resource class: false, only: [:index, :show, :edit, :update]
   before_action :set_supply_order_item, only: [:edit, :show, :update, :create_temp]
 
   def index

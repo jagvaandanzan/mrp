@@ -18,7 +18,7 @@
         </div>
         <div class="col-md-4 search">
           <%= submit_tag t('controls.button.searching') + " (" + @shipping_ubs.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
-          <% if is_logistic %>
+          <% if is_logistic && (can? :manage, ShippingUb) %>
             <%= link_to t('controls.button.create'), new_logistics_shipping_ub_path, class: 'btn btn-warning pull-right' %>
           <% end %>
         </div>
@@ -55,7 +55,7 @@
                   <td class="va-mid text-center"><%= shipping_ub.shipping_ub_features %></td>
                   <td class="va-mid text-center"><%= shipping_ub.cargo %></td>
                   <td class="va-mid text-center"><%= shipping_ub.ub_income_cargo %></td>
-                  <td class="va-mid"><%=  get_currency(shipping_ub.cargo_price, Const::CURRENCY[0], 3) %></td>
+                  <td class="va-mid"><%= get_currency(shipping_ub.cargo_price, Const::CURRENCY[0], 3) %></td>
                   <td class="va-mid text-center"><%= shipping_ub.s_type_i18n %></td>
                   <td class="va-mid text-center"><%= shipping_ub.description %></td>
                 </tr>

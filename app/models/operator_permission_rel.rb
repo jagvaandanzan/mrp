@@ -6,4 +6,6 @@ class OperatorPermissionRel < ApplicationRecord
 
   validates :operator_permission_id, :role, presence: true
 
+  validates_uniqueness_of :operator_permission_id, scope: [:operator_id]
+
 end

@@ -18,7 +18,9 @@
         </div>
         <div class="col-md-4 search">
           <%= submit_tag t('controls.button.searching') + " (" + @shipping_ers.total_count.to_s + ")", :class => 'btn blck-btn pull-left' %>
-          <%= link_to t('controls.button.create'), new_logistics_shipping_er_path(order_type: params[:order_type]), class: 'btn btn-warning pull-right' %>
+          <% if can? :manage, ShippingEr %>
+            <%= link_to t('controls.button.create'), new_logistics_shipping_er_path(order_type: params[:order_type]), class: 'btn btn-warning pull-right' %>
+          <% end %>
         </div>
       <% end %>
     </div>
