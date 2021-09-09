@@ -17,10 +17,13 @@ class ProductSaleCall < ApplicationRecord
   attr_accessor :is_web, :status_m, :status_sub, :temp_operator, :temp_salesman
 
   validates :phone, presence: true
-  validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
+  validates :phone, numericality: {greater_than_or_equal_to: 70000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
 
   with_options :if => Proc.new {|m| m.is_web.present?} do
     validates :status_id, presence: true
+  end
+
+  with_options :if => Proc.new {|m| m.is_web.present? && m.status_id != 43} do
     validates :product_call_items, length: {minimum: 1}
   end
 

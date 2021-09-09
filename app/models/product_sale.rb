@@ -39,7 +39,7 @@ class ProductSale < ApplicationRecord
     validates :phone, :location_id, :money, presence: true
     validates :code, uniqueness: true
     validate :feature_rel_should_be_uniq
-    validates :phone, numericality: {greater_than_or_equal_to: 80000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
+    validates :phone, numericality: {greater_than_or_equal_to: 70000000, less_than_or_equal_to: 99999999, only_integer: true, message: :invalid}
   end
 
   with_options :if => Proc.new {|m| m.country} do
