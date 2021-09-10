@@ -454,15 +454,22 @@ class ProductSale < ApplicationRecord
                                                                 status: status,
                                                                 note: status_note)
       # set_status
-      if status.present? && status.next.present?
-        next_status = status.next_status
-        if next_status.user_type == "auto"
-          self.status = next_status
-        elsif next_status.alias == "call_connect_again" || next_status.alias == "call_no_balance" || next_status.alias == "call_address_changed"
-          sale_call.temp_operator = operator
-          sale_call.temp_salesman = salesman
-          sale_call.status = next_status
-          sale_call.save(validate: false)
+      if status.present?
+        if status.next.present?
+          next_status = status.next_status
+          if next_status.user_type == "auto"
+            self.status = next_status
+          elsif next_status.alias == "call_connect_again" || next_status.alias == "call_no_balance" || next_status.alias == "call_address_changed"
+            sale_call.temp_operator = operator
+            sale_call.temp_salesman = salesman
+            sale_call.status = next_status
+            sale_call.save(validate: false)
+          end
+        end
+
+        # Амжилтгүй болчихоод дахиад баталгаажсан болговол дахин хүргэнэ гэсэн үг
+        if status.alias == "oper_confirmed" && salesman_travel_route.present?
+          self.salesman_travel_route.update_column(:delivery_at, nil)
         end
       end
     end
