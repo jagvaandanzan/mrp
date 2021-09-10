@@ -61,7 +61,13 @@ class ProductSaleCall < ApplicationRecord
   }
 
   scope :search, ->(start, finish, phone, code_name, status, status_ids, reg_oper_id, cnf_oper_id) {
-    items = order("product_sale_calls.created_at": :desc)
+    items = if status.present?
+              order("product_sale_calls.created_at": :desc)
+            else
+              joins(:status)
+                  .order("product_sale_statuses.queue": :asc)
+                  .order("product_sale_calls.created_at": :desc)
+            end
     items = items.where('phone LIKE :value', value: "%#{phone}%") if phone.present?
     items = items.where(status_id: status) if status.present?
     items = items.where("status_id IN (?)", status_ids) unless status_ids.nil?
