@@ -1,5 +1,5 @@
 class Logistics::ShippingErsController < Logistics::BaseController
-  load_and_authorize_resource
+  load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update, :destroy]
   before_action :set_shipping_er, only: [:show, :edit, :update, :destroy]
 
   def index
