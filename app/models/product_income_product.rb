@@ -66,6 +66,11 @@ class ProductIncomeProduct < ApplicationRecord
   scope :by_supply_order, ->(supply_order_id) {
     where(product_supply_order_id: supply_order_id)
   }
+  scope :by_code, ->(code){
+    joins(:product_supply_order)
+      .joins(:supply_features)
+      .where("product_supply_orders.code = ?", code) if code.present?
+  }
 
   def sum_not_match
     product_income_items.not_match.count

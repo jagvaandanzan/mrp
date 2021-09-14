@@ -32,6 +32,7 @@
                 <th class="va-mid"><%= t('activerecord.attributes.product_supply_feature.feature_item_id') %></th>
                 <th class="va-mid text-center"><%= t('activerecord.attributes.product_supply_order_item.total_quantity') %></th>
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order_item.purchase_quantity') %></th>
+                <th class="va-mid text-center bg-1">Үлдсэн бараа</th>
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order.ordered_date') %></th>
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order_item.cost') %></th>
                 <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.product_supply_feature.price') %></th>
@@ -44,10 +45,11 @@
                 <th colspan="6">Нийт</th>
                 <th class="va-mid text-center"><%= ProductSupplyFeature.by_order_item(ids).pluck(:quantity).sum %></th>
                 <th class="va-mid text-center"><%= ProductSupplyFeature.by_order_item(ids).pluck(:quantity_lo).sum %></th>
+                <th class="va-mid text-center"><%= %></th>
                 <th class="va-mid"> </th>
                 <th class="va-mid"><%= sum_not_er_cost %></th>
                 <th><%=  %></th>
-                <th class="va-mid"><%=ProductSupplyFeature.by_order_item(ids).pluck(:sum_price_lo).sum %></th>
+                <th class="va-mid"><%=ProductSupplyFeature.by_feature_id(@pur_products_x.pluck("product_supply_features.id")).pluck(:sum_price_lo).sum(&:to_f) %></th>
               </tr>
               <%@pur_products.each do |i| %>
                 <% order_items = i.order_item %>
@@ -97,6 +99,10 @@
                   <td class="va-mid text-center">
                     <%= total_quantity_lo > 0 ? total_quantity_lo : '' %>
                   </td>
+                  <% remainder = total_quantity_lo - ShippingErFeature.by_supply_feature_ids(feature_ids).pluck(:quantity).sum(&:to_i) %>
+                  <td class="va-mid text-center">
+                    <%= remainder %>
+                  </td>
                   <td class="va-mid">
                     <%= order_items.present? ? order_items.purchase_date : '' %>
                   </td>
@@ -107,7 +113,7 @@
                     <%= get_currency(i.price, Const::CURRENCY[0], 3) %>
                   </td>
                   <td>
-                    <%= get_currency(total_price, Const::CURRENCY[0], 3) %>
+                    <%= get_currency(i.price * remainder, Const::CURRENCY[0], 3) %>
                   </td>
                   <td class="va-mid text-center">
                     <%= order_items.present? ? order_items.note_lo : '' %>

@@ -74,6 +74,7 @@ t('activerecord.attributes.shipping_er.date'),
 t('activerecord.attributes.shipping_ub_product.quantity'),
 t('activerecord.attributes.shipping_ub_product.cargo'),
 t('activerecord.attributes.shipping_ub_product.cost'),
+'Үлдсэн бараа',
 t('activerecord.attributes.product_supply_feature.sum_price'),
 t('activerecord.attributes.shipping_ub.date'),
 ],:style=>title
@@ -96,6 +97,7 @@ ShippingErProduct.by_order_id(@ub_products_x.pluck("product_supply_order_items.p
 ShippingUbFeature.by_order_item(pur_ids).sum("shipping_ub_features.quantity"),
 ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cargo").sum,
 ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cost").sum,
+'',
 ProductSupplyFeature.by_order_item(pur_ids).pluck(:sum_price_lo).sum,
 ''
 ],:style=>title
@@ -122,6 +124,7 @@ code = 0
                   total_quantity += supply_feature.quantity if supply_feature.quantity.present?
                   total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
                   total_price += supply_feature.sum_price_lo
+                  remainder = ProductIncomeItem.by_feature_ids(supply_feature.id).pluck(:quantity).sum(&:to_i)
                   count += 1
                   var = i.code
                   sheet.add_row [
@@ -138,6 +141,7 @@ code = 0
                    supply_feature.shipping_ub_features.quantity(supply_feature.id),
                    i.code == code ? '' : cargoUB,
                    i.code == code ? '' : costsUB,
+                   supply_feature.shipping_ub_features.quantity(supply_feature.id) - remainder,
                    supply_feature.sum_price_lo,
                    dateUB
                    ],style:[default,default,default,default,default,default,default,count > 1 ? i.code == var ? none : below : below,count > 1 ? i.code == var ? none : below : below,default,default,count > 1 ? i.code == var ? none : below : below,count > 1 ? i.code == var ? none : below : below,default,default,default]
