@@ -24,25 +24,48 @@ class Users::SupplyCalculationsController < Users::BaseController
     @by_start = params[:by_start].presence || month_1.strftime("%Y/%m/%d")
     @by_end = params[:by_end].presence || (month_1 + 1.month).strftime("%Y/%m/%d")
     @by_code = params[:by_code].presence
-    @pur_products_x = ProductSupplyFeature.by_date(@by_start, @by_end).purchased_er
-    @ub_products_x = ProductSupplyFeature.by_date(@by_start, @by_end).ship_ub
-    @er_products_x = ProductSupplyFeature.by_date(@by_start, @by_end).received_er
-    @in_ub_x = ProductSupplyFeature.by_date(@by_start, @by_end).in_ub
-    @income_products_n = ProductIncomeProduct.in_ub(@by_start, @by_end)
-                                           .by_calc_nil("true")
-                                           .group("product_income_products.id")
-                                           .date_desc
-                                           .page(params[:page])
-    @income_products_c = ProductIncomeProduct.in_ub(@by_start, @by_end)
-                                             .by_calc_nil("false")
-                                             .group("product_income_products.id")
-                                             .date_desc
-                                             .page(params[:page])
-    @income_products = ProductIncomeProduct.in_ub(@by_start, @by_end)
-                                           .by_calc_nil(@by_nil)
-                                           .group("product_income_products.id")
-                                           .date_desc
-                                           .page(params[:page])
+               if @by_code.present?
+                 @pur_products_x = ProductSupplyFeature.purchased_er.by_code(@by_code)
+                 @ub_products_x = ProductSupplyFeature.ship_ub.by_code(@by_code)
+                 @er_products_x = ProductSupplyFeature.received_er.by_code(@by_code)
+                 @in_ub_x = ProductSupplyFeature.in_ub.by_code(@by_code)
+                 @income_products_n = ProductIncomeProduct.by_code(@by_code)
+                                                          .by_calc_nil("true")
+                                                          .group("product_income_products.id")
+                                                          .date_desc
+                                                          .page(params[:page])
+                 @income_products_c = ProductIncomeProduct.by_code(@by_code)
+                                                          .by_calc_nil("false")
+                                                          .group("product_income_products.id")
+                                                          .date_desc
+                                                          .page(params[:page])
+                 @income_products = ProductIncomeProduct.by_code(@by_code)
+                                                        .by_calc_nil(@by_nil)
+                                                        .group("product_income_products.id")
+                                                        .date_desc
+                                                        .page(params[:page])
+               else
+                 @pur_products_x = ProductSupplyFeature.by_date(@by_start, @by_end).purchased_er
+                 @ub_products_x = ProductSupplyFeature.by_date(@by_start, @by_end).ship_ub
+                 @er_products_x = ProductSupplyFeature.by_date(@by_start, @by_end).received_er
+                 @in_ub_x = ProductSupplyFeature.by_date(@by_start, @by_end).in_ub
+                 @income_products_n = ProductIncomeProduct.in_ub(@by_start, @by_end)
+                                                          .by_calc_nil("true")
+                                                          .group("product_income_products.id")
+                                                          .date_desc
+                                                          .page(params[:page])
+                 @income_products_c = ProductIncomeProduct.in_ub(@by_start, @by_end)
+                                                          .by_calc_nil("false")
+                                                          .group("product_income_products.id")
+                                                          .date_desc
+                                                          .page(params[:page])
+                 @income_products = ProductIncomeProduct.in_ub(@by_start, @by_end)
+                                                        .by_calc_nil(@by_nil)
+                                                        .group("product_income_products.id")
+                                                        .date_desc
+                                                        .page(params[:page])
+               end
+
   end
 
   def purchased_er
