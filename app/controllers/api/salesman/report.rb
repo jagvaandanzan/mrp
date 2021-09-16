@@ -99,7 +99,7 @@ module API
                   q += item.bought_quantity
                   price += item.bought_price
                   bought_sum += item.bought_price
-                  sale_items << item
+                  sale_items.push item
                 }
               end
               # Буцаалт, солилт
