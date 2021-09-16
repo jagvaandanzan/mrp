@@ -56,4 +56,7 @@ class ShippingUbFeature < ApplicationRecord
               .where('? <= shipping_ub_features.created_at AND shipping_ub_features.created_at <= ?', start.to_time, finish.to_time + 1.days)
     items
   }
+  scope :by_supply_feature_ids, -> (ids) {
+    where("supply_feature_id IN (?)", ids)
+  }
 end

@@ -41,6 +41,7 @@
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.shipping_ub_product.quantity') %></th>
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.shipping_ub_product.cargo') %></th>
                 <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.shipping_ub_product.cost') %></th>
+                <th class="va-mid text-center bg-1">Үлдсэн бараа</th>
                 <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.product_supply_feature.sum_price') %></th>
                 <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.shipping_ub.date') %></th>
               </tr>
@@ -57,7 +58,8 @@
                 <th class="va-mid text-center"><%=ShippingUbFeature.by_order_item(pur_ids).sum("shipping_ub_features.quantity") %></th>
                 <th class="va-mid text-center"><%=ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cargo").sum%></th>
                 <th class="va-mid text-center"><%=ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cost").sum %></th>
-                <th class="va-mid text-center"><%=ProductSupplyFeature.by_order_item(pur_ids).pluck(:sum_price_lo).sum%></th>
+                <th></th>
+                <th class="va-mid text-center"><%=ProductSupplyFeature.by_feature_id(@ub_products_x.pluck("product_supply_features.id")).pluck(:sum_price_lo).sum(&:to_f)%></th>
                 <th></th>
               </tr>
               <%@ub_products.each do |i| %>
@@ -130,8 +132,12 @@
                   <td class="va-mid text-center">
                     <%= costs %>
                   </td>
+                  <% remainder = quantity - ProductIncomeItem.by_feature_ids(feature_ids).pluck(:quantity).sum(&:to_i) %>
+                  <td class="va-mid text-center">
+                    <%= remainder %>
+                  </td>
                   <td>
-                    <%= total_price.round(3) %>
+                    <%= i.price * remainder %>
                   </td>
 
                   <td class="va-mid text-center">

@@ -44,6 +44,7 @@ t('activerecord.attributes.product_supply_order.product_name'),
 t('activerecord.attributes.product_supply_feature.feature_item_id'),
 t('activerecord.attributes.product_supply_order_item.total_quantity'),
 t('activerecord.attributes.product_supply_order_item.purchase_quantity'),
+'Үлдсэн бараа',
 t('activerecord.attributes.product_supply_order.ordered_date'),
 t('activerecord.attributes.product_supply_order_item.cost'),
 t('activerecord.attributes.product_supply_feature.price'),
@@ -61,6 +62,7 @@ t('activerecord.attributes.product_supply_order_item.cost'),
 t('activerecord.attributes.product_supply_feature.price'),
 ProductSupplyFeature.by_order_item(ids).pluck(:quantity).sum,
 ProductSupplyFeature.by_order_item(ids).pluck(:quantity_lo).sum,
+'',
 '',
 ProductSupplyFeature.by_date(@by_start, @by_end).not_in_er_cost,
 '',
@@ -90,6 +92,7 @@ code = 0
                            total_quantity += supply_feature.quantity if supply_feature.quantity.present?
                            total_quantity_lo += supply_feature.quantity_lo if supply_feature.quantity_lo.present?
                            total_price += supply_feature.sum_price_lo
+                           remainder = ShippingErFeature.by_supply_feature_ids(supply_feature.id).pluck(:quantity).sum(&:to_i)
                            var = i.code
                             count += 1
                             sheet.add_row [
@@ -100,12 +103,13 @@ code = 0
                             supply_feature.feature_item.name,
                             supply_feature.quantity,
                             supply_feature.quantity_lo,
+                            supply_feature.quantity_lo - remainder,
                             order_items.present? ? order_items.purchase_date : '',
                             order_items.present? ? i.code == code ? '' : order_items.cost : '',
                             i.price,
                             supply_feature.sum_price_lo,
                             order_items.present? ? order_items.note_lo : ''
-                            ],style:[default,default,default,default,default,default,default,default, count > 1 ? i.code == var ? none : below : below,default,default,default]
+                            ],style:[default,default,default,default,default,default,default,default,default, count > 1 ? i.code == var ? none : below : below,default,default,default]
                             item = order_items.supply_features
                             code = i.code
                          end

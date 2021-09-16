@@ -32,6 +32,7 @@
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.product_supply_order_item.purchase_quantity') %></th>
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.shipping_er_feature.quantity') %></th>
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.shipping_er_product.cargo') %></th>
+                <th class="va-mid text-center bg-1">Үлдсэн бараа</th>
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.shipping_er.date') %></th>
                 <th class="va-mid text-center bg-1"><%= t('activerecord.attributes.shipping_er.cost') %></th>
                 <th class="va-mid text-center bg-2"><%= t('activerecord.attributes.product_supply_feature.price') %></th>
@@ -49,10 +50,11 @@
                 <th class="va-mid text-center"><%=ProductSupplyFeature.by_order_item(pur_ids).sum("product_supply_features.quantity_lo")%></th>
                 <th class="va-mid text-center"><%= ShippingErFeature.by_order_item(pur_ids).sum("shipping_er_features.quantity") %></th>
                 <th class="va-mid text-center"><%=@er_products_x.group("shipping_er_products.id").pluck("shipping_er_products.cargo").sum%></th>
+                <th class="va-mid text-center"><%= %></th>
                 <th></th>
                 <th class="va-mid text-center"><%=ShippingErProduct.by_order_id(order_ids).sum(:cost)%></th>
                 <th><%= %></th>
-                <th><%=ProductSupplyFeature.by_order_item(pur_ids).pluck(:sum_price_lo).sum%></th>
+                <th><%=ProductSupplyFeature.by_feature_id(@er_products_x.pluck("product_supply_features.id")).pluck(:sum_price_lo).sum(&:to_f)%></th>
                 <th></th>
               </tr>
               <%@er_products.order(code: :asc).each do |i| %>
@@ -108,6 +110,10 @@
                   <td class="va-mid text-center bg-2">
                     <%= cargo %>
                   </td>
+                  <% remainder = quantity - ShippingUbFeature.by_supply_feature_ids(feature_ids).pluck(:quantity).sum(&:to_i) %>
+                  <td class="va-mid text-center">
+                    <%= remainder %>
+                  </td>
                   <td class="va-mid bg-2">
                     <%= date %>
                     <% if cost_text.present? %>
@@ -121,7 +127,7 @@
                     <%= i.price %>
                   </td>
                   <td>
-                    <%= total_price %>
+                    <%= i.price * remainder %>
                   </td>
                   <td class="va-mid text-center">
                     <%= order_items.present? ? order_items.note_lo : '' %>
