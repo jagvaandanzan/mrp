@@ -18,18 +18,20 @@ class Users::ProductReportsController < Users::BaseController
       @headers = @headers.reverse
     end
 
-    @feature_items = ProductFeatureItem.with_deleted
-                         .join_products
-                         .join_balances
-                         .s_by_code(@code)
-                         .s_by_name(@name)
-                         .by_customer(@customer_id)
-                         .by_category(@category_id)
-                         .by_balance(@balance)
-                         .by_balance_date(@by_start.to_date, @by_end.to_date)
-                         .by_salesman(@salesman_id)
-                         .order_is_feature
-                         .page(params[:page])
+    feature_items = ProductFeatureItem
+                        .join_products
+                        .join_balances
+                        .s_by_code(@code)
+                        .s_by_name(@name)
+                        .by_customer(@customer_id)
+                        .by_category(@category_id)
+                        .by_balance(@balance)
+                        .by_balance_date(@by_start.to_date, @by_end.to_date)
+                        .by_salesman(@salesman_id)
+                        .order_is_feature
+    @feature_items = feature_items.page(params[:page])
+    all_c = feature_items.count.count
+    @total_page = (all_c / 25) + (all_c % 25 > 0 ? 1 : 0)
     cookies[:product_track_page_number] = params[:page]
   end
 
