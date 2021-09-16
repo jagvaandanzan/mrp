@@ -90,7 +90,7 @@ module API
             acc_sum = 0 #Дансаар
             cash_sum = 0 #Бэлнээр
             bought_sum = 0
-            sale_items = []
+            items = []
             product_sales.each do |product_sale|
               sale_items = product_sale.product_sale_items.not_nil_bought_quantity
               acc_sum += product_sale.paid if product_sale.paid.present?
@@ -99,7 +99,7 @@ module API
                   q += item.bought_quantity
                   price += item.bought_price
                   bought_sum += item.bought_price
-                  sale_items.push item
+                  items << item
                 }
               end
               # Буцаалт, солилт
@@ -137,7 +137,7 @@ module API
             # logger.info("Бэлнээр: #{cash_sum}")
             # logger.info("ТҮГЭЭГЧЭЭС АВАХ БЭЛЭН МӨНГӨ: #{cash_sum - back_sum}")
 
-            present :sale_items, sale_items, with: API::SALESMAN::Entities::ReportCash
+            present :sale_items, items, with: API::SALESMAN::Entities::ReportCash
             present :quantity, q
             present :price, price
             present :back_sum, back_sum
