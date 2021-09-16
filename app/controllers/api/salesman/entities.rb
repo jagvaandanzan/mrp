@@ -58,11 +58,7 @@ module API
       end
 
       class ReportCash < Grape::Entity
-        expose :product_full_name, :phone, :price, :bought_quantity
-      end
-
-      class ReportMoney < Grape::Entity
-        expose :paid, :bonus, :back_money
+        expose :sale_type, :product_code, :product_name, :product_feature, :phone, :bought_quantity, :bought_price,
       end
 
       class TravelRouteDaily < Grape::Entity

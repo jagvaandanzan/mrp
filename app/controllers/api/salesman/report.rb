@@ -75,16 +75,74 @@ module API
         resource :cash do
           desc "POST report/cash"
           params do
-            requires :start_time, type: DateTime
-            requires :end_time, type: DateTime
+            requires :date, type: DateTime
           end
           post do
 
-            sale_items = ProductSaleItem.report_sale_delivered(current_salesman.id, params[:start_time], params[:end_time])
-            sales = ProductSale.report_sale_delivered(current_salesman.id, params[:start_time], params[:end_time])
+            product_sales = ProductSale.joins(:salesman_travel)
+                                .where("salesman_travels.salesman_id = ?", current_salesman.id)
+                                .where('salesman_travels.delivery_at >= ?', params[:date])
+                                .where('salesman_travels.delivery_at < ?', params[:date] + 1.days)
+                                .where('product_sales.status_id >= ? AND product_sales.status_id <= ? ', 12, 14)
+            q = 0 # Нийт тоо ширхэг
+            price = 0 #Нийт дүн
+            back_sum = 0 #Буцаалт
+            acc_sum = 0 #Дансаар
+            cash_sum = 0 #Бэлнээр
+            bought_sum = 0
+            sale_items = []
+            product_sales.each do |product_sale|
+              sale_items = product_sale.product_sale_items.not_nil_bought_quantity
+              acc_sum += product_sale.paid if product_sale.paid.present?
+              if sale_items.present?
+                sale_items.each {|item|
+                  q += item.bought_quantity
+                  price += item.bought_price
+                  bought_sum += item.bought_price
+                  sale_items << item
+                }
+              end
+              # Буцаалт, солилт
+              if product_sale.parent_id.present?
+                b_price = product_sale.return_price
+                if bought_sum == 0 # Хэрэв буцаалт бол
+                  back_sum += b_price
+                else # Солилт
+                  p = bought_sum - b_price - (product_sale.paid.presence || 0)
+                  if p < 0
+                    p *= -1
+                    back_sum += p
+                  else # Хэрэглэгчийн төлөх мөнгө үлдсэн бол
+                    cash_sum += p
+                  end
+                end
+              else
+                p = product_sale.paid.present? ? bought_sum - product_sale.paid : bought_sum
+                cash_sum += p
+              end
 
-            present :sales, sales.present? ? sales.first : nil, with: API::SALESMAN::Entities::ReportMoney
+              bought_sum = 0
+            end
+
+            sale_directs = ProductSaleDirect.by_salesman_id(23)
+                               .date_between(date)
+            p = sale_directs.sum(:sum_price)
+            q += sale_directs.sum(:quantity)
+            price += p
+            cash_sum += p
+
+            # logger.info("Нийт: #{price}")
+            # logger.info("Буцаалт: #{back_sum}")
+            # logger.info("Дансаар: #{acc_sum}")
+            # logger.info("Бэлнээр: #{cash_sum}")
+            # logger.info("ТҮГЭЭГЧЭЭС АВАХ БЭЛЭН МӨНГӨ: #{cash_sum - back_sum}")
+
             present :sale_items, sale_items, with: API::SALESMAN::Entities::ReportCash
+            present :quantity, q
+            present :price, price
+            present :back_sum, back_sum
+            present :acc_sum, acc_sum
+            present :cash_sum, cash_sum
           end
         end
 
@@ -92,3 +150,15 @@ module API
     end
   end
 end
+
+# class ReportSaleItem
+#
+#   attr_accessor :sale_type, :product_code, :product_name, :product_feature, :phone, :bought_quantity, :bought_price,
+#
+#   def initialize(attributes = {})
+#     attributes.each do |name, value|
+#       send("#{name}=", value)
+#     end
+#   end
+#
+# end

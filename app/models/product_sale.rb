@@ -135,16 +135,7 @@ class ProductSale < ApplicationRecord
         .sum(:paid)
 
   }
-  scope :report_sale_delivered, ->(salesman_id, start_time, end_time) {
-    select("SUM(product_sales.paid) as paid, SUM(product_sales.bonus) as bonus, SUM(product_sales.back_money) as back_money")
-        .joins(:status)
-        .left_joins(:salesman_travel)
-        .where("salesman_travels.salesman_id = ?", salesman_id)
-        .where('salesman_travels.delivered_at IS NOT ?', nil)
-        .where('salesman_travels.delivered_at >= ?', start_time)
-        .where('salesman_travels.delivered_at < ?', end_time + 1.days)
-        .where('product_sale_statuses.alias = ?', 'sals_delivered')
-  }
+
   scope :report_excel, ->(start_date, end_date, salesman_id, operator_id, product_code, customer_id, order_0, order_1, order_2, order_3, status_ids) {
     items = where("product_sales.created_at >= ?", start_date.to_date)
                 .where("product_sales.created_at <= ?", end_date.to_date)

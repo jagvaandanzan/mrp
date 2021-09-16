@@ -46,16 +46,6 @@ class ProductSaleItem < ApplicationRecord
         .where.not('product_sale_statuses.alias = ?', 'oper_confirmed')
   }
 
-  scope :report_sale_delivered, ->(salesman_id, start_time, end_time) {
-    left_joins(:salesman_travel_route)
-        .left_joins(:salesman_travel)
-        .where("salesman_travels.salesman_id = ?", salesman_id)
-        .where('salesman_travel_routes.delivered_at IS NOT ?', nil)
-        .where('salesman_travel_routes.delivered_at >= ?', start_time)
-        .where('salesman_travel_routes.delivered_at < ?', end_time + 1.days)
-        .where('product_sale_items.bought_quantity IS NOT ?', nil)
-  }
-
   scope :count_item_quantity, ->(travel_id) {
     joins(:salesman_travel)
         .where("salesman_travels.id = ?", travel_id)
@@ -133,6 +123,10 @@ class ProductSaleItem < ApplicationRecord
 
   def back_request
     salesman_returns.count > 0
+  end
+
+  def sale_type
+    product_sale.parent_id.present? ? product_sale.parent.status.name : 'Захиалга'
   end
 
   def add_bonus
