@@ -18,7 +18,8 @@ class Users::ProductReportsController < Users::BaseController
       @headers = @headers.reverse
     end
 
-    @feature_items = ProductFeatureItem.join_products
+    @feature_items = ProductFeatureItem.with_deleted
+                         .join_products
                          .join_balances
                          .s_by_code(@code)
                          .s_by_name(@name)
