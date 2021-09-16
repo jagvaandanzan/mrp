@@ -83,7 +83,11 @@ class SalesmanReturn < ApplicationRecord
   end
 
   def user_sign
-    user.name
+    if user.present?
+      user.name
+    else
+      ""
+    end
   end
 
   def desk
