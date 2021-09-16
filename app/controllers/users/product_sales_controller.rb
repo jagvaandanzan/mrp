@@ -8,7 +8,7 @@ class Users::ProductSalesController < Users::BaseController
     @send_tax = params[:send_tax]
 
     @product_sales = ProductSale.by_tax
-                         .search(@product_name, @start, @finish, @phone, params[:status_id])
+                         .search(@product_name, @start, @finish, @phone, params[:status_id], params[:salesman_id])
                          .send_tax(@send_tax)
                          .page(params[:page])
                          .per(15)
