@@ -156,18 +156,6 @@ class ProductSaleItem < ApplicationRecord
     end
   end
 
-  def as_mobile
-    {
-        sale_type: sale_type,
-        product_code: product_code,
-        product_name: product_name,
-        product_feature: product_feature,
-        phone: phone,
-        bought_quantity: bought_quantity,
-        bought_price: bought_price
-    }
-  end
-
   private
 
   def set_product_balance

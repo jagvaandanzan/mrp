@@ -137,18 +137,18 @@ module API
             # logger.info("Бэлнээр: #{cash_sum}")
             # logger.info("ТҮГЭЭГЧЭЭС АВАХ БЭЛЭН МӨНГӨ: #{cash_sum - back_sum}")
 
-            {cass: {sale_items: items.as_json,
+            {cass: {sale_items: items.as_json(:methods => [:sale_type, :product_code, :product_name, :product_feature, :phone], only: [:bought_quantity, :bought_price]),
                     quantity: q,
                     price: ApplicationController.helpers.get_currency_mn(price),
                     back_sum: ApplicationController.helpers.get_currency_mn(back_sum),
                     acc_sum: ApplicationController.helpers.get_currency_mn(acc_sum),
                     cash_sum: ApplicationController.helpers.get_currency_mn(cash_sum),
                     salesman: ApplicationController.helpers.get_currency_mn(cash_sum - back_sum)}}
-              # present :quantity, q
-              # present :price, price
-              # present :back_sum, back_sum
-              # present :acc_sum, acc_sum
-              # present :cash_sum, cash_sum
+            # present :quantity, q
+            # present :price, price
+            # present :back_sum, back_sum
+            # present :acc_sum, acc_sum
+            # present :cash_sum, cash_sum
           end
         end
 
