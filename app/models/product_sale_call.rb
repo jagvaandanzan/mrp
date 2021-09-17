@@ -86,7 +86,12 @@ class ProductSaleCall < ApplicationRecord
     if operator_id.present?
       if status.alias == "call_connect_again"
         product_sale_status_log = product_sale_status_logs.last
-        "#{status.name} (#{product_sale_status_log.salesman.present? ? product_sale_status_log.salesman.id_number : product_sale_status_log.operator.name})"
+        "#{status.name} (#{
+        if product_sale_status_log.present?
+          product_sale_status_log.salesman.present? ? product_sale_status_log.salesman.id_number : product_sale_status_log.operator.name
+        else
+          ''
+        end})"
       else
         if status.previous.present?
           "#{status.previous_status.name} -- #{status.name}"
