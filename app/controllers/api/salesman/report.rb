@@ -138,11 +138,12 @@ module API
             # logger.info("ТҮГЭЭГЧЭЭС АВАХ БЭЛЭН МӨНГӨ: #{cash_sum - back_sum}")
 
             present :sale_items, items, with: API::SALESMAN::Entities::ReportCash
-            present :quantity, q
-            present :price, price
-            present :back_sum, back_sum
-            present :acc_sum, acc_sum
-            present :cash_sum, cash_sum
+            present :cass, {quantity: q, price: price, back_sum: back_sum, acc_sum: acc_sum, cash_sum: cash_sum}
+              # present :quantity, q
+              # present :price, price
+              # present :back_sum, back_sum
+              # present :acc_sum, acc_sum
+              # present :cash_sum, cash_sum
           end
         end
 
