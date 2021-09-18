@@ -35,6 +35,15 @@ class ProductBalance < ApplicationRecord
         .sum(:quantity)
   }
 
+  scope :not_init, -> () {
+    where("income_item_id IS NOT ?", nil)
+        .or(where("sale_item_id IS NOT ?", nil))
+        .or(where("sale_direct_id IS NOT ?", nil))
+        .or(where("salesman_return_id IS NOT ?", nil))
+        .or(where("transfer_item_id IS NOT ?", nil))
+        .or(where("direct_sale_item_id IS NOT ?", nil))
+  }
+
   private
 
   def sync_web

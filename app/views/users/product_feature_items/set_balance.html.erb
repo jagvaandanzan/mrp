@@ -46,6 +46,7 @@
                 <th colspan="2"><%= t('activerecord.attributes.product_feature_item.p_6_8') %></th>
                 <th colspan="2"><%= t('activerecord.attributes.product_feature_item.p_9_') %></th>
                 <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product_feature_item.cost') %></th>
+                <th rowspan="2" class="va-mid">Анхны үлдэгдэл</th>
                 <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product.balance') %></th>
                 <th rowspan="2" class="va-mid"><%= t('activerecord.attributes.product_income_item.income_locations') %></th>
                 <th rowspan="2"></th>
@@ -199,6 +200,8 @@
 
         if (locations.length === 0) {
             alert("Агуулахын байршил оруулна уу!");
+        } else if (mrp.find('#init_bal').val().length === 0) {
+            alert("Анхны үлдэгдэл оруулна уу!");
         } else if (balance.length === 0) {
             alert("Үлдэгдэл оруулна уу!");
         } else if (mrp.find('#barcode').val().length === 0) {
@@ -262,6 +265,7 @@
                     "&p_6_8=" + mrp.find('#p_6_8').val() +
                     "&p_9_p=" + mrp.find('#p_9_p').val() +
                     "&p_9_=" + mrp.find('#p_9_').val() +
+                    "&init_bal=" + mrp.find('#init_bal').val() +
                     "&balance=" + mrp.find('#balance').val() +
                     "&cost=" + mrp.find('#cost').val() +
                     "&location_balance=" + mrp.find('#location_balance').val(),

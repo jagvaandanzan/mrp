@@ -164,7 +164,16 @@ class Users::ProductFeatureItemsController < Users::BaseController
     feature_item.p_6_8 = params[:p_6_8]
     feature_item.p_9_p = params[:p_9_p]
     feature_item.p_9_ = params[:p_9_]
-    feature_item.balance = params[:balance].to_i
+    feature_item.init_bal = params[:init_bal].to_i
+
+    if feature_item.product_balances.present? && feature_item.balance.present? && feature_item.balance > 0
+      not_init = feature_item.product_balances.not_init.sum(:quantity)
+      feature_item.balance = feature_item.init_bal + not_init
+    else
+      feature_item.balance = params[:balance].to_i
+    end
+
+
     feature_item.cost = params[:cost].to_i if params[:cost].present?
     feature_item.location_balances = params[:location_balance]
 

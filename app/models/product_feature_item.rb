@@ -339,7 +339,7 @@ class ProductFeatureItem < ApplicationRecord
         locs = lb.split('=')
         loc = locs[0].downcase
         if loc.length > 5
-          q = locs[1].to_i
+          q = lbs.length == 1 ? balance : locs[1].to_i
           if q > 0
             index_x = loc.index('x')
             index_y = loc.index('y')
