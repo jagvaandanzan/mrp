@@ -149,6 +149,10 @@ class Operators::ProductSalesController < Operators::BaseController
     if @product_sale.child.present? || !((can? :manage, :edit_product_sale) || !@product_sale.has_seen_stockkeeper)
       redirect_to action: :show, id: @product_sale.id
     else
+      if @product_sale.salesman_travel_id.present?
+        @product_sale.update_column(:salesman_travel_id, nil)
+        @product_sale.salesman_travel_route.destroy
+      end
       @product_sale.destroy!
       flash[:success] = t('alert.deleted_successfully')
       redirect_to action: 'index'
