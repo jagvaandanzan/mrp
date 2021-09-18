@@ -92,9 +92,9 @@ class SalesmanTravelRoute < ApplicationRecord
 
   def loc_name
     if location.station.present?
-      location.station.full_name
+      location.station.name_reverse
     else
-      location.full_name
+      location.name_reverse
     end
   end
 

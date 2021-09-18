@@ -134,8 +134,8 @@ module API
             }
 
             param = {product_id: product_id, balance: params['c2_qty'], items: items}.to_json
-            # Rails.logger.debug("itoms_balance_send=#{param}")
-            ApplicationController.helpers.api_request("product/balances", 'patch', param)
+            Rails.logger.debug("itoms_balance_send=#{param}")
+            # ApplicationController.helpers.api_request("product/balances", 'patch', param)
             {send: true}
           end
         end

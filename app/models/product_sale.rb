@@ -397,7 +397,11 @@ class ProductSale < ApplicationRecord
   private
 
   def send_to_channel
-    SalesmanTravelJob.perform_later("sale", self) if status.alias == "oper_confirmed"
+    if status.alias == "oper_confirmed"
+      # Хэрэв зассан тохиолдолд дахин хувиарлана
+      self.update_column(:salesman_travel_id, nil) if salesman_travel_id.present? && !salesman_travel.load_at.present? && !salesman_travel.sign_at.present?
+      SalesmanTravelJob.perform_later("sale", self)
+    end
   end
 
   def check_money

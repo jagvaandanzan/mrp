@@ -71,6 +71,14 @@ class Location < ApplicationRecord
     end
   end
 
+  def name_reverse
+    if name.present?
+      "#{name}, #{loc_khoroo.name}, #{loc_district.name}"
+    else
+      address_reverse
+    end
+  end
+
   def address
     s = "#{loc_district.name}, #{loc_khoroo.name}"
     s += ", #{micro_region}" if micro_region.present?
@@ -78,6 +86,18 @@ class Location < ApplicationRecord
     s += ", #{street}" if street.present?
     s += ", #{apartment}" if apartment.present?
     s += ", #{entrance}" if entrance.present?
+    s
+  end
+
+  def address_reverse
+    s = ""
+    s += ", #{entrance}" if entrance.present?
+    s += ", #{apartment}" if apartment.present?
+    s += ", #{street}" if street.present?
+    s += ", #{town}" if town.present?
+    s += ", #{micro_region}" if micro_region.present?
+    s += ", " if s.present?
+    s += "#{loc_khoroo.name}, #{loc_district.name}"
     s
   end
 

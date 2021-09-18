@@ -193,6 +193,60 @@
     }
 
     function update_feature(i, item_id) {
+        let mrp = $('#mpr_body #item-' + item_id);
+        const balance = mrp.find('#balance').val();
+        const locations = mrp.find('#location_balance').val();
+
+        if (locations.length === 0) {
+            alert("Агуулахын байршил оруулна уу!");
+        } else if (balance.length === 0) {
+            alert("Үлдэгдэл оруулна уу!");
+        } else if (mrp.find('#barcode').val().length === 0) {
+            alert("Баркод оруулна уу!");
+        } else if (mrp.find('#price').val().length === 0) {
+            alert("Зарах үнэ оруулна уу!");
+        } else {
+            let valid = true;
+            let quantity = 0;
+            const lbs = locations.split('#');
+            for (let c = 0; c < lbs.length; c++) {
+                const locs = lbs[c].split('=');
+                const loc = locs[0].toLowerCase();
+                if (loc.length > 5) {
+                    const q = parseInt(locs[1]);
+                    if (q > 0) {
+                        const index_x = loc.indexOf('x');
+                        const index_y = loc.indexOf('y');
+                        const index_z = loc.indexOf('z');
+                        if (index_x >= 0 && index_y >= 0 && index_z >= 0) {
+                            quantity += q;
+                            // const x = parseInt(loc.substring(index_x + 1, index_y));
+                            // const y = parseInt(loc.substring(index_y + 1, index_z));
+                            // const z = parseInt(loc.substring(index_z + 1, loc.length));
+                        }
+                    } else {
+                        valid = false;
+                    }
+                } else {
+                    valid = false;
+
+                }
+            }
+            if (valid) {
+                if (parseInt(balance) !== quantity) {
+                    alert("Үлдэгдэл байршилын тоотой таарахгүй байна!");
+                    valid = false;
+                }
+            } else {
+                alert("Агуулахын байршилийн формат буруу байна");
+            }
+            if (valid) {
+                update_feature1(i, item_id);
+            }
+        }
+    }
+
+    function update_feature1(i, item_id) {
         if (confirm("Анхны утга болж орно, Хадгалах уу?")) {
             let mrp = $('#mpr_body #item-' + item_id);
             i.addClass('none');

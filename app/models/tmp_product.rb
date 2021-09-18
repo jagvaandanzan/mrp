@@ -1,0 +1,2 @@
+class TmpProduct < ApplicationRecord
+end
