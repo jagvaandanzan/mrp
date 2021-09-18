@@ -166,7 +166,7 @@ class Users::ProductFeatureItemsController < Users::BaseController
     feature_item.p_9_ = params[:p_9_]
     feature_item.init_bal = params[:init_bal].to_i
 
-    if feature_item.product_balances.present? && feature_item.balance.present? && feature_item.balance > 0
+    if feature_item.product_balances.present? && feature_item.balance.present?
       not_init = feature_item.product_balances.not_init.sum(:quantity)
       feature_item.balance = feature_item.init_bal + not_init
     else
