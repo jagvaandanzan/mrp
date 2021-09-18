@@ -18,7 +18,7 @@
         <%= text_field_tag :product_name, @product_name, {class: 'form-control', placeholder: t('filters.by_product')} %>
       </div>
 
-      <div class="col-md-2 search">
+      <div class="col-md-1 search">
         <%= text_field_tag :phone, @phone, {class: 'form-control', placeholder: t('filters.by_phone')} %>
       </div>
       <div class="col-md-2 search">
@@ -31,13 +31,15 @@
         </div>
       </div>
       <div class="col-md-2 search">
+        <%= f.collection_select :cnf_oper_id, Operator.order_name, :id, :name, {:selected => @cnf_oper_id, :include_blank => 'Баталсан'}, {class: 'form-control selectpicker', "data-live-search": true} %>
+      </div>
+      <div class="col-md-2 search">
         <%= f.collection_select :salesman_id, Salesman.order_name, :id, :full_name, {:selected => @salesman_id, :include_blank => 'Жолооч'}, {class: 'form-control selectpicker', "data-live-search": true} %>
       </div>
 
-      <div class="col-md-2 search">
+      <div class="col-md-1 search">
         <%= submit_tag t('controls.button.searching'), :class => 'btn-sm blck-btn pull-left' %>
       </div>
-      <div class="col-md-2 search text-right"></div>
     <% end %>
   </div>
 

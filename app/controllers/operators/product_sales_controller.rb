@@ -11,12 +11,13 @@ class Operators::ProductSalesController < Operators::BaseController
     @start = params[:start]
     @finish = params[:finish]
     @salesman_id = params[:salesman_id]
+    @cnf_oper_id = params[:cnf_oper_id]
     cookies[:product_sale_page_number] = params[:page]
     status_alias = if @status_id.present?
                      s = ProductSaleStatus.find(@status_id)
                      s.alias
                    end
-    @product_sales = ProductSale.search(@product_name, @start, @finish, @phone, status_alias, @salesman_id).page(params[:page])
+    @product_sales = ProductSale.search(@product_name, @start, @finish, @phone, status_alias, @salesman_id, @cnf_oper_id).page(params[:page])
   end
 
   def new
