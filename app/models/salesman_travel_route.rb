@@ -94,7 +94,7 @@ class SalesmanTravelRoute < ApplicationRecord
     # if location.station.present?
     #   location.station.name_reverse
     # else
-      location.name_reverse
+    location.name_reverse
     # end
   end
 
@@ -139,6 +139,10 @@ class SalesmanTravelRoute < ApplicationRecord
 
   def status
     product_sale.status_name
+  end
+
+  def delivery_hour
+    product_sale.delivery_hour
   end
 
   def calculate_payable

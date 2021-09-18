@@ -129,6 +129,15 @@ class ProductSaleItem < ApplicationRecord
     product_sale.parent_id.present? ? product_sale.parent.status.name : 'Захиалга'
   end
 
+  def return_signed
+    if salesman_returns.present?
+      salesman_return = salesman_returns.first
+      salesman_return.sign_id.present?
+    else
+      false
+    end
+  end
+
   def add_bonus
     if bought_quantity.present?
       bonu = Bonu.by_phone(product_sale.phone)

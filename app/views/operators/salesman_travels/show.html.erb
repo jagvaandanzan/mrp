@@ -47,7 +47,7 @@
               <% @salesman_travel.salesman_travel_routes.each {|route| %>
                 <tr>
                   <td><%= route.queue %></td>
-                  <td><%= route.location.full_name %></td>
+                  <td><%= route.location.full_name %>, <%= route.product_sale.loc_note %></td>
                   <td><%= route.product_sale.delivery_hour %></td>
                   <td><%= route.product_sale.phone %></td>
                 </tr>

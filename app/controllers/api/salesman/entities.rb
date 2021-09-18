@@ -12,7 +12,7 @@ module API
 
       class SalesmanTravelRoutes < Grape::Entity
         expose :id, :queue, :distance, :duration, :wage, :load_at, :delivery_at, :delivered_at,
-               :delivery_time, :payable, :loc_name, :phone, :product_count, :return_count, :status, :latitude, :longitude
+               :delivery_time, :payable, :loc_name, :phone, :delivery_hour, :product_count, :return_count, :status, :latitude, :longitude
       end
 
       class ProductWarehouse < Grape::Entity
@@ -36,7 +36,7 @@ module API
       end
 
       class ProductSaleItemReturn < ProductSaleItemBarCode
-        expose :back_request
+        expose :back_request, :return_signed
       end
 
       class ProductSale < Grape::Entity
