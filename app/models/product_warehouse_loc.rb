@@ -69,7 +69,8 @@ class ProductWarehouseLoc < ApplicationRecord
   end
 
   def desk
-    location.name
+    "X0Y0Z0"
+    # location.name
   end
 
   def name

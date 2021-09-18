@@ -402,6 +402,11 @@ class ProductSale < ApplicationRecord
       # Хэрэв зассан тохиолдолд дахин хувиарлана
       self.update_column(:salesman_travel_id, nil) if salesman_travel_id.present? && !salesman_travel.load_at.present? && !salesman_travel.sign_at.present?
       SalesmanTravelJob.perform_later("sale", self)
+    elsif status.previous == "11"
+      if salesman_travel_id.present?
+        self.update_column(:salesman_travel_id, nil)
+        salesman_travel_route.destroy
+      end
     end
   end
 

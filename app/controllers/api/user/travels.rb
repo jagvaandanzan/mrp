@@ -169,12 +169,11 @@ module API
                 if params[:skip_barcode].present? && params[:skip_barcode]
                   is_success = true
                 elsif params[:barcode].present?
-                  is_success = true
-                  # if warehouse_loc.barcode == params[:barcode]
-                  #   is_success = true
-                  # else
-                  #   error!("Couldn't find by barcode", 422)
-                  # end
+                  if warehouse_loc.barcode == params[:barcode]
+                    is_success = true
+                  else
+                    error!("Couldn't find by barcode", 422)
+                  end
                 end
 
                 if is_success
