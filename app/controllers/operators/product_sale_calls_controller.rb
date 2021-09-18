@@ -105,7 +105,7 @@ class Operators::ProductSaleCallsController < Operators::BaseController
   end
 
   def get_prev_sales
-    @product_sales = ProductSale.search(nil, nil, nil, params[:phone], nil, nil).first(10)
+    @product_sales = ProductSale.search(nil, nil, nil, params[:phone], nil, nil, nil).first(10)
     @sale_calls = ProductSaleCall.search(nil, nil, params[:phone], nil, nil, nil, nil, nil)
                       .by_not_id(params[:id])
                       .first(10)
@@ -116,7 +116,7 @@ class Operators::ProductSaleCallsController < Operators::BaseController
   end
 
   def check_sale_order
-    product_sale = ProductSale.search(nil, nil, nil, params[:phone], "oper_confirmed", nil).first(1)
+    product_sale = ProductSale.search(nil, nil, nil, params[:phone], "oper_confirmed", nil, nil).first(1)
     render json: {is_ordered: product_sale.present?}
   end
 
