@@ -365,8 +365,7 @@ class ProductFeatureItem < ApplicationRecord
       end
     end
   end
-# 153-> 106706 хар 36 нэмэх
-#
+
   def product_locations_count_check
     s = 0
     self.product_location_balances.each do |location|

@@ -166,17 +166,17 @@ class Users::ProductFeatureItemsController < Users::BaseController
     feature_item.p_9_ = params[:p_9_]
     feature_item.init_bal = params[:init_bal].to_i
 
-    if feature_item.product_balances.present? && feature_item.balance.present?
+    if feature_item.init_bal > 0 && feature_item.product_balances.present? && feature_item.balance.present?
       not_init = feature_item.product_balances.not_init.sum(:quantity)
       feature_item.balance = feature_item.init_bal + not_init
     else
       feature_item.balance = params[:balance].to_i
     end
 
-
     feature_item.cost = params[:cost].to_i if params[:cost].present?
-    feature_item.location_balances = params[:location_balance]
-
+    if feature_item.init_bal > 0 || feature_item.balance > 0
+      feature_item.location_balances = params[:location_balance]
+    end
     feature_item.save
     render json: {success: !feature_item.errors.present?, errors: feature_item.errors.full_messages}
   end
