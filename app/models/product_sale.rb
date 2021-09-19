@@ -455,6 +455,7 @@ class ProductSale < ApplicationRecord
             sale_call.status = next_status
             sale_call.save(validate: false)
           end
+          Rails.logger.info("auto_redistribution")
           # Хэрэв дахин хувиарлах бол шинээр үүгсэнэ
           if next_status.alias == "auto_redistribution"
             new_sale = ProductSale.new(self.attributes.slice(:code, :delivery_start, :delivery_end, :phone,
@@ -472,7 +473,10 @@ class ProductSale < ApplicationRecord
             self.product_sale_status_logs.each do |log|
               new_sale.product_sale_status_logs << ProductSaleStatusLog.new(log.attributes.slice(:operator_id, :salesman_id, :status_id, :log_type, :note))
             end
-            new_sale.save
+            if new_sale.save
+            else
+              Rails.logger.info("new_sale: #{new_sale.errors.full_messages}")
+            end
           end
         end
 
