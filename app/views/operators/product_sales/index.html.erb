@@ -90,13 +90,13 @@
                 </tr>
               <% end %>
               <tr>
-                <td colspan="10">Нийт: <%= @product_sales.total_count %></td>
+                <td colspan="10">Нийт: <%= @product_sales_count %></td>
               </tr>
             </table>
           </div>
         </div>
 
-        <%= paginate @product_sales %>
+        <%= paginate @product_sales, total_pages: @total_pages  %>
       </div>
     </div>
   </section>

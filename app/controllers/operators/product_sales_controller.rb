@@ -17,7 +17,12 @@ class Operators::ProductSalesController < Operators::BaseController
                      s = ProductSaleStatus.find(@status_id)
                      s.alias
                    end
-    @product_sales = ProductSale.search(@product_name, @start, @finish, @phone, status_alias, @salesman_id, @cnf_oper_id).page(params[:page])
+    product_sales = ProductSale.search(@product_name, @start, @finish, @phone, status_alias, @salesman_id, @cnf_oper_id)
+    @product_sales_count = product_sales.length
+    @total_pages = (@product_sales_count / 25).to_i
+    @total_pages += 1 if @product_sales_count % 25 > 0
+
+    @product_sales = product_sales.page(params[:page])
   end
 
   def new
