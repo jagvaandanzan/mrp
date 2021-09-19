@@ -465,6 +465,11 @@ class ProductSale < ApplicationRecord
             new_sale.delivery_end = tmp_end if tmp_end.present?
             new_sale.status_id = 10
 
+            time = new_sale.delivery_start
+            new_sale.hour_start = time.hour
+            new_sale.hour_now = time.hour
+            new_sale.hour_end = time.hour + 2
+
             if new_sale.save
             else
               Rails.logger.info("new_sale: #{new_sale.errors.full_messages}")

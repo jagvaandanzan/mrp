@@ -69,7 +69,7 @@ class MySingleton
   end
 
   def copy_sale(sale)
-    new_sale = ProductSale.new(code: sale.code, delivery_start: sale.delivery_start, delivery_end: sale.delivery_end, phone: sale.phone,
+    new_sale = ProductSale.new(delivery_start: sale.delivery_start, delivery_end: sale.delivery_end, phone: sale.phone,
                                location_id: sale.location_id, country: sale.country, building_code: sale.building_code, loc_note: sale.loc_note,
                                money: sale.money, paid: sale.paid, bonus: sale.bonus, sum_price: sale.sum_price, status_note: sale.status_note,
                                source: sale.source, sale_call_id: sale.sale_call_id, created_operator_id: sale.created_operator_id, approved_operator_id: sale.approved_operator_id,
