@@ -470,7 +470,7 @@ class ProductSale < ApplicationRecord
               new_sale.product_sale_items << ProductSaleItem.new(sale_item.attributes.slice(:product_id, :feature_item_id, :quantity, :price, :p_discount, :discount, :sum_price, :to_see))
             end
             self.product_sale_status_logs.each do |log|
-              new_sale.product_sale_status_logs << ProductSaleStatusLog.new(sale_item.attributes.slice(:operator_id, :salesman_id, :status_id, :log_type, :note))
+              new_sale.product_sale_status_logs << ProductSaleStatusLog.new(log.attributes.slice(:operator_id, :salesman_id, :status_id, :log_type, :note))
             end
             new_sale.save
           end
