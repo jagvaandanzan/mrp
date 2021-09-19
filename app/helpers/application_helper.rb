@@ -42,8 +42,13 @@ module ApplicationHelper
   end
 
   def get_minutes(date_s, date_f)
-    (date_s - date_f) / 1.minutes
+    if date_s.present? && date_f.present?
+      (date_s - date_f) / 1.minutes
+    else
+      0
+    end
   end
+
   def get_second(date_s, date_f)
     (date_s - date_f) / 1.second
   end
