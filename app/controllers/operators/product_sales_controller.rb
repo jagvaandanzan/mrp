@@ -155,11 +155,38 @@ class Operators::ProductSalesController < Operators::BaseController
       redirect_to action: :show, id: @product_sale.id
     else
       if @product_sale.salesman_travel_id.present?
-        @product_sale.update_column(:salesman_travel_id, nil)
-self.product_sales
         if @product_sale.salesman_travel_route.present?
+          @product_sale.product_sale_items.each do |sale_item|
+            ProductSaleLog.create(operator: current_operator,
+                                  o_product_id: sale_item.product_id,
+                                  o_feature_item_id: sale_item.feature_item_id,
+                                  o_quantity: sale_item.quantity,
+                                  o_to_see: sale_item.to_see,
+                                  o_p_discount: sale_item.p_discount,
+                                  o_discount: sale_item.discount)
+
+            warehouse_locs = ProductWarehouseLoc.by_travel(@product_sale.salesman_travel_id)
+                                 .by_feature_item_id(sale_item.feature_item_id)
+            q = sale_item.quantity
+            if warehouse_locs.present?
+              warehouse_locs.each do |loc|
+                if q > 0
+                  if loc.quantity <= q
+                    loc.destroy
+                  else
+                    loc.update_column(:quantity, loc.quantity - q)
+                  end
+                  q -= loc.quantity
+                else
+                  break
+                end
+              end
+            end
+          end
           @product_sale.salesman_travel_route.destroy
+
         end
+        @product_sale.update_column(:salesman_travel_id, nil)
 
       end
       @product_sale.destroy!

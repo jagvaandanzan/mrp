@@ -65,7 +65,6 @@ class ProductSaleCall < ApplicationRecord
               order("product_sale_calls.created_at": :desc)
             else
               joins(:status)
-                  .order("product_sale_statuses.queue": :asc)
                   .order("product_sale_calls.created_at": :desc)
             end
     items = items.where('phone LIKE :value', value: "%#{phone}%") if phone.present?
