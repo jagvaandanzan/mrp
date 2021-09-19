@@ -304,7 +304,7 @@ module API
                       product_sale.status = status
                       product_sale.status_note = params[:description]
                       if params[:status] == "sals_change_date" && params[:day].present? && params[:hour].present?
-                        day = ApplicationController.helpers.local_date(DateTime.parse(params[:date]))
+                        day = ApplicationController.helpers.local_date(DateTime.parse(params[:day]))
                         product_sale.tmp_start = day.change({hour: params[:hour] - 1})
                         product_sale.tmp_end = day.change({hour: params[:hour] + 1})
                         product_sale.status_note = "#{product_sale.status_note}, цагаа #{product_sale.tmp_start.strftime('%Y/%m/%d') + '&nbsp;&nbsp;' + product_sale.tmp_start.hour.to_s + "-" + product_sale.tmp_end.hour.to_s} гэж өөрчилсөн"
