@@ -9,7 +9,7 @@ class ProductSale < ApplicationRecord
   belongs_to :sale_call, :class_name => "ProductSaleCall", optional: true
   belongs_to :parent, :class_name => "ProductSale", optional: true
 
-  has_many :product_sale_items
+  has_many :product_sale_items, dependent: :destroy
   has_many :product_sale_returns
   has_many :product_sale_status_logs
   has_one :bonus_balance, dependent: :destroy
