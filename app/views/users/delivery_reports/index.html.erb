@@ -117,7 +117,10 @@
                       $('#bought-<%= i %>').html("<%= get_currency_mn(p) %>");
                       <% end %>
                   </script>
-                <% bought_sum = 0.0
+                <% shipping_pay = bought_sum < Const::FREE_SHIPPING ? Const::SHIPPING_FEE : 0
+                   cash_sum += shipping_pay
+                   price += shipping_pay
+                   bought_sum = 0.0
                    } %>
                 <% if @sale_directs.present?
                      @sale_directs.each_with_index {|sale_direct, i|
