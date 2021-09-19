@@ -390,6 +390,7 @@ class ProductSale < ApplicationRecord
       end
       n += "#{item.product.code} #{item.product.n_name} #{item.feature_item.name}"
     end
+    n
   end
 
   private
