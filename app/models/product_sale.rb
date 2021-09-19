@@ -458,25 +458,13 @@ class ProductSale < ApplicationRecord
           Rails.logger.info("auto_redistribution")
           # Хэрэв дахин хувиарлах бол шинээр үүгсэнэ
           if next_status.alias == "auto_redistribution"
-            new_sale = ProductSale.new(code: code, delivery_start: delivery_start, delivery_end: delivery_end, phone: phone,
-                                       location_id: location_id, country: country, building_code: building_code, loc_note: loc_note,
-                                       money: money, paid: paid, bonus: bonus, sum_price: sum_price, status_note: status_note,
-                                       source: source, sale_call_id: sale_call_id, created_operator_id: created_operator_id, approved_operator_id: approved_operator_id,
-                                       approved_date: approved_date, cart_id: cart_id, feedback_period: feedback_period, tax: tax)
+            singleton = MySingleton.instance
+            new_sale = singleton.copy_sale(self)
 
             new_sale.delivery_start = tmp_start if tmp_start.present?
             new_sale.delivery_end = tmp_end if tmp_end.present?
             new_sale.status_id = 10
 
-            self.product_sale_items.each do |sale_item|
-              new_sale.product_sale_items << ProductSaleItem.new(product_id: sale_item.product_id, feature_item_id: sale_item.feature_item_id,
-                                                                 quantity: sale_item.quantity, price: sale_item.price, p_discount: sale_item.p_discount,
-                                                                 sum_price: sale_item.sum_price, to_see: sale_item.to_see)
-            end
-            self.product_sale_status_logs.each do |log|
-              new_sale.product_sale_status_logs << ProductSaleStatusLog.new(operator_id: log.operator_id, salesman_id: log.salesman_id,
-                                                                            status_id: log.status_id, log_type: log.log_type, note: log.note)
-            end
             if new_sale.save
             else
               Rails.logger.info("new_sale: #{new_sale.errors.full_messages}")

@@ -156,7 +156,11 @@ class Operators::ProductSalesController < Operators::BaseController
     else
       if @product_sale.salesman_travel_id.present?
         @product_sale.update_column(:salesman_travel_id, nil)
-        @product_sale.salesman_travel_route.destroy
+
+        if @product_sale.salesman_travel_route.present?
+          @product_sale.salesman_travel_route.destroy
+        end
+
       end
       @product_sale.destroy!
       flash[:success] = t('alert.deleted_successfully')
