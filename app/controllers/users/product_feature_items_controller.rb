@@ -155,8 +155,9 @@ class Users::ProductFeatureItemsController < Users::BaseController
 
   def update_feature
     feature_item = ProductFeatureItem.find(params[:item_id])
-    feature_item.product_location_balances.destroy_all
-
+    if feature_item.init_bal > 0 || feature_item.balance > 0
+      feature_item.product_location_balances.destroy_all
+    end
     feature_item.is_update = true
     feature_item.barcode = params[:barcode]
     feature_item.price = params[:price]

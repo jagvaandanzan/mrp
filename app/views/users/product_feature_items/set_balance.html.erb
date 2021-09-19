@@ -198,9 +198,7 @@
         const balance = mrp.find('#balance').val();
         const locations = mrp.find('#location_balance').val();
 
-        if (locations.length === 0) {
-            alert("Агуулахын байршил оруулна уу!");
-        } else if (mrp.find('#init_bal').val().length === 0) {
+        if (mrp.find('#init_bal').val().length === 0) {
             alert("Анхны үлдэгдэл оруулна уу!");
         } else if (balance.length === 0) {
             alert("Үлдэгдэл оруулна уу!");
@@ -208,6 +206,10 @@
             alert("Баркод оруулна уу!");
         } else if (mrp.find('#price').val().length === 0) {
             alert("Зарах үнэ оруулна уу!");
+        } else if (parseInt(mrp.find('#init_bal').val()) === 0 && parseInt(balance) ===0) {
+            update_feature1(i, item_id);
+        } else if (locations.length === 0) {
+            alert("Агуулахын байршил оруулна уу!");
         } else {
             let valid = true;
             let quantity = 0;
