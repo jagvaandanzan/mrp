@@ -85,12 +85,11 @@ module API
             desc "PATCH sales/return_requests/return_product"
             params do
               requires :product_id, type: Integer
-              requires :barcode, type: Boolean
             end
             patch do
               salesman_return = SalesmanReturn.find(params[:product_id])
               salesman_return.user = current_user
-              salesman_return.barcode = params[:barcode]
+              salesman_return.is_checked = true
               salesman_return.save
               present :returned, salesman_return.updated_at
             end
