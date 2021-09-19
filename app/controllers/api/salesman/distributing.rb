@@ -28,7 +28,7 @@ module API
                                .sum_summary
                 salesman_money = SalesmanMoney.instance
                 q, price, back_sum, acc_sum, cash_sum, paying = salesman_money.calc(yesterday, salesman.id)
-                income_ordered = paying - sum_bank
+                income_ordered = 0
                 if income_ordered == 0
                   last_travels = SalesmanTravel.by_salesman(salesman.id)
                                      .last_delivered
