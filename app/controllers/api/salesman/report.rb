@@ -124,7 +124,7 @@ module API
               bought_sum = 0
             end
 
-            sale_directs = ProductSaleDirect.by_salesman_id(23)
+            sale_directs = ProductSaleDirect.by_salesman_id(current_salesman.id)
                                .date_between(params[:date])
             p = sale_directs.sum(:sum_price)
             q += sale_directs.sum(:quantity)

@@ -23,7 +23,12 @@ module API
                 error!(I18n.t('errors.messages.you_have_a_balance'), 422)
               else
                 yesterday = Time.current.yesterday.beginning_of_day
-                income_ordered = salesman.income_ordered(yesterday)
+                sum_bank = BankTransaction.by_day(yesterday)
+                               .by_salesman_id(salesman.id)
+                               .sum_summary
+                salesman_money = SalesmanMoney.instance
+                q, price, back_sum, acc_sum, cash_sum, paying = salesman_money.calc(yesterday, salesman.id)
+                income_ordered = paying - sum_bank
                 if income_ordered == 0
                   last_travels = SalesmanTravel.by_salesman(salesman.id)
                                      .last_delivered

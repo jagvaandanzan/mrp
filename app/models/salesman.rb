@@ -90,19 +90,6 @@ class Salesman < ActiveRecord::Base
     end
   end
 
-  def income_ordered(date)
-    sum_bank = BankTransaction.by_day(date)
-                   .by_salesman_id(self.id)
-                   .sum_summary
-    sum_sale_item = ProductSaleItem.sum_price_by_salesman(self.id,
-                                                          date,
-                                                          date)
-    sum_sale_paid = ProductSale.sum_paid_by_salesman(self.id,
-                                                     date,
-                                                     date)
-    (sum_sale_item - sum_sale_paid) - sum_bank
-  end
-
   def email_required?
     false
   end
