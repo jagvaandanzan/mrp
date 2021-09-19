@@ -3,8 +3,6 @@ class ProductSaleReturn < ApplicationRecord
   belongs_to :product_sale_item
   has_one :salesman_travel, through: :product_sale
 
-  has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "salesman_return_id", dependent: :destroy
-
   attr_accessor :remainder
 
   validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)

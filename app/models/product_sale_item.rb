@@ -4,9 +4,9 @@ class ProductSaleItem < ApplicationRecord
   belongs_to :product
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
 
-  has_many :salesman_returns, :class_name => "SalesmanReturn", :foreign_key => "sale_item_id", dependent: :destroy
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "sale_item_id", dependent: :destroy
   has_one :bonus_balance, dependent: :destroy
+  has_many :salesman_returns, :class_name => "SalesmanReturn", :foreign_key => "sale_item_id", dependent: :destroy
   has_one :salesman_travel, through: :product_sale
   has_one :status, through: :product_sale
   has_one :salesman_travel_route, through: :product_sale
