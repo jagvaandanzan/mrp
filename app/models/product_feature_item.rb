@@ -367,21 +367,23 @@ class ProductFeatureItem < ApplicationRecord
   end
 
   def product_locations_count_check
-    s = 0
-    self.product_location_balances.each do |location|
-      lq = location.quantity
-      if lq.present?
-        if lq < 0
-          errors.add(:product_location_balances, :greater_than, count: 0)
-          return
+    if location_balances.present? || is_add.present?
+      s = 0
+      self.product_location_balances.each do |location|
+        lq = location.quantity
+        if lq.present?
+          if lq < 0
+            errors.add(:product_location_balances, :greater_than, count: 0)
+            return
+          end
+          s += location.quantity
         end
-        s += location.quantity
       end
-    end
-    if (self.balance || 0) < s
-      errors.add(:product_location_balances, :over)
-    elsif self.balance > s
-      errors.add(:product_location_balances, :equal_to, count: self.balance)
+      if (self.balance || 0) < s
+        errors.add(:product_location_balances, :over)
+      elsif self.balance > s
+        errors.add(:product_location_balances, :equal_to, count: self.balance)
+      end
     end
   end
 
