@@ -74,7 +74,7 @@ module API
       end
 
       class SalesmanReturn < Grape::Entity
-        expose :id, :quantity, :product_code, :product_name, :product_image, :product_feature, :product_barcode, :barcode, :is_checked
+        expose :id, :quantity, :product_code, :product_name, :product_image, :product_feature, :product_barcode, :barcode, :is_check
       end
 
     end
