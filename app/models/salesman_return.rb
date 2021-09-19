@@ -5,7 +5,8 @@ class SalesmanReturn < ApplicationRecord
   belongs_to :product
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
   belongs_to :sale_item, :class_name => "ProductSaleItem"
-  has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "salesman_return_id", dependent: :destroy
+  has_one :product_balance, dependent: :destroy
+  has_one :product_location_balance, dependent: :destroy
 
   scope :by_sale_item_salesman, ->(si_id, salesman_id) {
     left_joins(:sign)
