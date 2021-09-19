@@ -50,7 +50,6 @@ class Operators::SalesmanTravelsController < Operators::BaseController
       @salesman_travel.sale_ids.split(",").map(&:to_i).each_with_index {|sale_id, i|
         product_sale = ProductSale.find(sale_id)
         product_sale.update_column(:salesman_travel_id, @salesman_travel.id)
-        product_sale.check_auto_redistribution
         product_sale.sent_info_to_user if !product_sale.product_sale_items.present? && product_sale.product_sale_returns.present?
         travel_route = SalesmanTravelRoute.new
         travel_route.queue = i

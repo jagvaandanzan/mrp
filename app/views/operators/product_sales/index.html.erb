@@ -54,7 +54,7 @@
                 <th><%= t('activerecord.attributes.product_sale.product_sale_item') %></th>
                 <th><%= t('activerecord.attributes.product_sale.phone') %></th>
                 <th><%= t('activerecord.attributes.product_sale.delivery_end') %></th>
-                <th><%= t('activerecord.attributes.product_sale.location_id') %></th>
+                <th>Бараа</th>
                 <th><%= t('activerecord.attributes.product_sale.loc_note') %></th>
                 <th><%= t('activerecord.attributes.product_sale.sum_price') %></th>
                 <th><%= t('activerecord.attributes.product_sale.approved_date') %></th>
@@ -68,11 +68,10 @@
                   <td class="va-mid text-center"><%= p.product_sale_items.count %><%= sale_returns > 0 ? "-#{sale_returns}" : '' %></td>
                   <td class="va-mid"><%= link_to p.phone, operators_product_sale_path(p) %></td>
                   <td class="va-mid" style="white-space: nowrap"><%= p.delivery_time.html_safe %></td>
-                  <td class="va-mid"><%= p.location.full_name %>
-                    <% if p.country.present? && p.country %>
+                  <td class="va-mid"><%= p.product_names %></td>
+                  <td class="va-mid"><% if p.country.present? && p.country %>
                       <i class="fa fa-bus" style='font-size: 16px'></i>
-                    <% end %></td>
-                  <td class="va-mid"><%= p.loc_note %></td>
+                      <% end %><%= p.loc_note %></td>
                   <td class="va-mid"><%= get_currency_mn(p.sum_price) %></td>
                   <td class="va-mid"><%= p.approved_date.present? ? p.approved_date.strftime('%F %R') : "" %></td>
                   <td class="va-mid"><%= p.approved_operator.present? ? p.approved_operator.name : "" %></td>

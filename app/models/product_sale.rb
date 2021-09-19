@@ -24,7 +24,7 @@ class ProductSale < ApplicationRecord
   enum money: {cash: 0, account: 1, mixed: 2}
   enum source: {sr_comment: 0, sr_operator: 1, sr_web: 2}
 
-  attr_accessor :hour_now, :hour_start, :hour_end, :update_status, :operator, :salesman, :status_m, :status_sub
+  attr_accessor :hour_now, :hour_start, :hour_end, :update_status, :operator, :salesman, :status_m, :status_sub, :tmp_start, :tmp_end
 
   before_save :check_exchange
   before_save :create_log
@@ -179,9 +179,9 @@ class ProductSale < ApplicationRecord
   scope :travel_nil, ->(id) {
     items = joins(:status)
     items = if id.nil?
-              items.where("(salesman_travel_id IS ? AND product_sale_statuses.alias = ?) OR product_sale_statuses.alias = ?", nil, 'oper_confirmed', 'auto_redistribution')
+              items.where("salesman_travel_id IS ? AND product_sale_statuses.alias = ?", nil, 'oper_confirmed')
             else
-              items.where("product_sales.id = ? OR (salesman_travel_id IS ? AND product_sale_statuses.alias = ?) OR product_sale_statuses.alias = ?", id, nil, 'oper_confirmed', 'auto_redistribution')
+              items.where("product_sales.id = ? OR (salesman_travel_id IS ? AND product_sale_statuses.alias = ?)", id, nil, 'oper_confirmed')
             end
     items.order(:delivery_start)
   }
@@ -363,19 +363,6 @@ class ProductSale < ApplicationRecord
     location.station.present?
   end
 
-# Дахин хувиарлах төлөвт байгаа барааг хувиарлах үед бараануудыг нь буцаасан бол буцааж оруулж ирнэ
-  def check_auto_redistribution
-    if status.alias == "auto_redistribution"
-      product_sale_items.where("back_quantity > ?", 0).each do |item|
-        ProductBalance.create(sale_item: item,
-                              product_id: item.product_id,
-                              feature_item_id: item.feature_item_id,
-                              quantity: -item.back_quantity)
-        item.update_column(:back_quantity, nil)
-      end
-    end
-  end
-
 # Хэрэглэгчрүү sms илгээх
   def sent_info_to_user
     SendSmsJob.perform_later(phone, "Tanii zahialgiin hurgelt ehellee. #{delivery_start.hour}-#{delivery_end.hour} tsagiin hoorond hurgegdeh bolno. Ajiltan :mn, utas #{salesman_travel.salesman.phone}. Market.mn", salesman_travel.salesman.name)
@@ -395,19 +382,20 @@ class ProductSale < ApplicationRecord
                                        .sum(:sum_price))
   end
 
+  def product_names
+    n = ""
+    product_sale_items.each_with_index do |item, index|
+      if index > 0
+        n += ","
+      end
+      n += "#{item.product.code} #{item.product.n_name} #{item.feature_item.name}"
+    end
+  end
+
   private
 
   def send_to_channel
-    if status.alias == "oper_confirmed"
-      # Хэрэв зассан тохиолдолд дахин хувиарлана
-      self.update_column(:salesman_travel_id, nil) if salesman_travel_id.present? && !salesman_travel.load_at.present? && !salesman_travel.sign_at.present?
-      SalesmanTravelJob.perform_later("sale", self)
-    elsif status.previous == "11"
-      if salesman_travel_id.present?
-        self.update_column(:salesman_travel_id, nil)
-        salesman_travel_route.destroy
-      end
-    end
+    SalesmanTravelJob.perform_later("sale", self) if status.alias == "oper_confirmed"
   end
 
   def check_money
@@ -466,12 +454,37 @@ class ProductSale < ApplicationRecord
             sale_call.status = next_status
             sale_call.save(validate: false)
           end
+          # Хэрэв дахин хувиарлах бол шинээр үүгсэнэ
+          if next_status.alias == "auto_redistribution"
+            new_sale = ProductSale.new(self.attributes.slice(:code, :delivery_start, :delivery_end, :phone,
+                                                             :location_id, :country, :building_code, :loc_note,
+                                                             :money, :paid, :bonus, :sum_price, :status_note,
+                                                             :source, :sale_call_id, :created_operator_id, :approved_operator_id,
+                                                             :approved_date, :cart_id, :feedback_period, :tax))
+            new_sale.delivery_start = tmp_start if tmp_start.present?
+            new_sale.delivery_end = tmp_end if tmp_end.present?
+            new_sale.status_id = 10
+
+            self.product_sale_items.each do |sale_item|
+              new_sale.product_sale_items << ProductSaleItem.new(sale_item.attributes.slice(:product_id, :feature_item_id, :quantity, :price, :p_discount, :discount, :sum_price, :to_see))
+            end
+            self.product_sale_status_logs.each do |log|
+              new_sale.product_sale_status_logs << ProductSaleStatusLog.new(sale_item.attributes.slice(:operator_id, :salesman_id, :status_id, :log_type, :note))
+            end
+            new_sale.save
+          end
         end
 
         # Амжилтгүй болчихоод дахиад баталгаажсан болговол дахин хүргэнэ гэсэн үг
-        if status.alias == "oper_confirmed" && salesman_travel_route.present?
-          self.salesman_travel_route.update_column(:delivery_at, nil)
-        end
+        # elsif status.previous == "11"
+        #       if salesman_travel_id.present?
+        #         self.update_column(:salesman_travel_id, nil)
+        #         salesman_travel_route.destroy
+        #       end
+        #     end
+        # if status.alias == "oper_confirmed" && salesman_travel_route.present?
+        #   self.update_column(:salesman_travel_id, nil)
+        # end
       end
     end
 
