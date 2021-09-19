@@ -11,6 +11,7 @@ class ProductBalance < ApplicationRecord
   belongs_to :operator, optional: true
 
   after_save -> {sync_web}
+  after_destroy -> {sync_web}
 
   scope :balance_sum, -> (product_id, feature_item_id = nil) {
     items = where(product_id: product_id)

@@ -1,4 +1,5 @@
 class ProductSaleItem < ApplicationRecord
+  acts_as_paranoid
   belongs_to :product_sale
   belongs_to :product
   belongs_to :feature_item, :class_name => "ProductFeatureItem"

@@ -11,6 +11,7 @@ class CreateTmpProducts < ActiveRecord::Migration[5.2]
     #
     #   t.timestamps
     # end
-    add_column :product_feature_items, :init_bal, :integer, :after => "balance"
+    # add_column :product_feature_items, :init_bal, :integer, :after => "balance"
+    add_column :product_sale_items, :deleted_at, :datetime, :after => "back_quantity"
   end
 end
