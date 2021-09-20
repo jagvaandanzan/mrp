@@ -28,7 +28,7 @@ module API
                                .sum_summary
                 salesman_money = MySingleton.instance
                 q, price, back_sum, acc_sum, cash_sum, paying = salesman_money.salesman_calc(yesterday, salesman.id)
-                income_ordered = (sum_bank.present? && sum_bank > 0)? (paying - sum_bank) : 0
+                income_ordered = paying - sum_bank
                 if income_ordered == 0
                   last_travels = SalesmanTravel.by_salesman(salesman.id)
                                      .last_delivered
