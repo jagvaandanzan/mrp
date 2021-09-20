@@ -11,5 +11,7 @@ class AddProductSaleLog < ActiveRecord::Migration[5.2]
     add_reference :product_sale_logs, :log_stat, foreign_key: true, after: 'user_id'
     add_reference :product_sale_logs, :product_sale, foreign_key: true, after: 'discount'
     add_reference :product_sale_logs, :sale_item, foreign_key: {to_table: :product_sale_items}, after: 'product_sale_id'
+    add_reference :product_sales, :inh, foreign_key: {to_table: :product_sales}, after: 'parent_id'
+
   end
 end

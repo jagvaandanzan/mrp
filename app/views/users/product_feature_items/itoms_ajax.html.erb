@@ -15,16 +15,3 @@
 <% else %>
   $('#mpr_body').html("<tr><td colspan='8' class='text-center'>Үр дүн олдсонгүй!</td></tr>")
 <% end %>
-<% if @json.present? %>
-  $('#itoms_body').html("<%= escape_javascript render(:partial => 'itoms_json', :locals => {:json => @json['serials']}) %>");
-
-  $('#itoms_body .product').on('click', function () {
-  $('#itoms_body tr.selected').removeClass('selected');
-  $(this).addClass('selected');
-  select_itoms = $(this).attr('index');
-  });
-  $('#itoms_name').text("<%= @json['name'] %>");
-
-<% else %>
-  $('#itoms_body').html("<tr><td colspan='5' class='text-center'>Үр дүн олдсонгүй!</td></tr>");
-<% end %>

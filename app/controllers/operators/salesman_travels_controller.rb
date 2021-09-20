@@ -107,16 +107,17 @@ class Operators::SalesmanTravelsController < Operators::BaseController
   end
 
   def destroy
-    if (can? :manage, SalesmanTravel) && !@salesman_travel.load_at.present?
-      @salesman_travel.salesman_travel_routes.each do |route|
-        route.is_update = true
-      end
-      @salesman_travel.destroy!
-      flash[:success] = t('alert.deleted_successfully')
-      redirect_to action: :index
-    else
-      redirect_to action: :show, id: @salesman_travel.id
-    end
+    redirect_to action: :index
+    # if (can? :manage, SalesmanTravel) && !@salesman_travel.load_at.present?
+    #   @salesman_travel.salesman_travel_routes.each do |route|
+    #     route.is_update = true
+    #   end
+    #   @salesman_travel.destroy!
+    #   flash[:success] = t('alert.deleted_successfully')
+    #   redirect_to action: :index
+    # else
+    #   redirect_to action: :show, id: @salesman_travel.id
+    # end
   end
 
   private

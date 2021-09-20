@@ -1,0 +1,5 @@
+<td class="va-mid is_edit" style="padding: 0!important;">
+  <i class="fa fa fa-fw fa-minus-circle" onclick="delete_sale_item($(this), <%= f.object.persisted? ? f.object.id : 0 %>)"></i>
+</td>
+<td class="va-mid is_edit" style="padding: 0 0 0 2px!important;">
+  <i class="fa fa-save" onclick="update_sale_item($(this), <%= f.object.persisted? ? f.object.id : 0 %>)"></i></td>

@@ -13,9 +13,9 @@
     <td class="va-mid"><%= text_field_tag :location_balance, item.location_balance, {class: 'field'} %></td>
     <td class="va-mid nowrap action">
       <%= image_tag '/images/loading2.gif',class: 'none' %>
-      <i class="fa fa-fw fa-save" style="font-size: 18px;color: #46a2e1" onclick="update_feature($(this), <%= item.id%>)"></i>
+      <i class="fa fa-fw fa-save none" style="font-size: 18px;color: #46a2e1" onclick="update_feature($(this), <%= item.id%>)"></i>
       <%= link_to '#', onclick: "remove_feature(#{item.id})" do %>
-        <i class="fa fa-fw fa-minus-circle" style="font-size: 15px;color: red"></i>
+        <i class="fa fa-fw fa-minus-circle none" style="font-size: 15px;color: red"></i>
       <% end %>
     </td>
   </tr>

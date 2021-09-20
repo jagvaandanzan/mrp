@@ -80,7 +80,8 @@ class MySingleton
                                                          quantity: sale_item.quantity, price: sale_item.price, p_discount: sale_item.p_discount,
                                                          sum_price: sale_item.sum_price, to_see: sale_item.to_see)
     end
-    sale.product_sale_status_logs.each do |log|
+    if sale.product_sale_status_logs.present?
+      log = sale.product_sale_status_logs.last
       new_sale.product_sale_status_logs << ProductSaleStatusLog.new(operator_id: log.operator_id, salesman_id: log.salesman_id,
                                                                     status_id: log.status_id, log_type: log.log_type, note: log.note)
     end

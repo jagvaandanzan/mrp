@@ -33,7 +33,7 @@
 
   <section class="content container-fluid">
     <div class="row">
-      <div class="col-xs-8" style="padding-right: 4px">
+      <div class="col-xs-11" style="padding-right: 4px">
         <div class="box">
           <div class="p-l-10"><strong>MRP</strong></div>
           <div class="box-body table-responsive no-padding">
@@ -61,39 +61,11 @@
               <tbody id="mpr_body" class="cocoon-nested-form"></tbody>
             </table>
             <div class="w-100 text-right">
-              <button type="button" onclick="add_feature()" class="btn btn-block btn-success btn-xs w-auto" style="float: right;margin: 4px;">
+              <button type="button" onclick="add_feature()" class="btn btn-block btn-success btn-xs w-auto none" style="float: right;margin: 4px;">
                 <i class="fa fa-plus" style="color: white"></i></button>
             </div>
           </div>
         </div>
-      </div>
-      <div class="col-xs-4" style="padding-left: 4px">
-        <table class="w-100">
-          <tr>
-            <td>
-              <button type="button" class="btn btn-success" id="copy_data" style="padding: 2px 4px"><<</button>
-            </td>
-            <td>
-              <div class="box">
-                <div class="p-l-10">Санхүүгийн систем дээрх мэдээлэл: <span id="itoms_name"></span></div>
-                <div class="box-body table-responsive no-padding">
-                  <table class="table table-hover table-bordered">
-                    <thead>
-                    <tr>
-                      <th><%= t('activerecord.models.product_feature') %></th>
-                      <th><%= t('activerecord.attributes.product_feature_item.barcode') %></th>
-                      <th><%= t('activerecord.attributes.product_feature_item.price') %></th>
-                      <th><%= t('activerecord.attributes.product.balance') %></th>
-                      <th><%= t('activerecord.attributes.product_income_item.income_locations') %></th>
-                    </tr>
-                    </thead>
-                    <tbody id="itoms_body"></tbody>
-                  </table>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </table>
       </div>
     </div>
   </section>
@@ -113,22 +85,6 @@
         <% if @code.present? %>
         load_itoms("<%= @code %>");
         <% end %>
-
-        $('#copy_data').on('click', function () {
-            if (select_mrp === 0) {
-                alert("MRP хүснэгтээс мөр сонгоно уу!")
-            } else if (select_itoms === 0) {
-                alert("Санхүүгийн систем дээрх мэдээллээс мөр сонгоно уу!")
-            } else {
-                let mrp = $('#mpr_body #item-' + select_mrp);
-                let itoms = $('#itoms_body #itoms-' + select_itoms);
-                let quantity = parseInt(itoms.find('.c2qty').text());
-                mrp.find('#barcode').val(itoms.find('.barcode').text());
-                mrp.find('#price').val(itoms.find('.price').text());
-                mrp.find('#balance').val(quantity);
-                mrp.find('#location_balance').val(itoms.find('.taviur1').text() + "=" + quantity);
-            }
-        });
     });
 
     function load_features() {
@@ -144,7 +100,6 @@
     function load_itoms(code) {
         let load_html = "<div class='text-center m-t-20 w-100'><img src='/images/loading2.gif'></div>";
         $('#mpr_body').html(load_html);
-        $('#itoms_body').html(load_html);
         Rails.ajax({
             url: "<%= itoms_users_product_feature_items_path %>",
             type: "POST",
@@ -155,14 +110,6 @@
     function add_feature() {
         if (parseInt(product_id) > 0) {
             var barcode = "", price = "", balance = "", location_balance = "";
-            if (select_itoms !== 0) {
-                let itoms = $('#itoms_body #itoms-' + select_itoms);
-                balance = itoms.find('.c2qty').text();
-                barcode = itoms.find('.barcode').text();
-                price = itoms.find('.price').text();
-                location_balance = itoms.find('.taviur1').text();
-            }
-
             Rails.ajax({
                 url: "<%= new_users_product_feature_item_path %>",
                 type: "GET",

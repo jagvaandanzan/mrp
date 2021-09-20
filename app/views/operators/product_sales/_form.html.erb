@@ -32,11 +32,11 @@
 
   <section class="content">
     <div class="box box-info">
-      <% @is_editor = (can? :manage, :edit_product_sale) && @product_sale.has_seen_stockkeeper %>
       <%= form_with model: @product_sale, url: @product_sale.persisted? ? operators_product_sale_path : operators_product_sales_path,
                     method: @product_sale.persisted? ? :patch : :post, local: true, :html => {class: 'form-horizontal'} do |f| %>
         <%= f.hidden_field :sale_call_id %>
         <%= f.hidden_field :parent_id %>
+        <%= f.hidden_field :inh_id %>
         <%= f.hidden_field :source %>
         <%= form_body do %>
           <div class="col-md-12 p-0">
@@ -65,8 +65,8 @@
                       <%= f.label :delivery_end, class: 'control-label' %> <span class="asterisk">*</span>
                       <br>
                       <%= field_errors(@product_sale, :hour_end) %>
-                      <%= f.select :hour_start, (@product_sale.delivery_end.present? ? 0 : @product_sale.hour_now.to_i)..23, {}, {class: 'form-control selectpicker'} %> &nbsp;-&nbsp;
-                      <%= f.select :hour_end, (@product_sale.delivery_end.present? ? 0 : @product_sale.hour_now.to_i)..23, {}, {class: 'form-control selectpicker'} %>
+                      <%= f.select :hour_start, 0..23, {}, {class: 'form-control selectpicker'} %> &nbsp;-&nbsp;
+                      <%= f.select :hour_end, 0..23, {}, {class: 'form-control selectpicker'} %>
                     </div>
                   </div>
                   <div class="row">
@@ -155,12 +155,7 @@
                       <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.discount') %></th>
                       <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
                       <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.remainder') %></th>
-                      <% if @is_editor %>
-                        <th></th>
-                        <th></th>
-                      <% else %>
-                        <th width="50px"></th>
-                      <% end %>
+                      <th width="50px"></th>
                     </tr>
                     <%= f.fields_for :product_sale_items do |m| %>
                       <%= render 'product_sale_item_fields', :f => m %>
@@ -219,7 +214,7 @@
                     <%= f.hidden_field :status_id %>
                     <%= field_errors(@product_sale, :status_id) %>
                     <%= f.collection_select :status_m, ProductSaleStatus.by_previous.by_type('oper', @product_sale.persisted? ? @product_sale.status_m : nil), :id, :name,
-                                            {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_next_status(this)'} %>
+                                            {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_next_status(this)', disabled: @product_sale.persisted? && @product_sale.allow_not_status} %>
                   </div>
                 </div>
                 <div id="paid_div" class="col-md-4 field_div <%= (@product_sale.persisted? && !@product_sale.cash?) ? '' : 'none' %>">
@@ -300,9 +295,6 @@
         calc_total_price();
         <% end %>
         $('#btn_product_sale_item').on('click', function () {
-            <% if @is_editor %>
-            remove_submit_btn();
-            <% end %>
             if ($('#tb_product_sale_items tbody tr').length > 0) {
                 let tr = $('#tb_product_sale_items tbody tr:last');
                 to_see = tr.find('td').eq(2).find('input[type=checkbox]').is(":checked");
@@ -639,70 +631,6 @@
         }
     }
 
-    <% if @is_editor %>
-
-    function remove_submit_btn() {
-        $('.action-buttons input[type="submit"]').remove();
-    }
-
-    function update_sale_item(icon, id) {
-        const tr = icon.parent().parent();
-        const product_id = tr.find('select.select_product').val();
-        const feature_item_id = tr.find('select.feature_item').val();
-        const quantity = tr.find('input.item_quantity').val();
-        const remainder = tr.find('remainder.item_quantity').val();
-        if (product_id.length === 0) {
-            alert("Бараа сонгоно уу!")
-        } else if (feature_item_id.length === 0) {
-            alert("Шинж чанар сонгоно уу!")
-        } else if (quantity.length === 0 || parseInt(quantity) === 0) {
-            alert("Тоо хэмжээ оруулна уу!")
-        } else if (parseInt(quantity) > parseInt(remainder)) {
-            alert("Үлдэгдэлгүй байна!")
-        } else if (confirm("Өөрчлөх үү!")) {
-            remove_submit_btn();
-            Rails.ajax({
-                url: "<%= update_item_operators_product_sales_path %>",
-                type: "POST",
-                data: "id=" + id + "&sale_id=<%= @product_sale.id %>&product_id=" + product_id + "&feature_item_id=" + feature_item_id + "&quantity=" + quantity + "&remainder=" + remainder
-                    + "&to_see=" + tr.find("input[type='checkbox']").prop('checked') + "&p_discount=" + tr.find('.item_p_discount').val()
-                    + "&discount=" + tr.find('.item_discount').val(),
-                success: function (data) {
-                    if (data.status) {
-                        alert('Амжилттай өөрчиллөө!');
-                    } else {
-                        alert(data.message);
-                    }
-                }
-            });
-        }
-    }
-
-    function delete_sale_item(icon, id) {
-        if (confirm("<%= t('are_you_sure') %>")) {
-            remove_submit_btn();
-            const tr = icon.parent().parent();
-            if (parseInt(id) === 0) {
-                tr.remove();
-            } else {
-                Rails.ajax({
-                    url: "<%= delete_item_operators_product_sales_path %>",
-                    type: "POST",
-                    data: "id=" + id,
-                    success: function (data) {
-                        if (data.status) {
-                            tr.remove();
-                            alert('Амжилттай устлаа!');
-                        } else {
-                            alert(data.message);
-                        }
-                    }
-                });
-            }
-        }
-    }
-
-    <% end %>
 </script>
 <style>
   .is_edit i {

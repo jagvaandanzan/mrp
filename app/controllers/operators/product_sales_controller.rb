@@ -26,7 +26,18 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def new
-    if params[:sale_call_id].present? || params[:parent_id].present?
+    if params[:inheritance].present?
+      # Дахиан хувиарлах болон бусад тохиолдолд хуулах
+      singleton = MySingleton.instance
+      @product_sale = singleton.copy_sale(ProductSale.find(params[:inheritance]))
+      @product_sale.status_id = nil
+      @product_sale.inh_id = params[:inheritance]
+      time = @product_sale.delivery_start
+      @product_sale.hour_start = time.hour
+      @product_sale.hour_now = time.hour
+      @product_sale.hour_end = time.hour + 2
+
+    elsif params[:sale_call_id].present? || params[:parent_id].present?
       @product_sale = ProductSale.new
       total_price = 0
       if params[:sale_call_id].present?
@@ -127,7 +138,7 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def edit
-    if @product_sale.child.present? || !((can? :manage, :edit_product_sale) || !@product_sale.has_seen_stockkeeper)
+    if @product_sale.child.present? || @product_sale.has_seen_stockkeeper || @product_sale.allow_not_status
       redirect_to action: :show, id: @product_sale.id
     else
 
@@ -151,44 +162,16 @@ class Operators::ProductSalesController < Operators::BaseController
   end
 
   def destroy
-    if @product_sale.child.present? || !((can? :manage, :edit_product_sale) || !@product_sale.has_seen_stockkeeper)
+    if @product_sale.child.present? || @product_sale.has_seen_stockkeeper || @product_sale.allow_not_status
       redirect_to action: :show, id: @product_sale.id
     else
       if @product_sale.salesman_travel_id.present?
         if @product_sale.salesman_travel_route.present?
-          @product_sale.product_sale_items.each do |sale_item|
-            ProductSaleLog.create(operator: current_operator,
-                                  o_product_id: sale_item.product_id,
-                                  o_feature_item_id: sale_item.feature_item_id,
-                                  o_quantity: sale_item.quantity,
-                                  o_to_see: sale_item.to_see,
-                                  o_p_discount: sale_item.p_discount,
-                                  o_discount: sale_item.discount)
-
-            warehouse_locs = ProductWarehouseLoc.by_travel(@product_sale.salesman_travel_id)
-                                 .by_feature_item_id(sale_item.feature_item_id)
-            q = sale_item.quantity
-            if warehouse_locs.present?
-              warehouse_locs.each do |loc|
-                if q > 0
-                  if loc.quantity <= q
-                    loc.destroy
-                  else
-                    loc.update_column(:quantity, loc.quantity - q)
-                  end
-                  q -= loc.quantity
-                else
-                  break
-                end
-              end
-            end
-          end
           @product_sale.salesman_travel_route.destroy
-
         end
         @product_sale.update_column(:salesman_travel_id, nil)
-
       end
+
       @product_sale.destroy!
       flash[:success] = t('alert.deleted_successfully')
       redirect_to action: 'index'
@@ -542,7 +525,7 @@ class Operators::ProductSalesController < Operators::BaseController
 
   def product_sale_params
     params.require(:product_sale)
-        .permit(:sale_call_id, :parent_id, :source, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :country, :building_code, :loc_note,
+        .permit(:sale_call_id, :parent_id, :inh_id, :source, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :country, :building_code, :loc_note,
                 :sum_price, :money, :paid, :bonus, :tax,
                 :status_id, :status_m, :status_sub, :status_note,
                 product_sale_returns_attributes: [:id, :product_sale_item_id, :quantity, :remainder, :_destroy],

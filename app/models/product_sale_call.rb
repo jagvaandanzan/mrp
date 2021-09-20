@@ -28,7 +28,6 @@ class ProductSaleCall < ApplicationRecord
   end
 
   with_options :unless => Proc.new {|m| m.is_web.present?} do
-    after_create :sent_itoms
     after_create :set_items
     validates_uniqueness_of :code, if: :has_24_created
     validates :code, presence: true, length: {is: 6}
@@ -145,16 +144,5 @@ class ProductSaleCall < ApplicationRecord
                                                               salesman: temp_salesman,
                                                               status: status,
                                                               note: message) if operator.present? || temp_operator.present?
-  end
-
-  def sent_itoms
-    param = {
-        phone: phone,
-        itemcode: code,
-        description: message.gsub(phone.to_s, ''),
-        operator: operator.present? && operator.order_sys_name.present? ? operator.order_sys_name : 'social'
-    }
-    response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/newenquiresocial", 'post', param.to_json)
-    Rails.logger.debug("43.231.114.241:8882/api/newenquiresocial => #{param.to_s} => #{response.body.to_s}")
   end
 end

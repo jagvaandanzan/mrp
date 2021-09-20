@@ -8,6 +8,7 @@ class ProductSale < ApplicationRecord
   belongs_to :salesman_travel, optional: true
   belongs_to :sale_call, :class_name => "ProductSaleCall", optional: true
   belongs_to :parent, :class_name => "ProductSale", optional: true
+  belongs_to :inh, :class_name => "ProductSale", optional: true
 
   has_many :product_sale_items, dependent: :destroy
   has_many :product_sale_returns
@@ -24,7 +25,7 @@ class ProductSale < ApplicationRecord
   enum money: {cash: 0, account: 1, mixed: 2}
   enum source: {sr_comment: 0, sr_operator: 1, sr_web: 2}
 
-  attr_accessor :hour_now, :hour_start, :hour_end, :update_status, :operator, :salesman, :status_m, :status_sub, :tmp_start, :tmp_end
+  attr_accessor :hour_now, :hour_start, :hour_end, :update_status, :operator, :salesman, :status_m, :status_sub
 
   before_save :check_exchange
   before_save :create_log
@@ -33,6 +34,7 @@ class ProductSale < ApplicationRecord
   after_create :set_sale_call_status
   after_save :sync_web
   after_save :send_to_channel
+  after_update :set_update_values
 
   with_options :if => Proc.new {|m| m.update_status == nil} do
     validates_numericality_of :hour_end, greater_than: Proc.new(&:hour_start)
@@ -393,6 +395,59 @@ class ProductSale < ApplicationRecord
     n
   end
 
+  def allow_not_status
+    if status.present?
+      previous_alias = status.alias
+      if status.previous.present?
+        previous_alias = status.previous_status.alias
+        previous_alias == "oper_failed"
+      else
+        previous_alias == "auto_redistribution" || previous_alias == "auto_redistributed" || previous_alias == "sals_delivered" || previous_alias == "auto_closed"
+      end
+    else
+      false
+    end
+  end
+
+  def clear_relation
+    item_eached = false
+    if salesman_travel_id.present?
+      if salesman_travel_route.present?
+        item_eached = true
+        product_sale_items.each do |sale_item|
+          sale_item.product_balance.destroy
+
+          warehouse_locs = ProductWarehouseLoc.by_travel(salesman_travel_id)
+                               .by_feature_item_id(sale_item.feature_item_id)
+          q = sale_item.quantity
+          if warehouse_locs.present?
+            warehouse_locs.each do |loc|
+              if q > 0
+                if loc.quantity <= q
+                  loc.destroy
+                else
+                  loc.update_column(:quantity, loc.quantity - q)
+                end
+                q -= loc.quantity
+              else
+                break
+              end
+            end
+          end
+        end
+        salesman_travel_route.destroy
+
+      end
+      self.update_column(:salesman_travel_id, nil)
+    end
+
+    unless item_eached
+      product_sale_items.each do |sale_item|
+        sale_item.product_balance.destroy
+      end
+    end
+  end
+
   private
 
   def send_to_channel
@@ -445,6 +500,15 @@ class ProductSale < ApplicationRecord
                                                                 note: status_note)
       # set_status
       if status.present?
+        Rails.logger.info("---a-set_update_values---------")
+        if status.previous.present?
+          previous_alias = status.previous_status.alias
+          Rails.logger.info("---a-sdsdasdasdasda---------")
+          if previous_alias == "oper_failed"
+            Rails.logger.info("------------ clear_relation")
+            self.clear_relation
+          end
+        end
         if status.next.present?
           next_status = status.next_status
           if next_status.user_type == "auto"
@@ -455,38 +519,15 @@ class ProductSale < ApplicationRecord
             sale_call.status = next_status
             sale_call.save(validate: false)
           end
-          Rails.logger.info("auto_redistribution")
-          # Хэрэв дахин хувиарлах бол шинээр үүгсэнэ
-          if next_status.alias == "auto_redistribution"
-            singleton = MySingleton.instance
-            new_sale = singleton.copy_sale(self)
-
-            new_sale.delivery_start = tmp_start if tmp_start.present?
-            new_sale.delivery_end = tmp_end if tmp_end.present?
-            new_sale.status_id = 10
-
-            time = new_sale.delivery_start
-            new_sale.hour_start = time.hour
-            new_sale.hour_now = time.hour
-            new_sale.hour_end = time.hour + 2
-
-            if new_sale.save
-            else
-              Rails.logger.info("new_sale: #{new_sale.errors.full_messages}")
-            end
+        end
+        # Дахин хувиарлахыг баталгаажсанаар үүсгэсэн бол
+        if status.alias == "oper_confirmed" && inh.present?
+          if inh.status.alias == "auto_redistribution"
+            sta = ProductSaleStatus.find_by_alias("auto_redistributed")
+            inh.update_column(:status_id, sta.id)
           end
         end
 
-        # Амжилтгүй болчихоод дахиад баталгаажсан болговол дахин хүргэнэ гэсэн үг
-        # elsif status.previous == "11"
-        #       if salesman_travel_id.present?
-        #         self.update_column(:salesman_travel_id, nil)
-        #         salesman_travel_route.destroy
-        #       end
-        #     end
-        # if status.alias == "oper_confirmed" && salesman_travel_route.present?
-        #   self.update_column(:salesman_travel_id, nil)
-        # end
       end
     end
 
@@ -519,6 +560,12 @@ class ProductSale < ApplicationRecord
     else
       self.back_money = nil
       self.is_return = false
+    end
+  end
+
+  def set_update_values
+    if salesman_travel_id.present? && salesman_travel_route.present?
+      salesman_travel_route.update_column(:location_id, location_id)
     end
   end
 

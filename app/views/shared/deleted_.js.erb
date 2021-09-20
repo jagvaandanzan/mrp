@@ -1,0 +1,60 @@
+function remove_submit_btn() {
+    $('.action-buttons input[type="submit"]').remove();
+}
+
+function update_sale_item(icon, id) {
+    const tr = icon.parent().parent();
+    const product_id = tr.find('select.select_product').val();
+    const feature_item_id = tr.find('select.feature_item').val();
+    const quantity = tr.find('input.item_quantity').val();
+    const remainder = tr.find('remainder.item_quantity').val();
+    if (product_id.length === 0) {
+        alert("Бараа сонгоно уу!")
+    } else if (feature_item_id.length === 0) {
+        alert("Шинж чанар сонгоно уу!")
+    } else if (quantity.length === 0 || parseInt(quantity) === 0) {
+        alert("Тоо хэмжээ оруулна уу!")
+    } else if (parseInt(quantity) > parseInt(remainder)) {
+        alert("Үлдэгдэлгүй байна!")
+    } else if (confirm("Өөрчлөх үү!")) {
+        remove_submit_btn();
+        Rails.ajax({
+            url: "<%= update_item_operators_product_sales_path %>",
+            type: "POST",
+            data: "id=" + id + "&sale_id=<%= @product_sale.id %>&product_id=" + product_id + "&feature_item_id=" + feature_item_id + "&quantity=" + quantity + "&remainder=" + remainder
+                + "&to_see=" + tr.find("input[type='checkbox']").prop('checked') + "&p_discount=" + tr.find('.item_p_discount').val()
+                + "&discount=" + tr.find('.item_discount').val(),
+            success: function (data) {
+                if (data.status) {
+                    alert('Амжилттай өөрчиллөө!');
+                } else {
+                    alert(data.message);
+                }
+            }
+        });
+    }
+}
+
+function delete_sale_item(icon, id) {
+    if (confirm("<%= t('are_you_sure') %>")) {
+        remove_submit_btn();
+        const tr = icon.parent().parent();
+        if (parseInt(id) === 0) {
+            tr.remove();
+        } else {
+            Rails.ajax({
+                url: "<%= delete_item_operators_product_sales_path %>",
+                type: "POST",
+                data: "id=" + id,
+                success: function (data) {
+                    if (data.status) {
+                        tr.remove();
+                        alert('Амжилттай устлаа!');
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            });
+        }
+    }
+}

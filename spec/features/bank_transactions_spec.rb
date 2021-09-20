@@ -40,6 +40,7 @@ describe "bank transaction check", type: :feature do
     # end
     is_created_new = false
     transactions = []
+    transaction_in = []
     day = Time.now
     page.all('div#rc-tabs-0-panel-1 tr').each do |tr|
       transaction = BankTransaction.new
@@ -89,48 +90,47 @@ describe "bank transaction check", type: :feature do
         unless hash_bank_transactions["#{transaction.value}_#{transaction.summary}_#{transaction.account}"].present?
           #   break
           transaction.save
-          # орлого бол шалгана
+          transactions << transaction
           if transaction.summary > 0
-            transactions << transaction
+            transaction_in << transaction
             is_created_new = true
           end
         end
       end
 
     end
-    if is_created_new
-      check_payment(transactions)
+    if transactions.length > 0
+      check_payment(transactions, is_created_new, transaction_in)
     end
   end
 end
 
-def check_payment(transactions)
+def check_payment(transactions, is_created_new, transaction_in)
   param = API::V1::Entities::BankTransaction.represent transactions
   response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8882/api/savebanktrans", 'post', param.to_json)
   # Rails.logger.debug("43.231.114.241:8882/api/savebanktrans => #{param.to_json}")
   # Rails.logger.debug("43.231.114.241:8882/api/savebanktrans => #{response.code.to_s} => #{response.body.to_s}")
+  if is_created_new
+    ids = []
+    transaction_in.each do |transaction|
+      Rails.logger.debug "transaction.value => #{transaction.value}"
+      if transaction.value.downcase.match(/[wk][0-9]{8}/)
+        if transaction.value.downcase.include?('qpay')
+          transaction_id = transaction.value.downcase.match(/[k]\d+[0-9]/).to_s
+          payment = transaction.summary / 99 * 100
+        else
+          transaction_id = transaction.value.downcase.match(/[w]\d+[0-9]/).to_s
+          payment = transaction.summary
+        end
 
-  ids = []
-  transactions.each do |transaction|
-    Rails.logger.debug "transaction.value => #{transaction.value}"
-    if transaction.value.downcase.match(/[wk][0-9]{8}/)
-      if transaction.value.downcase.include?('qpay')
-        transaction_id = transaction.value.downcase.match(/[k]\d+[0-9]/).to_s
-        payment = transaction.summary / 99 * 100
-      else
-        transaction_id = transaction.value.downcase.match(/[w]\d+[0-9]/).to_s
-        payment = transaction.summary
+        puts "bank_send_mrp-enquire => #{transaction_id[1..transaction_id.length]} => #{payment}"
+        Rails.logger.debug "bank_send_mrp-enquire => #{transaction_id[1..transaction_id.length]} => #{payment}"
+        psw = ProductSaleWeb.instance
+        psw.create(transaction_id[1..transaction_id.length], payment)
       end
-
-      puts "bank_send_mrp-enquire => #{transaction_id[1..transaction_id.length]} => #{payment}"
-      Rails.logger.debug "bank_send_mrp-enquire => #{transaction_id[1..transaction_id.length]} => #{payment}"
-      psw = ProductSaleWeb.instance
-      psw.create(transaction_id[1..transaction_id.length], payment)
+      ids << transaction.id
     end
-    ids << transaction.id
+
+    ApplicationController.helpers.api_send("#{ENV['DOMAIN_NAME']}/api/v1/notifications/bank", 'post', {ids: ids}.to_json)
   end
-
-  ApplicationController.helpers.api_send("#{ENV['DOMAIN_NAME']}/api/v1/notifications/bank", 'post', {ids: ids}.to_json)
-
-
 end

@@ -143,10 +143,6 @@ class Users::ProductFeatureItemsController < Users::BaseController
       @product_feature_items = product.product_feature_items
     end
 
-    response = ApplicationController.helpers.sent_itoms("http://43.231.114.241:8883/api/itemserials/by-itemcode?itemcode=#{code}", 'get')
-    if response.code.to_i == 200
-      @json = JSON.parse(response.body)
-    end
     respond_to do |format|
       format.js {render 'itoms_ajax'}
     end

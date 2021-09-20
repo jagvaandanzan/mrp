@@ -12,10 +12,11 @@
   </section>
 
   <div class="action-buttons">
-    <% has_child = @product_sale.child.present? %>
+    <% allow_not_status = @product_sale.allow_not_status
+       has_child = @product_sale.child.present? %>
     <% if has_child %>
       <%= link_to @product_sale.status.name + ' хийсэн бараа', operators_product_sale_path(@product_sale.child), class: 'btn btn-info' %>
-    <% elsif (can? :manage, :edit_product_sale) || !@product_sale.has_seen_stockkeeper %>
+    <% elsif !@product_sale.has_seen_stockkeeper && !allow_not_status %>
       <%= link_to t('controls.button.edit'), edit_operators_product_sale_path(@product_sale), class: 'btn btn-info' %>
       <%= link_to t('controls.button.delete'), operators_product_sale_path(@product_sale), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
     <% end %>
@@ -56,22 +57,30 @@
               </div>
               <%= form_with model: @product_sale, url: update_status_operators_product_sales_path(id: @product_sale.id), method: :patch, local: true, :html => {class: 'form-horizontal'} do |f| %>
                 <div class="row">
-                  <div class="col-md-6 field_div">
+                  <div class="col-md-4 field_div">
                     <%= f.label :status_id, class: 'control-label' %>
                     <div class="<%= get_error_class(@product_sale, :status_id) %>">
                       <%= f.hidden_field :status_id %>
                       <%= field_errors(@product_sale, :status_id) %>
                       <%= f.collection_select :status_m, ProductSaleStatus.by_previous.by_type('oper', @product_sale.status_m), :id, :name,
-                                              {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_next_status(this)', disabled: has_child} %>
+                                              {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_next_status(this)', disabled: has_child || allow_not_status} %>
                     </div>
                   </div>
-                  <div id="div_status_sub" class="col-md-6 field_div <%= @product_sale.status_sub.present? ? '' : 'none' %>">
+                  <div id="div_status_sub" class="col-md-4 field_div <%= @product_sale.status_sub.present? ? '' : 'none' %>">
                     <label class="control-label" for="product_sale_status_id" style="margin-bottom: 15px"></label>
                     <div id="status" class="<%= get_error_class(@product_sale, :status_sub) %>">
                       <%= field_errors(@product_sale, :status_sub) %>
                       <%= f.collection_select :status_sub, ProductSaleStatus.by_previous(@product_sale.status_m).by_type('oper'), :id, :name,
-                                              {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_set_status(this)', disabled: has_child} %>
+                                              {:include_blank => t('controls.select.none')}, {class: 'form-control selectpicker', onchange: 'call_set_status(this)', disabled: has_child || (allow_not_status && @product_sale.status_id != 12)} %>
                     </div>
+                  </div>
+                  <div class="col-md-2">
+                    <% if allow_not_status %>
+                      <label class="control-label">&nbsp;</label>
+                      <div>
+                        <%= link_to 'Хуулах', new_operators_product_sale_path(inheritance: @product_sale.id), class: 'btn btn-warning' %>
+                      </div>
+                    <% end %>
                   </div>
                 </div>
                 <div class="row">
@@ -83,8 +92,8 @@
                     </div>
                   </div>
                   <div class="col-md-4 field_div">
-                    <% unless has_child %>
-                      <%= f.submit t('controls.button.update'), class: 'btn btn-warning', style: 'margin-top: 25px' %>
+                    <% if !has_child && (can? :manage, :edit_product_sale) %>
+                      <%= f.submit t('controls.button.update'), class: 'btn btn-primary', style: 'margin-top: 25px' %>
                     <% end %>
                   </div>
                 </div>
@@ -136,7 +145,7 @@
                   <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
                 </tr>
                 <% @product_sale.product_sale_returns.each do |ret|
-                  i = ret.product_sale_item  %>
+                  i = ret.product_sale_item      %>
                   <tr>
                     <td class="va-mid"><%= product_img_web_link(i) %></td>
                     <td class="va-mid"><%= i.product.name_with_code %></td>
