@@ -49,18 +49,6 @@ module API
               present :products, ProductWarehouseLoc.by_travel(params[:id]), with: API::SALESMAN::Entities::ProductWarehouse
             end
 
-            route_param :pid do
-              resource :load do
-                desc "PATCH travels/:id/products/:pid/load"
-                patch do
-                  # salesman_travel = SalesmanTravel.find(params[:id])
-                  warehouse_loc = ProductWarehouseLoc.find(params[:pid])
-                  warehouse_loc.update_column(:salesman_at, Time.now)
-                  present :load_at, warehouse_loc.salesman_at
-                end
-              end
-            end
-
             # Устах үеийн статус
             resource :status do
               desc "GET travels/:id/products/status"
@@ -79,6 +67,18 @@ module API
               patch do
 
                 present :success, true
+              end
+            end
+
+            route_param :pid do
+              resource :load do
+                desc "PATCH travels/:id/products/:pid/load"
+                patch do
+                  # salesman_travel = SalesmanTravel.find(params[:id])
+                  warehouse_loc = ProductWarehouseLoc.find(params[:pid])
+                  warehouse_loc.update_column(:salesman_at, Time.now)
+                  present :load_at, warehouse_loc.salesman_at
+                end
               end
             end
           end
