@@ -400,6 +400,8 @@ class Operators::ProductSalesController < Operators::BaseController
     sale_item = ProductSaleItem.find(params[:id])
     if sale_item.destroy
       ProductSaleLog.create(operator: current_operator,
+                            product_sale_id: sale_item.product_sale_id,
+                            sale_item: sale_item,
                             o_product_id: sale_item.product_id,
                             o_feature_item_id: sale_item.feature_item_id,
                             o_quantity: sale_item.quantity,
@@ -452,6 +454,8 @@ class Operators::ProductSalesController < Operators::BaseController
     feature_item_id = sale_item.feature_item_id
     product_id = sale_item.product_id
     log = ProductSaleLog.new(operator: current_operator,
+                             product_sale_id: sale_item.product_sale_id,
+                             sale_item: sale_item,
                              o_product_id: product_id,
                              o_feature_item_id: feature_item_id,
                              o_quantity: sale_item.quantity,

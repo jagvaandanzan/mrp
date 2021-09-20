@@ -2,7 +2,7 @@ class ProductWarehouseLoc < ApplicationRecord
   belongs_to :salesman_travel
   belongs_to :product
   belongs_to :location, :class_name => "ProductLocation"
-  belongs_to :feature_item, :class_name => "ProductFeatureItem"
+  belongs_to :feature_item, -> {with_deleted}, :class_name => "ProductFeatureItem"
   has_one :salesman, through: :salesman_travel
   has_one :salesman_travel_sign, through: :salesman_travel
   has_one :user, through: :salesman_travel_sign

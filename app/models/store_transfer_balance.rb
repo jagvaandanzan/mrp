@@ -1,6 +1,6 @@
 class StoreTransferBalance < ApplicationRecord
   belongs_to :product
-  belongs_to :feature_item, :class_name => "ProductFeatureItem"
+  belongs_to :feature_item, -> {with_deleted}, :class_name => "ProductFeatureItem"
   belongs_to :user
   belongs_to :storeroom
   belongs_to :transfer_item, :class_name => "StoreTransferItem"

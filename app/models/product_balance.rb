@@ -1,6 +1,6 @@
 class ProductBalance < ApplicationRecord
   belongs_to :product
-  belongs_to :feature_item, :class_name => "ProductFeatureItem"
+  belongs_to :feature_item, -> {with_deleted}, :class_name => "ProductFeatureItem"
   belongs_to :income_item, :class_name => "ProductIncomeItem", optional: true
   belongs_to :sale_item, :class_name => "ProductSaleItem", optional: true
   belongs_to :sale_direct, :class_name => "ProductSaleDirect", optional: true

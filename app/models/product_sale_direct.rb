@@ -3,7 +3,7 @@ class ProductSaleDirect < ApplicationRecord
 
   belongs_to :salesman
   belongs_to :product
-  belongs_to :feature_item, :class_name => "ProductFeatureItem"
+  belongs_to :feature_item, -> {with_deleted}, :class_name => "ProductFeatureItem"
   belongs_to :sale_item, :class_name => "ProductSaleItem"
 
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "sale_direct_id", dependent: :destroy

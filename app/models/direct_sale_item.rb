@@ -1,7 +1,7 @@
 class DirectSaleItem < ApplicationRecord
   belongs_to :direct_sale
   belongs_to :product
-  belongs_to :feature_item, :class_name => "ProductFeatureItem"
+  belongs_to :feature_item, -> {with_deleted}, :class_name => "ProductFeatureItem"
   belongs_to :product_location
   has_one :product_balance
   has_one :product_location_balance

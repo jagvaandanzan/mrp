@@ -2,7 +2,7 @@ class ProductSaleItem < ApplicationRecord
   acts_as_paranoid
   belongs_to :product_sale
   belongs_to :product
-  belongs_to :feature_item, :class_name => "ProductFeatureItem"
+  belongs_to :feature_item, -> {with_deleted}, :class_name => "ProductFeatureItem"
 
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "sale_item_id", dependent: :destroy
   has_one :bonus_balance, dependent: :destroy

@@ -1,7 +1,7 @@
 class ProductCallItem < ApplicationRecord
   belongs_to :product_sale_call
   belongs_to :product
-  belongs_to :feature_item, class_name: "ProductFeatureItem", optional: true
+  belongs_to :feature_item, -> {with_deleted}, class_name: "ProductFeatureItem", optional: true
 
   attr_accessor :remainder
 
