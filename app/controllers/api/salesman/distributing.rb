@@ -23,7 +23,7 @@ module API
                 error!(I18n.t('errors.messages.you_have_a_balance'), 422)
               else
                 yesterday = Time.current.yesterday.beginning_of_day
-                sum_bank = BankTransaction.by_billing_date(yesterday)
+                sum_bank = BankTransaction.by_billing(yesterday)
                                .by_salesman_id(salesman.id)
                                .sum_summary
                 salesman_money = MySingleton.instance

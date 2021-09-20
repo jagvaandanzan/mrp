@@ -37,7 +37,7 @@ class BankTransaction < ApplicationRecord
         .order(date: :desc)
   }
 
-  scope :by_billing_date, ->(day) {
+  scope :by_billing, ->(day) {
     where("billing_date >= ?", day)
         .where("billing_date < ?", day + 1.day)
   }
