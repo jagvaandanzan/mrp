@@ -60,6 +60,26 @@ module API
                 end
               end
             end
+
+            # Устах үеийн статус
+            resource :status do
+              desc "POST travels/:id/products/status"
+              post do
+                status = LogStat.order_queue
+                present :status, status, with: API::SALESMAN::Entities::LogStatus
+              end
+            end
+            resource :delete do
+              desc "PATCH travels/:id/products/delete"
+              params do
+                requires :id, type: Integer
+                requires :quantity, type: Integer
+                requires :status_id, type: Integer
+              end
+              patch do
+                present :products, ProductWarehouseLoc.by_travel(params[:id]), with: API::SALESMAN::Entities::ProductWarehouse
+              end
+            end
           end
 
           resource :signature do
