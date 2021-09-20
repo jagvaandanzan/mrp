@@ -365,7 +365,7 @@ class ProductSale < ApplicationRecord
 
 # Хэрэглэгчрүү sms илгээх
   def sent_info_to_user
-    SendSmsJob.perform_later(phone, "Tanii zahialgiin hurgelt ehellee. #{delivery_start.hour}-#{delivery_end.hour} tsagiin hoorond hurgegdeh bolno. Ajiltan :mn, utas #{salesman_travel.salesman.phone}. Market.mn", salesman_travel.salesman.name)
+    # SendSmsJob.perform_later(phone, "Tanii zahialgiin hurgelt ehellee. #{delivery_start.hour}-#{delivery_end.hour} tsagiin hoorond hurgegdeh bolno. Ajiltan :mn, utas #{salesman_travel.salesman.phone}. Market.mn", salesman_travel.salesman.name)
   end
 
 # Нярав апп дээр харсан эсэх

@@ -80,7 +80,9 @@ module API
       class SalesmanReturnUserSign < Grape::Entity
         expose :barcode, :name, :code, :desk, :feature, :image, :quantity, :created_at, :user_sign
       end
-
+      class LogStatus < Grape::Entity
+        expose :id, :name
+      end
     end
   end
 end
