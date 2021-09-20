@@ -63,8 +63,8 @@ module API
 
             # Устах үеийн статус
             resource :status do
-              desc "POST travels/:id/products/status"
-              post do
+              desc "GET travels/:id/products/status"
+              get do
                 status = LogStat.order_queue
                 present :status, status, with: API::SALESMAN::Entities::LogStatus
               end
