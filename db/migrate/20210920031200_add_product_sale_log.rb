@@ -1,7 +1,7 @@
 class AddProductSaleLog < ActiveRecord::Migration[5.2]
   def change
     create_table :log_stats do |t|
-      t.queue
+      t.integer :queue
       t.string :name
       t.timestamps
     end
