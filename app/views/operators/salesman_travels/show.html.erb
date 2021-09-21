@@ -5,10 +5,6 @@
   </section>
 
   <div class="action-buttons">
-    <% if (can? :manage, SalesmanTravel) && !@salesman_travel.load_at.present? %>
-      <%= link_to t('controls.button.edit'), edit_operators_salesman_travel_path(@salesman_travel), class: 'btn btn-info' %>
-      <%= link_to t('controls.button.delete'), operators_salesman_travel_path(@salesman_travel), method: :delete, data: {confirm: t('are_you_sure')}, class: 'btn btn-danger' %>
-    <% end %>
     <%= link_to t('titles.back_to_list'), operators_salesman_travels_path(page: cookies[:salesman_travel_page_number]), {class: "btn blck-btn"} %>
   </div>
   <%= show_body do %>
@@ -36,8 +32,11 @@
         </div>
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.salesman_travel.salesman_travel_routes') %> :</div>
-          <div class="col-data">
-            <table class="table-bordered table table-hover">
+          <div class="col-data text-right">
+            <button type="button" class="btn btn-success btn-xs" id="btn_travel_route">
+              <i class="fa fa-plus" style="color: white"></i>
+            </button>
+            <table class="table-bordered table table-hover m-t-5">
               <tr>
                 <th><%= t('activerecord.attributes.salesman_travel_route.queue') %></th>
                 <th>Байршил</th>
@@ -59,3 +58,39 @@
     </div>
   <% end %>
 </div>
+<%= render 'shared/form_modal', title: 'Захиалга нэмэх', modal_class: 'modal-lg' %>
+<script>
+    $('#btn_travel_route').on('click', function () {
+        $('#form_modal').modal('show');
+        $('#form_modal_body').html("<div class='text-center'><img src='/images/loading.gif'></div>");
+        Rails.ajax({
+            url: "<%= insert_sale_operators_salesman_travels_path %>",
+            type: "POST",
+            data: "travel_id=<%= @salesman_travel.id %>"
+        });
+    });
+
+    function insert_to_sale() {
+        const sale_id = $('#form_modal_body #product_sale_id').val();
+        const queue = $('#form_modal_body #product_sale_queue').val();
+        if (sale_id.length === 0) {
+            alert("Захиалга сонгоно уу!")
+        } else if (queue.length === 0) {
+            alert("Дараалал сонгоно уу!")
+        } else {
+            Rails.ajax({
+                url: "<%= insert_to_sale_operators_salesman_travels_path %>",
+                type: "POST",
+                data: "travel_id=<%= @salesman_travel.id %>&product_sale_id=" + sale_id + "&queue=" + queue,
+                success: function (data) {
+                    if (data.success) {
+                        $('#form_modal').modal('hide');
+                        window.location.reload();
+                    } else {
+                        alert(data.errors);
+                    }
+                }
+            });
+        }
+    }
+</script>

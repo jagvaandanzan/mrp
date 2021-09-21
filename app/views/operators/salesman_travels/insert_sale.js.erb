@@ -1,0 +1,5 @@
+<% unless hide_modal%>
+$('#form_modal_body').html("<%= escape_javascript render(partial: 'operators/salesman_travels/insert_sale_partial',locals: {product_sales: product_sales}) %>")
+$('#form_modal_body .selectpicker').selectpicker('refresh');
+<% end %>
+$('#form_modal').modal("<%= hide_modal ? 'hide':'show' %>");

@@ -1,12 +1,7 @@
-q = 0
-i = 0
-ProductSaleItem.where("'2021-09-21 00:00:00' <= created_at AND created_at < '2021-09-21 00:21:00' AND deleted_at IS NULL AND back_quantity IS NULL").each do |item|
-  q += item.quantity
-  i += 1
-  puts "#{item.id} == #{item.quantity} = #{item.created_at}"
+ProductBalance.joins(:product_sale)
+    .where("product_balances.created_at < '2021-09-20 00:00:00'")
+    .where("product_sale_items.back_quantity IS NULL AND product_sale_items.bought_quantity IS NULL AND")
+    .each do |bal|
+    puts "#{bal.id} ==> #{bal.quantity} ==> #{bal.sale_item_id} ==> #{bal.feature_item_id}"
 
-  # ProductBalance.create(product_id: item.product_id, feature_item_id: item.feature_item_id, quantity: -item.quantity, sale_item: item)
 end
-
-puts "#{q}"
-puts "#{i}"

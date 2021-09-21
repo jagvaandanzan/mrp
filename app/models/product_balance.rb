@@ -9,6 +9,7 @@ class ProductBalance < ApplicationRecord
   belongs_to :direct_sale_item, optional: true
   belongs_to :user, optional: true
   belongs_to :operator, optional: true
+  has_one :product_sale, through: :sale_item
 
   after_save -> {sync_web}
   after_destroy -> {sync_web}

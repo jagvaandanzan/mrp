@@ -1,0 +1,24 @@
+<div class="form-horizontal">
+  <%= form_body do %>
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="product_sale_id">Захиалга</label>
+      <div class="col-sm-10 ">
+        <%= collection_select nil, :product_sale_id, product_sales, :id, :with_location,
+                              {:prompt => t('controls.select.none'), },
+                              {class: 'form-control selectpicker', id: "product_sale_id", "data-live-search": true} %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="product_sale_queue">Дараалал</label>
+      <div class="col-sm-10 ">
+        <%= number_field_tag :queue, nil, {class: 'form-control', placeholder: 'Дараалал', id: 'product_sale_queue'} %>
+      </div>
+    </div>
+
+    <div class="modal-footer text-right">
+      <button type="button" class="btn btn-default m-t-20" data-dismiss="modal"><%= t('controls.button.close') %></button>
+      <button type="button" class="btn btn btn-warning m-t-20" onclick="insert_to_sale()"><%= t('controls.button.save') %></button>
+    </div>
+  <% end %>
+</div>

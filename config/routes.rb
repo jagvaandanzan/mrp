@@ -305,6 +305,8 @@ Rails.application.routes.draw do
       collection do
         get 'zone'
         get 'map'
+        post 'insert_sale'
+        post 'insert_to_sale'
       end
     end
 

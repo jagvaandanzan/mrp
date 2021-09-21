@@ -7,7 +7,7 @@ class Operators::SalesmanTravelsController < Operators::BaseController
     @start = params[:start].presence || today.strftime("%Y/%m/%d")
     @finish = params[:finish].presence || today.strftime("%Y/%m/%d")
 
-    @salesman_travels = SalesmanTravel.search(DateTime.parse(@start),DateTime.parse(@finish))
+    @salesman_travels = SalesmanTravel.search(DateTime.parse(@start), DateTime.parse(@finish))
                             .page(params[:page])
     cookies[:salesman_travel_page_number] = params[:page]
   end
@@ -45,35 +45,43 @@ class Operators::SalesmanTravelsController < Operators::BaseController
     @salesman_travel.operator = current_operator
     @salesman_travel.distance = 0
     @salesman_travel.duration = 0
-    save_action = @salesman_travel.save
-    if save_action
-      @salesman_travel.sale_ids.split(",").map(&:to_i).each_with_index {|sale_id, i|
-        product_sale = ProductSale.find(sale_id)
-        product_sale.update_column(:salesman_travel_id, @salesman_travel.id)
-        product_sale.sent_info_to_user if !product_sale.product_sale_items.present? && product_sale.product_sale_returns.present?
-        travel_route = SalesmanTravelRoute.new
-        travel_route.queue = i
-        travel_route.distance = 0
-        travel_route.duration = 0
-        travel_route.salesman_travel = @salesman_travel
-        travel_route.location = product_sale.location
-        travel_route.product_sale = product_sale
-        travel_route.save
-      }
-      # Жолоочийн хүсэлт илгээсэнд үүсгэсэн хувиарлалтаа өгнө
-      salesman_requests = SalesmanRequest.by_travel_nil
-                              .by_salesman_id(@salesman_travel.salesman_id)
-      if salesman_requests.present?
-        salesman_request = salesman_requests.first
-        salesman_request.update_column(:salesman_travel_id, @salesman_travel.id)
+
+    salesman_requests = SalesmanRequest.by_travel_nil
+                            .by_salesman_id(@salesman_travel.salesman_id)
+    if salesman_requests.present?
+      save_action = @salesman_travel.save
+      if save_action
+        @salesman_travel.sale_ids.split(",").map(&:to_i).each_with_index {|sale_id, i|
+          product_sale = ProductSale.find(sale_id)
+          product_sale.update_column(:salesman_travel_id, @salesman_travel.id)
+          product_sale.sent_info_to_user if !product_sale.product_sale_items.present? && product_sale.product_sale_returns.present?
+          travel_route = SalesmanTravelRoute.new
+          travel_route.queue = i
+          travel_route.distance = 0
+          travel_route.duration = 0
+          travel_route.salesman_travel = @salesman_travel
+          travel_route.location = product_sale.location
+          travel_route.product_sale = product_sale
+          travel_route.save
+        }
+        # Жолоочийн хүсэлт илгээсэнд үүсгэсэн хувиарлалтаа өгнө
+        salesman_requests = SalesmanRequest.by_travel_nil
+                                .by_salesman_id(@salesman_travel.salesman_id)
+        if salesman_requests.present?
+          salesman_request = salesman_requests.first
+          salesman_request.update_column(:salesman_travel_id, @salesman_travel.id)
+        end
+
+        @salesman_travel.send_notification if @salesman_travel.product_count > 0
+
+      else
+        last_travel = SalesmanTravel.all.last
+        @salesman_travel.number = last_travel.id + 1
+        @salesman_requests = SalesmanRequest.by_travel_nil
       end
-
-      @salesman_travel.send_notification if @salesman_travel.product_count > 0
-
     else
-      last_travel = SalesmanTravel.all.last
-      @salesman_travel.number = last_travel.id + 1
-      @salesman_requests = SalesmanRequest.by_travel_nil
+      @salesman_travel.errors.add(:salesman_travel_id, "Хүсэлт илгээгээгүй байна!")
+      save_action = false
     end
 
     respond_to do |format|
@@ -86,10 +94,47 @@ class Operators::SalesmanTravelsController < Operators::BaseController
   def show
   end
 
-  def edit
-    unless (can? :manage, SalesmanTravel) && !@salesman_travel.load_at.present?
-      redirect_to action: :show, id: @salesman_travel.id
+  def insert_sale
+    respond_to do |format|
+      format.js {render 'operators/salesman_travels/insert_sale', locals: {product_sales: ProductSale.travel_nil(nil), hide_modal: false}}
     end
+  end
+
+  def insert_to_sale
+    product_sale = ProductSale.find(params[:product_sale_id])
+    salesman_travel_id = params[:travel_id]
+    if product_sale.salesman_travel.present?
+      render json: {success: false, errors: "Хувиарлагдсан захиалга байна"}
+    else
+      travel_route = SalesmanTravelRoute.new
+      travel_route.queue = params[:queue]
+      travel_route.distance = 0
+      travel_route.duration = 0
+      travel_route.salesman_travel_id = salesman_travel_id
+      travel_route.location = product_sale.location
+      travel_route.product_sale = product_sale
+
+      if travel_route.save
+        product_sale.update_column(:salesman_travel_id, salesman_travel_id)
+        warehouse_locs = ProductWarehouseLoc.by_travel(salesman_travel_id)
+        hash_locs = warehouse_locs.map {|i| [i.feature_item_id]}.to_h
+        product_sale.product_sale_items.each do |sale_item|
+          has_loc = hash_locs[sale_item.feature_item_id]
+          if has_loc.present?
+            has_loc.update_column(:quantity, has_loc.quantity + sale_item.quantity)
+          end
+        end
+        render json: {success: true}
+      else
+        render json: {success: false, errors: travel_route.errors.full_messages}
+      end
+    end
+  end
+
+  def edit
+    # unless (can? :manage, SalesmanTravel) && !@salesman_travel.load_at.present?
+    redirect_to action: :show, id: @salesman_travel.id
+    # end
   end
 
   def update
