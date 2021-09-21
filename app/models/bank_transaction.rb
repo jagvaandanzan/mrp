@@ -133,7 +133,7 @@ class BankTransaction < ApplicationRecord
       if value.present?
         p = value.match(/[789]\d{7}/)
         if p.present?
-          self.salesman = Salesman.find_by_phone(p.to_s)
+          self.salesman = Salesman.find_by_uid(p.to_s)
           # puts "p: #{p}"
           v = value.gsub(p.to_s, "")
           d = v.split(".")
