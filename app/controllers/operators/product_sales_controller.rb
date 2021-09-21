@@ -195,6 +195,7 @@ class Operators::ProductSalesController < Operators::BaseController
     @product_sale.update_status = true
     @product_sale.attributes = params.require(:product_sale).permit(:status_id, :status_m, :status_sub, :status_note)
     @product_sale.operator = current_operator
+    @product_sale.from_status = true
     check_approved(@product_sale)
 
     if @product_sale.save
