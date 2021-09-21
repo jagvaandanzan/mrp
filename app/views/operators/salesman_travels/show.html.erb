@@ -33,9 +33,11 @@
         <div class="m30">
           <div class="align-left"><%= t('activerecord.attributes.salesman_travel.salesman_travel_routes') %> :</div>
           <div class="col-data text-right">
-            <button type="button" class="btn btn-success btn-xs" id="btn_travel_route">
-              <i class="fa fa-plus" style="color: white"></i>
-            </button>
+            <% unless @salesman_travel.load_at.present? %>
+              <button type="button" class="btn btn-success btn-xs" id="btn_travel_route">
+                <i class="fa fa-plus" style="color: white"></i>
+              </button>
+            <% end %>
             <table class="table-bordered table table-hover m-t-5">
               <tr>
                 <th><%= t('activerecord.attributes.salesman_travel_route.queue') %></th>

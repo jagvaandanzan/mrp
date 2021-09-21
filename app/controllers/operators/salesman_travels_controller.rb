@@ -101,63 +101,68 @@ class Operators::SalesmanTravelsController < Operators::BaseController
   end
 
   def insert_to_sale
-    product_sale = ProductSale.find(params[:product_sale_id])
     salesman_travel_id = params[:travel_id]
-    if product_sale.salesman_travel.present?
-      render json: {success: false, errors: "Хувиарлагдсан захиалга байна"}
+    salesman_travel = SalesmanTravel.find(salesman_travel_id)
+    if salesman_travel.load_at.present?
+      render json: {success: false, errors: "Жолооч гарын үсэг зурсан байна!"}
     else
-      travel_route = SalesmanTravelRoute.new
-      travel_route.queue = params[:queue]
-      travel_route.distance = 0
-      travel_route.duration = 0
-      travel_route.salesman_travel_id = salesman_travel_id
-      travel_route.location = product_sale.location
-      travel_route.product_sale = product_sale
+      product_sale = ProductSale.find(params[:product_sale_id])
+      if product_sale.salesman_travel.present?
+        render json: {success: false, errors: "Хувиарлагдсан захиалга байна"}
+      else
+        travel_route = SalesmanTravelRoute.new
+        travel_route.queue = params[:queue]
+        travel_route.distance = 0
+        travel_route.duration = 0
+        travel_route.salesman_travel_id = salesman_travel_id
+        travel_route.location = product_sale.location
+        travel_route.product_sale = product_sale
 
-      if travel_route.save
-        product_sale.update_column(:salesman_travel_id, salesman_travel_id)
-        warehouse_locs = ProductWarehouseLoc.by_travel(salesman_travel_id)
-        hash_locs = warehouse_locs.map {|i| [i.feature_item_id, i]}.to_h
-        product_sale.product_sale_items.each do |sale_item|
-          has_loc = hash_locs[sale_item.feature_item_id]
-          if has_loc.present?
-            has_loc.update_column(:quantity, has_loc.quantity + sale_item.quantity)
-          else
+        if travel_route.save
+          product_sale.update_column(:salesman_travel_id, salesman_travel_id)
+          warehouse_locs = ProductWarehouseLoc.by_travel(salesman_travel_id)
+          hash_locs = warehouse_locs.map {|i| [i.feature_item_id, i]}.to_h
+          product_sale.product_sale_items.each do |sale_item|
+            has_loc = hash_locs[sale_item.feature_item_id]
+            if has_loc.present?
+              has_loc.update_column(:quantity, has_loc.quantity + sale_item.quantity)
+            else
 
-            product_locations = ProductLocation.get_quantity(feature_item_id)
-            quantity = 0
-            is_added = false
-            item_quantity = sale_item.quantity
-            product_locations.each {|loc|
-              if quantity < item_quantity
-                q = if loc.quantity >= (item_quantity - quantity)
-                      item_quantity - quantity
-                    else
-                      loc['quantity'].to_i
-                    end
-                quantity += q
+              product_locations = ProductLocation.get_quantity(feature_item_id)
+              quantity = 0
+              is_added = false
+              item_quantity = sale_item.quantity
+              product_locations.each {|loc|
+                if quantity < item_quantity
+                  q = if loc.quantity >= (item_quantity - quantity)
+                        item_quantity - quantity
+                      else
+                        loc['quantity'].to_i
+                      end
+                  quantity += q
+                  ProductWarehouseLoc.create(salesman_travel_id: salesman_travel_id,
+                                             product_id: sale_item.product_id,
+                                             location_id: loc.id,
+                                             feature_item_id: sale_item.feature_item_id,
+                                             quantity: q)
+                  is_added = true
+                else
+                  break
+                end
+              }
+              unless is_added
                 ProductWarehouseLoc.create(salesman_travel_id: salesman_travel_id,
                                            product_id: sale_item.product_id,
-                                           location_id: loc.id,
+                                           location_id: 1,
                                            feature_item_id: sale_item.feature_item_id,
-                                           quantity: q)
-                is_added = true
-              else
-                break
+                                           quantity: item_quantity)
               end
-            }
-            unless is_added
-              ProductWarehouseLoc.create(salesman_travel_id: salesman_travel_id,
-                                         product_id: sale_item.product_id,
-                                         location_id: 1,
-                                         feature_item_id: sale_item.feature_item_id,
-                                         quantity: item_quantity)
             end
           end
+          render json: {success: true}
+        else
+          render json: {success: false, errors: travel_route.errors.full_messages}
         end
-        render json: {success: true}
-      else
-        render json: {success: false, errors: travel_route.errors.full_messages}
       end
     end
   end
