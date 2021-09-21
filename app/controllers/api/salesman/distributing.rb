@@ -19,7 +19,8 @@ module API
               error!(I18n.t('errors.messages.return_request_not_confirmed'), 422)
             else
               sale_items = ProductSaleItem.sale_available(salesman.id)
-              if sale_items.present?
+              sale_returns = ProductSaleReturn.sale_available(salesman.id)
+              if sale_items.present? || sale_returns.present?
                 error!(I18n.t('errors.messages.you_have_a_balance'), 422)
               else
                 yesterday = Time.current.yesterday.beginning_of_day

@@ -12,28 +12,62 @@ module API
           end
         end
 
+        resource :sale_returns do
+          desc "GET sales/sale_returns"
+          get do
+            sale_returns = ProductSaleReturn.sale_available(current_salesman.id)
+                               .status_not_confirmed
+            present :sale_returns, sale_returns, with: API::SALESMAN::Entities::ProductSaleReturnReturn
+          end
+        end
+
         resource :to_return do
           desc "POST sales/to_return"
           params do
-            requires :sale_item_id, type: Integer
+            optional :sale_item_id, type: Integer
+            optional :sale_return_id, type: Integer
             requires :quantity, type: Integer
           end
           post do
-            sale_item = ProductSaleItem.find(params[:sale_item_id])
-            available_quantity = ProductFeatureItem.sale_available_item_quantity(current_salesman.id, sale_item.feature_item_id)
-            if available_quantity >= params[:quantity]
-              salesman_return = SalesmanReturn.by_sale_item_salesman(sale_item.id, current_salesman.id).first
-              if salesman_return.present?
-                salesman_return.update_column(:quantity, params[:quantity])
-              else
-                salesman_return = SalesmanReturn.create(salesman: current_salesman,
-                                                        product: sale_item.product,
-                                                        feature_item: sale_item.feature_item,
-                                                        sale_item: sale_item,
-                                                        quantity: params[:quantity])
-              end
+            if params[:sale_item_id].present?
+              sale_item = ProductSaleItem.find(params[:sale_item_id])
+              available_quantity = ProductFeatureItem.sale_available_item_quantity(current_salesman.id, sale_item.feature_item_id)
+              if available_quantity >= params[:quantity]
+                salesman_return = SalesmanReturn.by_sale_item_salesman(sale_item.id, current_salesman.id).first
+                if salesman_return.present?
+                  salesman_return.update_column(:quantity, params[:quantity])
+                else
+                  salesman_return = SalesmanReturn.create(salesman: current_salesman,
+                                                          product: sale_item.product,
+                                                          feature_item: sale_item.feature_item,
+                                                          sale_item: sale_item,
+                                                          quantity: params[:quantity])
+                end
 
-              present :salesman_return, salesman_return, with: API::SALESMAN::Entities::SalesmanReturn
+                present :salesman_return, salesman_return, with: API::SALESMAN::Entities::SalesmanReturn
+              else
+                error!(I18n.t('errors.messages.available_quantity'), 422)
+              end
+            elsif params[:sale_return_id].present?
+              sale_return = ProductSaleReturn.find(params[:sale_return_id])
+              product_sale_item = sale_return.product_sale_item
+              available_quantity = ProductSaleReturn.by_available_feature_id(current_salesman.id, product_sale_item.feature_item_id)
+              if available_quantity >= params[:quantity]
+                salesman_return = SalesmanReturn.by_sale_return_salesman(sale_return.id, current_salesman.id).first
+                if salesman_return.present?
+                  salesman_return.update_column(:quantity, params[:quantity])
+                else
+                  salesman_return = SalesmanReturn.create(salesman: current_salesman,
+                                                          product: product_sale_item.product,
+                                                          feature_item: product_sale_item.feature_item,
+                                                          sale_return: sale_return,
+                                                          quantity: params[:quantity])
+                end
+
+                present :salesman_return, salesman_return, with: API::SALESMAN::Entities::SalesmanReturn
+              else
+                error!(I18n.t('errors.messages.available_quantity'), 422)
+              end
             else
               error!(I18n.t('errors.messages.available_quantity'), 422)
             end

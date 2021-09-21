@@ -61,17 +61,19 @@ module API
                     return_sign.save
 
                     salesman_returns.each {|ret|
-                      sales_item = ret.sale_item
-                      sales_item.update_column(:back_quantity, sales_item.back_quantity.present? ? sales_item.back_quantity + ret.quantity : ret.quantity)
-                      ProductBalance.create(product: ret.product,
-                                            feature_item: ret.feature_item,
-                                            salesman_return: ret,
-                                            user: current_user,
-                                            quantity: ret.quantity)
-                      ProductLocationBalance.create(x: 1, y: 1, z: 2,
-                                                    product_feature_item: ret.feature_item,
-                                                    salesman_return: ret,
-                                                    quantity: ret.quantity)
+                      if ret.quantity > 0
+                        item = ret.sale_item.present? ? ret.sale_item : ret.sale_return
+                        item.update_column(:back_quantity, item.back_quantity.present? ? item.back_quantity + ret.quantity : ret.quantity)
+                        ProductBalance.create(product: ret.product,
+                                              feature_item: ret.feature_item,
+                                              salesman_return: ret,
+                                              user: current_user,
+                                              quantity: ret.quantity)
+                        ProductLocationBalance.create(x: 1, y: 1, z: 2,
+                                                      product_feature_item: ret.feature_item,
+                                                      salesman_return: ret,
+                                                      quantity: ret.quantity)
+                      end
                     }
                     return_sign.send_notification_to_salesman
                     present :sign_at, return_sign.updated_at

@@ -2,11 +2,35 @@ class ProductSaleReturn < ApplicationRecord
   belongs_to :product_sale
   belongs_to :product_sale_item
   has_one :salesman_travel, through: :product_sale
+  has_one :product, through: :product_sale_item
+  has_one :status, through: :product_sale
+
+  has_many :salesman_returns, :class_name => "SalesmanReturn", :foreign_key => "sale_return_id", dependent: :destroy
 
   attr_accessor :remainder
 
   validates_numericality_of :quantity, less_than_or_equal_to: Proc.new(&:remainder)
   validates :quantity, numericality: {greater_than: 0}
+
+  scope :sale_available, ->(salesman_id) {
+    joins(:salesman_travel)
+        .joins(:product)
+        .where("salesman_travels.salesman_id = ?", salesman_id)
+        .where("quantity - IFNULL(back_quantity, 0) > ?", 0)
+        .order("products.code")
+        .order("products.n_name")
+  }
+  scope :by_available_feature_id, ->(salesman_id, feature_item_id) {
+    joins(:salesman_travel)
+        .joins(:product_sale_item)
+        .where("salesman_travels.salesman_id = ?", salesman_id)
+        .where('product_sale_items.feature_item_id = ?', feature_item_id)
+        .sum("product_sale_returns.quantity - IFNULL(product_sale_returns.back_quantity, 0)")
+  }
+  scope :status_not_confirmed, ->() {
+    joins(:status)
+        .where.not('product_sale_statuses.alias = ?', 'oper_confirmed')
+  }
 
   def price
     ApplicationController.helpers.get_f(product_sale_item.price)
@@ -34,6 +58,19 @@ class ProductSaleReturn < ApplicationRecord
 
   def product_barcode
     product_sale_item.feature_item.barcode
+  end
+
+  def back_request
+    salesman_returns.count > 0
+  end
+
+  def return_signed
+    if salesman_returns.present?
+      salesman_return = salesman_returns.first
+      salesman_return.sign_id.present?
+    else
+      false
+    end
   end
 
   def exchange_balance

@@ -4,7 +4,8 @@ class SalesmanReturn < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :product
   belongs_to :feature_item, :class_name => "ProductFeatureItem"
-  belongs_to :sale_item, :class_name => "ProductSaleItem"
+  belongs_to :sale_item, :class_name => "ProductSaleItem", optional: true
+  belongs_to :sale_return, :class_name => "ProductSaleReturn", optional: true
   has_one :product_balance, dependent: :destroy
   has_one :product_location_balance, dependent: :destroy
 
@@ -12,6 +13,13 @@ class SalesmanReturn < ApplicationRecord
     left_joins(:sign)
         .where("salesman_return_signs.id IS NULL OR salesman_return_signs.user_id IS ?", nil)
         .where(sale_item_id: si_id)
+        .where(salesman_id: salesman_id)
+  }
+
+  scope :by_sale_return_salesman, ->(return_id, salesman_id) {
+    left_joins(:sign)
+        .where("salesman_return_signs.id IS NULL OR salesman_return_signs.user_id IS ?", nil)
+        .where(sale_return_id: return_id)
         .where(salesman_id: salesman_id)
   }
 
