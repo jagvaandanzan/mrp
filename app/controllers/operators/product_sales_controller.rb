@@ -88,14 +88,44 @@ class Operators::ProductSalesController < Operators::BaseController
         @product_sale.building_code = parent.building_code
         @product_sale.loc_note = parent.loc_note
         @product_sale.tax = parent.tax
-        @product_sale.sum_price = -parent.sum_price
-        parent.product_sale_items.not_nil_bought_quantity.each do |item|
-          sale_return = ProductSaleReturn.new(product_sale: parent,
-                                              product_sale_item: item,
-                                              quantity: item.bought_quantity.presence || 0,
-                                              remainder: item.bought_quantity.presence || 0)
-          total_price -= item.price * item.bought_quantity
-          @product_sale.product_sale_returns << sale_return
+        # Буцаалт, солилтыг дахиж хувиарлаж байна
+        if parent.parent_id.present?
+          total_price = parent.sum_price
+          parent.product_sale_returns.each do |retrn|
+            sale_return = ProductSaleReturn.new(product_sale: parent,
+                                                product_sale_item: retrn.product_sale_item,
+                                                quantity: retrn.quantity,
+                                                remainder: retrn.quantity)
+            @product_sale.product_sale_returns << sale_return
+          end
+
+          parent.product_sale_items.each do |sale_item|
+            product = sale_item.product
+            new_item = ProductSaleItem.new(product: product)
+            if sale_item.feature_item.present?
+              feature_item = sale_item.feature_item
+              new_item.feature_item = feature_item
+              new_item.remainder = feature_item.balance
+              new_item.quantity = sale_item.quantity
+              new_item.p_price = feature_item.price.presence || 0
+              new_item.p_6_8 = feature_item.p_6_8.presence || 0
+              new_item.p_9_ = feature_item.p_9_.presence || 0
+              new_item.price = sale_item.price
+              new_item.sum_price = sale_item.sum_price
+            end
+            @product_sale.product_sale_items << new_item
+          end
+
+        else
+          @product_sale.sum_price = -parent.sum_price
+          parent.product_sale_items.not_nil_bought_quantity.each do |item|
+            sale_return = ProductSaleReturn.new(product_sale: parent,
+                                                product_sale_item: item,
+                                                quantity: item.bought_quantity.presence || 0,
+                                                remainder: item.bought_quantity.presence || 0)
+            total_price -= item.price * item.bought_quantity
+            @product_sale.product_sale_returns << sale_return
+          end
         end
       end
 
