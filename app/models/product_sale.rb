@@ -25,7 +25,7 @@ class ProductSale < ApplicationRecord
   enum money: {cash: 0, account: 1, mixed: 2}
   enum source: {sr_comment: 0, sr_operator: 1, sr_web: 2}
 
-  attr_accessor :hour_now, :hour_start, :hour_end, :update_status, :operator, :salesman, :status_m, :status_sub
+  attr_accessor :hour_now, :hour_start, :hour_end, :update_status, :operator, :salesman, :status_m, :status_sub, :from_status
 
   before_save :check_exchange
   before_save :create_log
@@ -59,7 +59,7 @@ class ProductSale < ApplicationRecord
   with_options :if => Proc.new {|m| m.parent_id.present?} do
     validates :product_sale_returns, presence: true
   end
-  with_options :if => Proc.new {|m| !m.parent_id.present?} do
+  with_options :if => Proc.new {|m| !m.parent_id.present? && !m.from_status.present?} do
     validates :product_sale_items, presence: true
   end
 
