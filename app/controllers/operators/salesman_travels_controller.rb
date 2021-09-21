@@ -122,6 +122,37 @@ class Operators::SalesmanTravelsController < Operators::BaseController
           has_loc = hash_locs[sale_item.feature_item_id]
           if has_loc.present?
             has_loc.update_column(:quantity, has_loc.quantity + sale_item.quantity)
+          else
+
+            product_locations = ProductLocation.get_quantity(feature_item_id)
+            quantity = 0
+            is_added = false
+            item_quantity = sale_item.quantity
+            product_locations.each {|loc|
+              if quantity < item_quantity
+                q = if loc.quantity >= (item_quantity - quantity)
+                      item_quantity - quantity
+                    else
+                      loc['quantity'].to_i
+                    end
+                quantity += q
+                ProductWarehouseLoc.create(salesman_travel_id: salesman_travel_id,
+                                           product_id: sale_item.product_id,
+                                           location_id: loc.id,
+                                           feature_item_id: sale_item.feature_item_id,
+                                           quantity: q)
+                is_added = true
+              else
+                break
+              end
+            }
+            unless is_added
+              ProductWarehouseLoc.create(salesman_travel_id: salesman_travel_id,
+                                         product_id: sale_item.product_id,
+                                         location_id: 1,
+                                         feature_item_id: sale_item.feature_item_id,
+                                         quantity: item_quantity)
+            end
           end
         end
         render json: {success: true}

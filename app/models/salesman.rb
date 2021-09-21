@@ -15,7 +15,7 @@ class Salesman < ActiveRecord::Base
   enum gender: {male: 0, female: 1}
 
   before_validation do
-    self.uid = phone if uid.blank?
+    self.uid = phone
   end
   validates :surname, :name, :register, presence: true, length: {maximum: 255}
   validates :gender, :email, :phone, :avatar, presence: true

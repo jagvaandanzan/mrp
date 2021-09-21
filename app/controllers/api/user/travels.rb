@@ -320,5 +320,13 @@ def create_warehouse_loc(item_quantity, salesman_travel_id, product_id, feature_
       break
     end
   }
+  # TODO үүний утаснаас байршуулдаг болсон үед авч хаях
+  unless is_added
+    ProductWarehouseLoc.create(salesman_travel_id: salesman_travel_id,
+                               product_id: product_id,
+                               location_id: 1,
+                               feature_item_id: feature_item_id,
+                               quantity: item_quantity)
+  end
   is_added
 end

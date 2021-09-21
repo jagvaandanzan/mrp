@@ -7,10 +7,6 @@ class SalesmanTravelRoute < ApplicationRecord
 
   has_one :status, through: :product_sale
 
-  after_create :create_warehouse_location
-  before_destroy :destroy_warehouse_loc
-  after_destroy :after_destroy_warehouse_loc
-
   attr_accessor :is_update, :feature_item_ids
 
   validates_uniqueness_of :product_sale_id, scope: [:salesman_travel_id]
@@ -202,86 +198,4 @@ class SalesmanTravelRoute < ApplicationRecord
     end
   end
 
-  private
-
-  def create_warehouse_location
-    if is_update.present?
-      self.product_sale.update_column(:salesman_travel_id, salesman_travel_id)
-      warehouse_locs = ProductWarehouseLoc.by_travel(salesman_travel_id)
-      feature_item_ids = product_sale
-                             .product_sale_items
-                             .select("feature_item_id")
-                             .group(:feature_item_id)
-      load_at = nil
-      salesman_at = nil
-      if warehouse_locs.present?
-        warehouse_loc = warehouse_locs.last
-        load_at = warehouse_loc.load_at
-        salesman_at = warehouse_loc.salesman_at
-        feature_item_ids.each {|id|
-          warehouse_locs = warehouse_locs.by_feature_item_id(id['feature_item_id'])
-          warehouse_locs.destroy_all if warehouse_locs.present?
-        }
-      end
-      feature_item_ids.each {|id|
-        feature_item = ProductFeatureItem.find(id['feature_item_id'])
-        create_warehouse_loc(salesman_travel
-                                 .product_sale_items
-                                 .by_feature_item_id(feature_item.id)
-                                 .sum(:quantity),
-                             salesman_travel_id,
-                             feature_item.product_id,
-                             feature_item.id,
-                             false, load_at, salesman_at)
-      }
-    end
-  end
-
-  def destroy_warehouse_loc
-    # Шинж чанар агуулсан байршилуудыг олж устгана
-    if is_update.present?
-      warehouse_locs = ProductWarehouseLoc.by_travel(salesman_travel_id)
-      self.feature_item_ids = product_sale
-                                  .product_sale_items
-                                  .select("feature_item_id")
-                                  .group(:feature_item_id)
-      if warehouse_locs.present?
-        self.feature_item_ids.each {|id|
-          warehouse_locs = warehouse_locs.by_feature_item_id(id['feature_item_id'])
-          warehouse_locs.destroy_all if warehouse_locs.present?
-        }
-      end
-    end
-  end
-
-  def after_destroy_warehouse_loc
-    # устгасаны дараа Шинж чанар агуулсан байвал шинээр үүсгэнэ
-    if is_update.present?
-      self.product_sale.update_column(:salesman_travel_id, nil)
-      self.feature_item_ids.each {|id|
-        item = product_sale
-                   .product_sale_items.by_id(id['feature_item_id'])
-        if item.present?
-          feature_item = ProductFeatureItem.find(id['feature_item_id'])
-          warehouse_locs = ProductWarehouseLoc.by_travel(salesman_travel_id)
-                               .by_feature_item_id(feature_item.id)
-          load_at = nil
-          salesman_at = nil
-          if warehouse_locs.present?
-            warehouse_loc = warehouse_locs.last
-            load_at = warehouse_loc.load_at
-            salesman_at = warehouse_loc.salesman_at
-          end
-          create_warehouse_loc(salesman_travel
-                                   .product_sale_items
-                                   .by_feature_item_id(feature_item.id)
-                                   .sum(:quantity),
-                               salesman_travel_id,
-                               feature_item.product_id,
-                               feature_item.id,
-                               false, load_at, salesman_at)
-        end
-      }
-    end
-  end
 end
