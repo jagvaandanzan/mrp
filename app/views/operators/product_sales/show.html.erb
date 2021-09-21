@@ -92,7 +92,7 @@
                     </div>
                   </div>
                   <div class="col-md-4 field_div">
-                    <% if !has_child && (can? :manage, :edit_product_sale) %>
+                    <% if !has_child %>
                       <%= f.submit t('controls.button.update'), class: 'btn btn-primary', style: 'margin-top: 25px' %>
                     <% end %>
                   </div>

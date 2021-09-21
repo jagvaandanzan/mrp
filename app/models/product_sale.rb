@@ -378,7 +378,6 @@ class ProductSale < ApplicationRecord
       false
     end
   end
-
   def update_sum_price
     sum_val = product_sale_items.by_to_see(false)
                   .sum(:sum_price)
