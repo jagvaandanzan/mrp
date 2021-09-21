@@ -62,6 +62,10 @@ class Salesman < ActiveRecord::Base
     "#{id_number} - #{name}"
   end
 
+  def sur_name
+    "#{id_number} - #{name}"
+  end
+
   def avatar_tumb
     avatar.url(:tumb)
   end

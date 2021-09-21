@@ -232,7 +232,13 @@
                 <% @product_sale.product_sale_status_logs.each do |p| %>
                   <tr>
                     <td class="va-mid"><%= p.created_at.strftime('%F %R') %></td>
-                    <td class="va-mid"><%= p.operator.present? ? p.operator.operator_name : p.salesman.present? ? p.salesman.name : '' %></td>
+                    <td class="va-mid"><%= if p.operator.present?
+                                             p.operator.operator_name
+                                           elsif p.salesman.present?
+                                             p.salesman.sur_name
+                                           else
+                                             p.user.present? ? p.user.user_name : ''
+                                           end %></td>
                     <td class="va-mid"><%= p.status.present? ? p.status.name_with_parent : "Сонгоогүй" %></td>
                     <td class="va-mid"><%= p.note %></td>
                   </tr>
