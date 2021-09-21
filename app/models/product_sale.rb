@@ -439,7 +439,7 @@ class ProductSale < ApplicationRecord
                                 to_see: sale_item.to_see,
                                 p_discount: sale_item.p_discount,
                                 discount: sale_item.discount)
-          sale_item.product_balance.destroy
+          sale_item.product_balance.destroy if sale_item.product_balance.present?
 
           warehouse_locs = ProductWarehouseLoc.by_travel(salesman_travel_id)
                                .by_feature_item_id(sale_item.feature_item_id)
