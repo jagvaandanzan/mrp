@@ -176,9 +176,10 @@ class ProductSaleItem < ApplicationRecord
     else
       self.destroy
     end
+    salesman_id = salesman_travel.salesman_id
     ProductSaleLog.create(user: user,
                           log_stat_id: status_id,
-                          salesman: salesman_travel.salesman,
+                          salesman_id: salesman_id,
                           salesman_travel_id: salesman_travel.id,
                           product_sale_id: product_sale_id,
                           sale_item: self,
@@ -192,9 +193,9 @@ class ProductSaleItem < ApplicationRecord
     st = ProductSaleStatus.find_by_alias("auto_destroy")
     self.product_sale.update_column(:status_id, st.id)
     ProductSaleStatusLog.create(product_sale: product_sale,
-                             user: user,
-                             salesman: salesman,
-                             status: st)
+                                user: user,
+                                salesman_id: salesman_id,
+                                status: st)
   end
 
   private
