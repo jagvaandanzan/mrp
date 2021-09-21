@@ -380,8 +380,21 @@ class ProductSale < ApplicationRecord
   end
 
   def update_sum_price
-    self.update_column(:sum_price, product_sale_items.by_to_see(false)
-                                       .sum(:sum_price))
+    sum_val = product_sale_items.by_to_see(false)
+                  .sum(:sum_price)
+    if bonus.present?
+      bonu = Bonu.by_phone(phone)
+      if bonu.present?
+        b = bonu.first
+        if sum_val < bonus
+          self.update_column(:bonus, sum_val)
+        else
+          sum_val -= bonus if b.balance >= bonus
+        end
+      end
+    end
+
+    self.update_column(:sum_price, sum_val)
   end
 
   def product_names
@@ -412,9 +425,21 @@ class ProductSale < ApplicationRecord
   def clear_relation
     item_eached = false
     if salesman_travel_id.present?
+      salesman = salesman_travel.salesman
       if salesman_travel_route.present?
         item_eached = true
         product_sale_items.each do |sale_item|
+          ProductSaleLog.create(operator: operator,
+                                salesman: salesman,
+                                salesman_travel_id: salesman_travel_id,
+                                product_sale_id: sale_item.product_sale_id,
+                                sale_item: sale_item,
+                                product_id: sale_item.product_id,
+                                feature_item_id: sale_item.feature_item_id,
+                                quantity: sale_item.quantity,
+                                to_see: sale_item.to_see,
+                                p_discount: sale_item.p_discount,
+                                discount: sale_item.discount)
           sale_item.product_balance.destroy
 
           warehouse_locs = ProductWarehouseLoc.by_travel(salesman_travel_id)
@@ -500,12 +525,9 @@ class ProductSale < ApplicationRecord
                                                                 note: status_note)
       # set_status
       if status.present?
-        Rails.logger.info("---a-set_update_values---------")
         if status.previous.present?
           previous_alias = status.previous_status.alias
-          Rails.logger.info("---a-sdsdasdasdasda---------")
           if previous_alias == "oper_failed"
-            Rails.logger.info("------------ clear_relation")
             self.clear_relation
           end
         end

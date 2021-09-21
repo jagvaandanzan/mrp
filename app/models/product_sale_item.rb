@@ -3,6 +3,7 @@ class ProductSaleItem < ApplicationRecord
   belongs_to :product_sale
   belongs_to :product
   belongs_to :feature_item, -> {with_deleted}, :class_name => "ProductFeatureItem"
+  belongs_to :log_stat, optional: true
 
   has_one :product_balance, :class_name => "ProductBalance", :foreign_key => "sale_item_id", dependent: :destroy
   has_one :bonus_balance, dependent: :destroy
@@ -164,6 +165,32 @@ class ProductSaleItem < ApplicationRecord
     else
       (p_discount.present? && price.present?) ? ApplicationController.helpers.get_percentage(price, p_discount) : ''
     end
+  end
+
+  def destroy_from(q, user, status_id)
+    self.update_columns(log_stat_id: status_id, destroy_q: q)
+    del_q = q
+    if q < quantity
+      del_q = quantity - q
+      self.update_attributes(remainder: del_q, quantity: del_q, sum_price: del_q * price)
+    else
+      self.destroy
+    end
+    ProductSaleLog.create(user: user,
+                          log_stat_id: status_id,
+                          salesman: salesman_travel.salesman,
+                          salesman_travel_id: salesman_travel.id,
+                          product_sale_id: product_sale_id,
+                          sale_item: self,
+                          product_id: product_id,
+                          feature_item_id: feature_item_id,
+                          quantity: del_q,
+                          to_see: to_see,
+                          p_discount: p_discount,
+                          discount: discount)
+    self.product_sale.update_sum_price
+    st = ProductSaleStatus.find_by_alias("auto_destroy")
+    self.product_sale.update_column(status_id, st.id)
   end
 
   private

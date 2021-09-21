@@ -80,6 +80,38 @@ module API
                 requires :status_id, type: Integer
               end
               patch do
+                loc = ProductWarehouseLoc.find(params[:pid])
+                q = params[:quantity]
+                if loc.quantity == q
+                  loc.destroy
+                else
+                  loc.update_column(:quantity, loc.quantity - q)
+                end
+                sale_items = ProductSaleItem.by_salesman_travel_id(loc.salesman_travel_id)
+                                 .by_feature_item_id(loc.feature_item_id)
+                destroy_q = 0
+                # Эхлээд яг тэнцүү бараатай захиалгын устгая
+                sale_items.each {|sale_item|
+                  if sale_item.quantity == q
+                    sale_item.destroy_from(q, current_user, params[:status_id])
+                    destroy_q += sale_item.quantity
+                  end
+                }
+                # Устгаж чадаагүй бол
+                if destroy_q < q
+                  sale_items.each {|sale_item|
+                    if destroy_q > 0
+                      if sale_item.quantity <= destroy_q
+                        sale_item.destroy_from(destroy_q, current_user, params[:status_id])
+                      else
+                        sale_item.destroy_from(loc.quantity - q, current_user, params[:status_id])
+                      end
+                      destroy_q -= sale_item.quantity
+                    else
+                      break
+                    end
+                  }
+                end
 
                 present :success, true
               end

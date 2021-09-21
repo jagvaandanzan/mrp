@@ -1,5 +1,5 @@
 class ProductSaleLog < ApplicationRecord
-  belongs_to :operator, -> {with_deleted}
+  belongs_to :operator, -> {with_deleted}, optional: true
   belongs_to :salesman, -> {with_deleted}, optional: true
   belongs_to :salesman_travel, optional: true
   belongs_to :user, -> {with_deleted}, optional: true

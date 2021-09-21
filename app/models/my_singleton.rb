@@ -76,8 +76,13 @@ class MySingleton
                                approved_date: sale.approved_date, cart_id: sale.cart_id, feedback_period: sale.feedback_period, tax: sale.tax)
 
     sale.product_sale_items.each do |sale_item|
+      feature_item = sale_item.feature_item
       new_sale.product_sale_items << ProductSaleItem.new(product_id: sale_item.product_id, feature_item_id: sale_item.feature_item_id,
                                                          quantity: sale_item.quantity, price: sale_item.price, p_discount: sale_item.p_discount,
+                                                         remainder: feature_item.balance,
+                                                         p_price: feature_item.price.presence || 0,
+                                                         p_6_8: feature_item.p_6_8.presence || 0,
+                                                         p_9_: feature_item.p_9_.presence || 0,
                                                          sum_price: sale_item.sum_price, to_see: sale_item.to_see)
     end
     if sale.product_sale_status_logs.present?
