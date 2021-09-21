@@ -23,7 +23,7 @@
       </div>
       <div class="col-md-2 search">
         <%= f.hidden_field :status_id, value: @status_id %>
-        <%= f.collection_select :status, ProductSaleStatus.by_previous.by_types(['oper','sals']), :id, :name,
+        <%= f.collection_select :status, ProductSaleStatus.by_previous.by_types(['oper','sals', 'auto']), :id, :name,
                                 {:selected => @status, :include_blank => t('activerecord.attributes.product_sale_call.status_id')}, {class: 'form-control selectpicker', onchange: 'call_next_status(this)'} %>
         <div id="div_status_sub" class="<%= @status_sub.present? && !@status_sub.blank? ? '' : 'none' %>">
           <%= f.collection_select :status_sub, ProductSaleStatus.by_previous(@status).by_type('oper'), :id, :name,
@@ -75,7 +75,11 @@
                   <td class="va-mid"><%= get_currency_mn(p.sum_price) %></td>
                   <td class="va-mid"><%= p.approved_date.present? ? p.approved_date.strftime('%F %R') : "" %></td>
                   <td class="va-mid"><%= p.approved_operator.present? ? p.approved_operator.name : "" %></td>
-                  <td class="va-mid<%= p.status_id == 9 ? ' text-red':'' %>"><%= p.status_name %></td>
+                  <td class="va-mid<%= if p.status_id == 9
+                                         ' text-yellow'
+                                       else
+                                         p.status_id == 45 ? ' text-red' : ''
+                                       end %>"><%= p.status_name %></td>
                   <td class="va-mid"><%= p.travel_salesman_name%></td>
                   <td style="display: none">
                     <div class="btn-group">

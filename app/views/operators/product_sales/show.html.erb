@@ -145,7 +145,7 @@
                   <th class="va-mid"><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
                 </tr>
                 <% @product_sale.product_sale_returns.each do |ret|
-                  i = ret.product_sale_item      %>
+                  i = ret.product_sale_item         %>
                   <tr>
                     <td class="va-mid"><%= product_img_web_link(i) %></td>
                     <td class="va-mid"><%= i.product.name_with_code %></td>
@@ -159,7 +159,7 @@
             </div>
           <% end %>
 
-          <% if @product_sale.product_sale_items.present? %>
+          <% if @product_sale.product_sale_items.with_deleted.present? %>
             <div class="col-md-12 field_div">
               <b><%= is_exchange ? 'Өгөх бараа' : t('activerecord.attributes.product_sale.product_sale_items') %></b>
             </div>
@@ -181,17 +181,24 @@
                 </tr>
                 </thead>
                 <tbody>
-                <% @product_sale.product_sale_items.each do |i| %>
+                <% @product_sale.product_sale_items.with_deleted.each do |i| %>
                   <tr>
                     <td class="va-mid">
                       <%= product_img_web_link(i) %>
                     </td>
-                    <td class="va-mid"><%= i.product.name_with_code %></td>
+                    <td class="va-mid"><%= i.product.name_with_code %>
+                      <% if i.deleted_at.present? %>
+                        <span class="label label-danger">Устсан</span>
+                      <% end %></td>
                     <td class="va-mid"><%= i.feature_item.name %></td>
                     <td class="va-mid">
                       <% if i.to_see %> <i class="fa fa-check"></i>
                       <% end %></td>
-                    <td class="va-mid"><%= i.quantity %></td>
+                    <td class="va-mid"><%= i.quantity %>
+                      <% if i.destroy_q.present? %>
+                        &nbsp;<strong class="text-red">-<%= i.destroy_q %>
+                          <span class="label label-warning"><%= i.log_stat.name %></span></strong>
+                      <% end %></td>
                     <td class="va-mid"><%= i.bought_quantity %></td>
                     <td class="va-mid"><%= get_currency_mn(i.price) %></td>
                     <td class="va-mid"><%= get_currency_mn(i.p_discount) %></td>

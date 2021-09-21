@@ -191,6 +191,10 @@ class ProductSaleItem < ApplicationRecord
     self.product_sale.update_sum_price
     st = ProductSaleStatus.find_by_alias("auto_destroy")
     self.product_sale.update_column(status_id, st.id)
+    ProductSaleStatusLog.create(product_sale: product_sale,
+                             user: user,
+                             salesman: salesman,
+                             status: st)
   end
 
   private

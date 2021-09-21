@@ -5,6 +5,7 @@ class ProductSaleStatusLog < ApplicationRecord
   belongs_to :product_sale_call, optional: true
   belongs_to :operator, optional: true
   belongs_to :salesman, optional: true
+  belongs_to :user, optional: true
   belongs_to :status, :class_name => "ProductSaleStatus"
 
   scope :by_status, ->(status) {
