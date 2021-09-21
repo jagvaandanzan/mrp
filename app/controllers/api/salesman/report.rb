@@ -78,11 +78,11 @@ module API
             requires :date, type: DateTime
           end
           post do
-
+            date = ApplicationController.helpers.local_date(params[:date])
             product_sales = ProductSale.joins(:salesman_travel)
                                 .where("salesman_travels.salesman_id = ?", current_salesman.id)
-                                .where('salesman_travels.delivery_at >= ?', params[:date])
-                                .where('salesman_travels.delivery_at < ?', params[:date] + 1.days)
+                                .where('salesman_travels.delivery_at >= ?', date)
+                                .where('salesman_travels.delivery_at < ?', date + 1.days)
                                 .where('product_sales.status_id >= ? AND product_sales.status_id <= ? ', 12, 14)
             q = 0 # Нийт тоо ширхэг
             price = 0 #Нийт дүн

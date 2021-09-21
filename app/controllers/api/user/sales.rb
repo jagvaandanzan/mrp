@@ -155,7 +155,7 @@ module API
               requires :date, type: DateTime
             end
             post do
-              warehouse_locs = ProductWarehouseLoc.date_by_load_at(params[:date])
+              warehouse_locs = ProductWarehouseLoc.date_by_load_at(ApplicationController.helpers.local_date(params[:date]))
               present :salesmen, warehouse_locs, with: API::USER::Entities::TransferHistoryBySalesman
             end
           end
@@ -167,7 +167,7 @@ module API
               requires :date, type: DateTime
             end
             post do
-              warehouse_locs = ProductWarehouseLoc.salesman_with_date(params[:salesman_id], params[:date])
+              warehouse_locs = ProductWarehouseLoc.salesman_with_date(params[:salesman_id], ApplicationController.helpers.local_date(params[:date]))
               present :products, warehouse_locs, with: API::USER::Entities::ProductWarehouseUserSign
             end
           end
@@ -178,7 +178,7 @@ module API
               requires :date, type: DateTime
             end
             post do
-              salesman_returns = SalesmanReturn.date_by_quantity(params[:date])
+              salesman_returns = SalesmanReturn.date_by_quantity(ApplicationController.helpers.local_date(params[:date]))
               present :salesmen, salesman_returns, with: API::USER::Entities::TransferHistoryBySalesman
             end
           end
@@ -190,7 +190,7 @@ module API
               requires :date, type: DateTime
             end
             post do
-              salesman_returns = SalesmanReturn.salesman_with_date(params[:salesman_id], params[:date])
+              salesman_returns = SalesmanReturn.salesman_with_date(params[:salesman_id], ApplicationController.helpers.local_date(params[:date]))
               present :products, salesman_returns, with: API::USER::Entities::SalesmanReturnUserSign
             end
           end

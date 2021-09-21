@@ -170,7 +170,7 @@ module API
               requires :date, type: DateTime
             end
             post do
-              warehouse_locs = ProductWarehouseLoc.salesman_with_date(current_salesman.id, params[:date])
+              warehouse_locs = ProductWarehouseLoc.salesman_with_date(current_salesman.id, ApplicationController.helpers.local_date(params[:date]))
               present :products, warehouse_locs, with: API::USER::Entities::ProductWarehouseUserSign
             end
           end
@@ -181,7 +181,7 @@ module API
               requires :date, type: DateTime
             end
             post do
-              salesman_returns = SalesmanReturn.salesman_with_date(current_salesman.id, params[:date])
+              salesman_returns = SalesmanReturn.salesman_with_date(current_salesman.id, ApplicationController.helpers.local_date(params[:date]))
               present :products, salesman_returns, with: API::USER::Entities::SalesmanReturnUserSign
             end
           end
