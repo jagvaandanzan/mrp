@@ -117,7 +117,7 @@ class Operators::SalesmanTravelsController < Operators::BaseController
       if travel_route.save
         product_sale.update_column(:salesman_travel_id, salesman_travel_id)
         warehouse_locs = ProductWarehouseLoc.by_travel(salesman_travel_id)
-        hash_locs = warehouse_locs.map {|i| [i.feature_item_id]}.to_h
+        hash_locs = warehouse_locs.map {|i| [i.feature_item_id, i]}.to_h
         product_sale.product_sale_items.each do |sale_item|
           has_loc = hash_locs[sale_item.feature_item_id]
           if has_loc.present?
