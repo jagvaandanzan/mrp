@@ -75,7 +75,7 @@
                     </div>
                   </div>
                   <div class="col-md-2">
-                    <% if allow_not_status %>
+                    <% if allow_not_status && @product_sale.status_id != 12%>
                       <label class="control-label">&nbsp;</label>
                       <div>
                         <%= link_to 'Хуулах', new_operators_product_sale_path(inheritance: @product_sale.id), class: 'btn btn-warning' %>

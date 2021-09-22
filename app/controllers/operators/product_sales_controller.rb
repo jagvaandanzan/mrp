@@ -211,7 +211,6 @@ class Operators::ProductSalesController < Operators::BaseController
   def update
     @product_sale.attributes = product_sale_params
     check_approved(@product_sale)
-    @product_sale.operator = current_operator
 
     if @product_sale.save
       flash[:success] = t('alert.info_updated')
@@ -224,15 +223,13 @@ class Operators::ProductSalesController < Operators::BaseController
   def update_status
     @product_sale.update_status = true
     @product_sale.attributes = params.require(:product_sale).permit(:status_id, :status_m, :status_sub, :status_note)
-    @product_sale.operator = current_operator
     @product_sale.from_status = true
     check_approved(@product_sale)
 
     if @product_sale.save
       flash[:success] = t('alert.info_updated')
-      if @product_sale.status.alias == "oper_replacement" ||
-          @product_sale.status.alias == "oper_return" # ||@product_sale.status.alias == "oper_affliction"
-        redirect_to new_operators_product_sale_path(parent_id: @product_sale.id)
+      if @product_sale.status.alias == "oper_replacement" || @product_sale.status.alias == "oper_return" # ||@product_sale.status.alias == "oper_affliction"
+        redirect_to new_operators_product_sale_path(parent_id: @product_sale.id, )
       else
         redirect_to action: :index
       end

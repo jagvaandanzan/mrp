@@ -43,6 +43,7 @@ module API
               salesman_travel.save(validate: false)
 
               if salesman_travel.product_warehouse_locs.count == 0
+                Rails.logger.info("salesman_travel.product_warehouse_locs.count = #{salesman_travel.product_warehouse_locs.count}")
                 error!(I18n.t('errors.messages.not_placed_on_desk'), 422)
               else
                 # ямар нэг барааг тавиурт байршуулаагүйг тус бүр шалгана
