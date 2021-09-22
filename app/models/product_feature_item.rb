@@ -91,6 +91,9 @@ class ProductFeatureItem < ApplicationRecord
   scope :by_barcode, ->(barcode) {
     where(barcode: barcode)
   }
+  scope :available_quantity, ->() {
+    where("quantity > ?", 0)
+  }
   scope :search, ->(product_id) {
     if product_id.nil?
       []
@@ -233,13 +236,14 @@ class ProductFeatureItem < ApplicationRecord
 
   def location_balance
     s = ""
-    product_location_balances.each_with_index {|loc_bal, index|
-      location = loc_bal.product_location
-      if index > 0
-        s += "#"
-      end
-      s += "x#{location.x}y#{location.y}z#{location.y}=#{loc_bal.quantity}"
-    }
+    product_location_balances.available_quantity
+        .each_with_index {|loc_bal, index|
+          location = loc_bal.product_location
+          if index > 0
+            s += "#"
+          end
+          s += "x#{location.x}y#{location.y}z#{location.y}=#{loc_bal.quantity}"
+        }
     s
   end
 
