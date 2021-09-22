@@ -94,6 +94,10 @@ class SalesmanTravelRoute < ApplicationRecord
     # end
   end
 
+  def loc_note
+    product_sale.loc_note
+  end
+
   def payable
     if self[:payable].present?
       self[:payable]
