@@ -135,18 +135,20 @@ class Operators::SalesmanTravelsController < Operators::BaseController
               item_quantity = sale_item.quantity
               product_locations.each {|loc|
                 if quantity < item_quantity
-                  q = if loc.quantity >= (item_quantity - quantity)
+                  q = if loc['quantity'] >= (item_quantity - quantity)
                         item_quantity - quantity
                       else
                         loc['quantity'].to_i
                       end
-                  quantity += q
-                  ProductWarehouseLoc.create(salesman_travel_id: salesman_travel_id,
-                                             product_id: sale_item.product_id,
-                                             location_id: loc.id,
-                                             feature_item_id: sale_item.feature_item_id,
-                                             quantity: q)
-                  is_added = true
+                  if q > 0
+                    quantity += q
+                    ProductWarehouseLoc.create(salesman_travel_id: salesman_travel_id,
+                                               product_id: sale_item.product_id,
+                                               location_id: loc.id,
+                                               feature_item_id: sale_item.feature_item_id,
+                                               quantity: q)
+                    is_added = true
+                  end
                 else
                   break
                 end
