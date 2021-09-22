@@ -22,7 +22,7 @@ class ProductSaleItem < ApplicationRecord
   validates :quantity, numericality: {greater_than: 0}
 
   before_validation :set_remainder
-  attr_accessor :remainder, :p_price, :p_6_8, :p_9_
+  attr_accessor :remainder, :p_price, :p_6_8, :p_9_, :note
 
   scope :find_by_salesman_id, ->(feature_item_id, salesman_id) {
     joins(:salesman_travel)

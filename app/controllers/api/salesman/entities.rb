@@ -39,7 +39,7 @@ module API
         expose :back_request, :return_signed
       end
       class ProductSaleReturnReturn < Grape::Entity
-        expose :back_request, :return_signed, :product_image, :product_barcode, :product_code, :product_feature, :product_name, :quantity, :back_quantity
+        expose :id, :back_request, :return_signed, :product_image, :product_barcode, :product_code, :product_feature, :product_name, :quantity, :back_quantity
       end
 
       class ProductSale < Grape::Entity

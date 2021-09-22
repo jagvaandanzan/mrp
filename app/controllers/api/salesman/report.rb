@@ -91,6 +91,8 @@ module API
             cash_sum = 0 #Бэлнээр
             bought_sum = 0
             items = []
+            item_index = 0
+            sale_index = 0
             product_sales.each do |product_sale|
               sale_items = product_sale.product_sale_items.not_nil_bought_quantity
               acc_sum += product_sale.paid if product_sale.paid.present?
@@ -100,6 +102,8 @@ module API
                   price += item.bought_price
                   bought_sum += item.bought_price
                   items << item
+                  item_index += 1
+                  sale_index += 1
                 }
               end
               # Буцаалт, солилт
@@ -125,6 +129,12 @@ module API
               price += shipping_pay
 
               bought_sum = 0
+              if shipping_pay > 0
+                (item_index - sale_index)..(sale_index - 1).each {|i|
+                  items[i].note = " *"
+                }
+              end
+              sale_index = 0
             end
 
             sale_directs = ProductSaleDirect.by_salesman_id(current_salesman.id)
@@ -140,7 +150,7 @@ module API
             # logger.info("Бэлнээр: #{cash_sum}")
             # logger.info("ТҮГЭЭГЧЭЭС АВАХ БЭЛЭН МӨНГӨ: #{cash_sum - back_sum}")
 
-            {cass: {sale_items: items.as_json(:methods => [:sale_type, :product_code, :product_name, :product_feature, :phone], only: [:bought_quantity, :bought_price]),
+            {cass: {sale_items: items.as_json(:methods => [:sale_type, :product_code, :product_name, :product_feature, :phone, :note], only: [:bought_quantity, :bought_price]),
                     quantity: q,
                     price: ApplicationController.helpers.get_currency_mn(price),
                     back_sum: ApplicationController.helpers.get_currency_mn(back_sum),

@@ -51,8 +51,9 @@ class Operators::SalesmanTravelsController < Operators::BaseController
     if salesman_requests.present?
       save_action = @salesman_travel.save
       if save_action
-        @salesman_travel.sale_ids.split(",").map(&:to_i).each_with_index {|sale_id, i|
-          product_sale = ProductSale.find(sale_id)
+        sales = ProductSale.where("id IN (?)", @salesman_travel.sale_ids.split(",").map(&:to_i))
+                    .order(:delivery_start)
+        sales.each_with_index {|product_sale, i|
           product_sale.update_column(:salesman_travel_id, @salesman_travel.id)
           product_sale.sent_info_to_user if !product_sale.product_sale_items.present? && product_sale.product_sale_returns.present?
           travel_route = SalesmanTravelRoute.new

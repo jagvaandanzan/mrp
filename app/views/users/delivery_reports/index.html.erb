@@ -68,7 +68,7 @@
                     <tr>
                       <td class="va-mid text-center" rowspan="<%= rows %>"><%= number %></td>
                       <td class="va-mid" rowspan="<%= rows %>" id="sale_type-<%= i %>"><%= product_sale.parent_id.present? ? product_sale.parent.status.name : 'Захиалга' %></td>
-                      <td class="va-mid" rowspan="<%= rows %>"><%= product_sale.phone %></td>
+                      <td class="va-mid phone-<%= i %>" rowspan="<%= rows %>"><%= product_sale.phone %></td>
                       <td class="va-mid"><%= sale_item.product.name_with_code %></td>
                       <td class="va-mid"><%= sale_item.feature_item.name %></td>
                       <td class="va-mid"><%= sale_item.bought_quantity %></td>
@@ -116,12 +116,15 @@
                       cash_sum += p %>
                       $('#bought-<%= i %>').html("<%= get_currency_mn(p) %>");
                       <% end %>
-                  </script>
                 <% shipping_pay = (bought_sum < Const::FREE_SHIPPING && bought_sum > 0) ? Const::SHIPPING_FEE : 0
                    cash_sum += shipping_pay
                    price += shipping_pay
                    bought_sum = 0.0
+                   if shipping_pay > 0%>
+                   $('.phone-<%= i %>').html("<%= get_currency_mn(p) %>");
+                  <% end
                    } %>
+                  </script>
                 <% if @sale_directs.present?
                      @sale_directs.each_with_index {|sale_direct, i|
                        p = sale_direct.sum_price
