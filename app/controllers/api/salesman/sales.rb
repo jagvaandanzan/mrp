@@ -6,9 +6,14 @@ module API
         resource :sale_items do
           desc "GET sales/sale_items"
           get do
-            sale_items = ProductSaleItem.sale_available(current_salesman.id)
-                             .status_not_confirmed
-            present :sale_items, sale_items, with: API::SALESMAN::Entities::ProductSaleItemReturn
+            status_id = ProductSaleStatus.find_by_alias("oper_confirmed")
+            item_hash = ProductFeatureItem.available_sale_item_hash(current_salesman.id, status_id)
+            features = []
+            item_hash.each {|h|
+              feature_item = ProductFeatureItem.find(h['feature_item_id'])
+              features << {id: feature_item.id, image: feature_item.img, name: feature_item.product_name, feature: feature_item.name, barcode: feature_item.barcode, quantity: h['quantity']}
+            }
+            features
           end
         end
 
@@ -18,6 +23,47 @@ module API
             sale_returns = ProductSaleReturn.sale_available(current_salesman.id)
                                .status_not_confirmed
             present :sale_returns, sale_returns, with: API::SALESMAN::Entities::ProductSaleReturnReturn
+          end
+        end
+
+        resource :signature do
+          desc "POST sales/signature"
+          params do
+            requires :image, type: File
+            requires :returns, type: Array[JSON]
+          end
+          post do
+
+            # sale_items = ProductSaleItem.sale_available(current_salesman.id)
+            #                  .status_not_confirmed
+            image = params[:image] || {}
+            return_sign = SalesmanReturnSign
+                              .by_salesman(current_salesman.id)
+                              .by_user(nil)
+                              .first
+            if return_sign.present?
+              return_sign.given = image[:tempfile]
+              return_sign.given_file_name = image[:filename]
+              return_sign.save
+              present :sign_at, return_sign.updated_at
+            else
+              salesman_returns = SalesmanReturn.by_sign_user(nil)
+                                     .by_salesman(current_salesman.id)
+
+              if salesman_returns.count == 0
+                error!(I18n.t('errors.messages.not_available_product'), 422)
+              else
+                return_sign = SalesmanReturnSign.create(salesman: current_salesman,
+                                                        return_count: salesman_returns.count,
+                                                        given: image[:tempfile],
+                                                        given_file_name: image[:filename])
+                salesman_returns.each {|ret|
+                  ret.update_column(:sign_id, return_sign.id)
+                }
+                present :sign_at, return_sign.created_at
+              end
+            end
+
           end
         end
 
@@ -75,43 +121,6 @@ module API
           end
         end
 
-        resource :signature do
-          desc "POST sales/signature"
-          params do
-            requires :image, type: File
-          end
-          post do
-            image = params[:image] || {}
-            return_sign = SalesmanReturnSign
-                              .by_salesman(current_salesman.id)
-                              .by_user(nil)
-                              .first
-            if return_sign.present?
-              return_sign.given = image[:tempfile]
-              return_sign.given_file_name = image[:filename]
-              return_sign.save
-              present :sign_at, return_sign.updated_at
-            else
-              salesman_returns = SalesmanReturn.by_sign_user(nil)
-                                     .by_salesman(current_salesman.id)
-
-              if salesman_returns.count == 0
-                error!(I18n.t('errors.messages.not_available_product'), 422)
-              else
-                return_sign = SalesmanReturnSign.create(salesman: current_salesman,
-                                                        return_count: salesman_returns.count,
-                                                        given: image[:tempfile],
-                                                        given_file_name: image[:filename])
-                salesman_returns.each {|ret|
-                  ret.update_column(:sign_id, return_sign.id)
-                }
-                present :sign_at, return_sign.created_at
-              end
-            end
-
-          end
-        end
-
         resource :return_requests do
           desc "GET sales/return_requests"
           get do
@@ -146,7 +155,7 @@ module API
             resource :items do
               desc "GET sales/products/:id/items"
               get do
-                product_feature_items = ProductFeatureItem.sale_available(current_salesman.id, params[:id])
+                product_feature_items = ProductFeatureItem.available_product(current_salesman.id, params[:id])
                 present :feature_items, product_feature_items, with: API::SALESMAN::Entities::ProductFeatureItems
               end
               route_param :f_item_id do

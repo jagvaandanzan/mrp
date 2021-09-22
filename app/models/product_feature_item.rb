@@ -102,7 +102,7 @@ class ProductFeatureItem < ApplicationRecord
     end
   }
 
-  scope :sale_available, ->(salesman_id, product_id) {
+  scope :available_product, ->(salesman_id, product_id) {
     joins(:salesman_travel)
         .where(product_id: product_id)
         .where("salesman_travels.salesman_id = ?", salesman_id)
@@ -116,12 +116,18 @@ class ProductFeatureItem < ApplicationRecord
         .sum("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0)")
   }
 
-  scope :sale_available, ->(salesman_id) {
-    select("(product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0)) as quantity")
-        .joins(:salesman_travel)
-        .having("salesman_travels.salesman_id = ?", salesman_id)
-        .having("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0) > ?", 0)
-        .group("product_feature_items.id")
+  scope :available_sale_item_hash, ->(salesman_id, not_status_id = nil) {
+    items = select("product_sale_items.feature_item_id as feature_item_id, SUM(product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0)) as quantity")
+                .joins(:salesman_travel)
+                .where("salesman_travels.salesman_id = ?", salesman_id)
+                .where("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0) > ?", 0)
+                .group(:id)
+    items = items.where("product_sales.id != ?", not_status_id) unless not_status_id.nil?
+    items
+  }
+
+  scope :by_ids, ->(ids) {
+    where("id IN (?)", ids)
   }
 
   scope :by_travel_id, ->(travel_id) {

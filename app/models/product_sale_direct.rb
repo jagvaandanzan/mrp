@@ -74,14 +74,14 @@ class ProductSaleDirect < ApplicationRecord
                   bonu.first
                 else
                   b = Bonu.new(balance: 0)
-                  b.bonus_phones << BonusPhone.new(phone: product_sale.phone)
+                  b.bonus_phones << BonusPhone.new(phone: phone)
                   b.save
                   b
                 end
       if bonus_balance.present?
         self.bonus_balance.update(bonu: b_model, bonus: ApplicationController.helpers.get_percentage(quantity * price, 5))
       else
-        self.bonus_balance = BonusBalance.create(bonu: b_model, product_sale_item: self, bonus: ApplicationController.helpers.get_percentage(quantity * price, 5))
+        self.bonus_balance = BonusBalance.create(bonu: b_model, direct_sale_item: self, bonus: ApplicationController.helpers.get_percentage(quantity * price, 5))
       end
     end
   end
