@@ -301,21 +301,23 @@ def create_warehouse_loc(item_quantity, salesman_travel_id, product_id, feature_
   is_added = false
   product_locations.each {|loc|
     if quantity < item_quantity
-      q = if loc.quantity >= (item_quantity - quantity)
+      q = if loc['quantity'] >= (item_quantity - quantity)
             item_quantity - quantity
           else
             loc['quantity'].to_i
           end
-      quantity += q
-      ProductWarehouseLoc.create(salesman_travel_id: salesman_travel_id,
-                                 product_id: product_id,
-                                 location_id: loc.id,
-                                 feature_item_id: feature_item_id,
-                                 quantity: q,
-                                 load_at: load_at,
-                                 salesman_at: salesman_at,
-                                 add_stock: add_stock)
-      is_added = true
+      if q > 0
+        quantity += q
+        ProductWarehouseLoc.create(salesman_travel_id: salesman_travel_id,
+                                   product_id: product_id,
+                                   location_id: loc.id,
+                                   feature_item_id: feature_item_id,
+                                   quantity: q,
+                                   load_at: load_at,
+                                   salesman_at: salesman_at,
+                                   add_stock: add_stock)
+        is_added = true
+      end
     else
       break
     end
