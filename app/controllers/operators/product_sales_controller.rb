@@ -94,6 +94,7 @@ class Operators::ProductSalesController < Operators::BaseController
           parent.product_sale_returns.each do |retrn|
             sale_return = ProductSaleReturn.new(product_sale: parent,
                                                 product_sale_item: retrn.product_sale_item,
+                                                feature_item: retrn.feature_item,
                                                 quantity: retrn.quantity,
                                                 remainder: retrn.quantity)
             @product_sale.product_sale_returns << sale_return
@@ -121,6 +122,7 @@ class Operators::ProductSalesController < Operators::BaseController
           parent.product_sale_items.not_nil_bought_quantity.each do |item|
             sale_return = ProductSaleReturn.new(product_sale: parent,
                                                 product_sale_item: item,
+                                                feature_item: item.feature_item,
                                                 quantity: item.bought_quantity.presence || 0,
                                                 remainder: item.bought_quantity.presence || 0)
             total_price -= item.price * item.bought_quantity
@@ -230,7 +232,7 @@ class Operators::ProductSalesController < Operators::BaseController
     if @product_sale.save
       flash[:success] = t('alert.info_updated')
       if @product_sale.status.alias == "oper_replacement" || @product_sale.status.alias == "oper_return" # ||@product_sale.status.alias == "oper_affliction"
-        redirect_to new_operators_product_sale_path(parent_id: @product_sale.id, )
+        redirect_to new_operators_product_sale_path(parent_id: @product_sale.id,)
       else
         redirect_to action: :index
       end
@@ -426,7 +428,7 @@ class Operators::ProductSalesController < Operators::BaseController
         .permit(:sale_call_id, :parent_id, :inh_id, :source, :phone, :delivery_start, :hour_start, :hour_end, :location_id, :country, :building_code, :loc_note,
                 :sum_price, :money, :paid, :bonus, :tax,
                 :status_id, :status_m, :status_sub, :status_note,
-                product_sale_returns_attributes: [:id, :product_sale_item_id, :quantity, :remainder, :_destroy],
+                product_sale_returns_attributes: [:id, :product_sale_item_id, :feature_item_id, :quantity, :remainder, :_destroy],
                 product_sale_items_attributes: [:id, :product_id, :feature_item_id, :to_see, :quantity, :price, :p_discount, :discount, :sum_price, :remainder, :_destroy])
   end
 

@@ -3,11 +3,18 @@ module API
     class Sales < Grape::API
       resource :sales do
 
-        resource :sale_items do
-          desc "GET sales/sale_items"
-          get do
+        resource :sale_returns do
+          desc "POST sales/sale_returns"
+          params do
+            requires :sale_item, type: Boolean
+          end
+          post do
             status_id = ProductSaleStatus.find_by_alias("oper_confirmed")
-            item_hash = ProductFeatureItem.available_sale_item_hash(current_salesman.id, status_id)
+            item_hash = if params[:sale_item]
+                          ProductFeatureItem.available_sale_item_hash(current_salesman.id, status_id)
+                        else
+                          ProductFeatureItem.available_sale_return_hash(current_salesman.id, status_id)
+                        end
             features = []
             item_hash.each {|h|
               feature_item = ProductFeatureItem.find(h['feature_item_id'])
@@ -17,18 +24,10 @@ module API
           end
         end
 
-        resource :sale_returns do
-          desc "GET sales/sale_returns"
-          get do
-            sale_returns = ProductSaleReturn.sale_available(current_salesman.id)
-                               .status_not_confirmed
-            present :sale_returns, sale_returns, with: API::SALESMAN::Entities::ProductSaleReturnReturn
-          end
-        end
-
         resource :signature do
           desc "POST sales/signature"
           params do
+            requires :sale_item, type: Boolean
             requires :image, type: File
             requires :returns, type: Array[JSON]
           end
@@ -36,6 +35,8 @@ module API
 
             # sale_items = ProductSaleItem.sale_available(current_salesman.id)
             #                  .status_not_confirmed
+            #             sale_returns = ProductSaleReturn.sale_available(current_salesman.id)
+            #                                .status_not_confirmed
             image = params[:image] || {}
             return_sign = SalesmanReturnSign
                               .by_salesman(current_salesman.id)

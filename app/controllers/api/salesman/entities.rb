@@ -38,9 +38,6 @@ module API
       class ProductSaleItemReturn < ProductSaleItemBarCode
         expose :back_request, :return_signed
       end
-      class ProductSaleReturnReturn < Grape::Entity
-        expose :id, :back_request, :return_signed, :product_image, :product_barcode, :product_code, :product_feature, :product_name, :quantity, :back_quantity
-      end
 
       class ProductSale < Grape::Entity
         expose :id, :phone, :delivery_hour, :status_name, :status_note, :money, :paid, :sum_price, :loc_note, :building_code

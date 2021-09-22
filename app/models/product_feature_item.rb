@@ -7,6 +7,7 @@ class ProductFeatureItem < ApplicationRecord
   belongs_to :customer_warehouse, optional: true
 
   has_many :product_sale_items, :class_name => "ProductSaleItem", :foreign_key => "feature_item_id"
+  has_many :product_sale_returns, :class_name => "ProductSaleItem", :foreign_key => "feature_item_id"
   has_many :product_supply_features, :class_name => "ProductSupplyFeature", :foreign_key => "feature_item_id"
   has_many :product_sales, through: :product_sale_items
   has_many :salesman_travel, through: :product_sales
@@ -119,17 +120,24 @@ class ProductFeatureItem < ApplicationRecord
   scope :available_sale_item_hash, ->(salesman_id, not_status_id = nil) {
     items = select("product_sale_items.feature_item_id as feature_item_id, SUM(product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0)) as quantity")
                 .joins(:salesman_travel)
+                .with_deleted
                 .where("salesman_travels.salesman_id = ?", salesman_id)
                 .where("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0) > ?", 0)
                 .group(:id)
     items = items.where("product_sales.id != ?", not_status_id) unless not_status_id.nil?
     items
   }
-
-  scope :by_ids, ->(ids) {
-    where("id IN (?)", ids)
+  scope :available_sale_return_hash, ->(salesman_id, not_status_id = nil) {
+    items = select("product_sale_returns.feature_item_id as feature_item_id, SUM(product_sale_returns.quantity - IFNULL(product_sale_returns.back_quantity, 0)) as quantity")
+                .joins("INNER JOIN product_sale_returns ON product_sale_returns.deleted_at IS NULL AND product_sale_returns.feature_item_id = product_feature_items.id
+                        INNER JOIN product_sales ON product_sales.deleted_at IS NULL AND product_sales.id = product_sale_returns.product_sale_id
+                        INNER JOIN salesman_travels ON salesman_travels.id = product_sales.salesman_travel_id")
+                .where("salesman_travels.salesman_id = ?", salesman_id)
+                .where("product_sale_returns.quantity - IFNULL(product_sale_returns.back_quantity, 0) > ?", 0)
+                .group(:id)
+    items = items.where("product_sales.id != ?", not_status_id) unless not_status_id.nil?
+    items
   }
-
   scope :by_travel_id, ->(travel_id) {
     select("product_sale_items.feature_item_id as feature_item_id, SUM(product_sale_items.quantity) as quantity")
         .joins(:salesman_travel)

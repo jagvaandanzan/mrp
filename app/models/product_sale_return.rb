@@ -1,6 +1,8 @@
 class ProductSaleReturn < ApplicationRecord
+  acts_as_paranoid
   belongs_to :product_sale
   belongs_to :product_sale_item
+  belongs_to :feature_item, -> {with_deleted}, :class_name => "ProductFeatureItem"
   has_one :salesman_travel, through: :product_sale
   has_one :product, through: :product_sale_item
   has_one :status, through: :product_sale
@@ -14,19 +16,10 @@ class ProductSaleReturn < ApplicationRecord
 
   scope :sale_available, ->(salesman_id) {
     joins(:salesman_travel)
-        .joins(:product)
         .where("salesman_travels.salesman_id = ?", salesman_id)
         .where("product_sale_returns.quantity - IFNULL(product_sale_returns.back_quantity, 0) > ?", 0)
-        .order("products.code")
-        .order("products.n_name")
   }
-  scope :by_available_feature_id, ->(salesman_id, feature_item_id) {
-    joins(:salesman_travel)
-        .joins(:product_sale_item)
-        .where("salesman_travels.salesman_id = ?", salesman_id)
-        .where('product_sale_items.feature_item_id = ?', feature_item_id)
-        .sum("product_sale_returns.quantity - IFNULL(product_sale_returns.back_quantity, 0)")
-  }
+
   scope :status_not_confirmed, ->() {
     joins(:status)
         .where.not('product_sale_statuses.alias = ?', 'oper_confirmed')
