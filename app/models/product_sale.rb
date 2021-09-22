@@ -458,6 +458,7 @@ class ProductSale < ApplicationRecord
               end
             end
           end
+          sale_item.destroy
         end
         salesman_travel_route.destroy
 

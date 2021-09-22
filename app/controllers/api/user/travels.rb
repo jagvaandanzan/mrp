@@ -323,19 +323,13 @@ def create_warehouse_loc(item_quantity, salesman_travel_id, product_id, feature_
     end
   }
   # TODO үүний утаснаас байршуулдаг болсон үед авч хаях
-  Rails.logger.info("is_added=#{is_added}")
   unless is_added
+    ProductWarehouseLoc.create(salesman_travel_id: salesman_travel_id,
+                               product_id: product_id,
+                               location_id: 1,
+                               feature_item_id: feature_item_id,
+                               quantity: item_quantity)
 
-    ss = ProductWarehouseLoc.new(salesman_travel_id: salesman_travel_id,
-                                 product_id: product_id,
-                                 location_id: 1,
-                                 feature_item_id: feature_item_id,
-                                 quantity: item_quantity)
-    if ss.save
-      Rails.logger.info("ProductWarehouseLoc SAVE")
-    else
-      Rails.logger.info("ProductWarehouseLoc=#{ss.errors.full_messages}")
-    end
   end
   is_added
 end
