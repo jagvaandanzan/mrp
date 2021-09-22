@@ -43,7 +43,6 @@ module API
               salesman_travel.save(validate: false)
 
               if salesman_travel.product_warehouse_locs.count == 0
-                Rails.logger.info("salesman_travel.product_warehouse_locs.count = #{salesman_travel.product_warehouse_locs.count}")
                 error!(I18n.t('errors.messages.not_placed_on_desk'), 422)
               else
                 # ямар нэг барааг тавиурт байршуулаагүйг тус бүр шалгана
@@ -322,12 +321,19 @@ def create_warehouse_loc(item_quantity, salesman_travel_id, product_id, feature_
     end
   }
   # TODO үүний утаснаас байршуулдаг болсон үед авч хаях
+  Rails.logger.info("is_added=#{is_added}")
   unless is_added
-    ProductWarehouseLoc.create(salesman_travel_id: salesman_travel_id,
-                               product_id: product_id,
-                               location_id: 1,
-                               feature_item_id: feature_item_id,
-                               quantity: item_quantity)
+
+    ss = ProductWarehouseLoc.new(salesman_travel_id: salesman_travel_id,
+                                 product_id: product_id,
+                                 location_id: 1,
+                                 feature_item_id: feature_item_id,
+                                 quantity: item_quantity)
+    if ss.save
+      Rails.logger.info("ProductWarehouseLoc SAVE")
+    else
+      Rails.logger.info("ProductWarehouseLoc=#{ss.errors.full_messages}")
+    end
   end
   is_added
 end
