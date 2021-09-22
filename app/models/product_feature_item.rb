@@ -91,9 +91,6 @@ class ProductFeatureItem < ApplicationRecord
   scope :by_barcode, ->(barcode) {
     where(barcode: barcode)
   }
-  scope :available_quantity, ->() {
-    where("quantity > ?", 0)
-  }
   scope :search, ->(product_id) {
     if product_id.nil?
       []

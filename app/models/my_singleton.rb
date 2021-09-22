@@ -75,7 +75,7 @@ class MySingleton
                                source: sale.source, sale_call_id: sale.sale_call_id, created_operator_id: sale.created_operator_id, approved_operator_id: sale.approved_operator_id,
                                approved_date: sale.approved_date, cart_id: sale.cart_id, feedback_period: sale.feedback_period, tax: sale.tax)
 
-    sale.product_sale_items.each do |sale_item|
+    sale.product_sale_items.with_deleted.each do |sale_item|
       feature_item = sale_item.feature_item
       new_sale.product_sale_items << ProductSaleItem.new(product_id: sale_item.product_id, feature_item_id: sale_item.feature_item_id,
                                                          quantity: sale_item.quantity, price: sale_item.price, p_discount: sale_item.p_discount,

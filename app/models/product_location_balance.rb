@@ -24,6 +24,9 @@ class ProductLocationBalance < ApplicationRecord
   scope :sum_quantity, ->() {
     sum(:quantity)
   }
+  scope :available_quantity, ->() {
+    where("quantity > ?", 0)
+  }
 
   private
 
