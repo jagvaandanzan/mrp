@@ -45,7 +45,7 @@ class MySingleton
         cash_sum += p
       end
 
-      shipping_pay = bought_sum < Const::FREE_SHIPPING ? Const::SHIPPING_FEE : 0
+      shipping_pay = (bought_sum < Const::FREE_SHIPPING && bought_sum > 0) ? Const::SHIPPING_FEE : 0
       cash_sum += shipping_pay
       price += shipping_pay
 
