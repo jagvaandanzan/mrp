@@ -45,6 +45,7 @@ class Operators::SalesmanTravelsController < Operators::BaseController
     @salesman_travel.operator = current_operator
     @salesman_travel.distance = 0
     @salesman_travel.duration = 0
+    @salesman_travel.delivery_at = Time.current
 
     salesman_requests = SalesmanRequest.by_travel_nil
                             .by_salesman_id(@salesman_travel.salesman_id)

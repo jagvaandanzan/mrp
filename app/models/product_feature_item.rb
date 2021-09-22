@@ -116,6 +116,14 @@ class ProductFeatureItem < ApplicationRecord
         .sum("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0)")
   }
 
+  scope :sale_available, ->(salesman_id) {
+    select("(product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0)) as quantity")
+        .joins(:salesman_travel)
+        .having("salesman_travels.salesman_id = ?", salesman_id)
+        .having("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0) > ?", 0)
+        .group("product_feature_items.id")
+  }
+
   scope :by_travel_id, ->(travel_id) {
     select("product_sale_items.feature_item_id as feature_item_id, SUM(product_sale_items.quantity) as quantity")
         .joins(:salesman_travel)

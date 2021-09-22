@@ -22,7 +22,7 @@ module API
         post do
           salesman = current_salesman
           date = ApplicationController.helpers.local_date(params[:date])
-          travels = if date <= Time.current.beginning_of_day
+          travels = if date < Time.current.beginning_of_day
                       SalesmanTravel.by_signed.travels(salesman.id, date)
                     else
                       SalesmanTravel.travels(salesman.id, date)
