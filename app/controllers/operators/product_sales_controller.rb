@@ -2,7 +2,7 @@ class Operators::ProductSalesController < Operators::BaseController
   before_action :set_product_sale, only: [:edit, :update, :show, :update_status, :destroy]
 
   def index
-    current_operator.clear_active_call
+    # current_operator.clear_active_call
     @product_name = params[:product_name]
     @status_id = params[:status_id]
     @status = params[:status]
@@ -159,6 +159,7 @@ class Operators::ProductSalesController < Operators::BaseController
 
     if @product_sale.save
       flash[:success] = t('alert.saved_successfully')
+      @product_sale.sale_call.update_column(:active_opr_id, nil) if @product_sale.sale_call.present?
       redirect_to action: :index
       # redirect_to action: 'show', id: @product_sale.id
     else
