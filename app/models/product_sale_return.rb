@@ -16,7 +16,7 @@ class ProductSaleReturn < ApplicationRecord
     joins(:salesman_travel)
         .joins(:product)
         .where("salesman_travels.salesman_id = ?", salesman_id)
-        .where("quantity - IFNULL(back_quantity, 0) > ?", 0)
+        .where("product_sale_returns.quantity - IFNULL(product_sale_returns.back_quantity, 0) > ?", 0)
         .order("products.code")
         .order("products.n_name")
   }
