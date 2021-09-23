@@ -49,12 +49,12 @@ module API
                                                                      product: sale_item.product,
                                                                      feature_item: sale_item.feature_item,
                                                                      sale_return: sale_return,
-                                                                     quantity: sale_item.quantity)
+                                                                     quantity: feature['quantity'])
                 }
               }
             else
               sale_returns = ProductSaleReturn.sale_available(current_salesman.id)
-                                 .status_not_confirmed
+                                 .status_confirmed
               params[:returns].each {|feature|
                 sale_returns.by_feature_item_id(feature['id']).each {|sale_return|
                   feature_item = sale_return.feature_item
@@ -62,7 +62,7 @@ module API
                                                                      product_id: feature_item.product_id,
                                                                      feature_item: feature_item,
                                                                      sale_return: sale_return,
-                                                                     quantity: sale_return.quantity)
+                                                                     quantity: feature['quantity'])
                 }
               }
             end

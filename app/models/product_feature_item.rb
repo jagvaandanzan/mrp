@@ -135,7 +135,7 @@ class ProductFeatureItem < ApplicationRecord
                 .where("salesman_travels.salesman_id = ?", salesman_id)
                 .where("product_sale_returns.quantity - IFNULL(product_sale_returns.back_quantity, 0) > ?", 0)
                 .group(:id)
-    items = items.where("product_sales.id != ?", not_status_id) unless not_status_id.nil?
+    items = items.where("product_sales.status_id = ?", not_status_id) unless not_status_id.nil?
     items
   }
   scope :by_travel_id, ->(travel_id) {
