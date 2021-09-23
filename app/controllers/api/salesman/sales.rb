@@ -67,7 +67,7 @@ module API
                                                                      product_id: feature_item.product_id,
                                                                      feature_item: feature_item,
                                                                      sale_return: sale_return,
-                                                                     quantity: sale_item.quantity)
+                                                                     quantity: sale_return.quantity)
                 }
               }
             end
