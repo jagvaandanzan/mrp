@@ -24,6 +24,10 @@ class ProductSaleReturn < ApplicationRecord
     joins(:status)
         .where('product_sale_statuses.alias = ? OR product_sale_statuses.alias = ?', 'oper_confirmed', 'sals_delivered')
   }
+  scope :status_delivered, ->() {
+    joins(:status)
+        .where('product_sale_statuses.alias = ?', 'sals_delivered')
+  }
 
   scope :by_feature_item_id, ->(feature_item_id) {
     where(feature_item_id: feature_item_id)

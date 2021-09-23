@@ -59,7 +59,7 @@ module API
               }
             else
               sale_returns = ProductSaleReturn.sale_available(current_salesman.id)
-                                 .status_confirmed
+                                 .status_delivered
               params[:returns].each {|feature|
                 sale_returns.by_feature_item_id(feature['id']).each {|sale_return|
                   feature_item = sale_return.feature_item
