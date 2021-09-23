@@ -73,21 +73,11 @@ module API
                     return_sign.user = current_user
                     return_sign.save
 
-                    sale_items = ProductSaleItem.sale_available(return_sign.salesman_id)
-                                     .status_not_confirmed
-                    sale_returns = ProductSaleReturn.sale_available(return_sign.salesman_id)
-                                       .status_not_confirmed
                     salesman_returns.each {|ret|
                       if ret.quantity > 0
-                        if return_sign.is_item
-                          sale_items.by_feature_item_id(ret.feature_item_id).each {|sale_item|
-                            sale_item.update_column(:back_quantity, sale_item.back_quantity.present? ? sale_item.back_quantity + ret.quantity : ret.quantity)
-                          }
-                        else
-                          sale_returns.by_feature_item_id(ret.feature_item_id).each {|return_item|
-                            return_item.update_column(:back_quantity, return_item.back_quantity.present? ? return_item.back_quantity + ret.quantity : ret.quantity)
-                          }
-                        end
+                        item = ret.sale_item.present? ? ret.sale_item : ret.sale_return
+                        item.update_column(:back_quantity, item.back_quantity.present? ? item.back_quantity + ret.quantity : ret.quantity)
+
                         ProductBalance.create(product: ret.product,
                                               feature_item: ret.feature_item,
                                               salesman_return: ret,
