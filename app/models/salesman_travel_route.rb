@@ -146,20 +146,27 @@ class SalesmanTravelRoute < ApplicationRecord
   end
 
   def calculate_payable
-    s = 0
-    has_items = product_sale.product_sale_items.present?
-    if product_sale.present? && has_items
-      product_sale.product_sale_items.each do |item|
-        s += (item.price * item.bought_quantity) if item.price.present? && item.bought_quantity.present? && item.bought_quantity > 0
+    if product_sale.present?
+      s = 0
+      has_items = product_sale.product_sale_items.present?
+      if has_items
+        product_sale.product_sale_items.each do |item|
+          s += (item.price * item.bought_quantity) if item.price.present? && item.bought_quantity.present? && item.bought_quantity > 0
+        end
       end
+      bonus = (product_sale.bonus.presence || 0)
+      # if product_sale.bonus.pr
+      if product_sale.bonus.present? && product_sale.bonus_balance.present? && bonus > s
+        product_sale.update_column(:bonus, bonus)
+        product_sale.bonus_balance.update_column(:bonus, -bonus)
+      end
+      self.payable = if s >= 0 && has_items
+                       s - (product_sale.paid.presence || 0) + (s < Const::FREE_SHIPPING ? Const::SHIPPING_FEE : 0) + bonus
+                     else
+                       nil
+                     end
+      self.save
     end
-
-    self.payable = if s >= 0 && has_items
-                     s - (product_sale.paid.presence || 0) + (s < Const::FREE_SHIPPING ? Const::SHIPPING_FEE : 0)
-                   else
-                     nil
-                   end
-    self.save
   end
 
   def calculate_delivery

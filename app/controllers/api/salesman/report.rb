@@ -93,8 +93,10 @@ module API
             items = []
             item_index = 0
             sale_index = 0
+            bonus = 0
             product_sales.each do |product_sale|
               sale_items = product_sale.product_sale_items.not_nil_bought_quantity
+              bonus += product_sale.bonus.presence || 0
               acc_sum += product_sale.paid if product_sale.paid.present?
               if sale_items.present?
                 sale_items.each {|item|
@@ -156,7 +158,7 @@ module API
                     back_sum: ApplicationController.helpers.get_currency_mn(back_sum),
                     acc_sum: ApplicationController.helpers.get_currency_mn(acc_sum),
                     cash_sum: ApplicationController.helpers.get_currency_mn(cash_sum),
-                    salesman: ApplicationController.helpers.get_currency_mn(cash_sum - back_sum)}}
+                    salesman: ApplicationController.helpers.get_currency_mn(cash_sum - back_sum - bonus)}}
             # present :quantity, q
             # present :price, price
             # present :back_sum, back_sum

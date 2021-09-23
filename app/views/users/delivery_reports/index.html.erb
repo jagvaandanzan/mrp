@@ -47,6 +47,7 @@
                 <th class="th-center va-mid"><%= t('activerecord.attributes.product_sale_item.sum_price') %></th>
                 <th class="th-center va-mid">Бэлэн</th>
                 <th class="th-center va-mid">Данс</th>
+                <th class="th-center va-mid">Бонуc</th>
               </tr>
               </thead>
               <tbody>
@@ -57,8 +58,10 @@
                  cash_sum = 0
                  bought_sum = 0
                  number = 0
+                 bonus = 0
                  if @product_sales.present?
                    @product_sales.each_with_index {|product_sale, i|
+                     bonus += product_sale.bonus.presence || 0
                      acc_sum += product_sale.paid if product_sale.paid.present?
                      number = i + 1
                      sale_items = product_sale.product_sale_items.not_nil_bought_quantity
@@ -76,6 +79,7 @@
                       <td class="va-mid text-right"><%= get_currency_mn sale_item.bought_price %></td>
                       <td class="va-mid text-right" rowspan="<%= rows %>" id="bought-<%= i %>"></td>
                       <td class="va-mid text-right" rowspan="<%= rows %>"><%= get_currency_mn product_sale.paid %></td>
+                      <td class="va-mid text-right" rowspan="<%= rows %>"><%= product_sale.bonus > 0 ? get_currency_mn(product_sale.bonus) : '' %></td>
                     </tr>
                     <% sale_items.each_with_index {|item, index|
                       q += item.bought_quantity
@@ -116,15 +120,15 @@
                       cash_sum += p %>
                       $('#bought-<%= i %>').html("<%= get_currency_mn(p) %>");
                       <% end %>
-                <% shipping_pay = (bought_sum < Const::FREE_SHIPPING && bought_sum > 0) ? Const::SHIPPING_FEE : 0
-                   cash_sum += shipping_pay
-                   price += shipping_pay
-                   bought_sum = 0.0
-                   if shipping_pay > 0%>
-                   $('.phone-<%= i %>').html($('.phone-<%= i %>').text()+ " *");
-                  <% end %>
+                      <% shipping_pay = (bought_sum < Const::FREE_SHIPPING && bought_sum > 0) ? Const::SHIPPING_FEE : 0
+                         cash_sum += shipping_pay
+                         price += shipping_pay
+                         bought_sum = 0.0
+                         if shipping_pay > 0%>
+                      $('.phone-<%= i %>').html($('.phone-<%= i %>').text() + " *");
+                      <% end %>
                   </script>
-                  <% } %>
+                <% } %>
                 <% if @sale_directs.present?
                      @sale_directs.each_with_index {|sale_direct, i|
                        p = sale_direct.sum_price
@@ -151,31 +155,32 @@
                   <td></td>
                   <td class="text-right"><strong><%= get_currency_mn price %></strong></td>
                   <td colspan="2"></td>
+                  <td class="text-right"><%= get_currency_mn bonus %></td>
                 </tr>
                 <tr>
                   <td colspan="6"></td>
                   <td class="text-right">Буцаалт</td>
                   <td class="text-right text-red"><%= back_sum > 0 ? get_currency_mn(back_sum) : '' %></td>
-                  <td colspan="2"></td>
+                  <td colspan="3"></td>
                 </tr>
                 <tr>
                   <td colspan="6"></td>
                   <td class="text-right">Дансаар</td>
                   <td class="text-right"><%= acc_sum > 0 ? get_currency_mn(acc_sum) : '' %></td>
-                  <td colspan="2"></td>
+                  <td colspan="3"></td>
                 </tr>
                 <tr>
                   <td colspan="6"></td>
                   <td class="text-right">Бэлнээр</td>
                   <td class="text-right"><%= cash_sum > 0 ? get_currency_mn(cash_sum) : '' %></td>
-                  <td colspan="2"></td>
+                  <td colspan="3"></td>
                 </tr>
                 <tr>
                   <td colspan="5"></td>
                   <td colspan="2" class="text-right"><strong>ТҮГЭЭГЧЭЭС АВАХ БЭЛЭН МӨНГӨ</strong></td>
                   <td class="text-right">
-                    <strong><%= cash_sum > 0 ? get_currency_mn(cash_sum - back_sum) : '' %></strong></td>
-                  <td colspan="2"></td>
+                    <strong><%= cash_sum > 0 ? get_currency_mn(cash_sum - back_sum - bonus) : '' %></strong></td>
+                  <td colspan="3"></td>
                 </tr>
               <% end %>
               </tbody>

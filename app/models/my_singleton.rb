@@ -15,9 +15,10 @@ class MySingleton
     acc_sum = 0 #Дансаар
     cash_sum = 0 #Бэлнээр
     bought_sum = 0
-
+    bonus = 0
     product_sales.each do |product_sale|
       sale_items = product_sale.product_sale_items.not_nil_bought_quantity
+      bonus += product_sale.bonus.presence || 0
       acc_sum += product_sale.paid if product_sale.paid.present?
       if sale_items.present?
         sale_items.each {|item|
@@ -63,8 +64,9 @@ class MySingleton
     # logger.info("Буцаалт: #{back_sum}")
     # logger.info("Дансаар: #{acc_sum}")
     # logger.info("Бэлнээр: #{cash_sum}")
-    # logger.info("ТҮГЭЭГЧЭЭС АВАХ БЭЛЭН МӨНГӨ: #{cash_sum - back_sum}")
-    [q, price, back_sum, acc_sum, cash_sum, cash_sum - back_sum]
+    # logger.info("Бонус: #{bonus}")
+    # logger.info("ТҮГЭЭГЧЭЭС АВАХ БЭЛЭН МӨНГӨ: #{cash_sum - back_sum - bonus}")
+    [q, price, back_sum, acc_sum, cash_sum, bonus, cash_sum - back_sum - bonus]
 
   end
 
