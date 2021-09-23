@@ -57,19 +57,6 @@ class ProductSaleReturn < ApplicationRecord
     product_sale_item.feature_item.barcode
   end
 
-  def back_request
-    salesman_returns.count > 0
-  end
-
-  def return_signed
-    if salesman_returns.present?
-      salesman_return = salesman_returns.first
-      salesman_return.sign_id.present?
-    else
-      false
-    end
-  end
-
   def exchange_balance
     product = product_sale_item.product
     feature_item = product_sale_item.feature_item

@@ -123,21 +123,8 @@ class ProductSaleItem < ApplicationRecord
     feature_item.barcode
   end
 
-  def back_request
-    salesman_returns.count > 0
-  end
-
   def sale_type
     product_sale.parent_id.present? ? product_sale.parent.status.name : 'Захиалга'
-  end
-
-  def return_signed
-    if salesman_returns.present?
-      salesman_return = salesman_returns.first
-      salesman_return.sign_id.present?
-    else
-      false
-    end
   end
 
   def add_bonus
