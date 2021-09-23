@@ -20,9 +20,9 @@ class ProductSaleReturn < ApplicationRecord
         .where("product_sale_returns.quantity - IFNULL(product_sale_returns.back_quantity, 0) > ?", 0)
   }
 
-  scope :status_confirmed, ->() {
+  scope :status_not_delivery, ->() {
     joins(:status)
-        .where('product_sale_statuses.alias = ?', 'oper_confirmed')
+        .where('product_sale_statuses.alias = ? OR product_sale_statuses.alias = ?', 'oper_confirmed', 'sals_delivered')
   }
 
   scope :by_feature_item_id, ->(feature_item_id) {
