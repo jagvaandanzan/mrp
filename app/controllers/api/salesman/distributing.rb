@@ -21,10 +21,9 @@ module API
               sale_items = ProductSaleItem.sale_available(salesman.id)
               sale_returns = ProductSaleReturn.sale_available(salesman.id)
               if sale_items.present?
-
-                error!(I18n.t('errors.messages.you_have_a_balance'), 422)
+                error!("#{ApplicationController.helpers.feature_product_names(sale_items)} үлдэгдэлтэй байна!", 422)
               elsif sale_returns.present?
-                error!(I18n.t('errors.messages.you_have_a_balance'), 422)
+                error!("#{ApplicationController.helpers.feature_product_names(sale_returns)} үлдэгдэлтэй байна!", 422)
               else
                 yesterday = Time.current.yesterday.beginning_of_day
                 sum_bank = BankTransaction.by_billing(yesterday)
