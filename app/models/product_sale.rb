@@ -467,9 +467,7 @@ class ProductSale < ApplicationRecord
     end
 
     unless item_eached
-      product_sale_items.each do |sale_item|
-        sale_item.destroy
-      end
+      product_sale_items.each(&:destroy)
     end
   end
 
