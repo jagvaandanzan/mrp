@@ -61,6 +61,7 @@ class Operators::ProductSaleCallsController < Operators::BaseController
     @sale_call.attributes = sale_call_params
 
     if @sale_call.save
+      @sale_call.update_column(:active_opr_id, nil)
       flash[:success] = t('alert.info_updated')
 
       if @sale_call.status.alias == 'call_order' # Захиалга

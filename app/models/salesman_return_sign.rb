@@ -26,6 +26,10 @@ class SalesmanReturnSign < ApplicationRecord
     end
   }
 
+  def return_count
+    salesman_returns.count
+  end
+
   def salesman_name
     salesman.name
   end

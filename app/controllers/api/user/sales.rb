@@ -37,6 +37,19 @@ module API
               end
             end
 
+            resource :return_product do
+              desc "PATCH sales/return_requests/:id/products/return_product"
+              params do
+                requires :return_id, type: Integer
+              end
+              patch do
+                salesman_return = SalesmanReturn.find(params[:return_id])
+                salesman_return.user = current_user
+                salesman_return.save
+                present :returned, salesman_return.updated_at
+              end
+            end
+
             resource :signature do
               desc "POST sales/return_requests/:id/signature"
               params do
@@ -60,10 +73,21 @@ module API
                     return_sign.user = current_user
                     return_sign.save
 
+                    sale_items = ProductSaleItem.sale_available(return_sign.salesman_id)
+                                     .status_not_confirmed
+                    sale_returns = ProductSaleReturn.sale_available(return_sign.salesman_id)
+                                       .status_not_confirmed
                     salesman_returns.each {|ret|
                       if ret.quantity > 0
-                        item = ret.sale_item.present? ? ret.sale_item : ret.sale_return
-                        item.update_column(:back_quantity, item.back_quantity.present? ? item.back_quantity + ret.quantity : ret.quantity)
+                        if return_sign.is_item
+                          sale_items.by_feature_item_id(ret.feature_item_id).each {|sale_item|
+                            sale_item.update_column(:back_quantity, sale_item.back_quantity.present? ? sale_item.back_quantity + ret.quantity : ret.quantity)
+                          }
+                        else
+                          sale_returns.by_feature_item_id(ret.feature_item_id).each {|return_item|
+                            return_item.update_column(:back_quantity, return_item.back_quantity.present? ? return_item.back_quantity + ret.quantity : ret.quantity)
+                          }
+                        end
                         ProductBalance.create(product: ret.product,
                                               feature_item: ret.feature_item,
                                               salesman_return: ret,
@@ -82,26 +106,12 @@ module API
               end
             end
           end
-
-          resource :return_product do
-            desc "PATCH sales/return_requests/return_product"
-            params do
-              requires :product_id, type: Integer
-            end
-            patch do
-              salesman_return = SalesmanReturn.find(params[:product_id])
-              salesman_return.user = current_user
-              salesman_return.is_check = true
-              salesman_return.save
-              present :returned, salesman_return.updated_at
-            end
-          end
         end
 
         resource :item do
-          route_param :sale_item_id do
+          route_param :feature_item_id do
             resource :scan do
-              desc "POST sales/item/:sale_item_id/scan"
+              desc "POST sales/item/:feature_item_id/scan"
               params do
                 optional :barcode, type: String
                 optional :skip_barcode, type: Boolean
@@ -109,11 +119,11 @@ module API
               post do
                 # Rails.logger.info("id ===  + #{params[:sale_item_id]} #{params[:barcode]}")
                 is_success = false
-                sales_item = ProductSaleItem.find(params[:sale_item_id])
+                feature_item = ProductFeatureItem.find(params[:feature_item_id])
                 if params[:skip_barcode].present? && params[:skip_barcode]
                   is_success = true
                 elsif params[:barcode].present?
-                  if sales_item.feature_item.barcode == params[:barcode]
+                  if feature_item.barcode == params[:barcode]
                     is_success = true
                   else
                     error!("Couldn't find by barcode", 422)
@@ -121,7 +131,7 @@ module API
                 end
 
                 if is_success
-                  present :sales_item, sales_item, with: API::SALESMAN::Entities::ProductSaleItem
+                  present :success, is_success
                 else
                   error!("Couldn't find data", 422)
                 end

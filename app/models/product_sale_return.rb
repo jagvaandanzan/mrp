@@ -25,6 +25,10 @@ class ProductSaleReturn < ApplicationRecord
         .where.not('product_sale_statuses.alias = ?', 'oper_confirmed')
   }
 
+  scope :by_feature_item_id, ->(feature_item_id) {
+    where(feature_item_id: feature_item_id)
+  }
+
   def price
     ApplicationController.helpers.get_f(product_sale_item.price)
   end

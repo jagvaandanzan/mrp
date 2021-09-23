@@ -121,10 +121,10 @@
                    price += shipping_pay
                    bought_sum = 0.0
                    if shipping_pay > 0%>
-                   $('.phone-<%= i %>').html("<%= get_currency_mn(p) %>");
-                  <% end
-                   } %>
+                   $('.phone-<%= i %>').html($('.phone-<%= i %>').text()+ " *");
+                  <% end %>
                   </script>
+                  <% } %>
                 <% if @sale_directs.present?
                      @sale_directs.each_with_index {|sale_direct, i|
                        p = sale_direct.sum_price

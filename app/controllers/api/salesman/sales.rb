@@ -32,92 +32,40 @@ module API
             requires :returns, type: Array[JSON]
           end
           post do
-
-            # sale_items = ProductSaleItem.sale_available(current_salesman.id)
-            #                  .status_not_confirmed
-            #             sale_returns = ProductSaleReturn.sale_available(current_salesman.id)
-            #                                .status_not_confirmed
             image = params[:image] || {}
-            return_sign = SalesmanReturnSign
-                              .by_salesman(current_salesman.id)
-                              .by_user(nil)
-                              .first
-            if return_sign.present?
-              return_sign.given = image[:tempfile]
-              return_sign.given_file_name = image[:filename]
-              return_sign.save
-              present :sign_at, return_sign.updated_at
-            else
-              salesman_returns = SalesmanReturn.by_sign_user(nil)
-                                     .by_salesman(current_salesman.id)
-
-              if salesman_returns.count == 0
-                error!(I18n.t('errors.messages.not_available_product'), 422)
-              else
-                return_sign = SalesmanReturnSign.create(salesman: current_salesman,
-                                                        return_count: salesman_returns.count,
-                                                        given: image[:tempfile],
-                                                        given_file_name: image[:filename])
-                salesman_returns.each {|ret|
-                  ret.update_column(:sign_id, return_sign.id)
+            return_sign = SalesmanReturnSign.new(salesman: current_salesman,
+                                                 given: image[:tempfile],
+                                                 given_file_name: image[:filename],
+                                                 is_item: true)
+            if params[:sale_item]
+              sale_items = ProductSaleItem.sale_available(current_salesman.id)
+                               .status_not_confirmed
+              params['feature_items'].each {|feature|
+                sale_items.by_feature_item_id(feature['id']).each {|sale_item|
+                  return_sign.salesman_returns << SalesmanReturn.new(salesman: current_salesman,
+                                                                     product: sale_item.product,
+                                                                     feature_item: sale_item.feature_item,
+                                                                     sale_return: sale_return,
+                                                                     quantity: sale_item.quantity)
                 }
-                present :sign_at, return_sign.created_at
-              end
-            end
-
-          end
-        end
-
-        resource :to_return do
-          desc "POST sales/to_return"
-          params do
-            optional :sale_item_id, type: Integer
-            optional :sale_return_id, type: Integer
-            requires :quantity, type: Integer
-          end
-          post do
-            if params[:sale_item_id].present?
-              sale_item = ProductSaleItem.find(params[:sale_item_id])
-              available_quantity = ProductFeatureItem.sale_available_item_quantity(current_salesman.id, sale_item.feature_item_id)
-              if available_quantity >= params[:quantity]
-                salesman_return = SalesmanReturn.by_sale_item_salesman(sale_item.id, current_salesman.id).first
-                if salesman_return.present?
-                  salesman_return.update_column(:quantity, params[:quantity])
-                else
-                  salesman_return = SalesmanReturn.create(salesman: current_salesman,
-                                                          product: sale_item.product,
-                                                          feature_item: sale_item.feature_item,
-                                                          sale_item: sale_item,
-                                                          quantity: params[:quantity])
-                end
-
-                present :salesman_return, salesman_return, with: API::SALESMAN::Entities::SalesmanReturn
-              else
-                error!(I18n.t('errors.messages.available_quantity'), 422)
-              end
-            elsif params[:sale_return_id].present?
-              sale_return = ProductSaleReturn.find(params[:sale_return_id])
-              product_sale_item = sale_return.product_sale_item
-              available_quantity = ProductSaleReturn.by_available_feature_id(current_salesman.id, product_sale_item.feature_item_id)
-              if available_quantity >= params[:quantity]
-                salesman_return = SalesmanReturn.by_sale_return_salesman(sale_return.id, current_salesman.id).first
-                if salesman_return.present?
-                  salesman_return.update_column(:quantity, params[:quantity])
-                else
-                  salesman_return = SalesmanReturn.create(salesman: current_salesman,
-                                                          product: product_sale_item.product,
-                                                          feature_item: product_sale_item.feature_item,
-                                                          sale_return: sale_return,
-                                                          quantity: params[:quantity])
-                end
-
-                present :salesman_return, salesman_return, with: API::SALESMAN::Entities::SalesmanReturn
-              else
-                error!(I18n.t('errors.messages.available_quantity'), 422)
-              end
+              }
             else
-              error!(I18n.t('errors.messages.available_quantity'), 422)
+              sale_returns = ProductSaleReturn.sale_available(current_salesman.id)
+                                 .status_not_confirmed
+              params['feature_items'].each {|feature|
+                sale_returns.by_feature_item_id(feature['id']).each {|sale_return|
+                  feature_item = sale_return.feature_item
+                  return_sign.salesman_returns << SalesmanReturn.new(salesman: current_salesman,
+                                                                     product_id: feature_item.product_id,
+                                                                     feature_item: feature_item,
+                                                                     sale_return: sale_return,
+                                                                     quantity: sale_return.quantity)
+                }
+              }
             end
+            return_sign.save
+
+            present :sign_at, return_sign.created_at
 
           end
         end

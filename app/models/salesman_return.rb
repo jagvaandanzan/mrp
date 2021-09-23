@@ -99,6 +99,10 @@ class SalesmanReturn < ApplicationRecord
     end
   end
 
+  def is_check
+    user.present?
+  end
+
   def desk
     "X1Y1Z2"
   end
