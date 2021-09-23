@@ -124,7 +124,7 @@ class ProductFeatureItem < ApplicationRecord
                 .where("salesman_travels.salesman_id = ?", salesman_id)
                 .where("product_sale_items.quantity - IFNULL(product_sale_items.bought_quantity, 0) - IFNULL(product_sale_items.back_quantity, 0) > ?", 0)
                 .group(:id)
-    items = items.where("product_sales.id != ?", not_status_id) unless not_status_id.nil?
+    items = items.where("product_sales.status_id != ?", not_status_id) unless not_status_id.nil?
     items
   }
   scope :available_sale_return_hash, ->(salesman_id, not_status_id = nil) {

@@ -35,7 +35,7 @@ class DirectSale < ApplicationRecord
   scope :search, ->(start, finish, id, product_name, sale_type, phone, tax) {
     items = order_date
     items = items.where('? <= date AND date <= ?', start.to_time, finish.to_time + 1.days) if start.present? && finish.present?
-    items = items.joins(store_transfer_items: :product)
+    items = items.joins(direct_sale_items: :product)
                 .where('products.code LIKE :value OR products.n_name LIKE :value', value: "%#{product_name}%").group("store_transfers.id") if product_name.present?
     items = items.where('id = ?', id) if id.present?
     items = items.where('sale_type_id = ?', sale_type) if sale_type.present?
