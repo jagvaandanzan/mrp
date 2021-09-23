@@ -469,6 +469,7 @@ class ProductSale < ApplicationRecord
     unless item_eached
       product_sale_items.each do |sale_item|
         sale_item.product_balance.destroy
+        sale_item.destroy
       end
     end
   end
