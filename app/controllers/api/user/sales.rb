@@ -38,7 +38,7 @@ module API
             end
 
             resource :return_product do
-              desc "PATCH sales/return_requests/:id/products/return_product"
+              desc "PATCH sales/return_requests/:id/return_product"
               params do
                 requires :return_id, type: Integer
               end

@@ -130,7 +130,7 @@ module API
 
               bought_sum = 0
               if shipping_pay > 0
-                ((item_index - sale_index)..(sale_index - 1)).each {|i|
+                ((item_index - sale_index)..(item_index - 1)).each {|i|
                   items[i].note = " *"
                 }
               end
