@@ -32,6 +32,9 @@ module API
             requires :returns, type: Array[JSON]
           end
           post do
+            Rails.logger.info(params[:sale_item])
+            Rails.logger.info(params[:image])
+            Rails.logger.info(params[:returns])
             image = params[:image] || {}
             return_sign = SalesmanReturnSign.new(salesman: current_salesman,
                                                  given: image[:tempfile],
