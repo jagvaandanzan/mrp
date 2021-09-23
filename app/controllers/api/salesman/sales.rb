@@ -14,10 +14,12 @@ module API
             if return_signs.present?
               error!(I18n.t('errors.messages.stockkeeper_is_not_signed'), 422)
             else
-              status_id = ProductSaleStatus.find_by_alias("oper_confirmed")
+
               item_hash = if params[:sale_item]
+                            status_id = ProductSaleStatus.find_by_alias("oper_confirmed")
                             ProductFeatureItem.available_sale_item_hash(current_salesman.id, status_id)
                           else
+                            status_id = ProductSaleStatus.find_by_alias("sals_delivered")
                             ProductFeatureItem.available_sale_return_hash(current_salesman.id, status_id)
                           end
               features = []

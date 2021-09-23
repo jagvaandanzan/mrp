@@ -13,7 +13,8 @@
 
   <div class="action-buttons">
     <% allow_not_status = @product_sale.allow_not_status
-       has_child = @product_sale.child.present? %>
+       has_child = @product_sale.child.present?
+       super_operator = can? :manage, :edit_product_sale %>
     <% if has_child %>
       <%= link_to @product_sale.status.name + ' хийсэн бараа', operators_product_sale_path(@product_sale.child), class: 'btn btn-info' %>
     <% elsif !@product_sale.has_seen_stockkeeper && !allow_not_status %>

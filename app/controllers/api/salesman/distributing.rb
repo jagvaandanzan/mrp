@@ -20,6 +20,7 @@ module API
             else
               sale_items = ProductSaleItem.sale_available(salesman.id)
               sale_returns = ProductSaleReturn.sale_available(salesman.id)
+                                 .status_confirmed
               if sale_items.present?
                 error!("#{ApplicationController.helpers.feature_product_names(sale_items)} үлдэгдэлтэй байна!", 422)
               elsif sale_returns.present?
