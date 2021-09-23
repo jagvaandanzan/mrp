@@ -9,18 +9,24 @@ module API
             requires :sale_item, type: Boolean
           end
           post do
-            status_id = ProductSaleStatus.find_by_alias("oper_confirmed")
-            item_hash = if params[:sale_item]
-                          ProductFeatureItem.available_sale_item_hash(current_salesman.id, status_id)
-                        else
-                          ProductFeatureItem.available_sale_return_hash(current_salesman.id, status_id)
-                        end
-            features = []
-            item_hash.each {|h|
-              feature_item = ProductFeatureItem.find(h['feature_item_id'])
-              features << {id: h['feature_item_id'], image: feature_item.img, name: feature_item.product_name, feature: feature_item.name, barcode: feature_item.barcode, quantity: h['quantity']}
-            }
-            features
+            return_signs = SalesmanReturnSign.by_salesman(current_salesman.id)
+                               .by_user(nil)
+            if return_signs.present?
+              status_id = ProductSaleStatus.find_by_alias("oper_confirmed")
+              item_hash = if params[:sale_item]
+                            ProductFeatureItem.available_sale_item_hash(current_salesman.id, status_id)
+                          else
+                            ProductFeatureItem.available_sale_return_hash(current_salesman.id, status_id)
+                          end
+              features = []
+              item_hash.each {|h|
+                feature_item = ProductFeatureItem.find(h['feature_item_id'])
+                features << {id: h['feature_item_id'], image: feature_item.img, name: feature_item.product_name, feature: feature_item.name, barcode: feature_item.barcode, quantity: h['quantity']}
+              }
+              features
+            else
+              error!(I18n.t('errors.messages.stockkeeper_is_not_signed'), 422)
+            end
           end
         end
 
@@ -32,9 +38,6 @@ module API
             requires :returns, type: Array[JSON]
           end
           post do
-            Rails.logger.info(params[:sale_item])
-            Rails.logger.info(params[:image])
-            Rails.logger.info(params[:returns])
             image = params[:image] || {}
             return_sign = SalesmanReturnSign.new(salesman: current_salesman,
                                                  given: image[:tempfile],
@@ -48,7 +51,7 @@ module API
                   return_sign.salesman_returns << SalesmanReturn.new(salesman: current_salesman,
                                                                      product: sale_item.product,
                                                                      feature_item: sale_item.feature_item,
-                                                                     sale_return: sale_return,
+                                                                     sale_item: sale_item,
                                                                      quantity: feature['quantity'])
                 }
               }
