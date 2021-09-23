@@ -43,7 +43,7 @@ module API
             if params[:sale_item]
               sale_items = ProductSaleItem.sale_available(current_salesman.id)
                                .status_not_confirmed
-              params['feature_items'].each {|feature|
+              params['feature_items'].to_json.each {|feature|
                 sale_items.by_feature_item_id(feature['id']).each {|sale_item|
                   return_sign.salesman_returns << SalesmanReturn.new(salesman: current_salesman,
                                                                      product: sale_item.product,
