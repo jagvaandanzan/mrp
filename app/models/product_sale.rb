@@ -378,7 +378,6 @@ class ProductSale < ApplicationRecord
       false
     end
   end
-
   def update_sum_price
     sum_val = product_sale_items.by_to_see(false)
                   .sum(:sum_price)
@@ -519,22 +518,19 @@ class ProductSale < ApplicationRecord
   end
 
   def create_log
-    if status.present?
-      Rails.logger.info("status = #{status.id}")
-      if status.previous.present?
-        previous_alias = status.previous_status.alias
-        Rails.logger.info("previous_alias = #{previous_alias}")
-        if previous_alias == "oper_failed"
-          self.clear_relation
+    if operator.present? || salesman.present?
+      self.product_sale_status_logs << ProductSaleStatusLog.new(operator: operator,
+                                                                salesman: salesman,
+                                                                status: status,
+                                                                note: status_note)
+      # set_status
+      if status.present?
+        if status.previous.present?
+          previous_alias = status.previous_status.alias
+          if previous_alias == "oper_failed"
+            self.clear_relation
+          end
         end
-      end
-
-      if operator.present? || salesman.present?
-        self.product_sale_status_logs << ProductSaleStatusLog.new(operator: operator,
-                                                                  salesman: salesman,
-                                                                  status: status,
-                                                                  note: status_note)
-        # set_status
         if status.next.present?
           next_status = status.next_status
           if next_status.user_type == "auto"

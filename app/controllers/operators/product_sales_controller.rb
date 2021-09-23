@@ -214,7 +214,7 @@ class Operators::ProductSalesController < Operators::BaseController
   def update
     @product_sale.attributes = product_sale_params
     check_approved(@product_sale)
-
+    @product_sale.operator = current_operator
     if @product_sale.save
       flash[:success] = t('alert.info_updated')
       redirect_to action: :index
@@ -226,6 +226,7 @@ class Operators::ProductSalesController < Operators::BaseController
   def update_status
     @product_sale.update_status = true
     @product_sale.attributes = params.require(:product_sale).permit(:status_id, :status_m, :status_sub, :status_note)
+    @product_sale.operator = current_operator
     @product_sale.from_status = true
     check_approved(@product_sale)
 
