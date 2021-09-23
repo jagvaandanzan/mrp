@@ -18,7 +18,7 @@ module API
             features = []
             item_hash.each {|h|
               feature_item = ProductFeatureItem.find(h['feature_item_id'])
-              features << {id: feature_item.id, image: feature_item.img, name: feature_item.product_name, feature: feature_item.name, barcode: feature_item.barcode, quantity: h['quantity']}
+              features << {id: h['feature_item_id'], image: feature_item.img, name: feature_item.product_name, feature: feature_item.name, barcode: feature_item.barcode, quantity: h['quantity']}
             }
             features
           end
