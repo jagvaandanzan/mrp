@@ -11,7 +11,7 @@ module API
           post do
             return_signs = SalesmanReturnSign.by_salesman(current_salesman.id)
                                .by_user(nil)
-            # if return_signs.present?
+            if return_signs.present?
               status_id = ProductSaleStatus.find_by_alias("oper_confirmed")
               item_hash = if params[:sale_item]
                             ProductFeatureItem.available_sale_item_hash(current_salesman.id, status_id)
@@ -24,9 +24,9 @@ module API
                 features << {id: h['feature_item_id'], image: feature_item.img, name: feature_item.product_name, feature: feature_item.name, barcode: feature_item.barcode, quantity: h['quantity']}
               }
               features
-            # else
-            #   error!(I18n.t('errors.messages.stockkeeper_is_not_signed'), 422)
-            # end
+            else
+              error!(I18n.t('errors.messages.stockkeeper_is_not_signed'), 422)
+            end
           end
         end
 
@@ -52,7 +52,7 @@ module API
                                                                      product: sale_item.product,
                                                                      feature_item: sale_item.feature_item,
                                                                      sale_item: sale_item,
-                                                                     quantity: feature['quantity'])
+                                                                     quantity: sale_item.quantity)
                 }
               }
             else
@@ -65,7 +65,7 @@ module API
                                                                      product_id: feature_item.product_id,
                                                                      feature_item: feature_item,
                                                                      sale_return: sale_return,
-                                                                     quantity: feature['quantity'])
+                                                                     quantity: sale_item.quantity)
                 }
               }
             end
