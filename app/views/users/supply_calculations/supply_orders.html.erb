@@ -144,7 +144,7 @@
               <tr>
                 <td class="text-right"><strong>Худалдан авалт хийсэн нийт дүн</strong></td>
                 <td></td>
-                <td><%= link_to get_currency(sum_not_er_cost + sum_not_er, Const::CURRENCY[0], 3), users_supply_calculations_purchased_er_path(by_start: @by_start, by_end: @by_end)%></td>
+                <td><%= link_to get_currency(sum_not_er_cost + sum_not_er, Const::CURRENCY[0], 3), users_supply_calculations_purchased_er_path(by_start: @by_start, by_end: @by_end, by_code: @by_code)%></td>
                 <td></td>
                 <td></td>
               </tr>
@@ -166,7 +166,7 @@
               <tr>
                 <td class="text-right"><strong>Нийт дүн</strong></td>
                 <td></td>
-                <td><%= link_to get_currency(sum_in_er + er_product_cost, Const::CURRENCY[0], 3), users_supply_calculations_received_er_path(by_start: @by_start, by_end: @by_end)%></td>
+                <td><%= link_to get_currency(sum_in_er + er_product_cost, Const::CURRENCY[0], 3), users_supply_calculations_received_er_path(by_start: @by_start, by_end: @by_end, by_code: @by_code)%></td>
                 <td></td>
                 <td></td>
               </tr>
@@ -202,7 +202,7 @@
               <tr>
                 <td class="text-right"><strong>Нийт дүн</strong></td>
                 <td></td>
-                <td><%=link_to get_currency(ub_sample_cost + ub_box_cost + ub_main_cost + not_ub + cost_missing, Const::CURRENCY[0], 3), users_supply_calculations_ship_ub_path(by_start: @by_start, by_end: @by_end) %></td>
+                <td><%=link_to get_currency(ub_sample_cost + ub_box_cost + ub_main_cost + not_ub + cost_missing, Const::CURRENCY[0], 3), users_supply_calculations_ship_ub_path(by_start: @by_start, by_end: @by_end, by_code: @by_code) %></td>
                 <td></td>
                 <td></td>
               </tr>

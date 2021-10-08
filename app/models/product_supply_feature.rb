@@ -201,7 +201,7 @@ class ProductSupplyFeature < ApplicationRecord
   }
 
   scope :by_code, ->(code){
-    where("product_supply_orders.code = ?", code) if code.present?
+    where("product_supply_orders.code IN (?)", code) if code.present?
   }
 
   scope :by_date, ->(start, finish) {

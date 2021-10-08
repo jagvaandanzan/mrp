@@ -52,9 +52,9 @@
                 <th class="va-mid text-center"><%=@er_products_x.group("shipping_er_products.id").pluck("shipping_er_products.cargo").sum%></th>
                 <th class="va-mid text-center"><%= %></th>
                 <th></th>
-                <th class="va-mid text-center"><%=ShippingErProduct.by_order_id(order_ids).sum(:cost)%></th>
+                <th class="va-mid text-center"><%=get_currency(ShippingErProduct.by_order_id(order_ids).sum(:cost), Const::CURRENCY[0], 3)%></th>
                 <th><%= %></th>
-                <th><%=ProductSupplyFeature.by_feature_id(@er_products_x.pluck("product_supply_features.id")).pluck(:sum_price_lo).sum(&:to_f)%></th>
+                <th><%=get_currency(ProductSupplyFeature.by_feature_id(@er_products_x.pluck("product_supply_features.id")).pluck(:sum_price_lo).sum(&:to_f), Const::CURRENCY[0], 3)%></th>
                 <th></th>
               </tr>
               <%@er_products.order(code: :asc).each do |i| %>
@@ -110,7 +110,7 @@
                   <td class="va-mid text-center bg-2">
                     <%= cargo %>
                   </td>
-                  <% remainder = quantity - ShippingUbFeature.by_supply_feature_ids(feature_ids).pluck(:quantity).sum(&:to_i) %>
+                  <% remainder = quantity.to_i - ShippingUbFeature.by_supply_feature_ids(feature_ids).pluck(:quantity).sum(&:to_i) %>
                   <td class="va-mid text-center">
                     <%= remainder %>
                   </td>
@@ -121,13 +121,13 @@
                     <% end %>
                   </td>
                   <td class="va-mid">
-                    <%= costs %>
+                    <%= get_currency(costs, Const::CURRENCY[0], 3) %>
                   </td>
                   <td class="va-mid text-center">
-                    <%= i.price %>
+                    <%= get_currency(i.price, Const::CURRENCY[0], 3) %>
                   </td>
                   <td>
-                    <%= i.price * remainder %>
+                    <%= get_currency(i.price * remainder, Const::CURRENCY[0], 3) %>
                   </td>
                   <td class="va-mid text-center">
                     <%= order_items.present? ? order_items.note_lo : '' %>

@@ -60,6 +60,16 @@
                   <td class="va-mid text-center"><%= shipping_ub.description %></td>
                 </tr>
               <% end %>
+              <% shipping_ub_product_ids = ShippingUbProduct.by_shipping_ub_id(@shipping_ubs_all.pluck(:id)).pluck(:id)%>
+              <tr>
+                <td class="va-mid underline" colspan="3"><strong>Нийт: <%= @shipping_ubs_all.count%></strong></td>
+                <td class="va-mid text-center"><%= ShippingUbProduct.by_shipping_ub_id(@shipping_ubs_all.pluck(:id)).pluck(:quantity).sum(&:to_i) %></td>
+                <td class="va-mid text-center"><%= ShippingUbProduct.by_shipping_ub_id(@shipping_ubs_all.pluck(:id)).pluck(:cargo).sum(&:to_i) %></td>
+                <td class="va-mid text-center"><%= ProductIncomeProduct.by_shipping_ub_product_id(shipping_ub_product_ids).pluck(:cargo).sum(&:to_i) %></td>
+                <td class="va-mid"><%= get_currency(ShippingUbProduct.by_shipping_ub_id(@shipping_ubs_all.pluck(:id)).pluck(:cost).sum(&:to_f), Const::CURRENCY[0], 3)%></td>
+                <td class="va-mid text-center"><%=  %></td>
+                <td class="va-mid text-center"><%=  %></td>
+              </tr>
             </table>
           </div>
         </div>

@@ -47,9 +47,9 @@
                 <th class="va-mid text-center"><%= ProductSupplyFeature.by_order_item(ids).pluck(:quantity_lo).sum %></th>
                 <th class="va-mid text-center"><%= %></th>
                 <th class="va-mid"> </th>
-                <th class="va-mid"><%= sum_not_er_cost %></th>
+                <th class="va-mid"><%= get_currency(sum_not_er_cost, Const::CURRENCY[0], 3) %></th>
                 <th><%=  %></th>
-                <th class="va-mid"><%=ProductSupplyFeature.by_feature_id(@pur_products_x.pluck("product_supply_features.id")).pluck(:sum_price_lo).sum(&:to_f) %></th>
+                <th class="va-mid"><%=get_currency(ProductSupplyFeature.by_feature_id(@pur_products_x.pluck("product_supply_features.id")).pluck(:sum_price_lo).sum(&:to_f), Const::CURRENCY[0], 3) %></th>
               </tr>
               <%@pur_products.each do |i| %>
                 <% order_items = i.order_item %>

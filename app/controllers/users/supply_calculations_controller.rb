@@ -71,15 +71,24 @@ class Users::SupplyCalculationsController < Users::BaseController
   def purchased_er
     @by_start = params[:by_start]
     @by_end = params[:by_end]
-    @pur_products = ProductSupplyFeature
-                  .by_date(@by_start, @by_end)
-                  .purchased_er
-                  .order(code: :asc)
-                  .page(params[:page])
-    @pur_products_x = ProductSupplyFeature
-                      .by_date(@by_start, @by_end)
-                      .purchased_er
-                      .order(code: :asc)
+    @by_code = params[:by_code].presence
+    if @by_code.present?
+      @pur_products_x = ProductSupplyFeature.purchased_er.by_code(@by_code)
+                                                         .order(code: :asc)
+      @pur_products = ProductSupplyFeature.purchased_er.by_code(@by_code)
+                                                       .order(code: :asc)
+                                                       .page(params[:page])
+    else
+      @pur_products = ProductSupplyFeature
+                        .by_date(@by_start, @by_end)
+                        .purchased_er
+                        .order(code: :asc)
+                        .page(params[:page])
+      @pur_products_x = ProductSupplyFeature
+                          .by_date(@by_start, @by_end)
+                          .purchased_er
+                          .order(code: :asc)
+    end
 
 
     respond_to do |format|
@@ -93,12 +102,19 @@ class Users::SupplyCalculationsController < Users::BaseController
   def received_er
     @by_start = params[:by_start]
     @by_end = params[:by_end]
-    @er_products = ProductSupplyFeature.by_date(@by_start, @by_end)
-                                       .received_er
-                                       .page(params[:page])
-    @er_products_x = ProductSupplyFeature
-                       .by_date(@by_start, @by_end)
-                       .received_er
+    @by_code = params[:by_code].presence
+    if @by_code.present?
+      @er_products_x = ProductSupplyFeature.received_er.by_code(@by_code)
+      @er_products = ProductSupplyFeature.received_er.by_code(@by_code)
+                                          .page(params[:page])
+    else
+      @er_products = ProductSupplyFeature.by_date(@by_start, @by_end)
+                                         .received_er
+                                         .page(params[:page])
+      @er_products_x = ProductSupplyFeature
+                         .by_date(@by_start, @by_end)
+                         .received_er
+    end
     respond_to do |format|
       format.xlsx{
         render template: 'users/supply_calculations/received_er', xlsx: 'Эрээнд_ирсэн_бараа'
@@ -110,15 +126,25 @@ class Users::SupplyCalculationsController < Users::BaseController
   def ship_ub
     @by_start = params[:by_start]
     @by_end = params[:by_end]
-    @ub_products = ProductSupplyFeature
-                     .by_date(@by_start, @by_end)
-                     .ship_ub
-                     .order(code: :asc)
-                     .page(params[:page])
-    @ub_products_x = ProductSupplyFeature
+    @by_code = params[:by_code].presence
+    if @by_code.present?
+      @ub_products_x = ProductSupplyFeature.ship_ub.by_code(@by_code)
+                                           .order(code: :asc)
+      @ub_products = ProductSupplyFeature.ship_ub.by_code(@by_code)
+                                         .order(code: :asc)
+                                         .page(params[:page])
+    else
+      @ub_products = ProductSupplyFeature
                        .by_date(@by_start, @by_end)
                        .ship_ub
                        .order(code: :asc)
+                       .page(params[:page])
+      @ub_products_x = ProductSupplyFeature
+                         .by_date(@by_start, @by_end)
+                         .ship_ub
+                         .order(code: :asc)
+    end
+
     respond_to do |format|
       format.xlsx{
         render template: 'users/supply_calculations/ship_ub', xlsx: 'Улаанбаатарлуу_ачуулсан_бараа'

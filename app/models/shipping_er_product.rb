@@ -59,6 +59,10 @@ class ShippingErProduct < ApplicationRecord
     items
   }
 
+  scope :by_shipping_er_id, ->(ids){
+    where('shipping_er_products.shipping_er_id IN (?)', ids)
+  }
+
 
 
   def product_bought

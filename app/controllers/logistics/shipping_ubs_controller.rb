@@ -7,6 +7,7 @@ class Logistics::ShippingUbsController < Logistics::BaseController
     @by_start = params[:by_start]
     @by_end = params[:by_end]
     @shipping_ubs = ShippingUb.search(@by_start, @by_end, @product_name).page(params[:page])
+    @shipping_ubs_all = ShippingUb.search(@by_start, @by_end, @product_name)
     cookies[:shipping_ub_page_number] = params[:page]
   end
 

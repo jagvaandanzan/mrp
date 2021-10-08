@@ -56,6 +56,14 @@
                   <td class="va-mid"><%= shipping_er.description %></td>
                 </tr>
               <% end %>
+              <tr>
+                <td class="va-mid underline" colspan="2"><strong>Нийт: <%=@shipping_ers_all.count %></strong></td>
+                <td class="va-mid underline text-center"><%= get_currency(@shipping_ers_all.pluck(:cost).sum(&:to_f), Const::CURRENCY[0], 3) %></td>
+                <td></td>
+                <td class="va-mid text-center"><%= ShippingErProduct.by_shipping_er_id(@shipping_ers_all.pluck(:id)).pluck(:quantity).sum(&:to_i) %></td>
+                <td class="va-mid text-center"><%= ShippingErProduct.by_shipping_er_id(@shipping_ers_all.pluck(:id)).pluck(:cargo).sum(&:to_i) %></td>
+                <td></td>
+              </tr>
             </table>
           </div>
         </div>

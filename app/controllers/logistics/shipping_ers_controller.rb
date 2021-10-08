@@ -9,6 +9,7 @@ class Logistics::ShippingErsController < Logistics::BaseController
 
     @shipping_ers = ShippingEr.search(@by_start, @by_end, @product_name, params[:order_type] == 'sample' ? 1 : 0).page(params[:page])
     cookies[:shipping_er_page_number] = params[:page]
+    @shipping_ers_all = ShippingEr.search(@by_start, @by_end, @product_name, params[:order_type] == 'sample' ? 1 : 0)
   end
 
   def new

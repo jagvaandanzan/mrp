@@ -60,10 +60,18 @@ class ShippingUbProduct < ApplicationRecord
     where('shipping_ub_products.supply_order_id IN (?)', order_id)
   }
 
+  scope :by_shipping_ub_id, ->(ids){
+    where('shipping_ub_products.shipping_ub_id IN (?)', ids)
+  }
+
   scope :by_ub_date, ->(start, finish) {
     items = joins(:shipping_er_product)
     items = items.where('? <= shipping_ub_products.created_at AND shipping_ub_products.created_at <= ?', start.to_time, finish.to_time + 1.days)
     items
+  }
+
+  scope :by_id, ->(ids){
+    where('id IN (?)', ids)
   }
 
   scope :by_date, ->(start, finish) {

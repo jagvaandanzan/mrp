@@ -53,13 +53,13 @@
                 <th class="va-mid  text-center"><%= ProductSupplyFeature.by_order_item(pur_ids).sum("product_supply_features.quantity_lo") %></th>
                 <th class="va-mid text-center"><%=  ShippingErFeature.by_order_item(pur_ids).sum("shipping_er_features.quantity") %></th>
                 <th class="va-mid text-center"><%= ShippingErProduct.by_order_id(@ub_products_x.pluck("product_supply_order_items.product_supply_order_id")).pluck(:cargo).sum%></th>
-                <th class="va-mid text-center"><%=ShippingErProduct.by_order_id(@ub_products_x.pluck("product_supply_order_items.product_supply_order_id")).pluck(:cost).sum %></th>
+                <th class="va-mid text-center"><%=get_currency(ShippingErProduct.by_order_id(@ub_products_x.pluck("product_supply_order_items.product_supply_order_id")).pluck(:cost).sum, Const::CURRENCY[0], 3) %></th>
                 <th class="va-mid text-center"><%= %></th>
                 <th class="va-mid text-center"><%=ShippingUbFeature.by_order_item(pur_ids).sum("shipping_ub_features.quantity") %></th>
                 <th class="va-mid text-center"><%=ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cargo").sum%></th>
-                <th class="va-mid text-center"><%=ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cost").sum %></th>
+                <th class="va-mid text-center"><%=get_currency(ShippingUbProduct.by_order_id(order_ids).pluck("shipping_ub_products.cost").sum, Const::CURRENCY[0], 3) %></th>
                 <th></th>
-                <th class="va-mid text-center"><%=ProductSupplyFeature.by_feature_id(@ub_products_x.pluck("product_supply_features.id")).pluck(:sum_price_lo).sum(&:to_f)%></th>
+                <th class="va-mid text-center"><%=get_currency(ProductSupplyFeature.by_feature_id(@ub_products_x.pluck("product_supply_features.id")).pluck(:sum_price_lo).sum(&:to_f), Const::CURRENCY[0], 3)%></th>
                 <th></th>
               </tr>
               <%@ub_products.each do |i| %>
@@ -117,7 +117,7 @@
                     <%= cargo %>
                   </td>
                   <td class="va-mid text-center bg-2">
-                    <%= costs %>
+                    <%= get_currency(costs, Const::CURRENCY[0], 3) %>
                   </td>
                   <td class="va-mid text-center bg-2">
                     <%= date %>
@@ -130,14 +130,14 @@
                     <%= cargo %>
                   </td>
                   <td class="va-mid text-center">
-                    <%= costs %>
+                    <%= get_currency(costs, Const::CURRENCY[0], 3) %>
                   </td>
-                  <% remainder = quantity - ProductIncomeItem.by_feature_ids(feature_ids).pluck(:quantity).sum(&:to_i) %>
+                  <% remainder = quantity.to_i - ProductIncomeItem.by_feature_ids(feature_ids).pluck(:quantity).sum(&:to_i) %>
                   <td class="va-mid text-center">
                     <%= remainder %>
                   </td>
                   <td>
-                    <%= i.price * remainder %>
+                    <%= get_currency(i.price * remainder, Const::CURRENCY[0], 3) %>
                   </td>
 
                   <td class="va-mid text-center">
