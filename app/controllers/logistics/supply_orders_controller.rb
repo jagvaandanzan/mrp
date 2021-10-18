@@ -13,6 +13,8 @@ class Logistics::SupplyOrdersController < Logistics::BaseController
     @product_supply_order_items = ProductSupplyOrderItem.search(@by_start, @by_end, @by_code, @by_product_name, @order_type == "basic" ? 0 : 1)
                                       .by_ordered_at(@is_ordered)
                                       .page(params[:page])
+    @product_supply_order_items_x = ProductSupplyOrderItem.search(@by_start, @by_end, @by_code, @by_product_name, @order_type == "basic" ? 0 : 1)
+                                                        .by_ordered_at(@is_ordered)
   end
 
   def create_temp

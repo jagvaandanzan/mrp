@@ -37,14 +37,14 @@
               <tr>
                 <th colspan="7"></th>
                 <%
-                  sum_supply_feature_cost = @income_products.pluck("product_income_products.unit_price * product_income_products.quantity").sum(&:to_f)
+                  # sum_supply_feature_cost = @income_products.pluck("product_income_products.unit_price * product_income_products.quantity").sum(&:to_f)
                   sum_quantity = @income_products.pluck("product_income_products.quantity").sum(&:to_i)
                   # sum_shipping_er_cost = ProductIncomeProduct.by_supply_order(@income_products.pluck("product_income_products.product_supply_order_id")).pluck(:cost).sum
                   # sum_shipping_ub_product_cost = ProductIncomeProduct.by_supply_order(@income_products.pluck("product_income_products.product_supply_order_id")).incomes.pluck("product_incomes.cargo_price").sum
                   sum_shipping_er_cost = @in_ub_x.group("shipping_er_products.id").pluck("shipping_er_products.cost").sum + ProductIncomeProduct.by_supply_order(@income_products.pluck("product_income_products.product_supply_order_id")).supply_order.pluck(:cost).sum(&:to_f)
                   sum_shipping_ub_product_cost = @in_ub_x.group("shipping_ub_products.id").pluck("shipping_ub_products.cost").sum + ProductIncomeProduct.by_supply_order(@income_products.pluck("product_income_products.product_supply_order_id")).supply_order.pluck("product_incomes.cargo_price").sum(&:to_f)
-                  # sum_supply_feature_cost = @in_ub_x.pluck("product_supply_features.price_lo * product_income_items.quantity").sum + ProductIncomeProduct.by_supply_order(@income_products.pluck("product_income_products.product_supply_order_id")).supply_order.pluck("product_income_products.quantity * product_income_products.unit_price").sum
-                  #uniin dun bolon niit dun zas bas padaaniig zow haruul
+                  sum_supply_feature_cost = @in_ub_x.pluck("product_supply_features.price_lo * product_income_items.quantity").sum + ProductIncomeProduct.by_supply_order(@income_products.pluck("product_income_products.product_supply_order_id")).supply_order.pluck("product_income_products.quantity * product_income_products.unit_price").sum
+                  # ereeni cost zow dun ProductIncomeProduct.by_id(@income_products_x.pluck(:id)).pluck(:cost).sum(&:to_f)
                   order_ids = @income_products.pluck(:product_supply_order_id)
                   order_item_ids = ProductSupplyOrderItem.by_supply_id(order_ids).pluck(:id)
                 %>

@@ -28,6 +28,10 @@ class ProductIncomeProduct < ApplicationRecord
       .where("product_supply_orders.order_type = 1")
   }
 
+  scope :by_id, ->(ids){
+    where("id IN (?)", ids)
+  }
+
   scope :incomes, ->{
     joins(:product_income)
   }

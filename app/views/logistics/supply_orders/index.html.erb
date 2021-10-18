@@ -79,6 +79,14 @@
                   </tr>
                 <% end %>
               <% end %>
+              <tr>
+                <% quantity = ProductSupplyFeature.by_order_item(@product_supply_order_items_x.pluck(:id)).pluck(:quantity).sum(&:to_i) %>
+                <% quantity_lo = ProductSupplyFeature.by_order_item(@product_supply_order_items_x.pluck(:id)).pluck(:quantity_lo).sum(&:to_i) %>
+                <% sum_price_lo = ProductSupplyOrderItem.by_order_item(@product_supply_order_items_x.pluck(:id)).pluck(:sum_price_lo).sum(&:to_f) %>
+                <td class="va-mid underline" colspan="4"><strong>Нийт: <%=@product_supply_order_items_x.count %></strong></td>
+                <td class="va-mid underline text-center"><%= "#{quantity}/#{quantity_lo}" %></td>
+                <td class="va-mid text-center"><%= get_currency(sum_price_lo, Const::CURRENCY[0], 3) %></td>
+              </tr>
             </table>
           </div>
         </div>
