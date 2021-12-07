@@ -1,3 +1,6 @@
+# SupplyCalculation class
+# Уг class нь бараа худалдан авах бүх хэсгүүдийн controller class юм
+
 class Users::SupplyCalculationsController < Users::BaseController
   def income_products
     @by_start = params[:by_start]

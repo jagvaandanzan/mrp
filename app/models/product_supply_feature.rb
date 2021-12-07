@@ -132,6 +132,10 @@ class ProductSupplyFeature < ApplicationRecord
     items = items.where('product_income_product.id LIKE :value', value: "%#{code}%") if code.present?
     items
   }
+  scope :receipt, ->(code) {
+    joins(:product_income, :product_income_items, :product_income_products)
+      .where('product_income_items.calculated IS NULL AND product_income_product.id LIKE :value', value: "%#{code}%") if code.present?
+  }
 
   scope :shipping_ub, ->{
     joins(:shipping_ub)
